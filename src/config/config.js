@@ -310,7 +310,7 @@ export const config = convict({
       format: Array,
       default: []
     }
-  },
+  }
 })
 
 config.validate({ allowed: 'strict' })

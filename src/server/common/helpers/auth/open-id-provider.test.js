@@ -1,8 +1,8 @@
 import jwt from '@hapi/jwt'
-import { expect, test } from "vitest";
+import { expect, test } from 'vitest'
 import { config } from '../../../../config/config'
 
-import { openIdProvider } from './open-id-provider';
+import { openIdProvider } from './open-id-provider'
 
 vi.mock('./open-id-client.js', () => ({
   getOpenIdConfig: vi.fn().mockReturnValue({
@@ -19,11 +19,11 @@ test.each([
 ])('credentials do not exist', async (credentials) => {
   const provider = await openIdProvider('defraId', {
     oidcConfigurationUrl: 'https://test.it/path'
-  });
+  })
 
   await expect(async () => await provider.profile(credentials)).rejects.toThrow(
     'defraId Auth Access Token not present. Unable to retrieve profile.'
-  );
+  )
 })
 
 test('defraId: credentials exist', async () => {
@@ -100,9 +100,7 @@ test('defraId: credentials exist', async () => {
     'http://some-token-endpoint',
     'http://some-end-session-endpoint'
   ])
-
 })
-
 
 test('defraId: organisation not allowed', async () => {
   const provider = await openIdProvider('defraId', {

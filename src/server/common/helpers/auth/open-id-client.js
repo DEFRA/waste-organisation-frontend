@@ -1,3 +1,3 @@
-const getOpenIdConfig = async () => { }
+const getOpenIdConfig = async () => {}
 
-export { getOpenIdConfig };
+export { getOpenIdConfig }
