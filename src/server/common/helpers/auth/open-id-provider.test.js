@@ -28,7 +28,8 @@ test.each([
 
 test('defraId: credentials exist', async () => {
   const provider = await openIdProvider('defraId', {
-    oidcConfigurationUrl: 'https://test.it/path'
+    oidcConfigurationUrl: 'https://test.it/path',
+    scopes: ['email']
   })
 
   const currentRelationshipId = 'rel-id-909'
@@ -102,6 +103,28 @@ test('defraId: credentials exist', async () => {
   ])
 })
 
+test('defraId: provider setup correctly', async () => {
+  const provider = await openIdProvider('defraId', {
+    oidcConfigurationUrl: 'https://test.it/path',
+    scopes: ['email']
+  })
+
+  const organisationId = 'org-id-123'
+
+  config.set('auth.defraId.organisations', [organisationId])
+
+  expect(provider).toEqual({
+    name: 'defraId',
+    protocol: 'oauth2',
+    useParamsAuth: true,
+    auth: 'http://some-auth-endpoint/path',
+    token: 'http://some-token-endpoint/path',
+    pkce: 'S256',
+    scope: ['email'],
+    profile: expect.any(Function)
+  })
+})
+
 test('defraId: organisation not allowed', async () => {
   const provider = await openIdProvider('defraId', {
     oidcConfigurationUrl: 'https://test.it/path'
@@ -125,9 +148,9 @@ test('defraId: organisation not allowed', async () => {
     token
   }
 
-  expect(async () => provider.profile(credentials, {}, {})).rejects.toThrow(
-    'organisation not allowed'
-  )
+  await expect(async () =>
+    provider.profile(credentials, {}, {})
+  ).rejects.toThrow('organisation not allowed')
 })
 
 test('entraId: group not allowed', async () => {
@@ -162,7 +185,7 @@ test('entraId: group not allowed', async () => {
     id_token: idToken
   }
 
-  expect(async () => provider.profile(credentials, params, {})).rejects.toThrow(
-    'group not allowed'
-  )
+  await expect(async () =>
+    provider.profile(credentials, params, {})
+  ).rejects.toThrow('group not allowed')
 })

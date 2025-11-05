@@ -29,6 +29,13 @@ export const openIdProvider = async (name, authConfig) => {
   setOrigins(providerEndpoints)
 
   return {
+    name,
+    protocol: 'oauth2',
+    useParamsAuth: true,
+    auth: oidcConf.authorization_endpoint,
+    token: oidcConf.token_endpoint,
+    pkce: 'S256',
+    scope: authConfig.scopes,
     profile: async (credentials, params, _get) => {
       if (!credentials?.token) {
         throw new Error(
