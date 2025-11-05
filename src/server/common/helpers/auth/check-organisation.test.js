@@ -1,5 +1,5 @@
-import { config } from '../../../../config/config'
-import { checkOrganisation } from './check-organisation'
+import { config } from '../../../../config/config.js'
+import { checkOrganisation } from './check-organisation.js'
 
 test('matches the current relationship', () => {
   const currentRelationshipId = 'rel-555'

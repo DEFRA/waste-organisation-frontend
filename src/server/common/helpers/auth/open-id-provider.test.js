@@ -1,8 +1,7 @@
 import jwt from '@hapi/jwt'
 import { expect, test } from 'vitest'
-import { config } from '../../../../config/config'
-
-import { openIdProvider } from './open-id-provider'
+import { config } from '../../../../config/config.js'
+import { openIdProvider } from './open-id-provider.js'
 
 vi.mock('./open-id-client.js', () => ({
   getOpenIdConfig: vi.fn().mockReturnValue({

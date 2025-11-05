@@ -1,9 +1,9 @@
 import hapi from '@hapi/hapi'
 import Bell from '@hapi/bell'
-import { config } from '../../../../config/config'
-import { openId } from './open-id'
+import { config } from '../../../../config/config.js'
+import { openId } from './open-id.js'
 import { expect } from 'vitest'
-import { paths } from '../../../../config/paths'
+import { paths } from '../../../../config/paths.js'
 
 const BASE_URL = 'http://example.com'
 

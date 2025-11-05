@@ -3,6 +3,7 @@ export const paths = {
   HEALTH: '/health',
   LANDING: '/',
   ACCESSIBILITY: '/accessibility-statement',
+  SEARCH: '/search',
   SIGN_IN: '/sign-in',
   SIGN_IN_CHOOSE: '/sign-in-choose',
   SIGN_IN_ENTRA: '/sign-in-entra',

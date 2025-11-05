@@ -29,6 +29,12 @@ export const config = convict({
     default: '0.0.0.0',
     env: 'HOST'
   },
+  appBaseUrl: {
+    doc: 'Application base URL for after we signIn',
+    format: String,
+    default: 'http://localhost:3000',
+    env: 'APP_BASE_URL'
+  },
   port: {
     doc: 'The port to bind.',
     format: 'port',

@@ -1,6 +1,6 @@
-import { config } from '../../../../config/config'
-import { paths } from '../../../../config/paths'
-import { openIdProvider } from '../../helpers/auth/open-id-provider'
+import { config } from '../../../../config/config.js'
+import { paths } from '../../../../config/paths.js'
+import { openIdProvider } from '../../helpers/auth/open-id-provider.js'
 
 export const openId = {
   plugin: {

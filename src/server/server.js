@@ -1,6 +1,7 @@
 import path from 'path'
 import hapi from '@hapi/hapi'
 import Scooter from '@hapi/scooter'
+import bell from '@hapi/bell'
 
 import { router } from './router.js'
 import { config } from '../config/config.js'
@@ -14,6 +15,7 @@ import { sessionCache } from './common/helpers/session-cache/session-cache.js'
 import { getCacheEngine } from './common/helpers/session-cache/cache-engine.js'
 import { secureContext } from '@defra/hapi-secure-context'
 import { contentSecurityPolicy } from './common/helpers/content-security-policy.js'
+import plugins from './common/plugins/index.js'
 
 export async function createServer() {
   setupProxy()
@@ -53,6 +55,10 @@ export async function createServer() {
       strictHeader: false
     }
   })
+
+  await server.register(bell)
+  await server.register(plugins)
+
   await server.register([
     requestLogger,
     requestTracing,

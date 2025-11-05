@@ -1,8 +1,8 @@
 import jwt from '@hapi/jwt'
-import { getOpenIdConfig } from './open-id-client'
-import { config } from '../../../../config/config'
-import { checkOrganisation } from './check-organisation'
-import { checkGroups } from './check-groups'
+import { getOpenIdConfig } from './open-id-client.js'
+import { config } from '../../../../config/config.js'
+import { checkOrganisation } from './check-organisation.js'
+import { checkGroups } from './check-groups.js'
 
 const setOrigins = (providerEndpoints) => {
   const { origins } = config.get('auth')

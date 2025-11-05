@@ -1,4 +1,4 @@
-import { config } from '../../../../config/config'
+import { config } from '../../../../config/config.js'
 import boom from '@hapi/boom'
 
 export const checkGroups = (groups) => {

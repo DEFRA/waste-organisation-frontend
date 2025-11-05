@@ -1,5 +1,5 @@
-import { config } from '../../../../config/config'
-import { checkGroups } from './check-groups'
+import { config } from '../../../../config/config.js'
+import { checkGroups } from './check-groups.js'
 
 test('groups match', () => {
   config.set('auth.entraId.groups', ['12345'])
