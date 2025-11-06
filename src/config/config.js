@@ -233,7 +233,7 @@ export const config = convict({
         format: String,
         env: 'AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL',
         default:
-          'https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/b2c_1a_cui_signin_stub/.well-known/openid-configuration'
+          'http://localhost:3200/cdp-defra-id-stub/.well-known/openid-configuration'
       },
       serviceId: {
         doc: 'Defra ID service ID',
@@ -245,21 +245,21 @@ export const config = convict({
         doc: 'Defra ID client ID',
         format: String,
         env: 'AUTH_DEFRA_ID_CLIENT_ID',
-        default: '2fb0d715-affa-4bf1-836e-44a464e3fbea'
+        default: '63983fc2-cfff-45bb-8ec2-959e21062b9a'
       },
       clientSecret: {
         doc: 'Defra ID client secret',
         format: String,
         sensitive: true,
         env: 'AUTH_DEFRA_ID_CLIENT_SECRET',
-        default: ''
+        default: 'test_value'
       },
       scopes: {
         doc: 'Defra ID scopes',
         format: Array,
         sensitive: true,
         env: 'AUTH_DEFRA_ID_SCOPES',
-        default: ['openid', 'offline_access']
+        default: ['openid', 'email', 'groups', 'profile']
       },
       organisations: {
         doc: 'Defra ID allowed organisations',

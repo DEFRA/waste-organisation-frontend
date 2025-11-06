@@ -10,5 +10,6 @@ export const paths = {
   SIGN_OUT: '/sign-out',
   SIGNED_OUT: '/signed-out',
   SIGNIN_DEFRA_ID_CALLBACK: '/signin-oidc',
-  SIGNIN_ENTRA_ID_CALLBACK: '/signin-entra-id'
+  SIGNIN_ENTRA_ID_CALLBACK: '/signin-entra-id',
+  CHROME_DEVTOOLS: '/.well-known/appspecific/com.chrome.devtools.json'
 }
