@@ -56,6 +56,12 @@ export async function createServer() {
     }
   })
 
+  server.app.cache = server.cache({
+    cache: 'session',
+    expiresIn: config.get('session.cache.ttl'),
+    segment: 'session'
+  })
+
   await server.register(bell)
   await server.register(plugins)
 

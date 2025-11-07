@@ -259,7 +259,7 @@ export const config = convict({
         format: Array,
         sensitive: true,
         env: 'AUTH_DEFRA_ID_SCOPES',
-        default: ['openid', 'email', 'groups', 'profile']
+        default: ['openid', 'offline_access']
       },
       organisations: {
         doc: 'Defra ID allowed organisations',
