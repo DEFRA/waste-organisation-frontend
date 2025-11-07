@@ -93,7 +93,6 @@ export async function validateUserSession(server, request, session) {
 
       if (!response.ok) {
         removeUserSession(request)
-
         return { isValid: false }
       }
 

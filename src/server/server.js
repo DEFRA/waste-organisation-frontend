@@ -23,6 +23,9 @@ export async function createServer() {
     host: config.get('host'),
     port: config.get('port'),
     routes: {
+      auth: {
+        mode: 'try'
+      },
       validate: {
         options: {
           abortEarly: false
@@ -62,19 +65,18 @@ export async function createServer() {
     segment: 'session'
   })
 
-  await server.register(bell)
-  await server.register(plugins)
-
   await server.register([
+    bell,
     requestLogger,
     requestTracing,
     secureContext,
     pulse,
-    sessionCache,
+    ...plugins,
     nunjucksConfig,
     Scooter,
     contentSecurityPolicy,
-    router // Register all the controllers/routes defined in src/server/router.js
+    router, // Register all the controllers/routes defined in src/server/router.js
+    sessionCache
   ])
 
   server.ext('onPreResponse', catchAll)

@@ -15,12 +15,11 @@ describe('#homeController', () => {
   })
 
   test('Should provide expected response', async () => {
-    const { result, statusCode } = await server.inject({
+    const { statusCode } = await server.inject({
       method: 'GET',
       url: paths.SEARCH
     })
 
-    expect(result).toEqual(expect.stringContaining('Search |'))
-    expect(statusCode).toBe(statusCodes.ok)
+    expect(statusCode).toBe(statusCodes.unauthorized)
   })
 })

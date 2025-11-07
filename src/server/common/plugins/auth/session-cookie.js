@@ -10,7 +10,6 @@ export const userSession = {
     name: 'user-session',
     register: async (server) => {
       await server.register(authCookie)
-
       server.auth.strategy('session', 'cookie', {
         cookie: {
           name: 'userSession',
@@ -21,7 +20,7 @@ export const userSession = {
         },
         keepAlive: true,
         validate: async (request, session) => {
-          return validateUserSession(server, request, session)
+          return await validateUserSession(server, request, session)
         }
       })
 
