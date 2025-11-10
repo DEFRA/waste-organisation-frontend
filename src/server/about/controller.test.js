@@ -1,12 +1,12 @@
-import { createServer } from '../server.js'
 import { statusCodes } from '../common/constants/status-codes.js'
+import { initialiseServer } from '../../test-utils/initialise-server.js'
+import { expect } from 'vitest'
 
 describe('#aboutController', () => {
   let server
 
   beforeAll(async () => {
-    server = await createServer()
-    await server.initialize()
+    server = await initialiseServer()
   })
 
   afterAll(async () => {

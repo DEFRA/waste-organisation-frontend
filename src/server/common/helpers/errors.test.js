@@ -1,15 +1,14 @@
 import { vi } from 'vitest'
 
 import { catchAll } from './errors.js'
-import { createServer } from '../../server.js'
 import { statusCodes } from '../constants/status-codes.js'
+import { initialiseServer } from '../../../test-utils/initialise-server.js'
 
 describe('#errors', () => {
   let server
 
   beforeAll(async () => {
-    server = await createServer()
-    await server.initialize()
+    server = await initialiseServer()
   })
 
   afterAll(async () => {

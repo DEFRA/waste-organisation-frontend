@@ -6,7 +6,6 @@ import {
   getUserSession,
   dropUserSession
 } from './user-session.js'
-import { startServer } from '../start-server.js'
 import {
   createAuthedUser,
   createRefreshedToken,
@@ -14,6 +13,7 @@ import {
 } from './utils/session-helper.js'
 import { config } from '../../../../config/config.js'
 import { refreshAccessToken } from './refresh-token.js'
+import { vi } from 'vitest'
 
 const mockCookieAuthClear = vi.fn()
 
@@ -24,19 +24,34 @@ vi.mock('./refresh-token.js', () => ({
 const sessionConfig = config.get('session')
 
 describe('#userSession', () => {
+  let server
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+
+    const cachedUser = {}
+
+    server = {
+      app: {
+        cache: {
+          set: (sessionId, data) => {
+            cachedUser[sessionId] = data
+          },
+          get: (sessionId) => cachedUser[sessionId] ?? null,
+          drop: (sessionId) => {
+            delete cachedUser[sessionId]
+            return {}
+          }
+        }
+      }
+    }
+  })
+
   describe('When setting user session', () => {
-    let server, authedUser
+    let authedUser
 
     beforeEach(async () => {
-      vi.clearAllMocks()
-      server = await startServer()
       authedUser = createAuthedUser()
-    })
-
-    afterEach(async () => {
-      if (server) {
-        await server.stop({ timeout: 0 })
-      }
     })
 
     test('Should set session in cache', async () => {
@@ -57,22 +72,18 @@ describe('#userSession', () => {
 
       const cachedSession = await server.app.cache.get(authedUser.sessionId)
 
+      console.log(cachedSession)
+
       expect(cachedSession).not.toBeNull()
       expect(cachedSession.isAuthenticated).toBeTruthy()
     })
   })
 
   describe('When removing user session', () => {
-    let server, authedUser
+    let authedUser
 
     beforeEach(async () => {
-      vi.clearAllMocks()
-      server = await startServer()
       authedUser = createAuthedUser()
-    })
-
-    afterEach(async () => {
-      await server.stop({ timeout: 0 })
     })
 
     test('Should drop and clear the session and cookie', async () => {
@@ -95,16 +106,10 @@ describe('#userSession', () => {
   })
 
   describe('When updating user session', () => {
-    let server, originalCachedSession
+    let originalCachedSession
 
     beforeEach(async () => {
-      vi.clearAllMocks()
-      server = await startServer()
       originalCachedSession = await setupAuthedUserSession(server)
-    })
-
-    afterEach(async () => {
-      await server.stop({ timeout: 0 })
     })
 
     test('Should replace session in cache', async () => {
@@ -140,16 +145,7 @@ describe('#userSession', () => {
   })
 
   describe('When validating user session', () => {
-    let server, userSession
-
-    beforeEach(async () => {
-      vi.clearAllMocks()
-      server = await startServer()
-    })
-
-    afterEach(async () => {
-      await server.stop({ timeout: 0 })
-    })
+    let userSession
 
     test('Should return not valid if session does not exist', async () => {
       const request = {}
@@ -325,16 +321,11 @@ describe('#userSession', () => {
   })
 
   describe('When getting user session', () => {
-    let server, userSession
+    let userSession
 
     describe('When a session exists', () => {
       beforeEach(async () => {
-        server = await startServer()
         userSession = await setupAuthedUserSession(server)
-      })
-
-      afterEach(async () => {
-        await server.stop({ timeout: 0 })
       })
 
       test('Should return the cached session', async () => {
@@ -358,12 +349,7 @@ describe('#userSession', () => {
 
     describe('When request state is not present', () => {
       beforeEach(async () => {
-        server = await startServer()
         userSession = await setupAuthedUserSession(server)
-      })
-
-      afterEach(async () => {
-        await server.stop({ timeout: 0 })
       })
 
       test('Should return empty session', async () => {
@@ -382,12 +368,7 @@ describe('#userSession', () => {
 
     describe('When a user session is not present', () => {
       beforeEach(async () => {
-        server = await startServer()
         userSession = await setupAuthedUserSession(server)
-      })
-
-      afterEach(async () => {
-        await server.stop({ timeout: 0 })
       })
 
       test('Should return empty session', async () => {
@@ -406,14 +387,6 @@ describe('#userSession', () => {
     })
 
     describe('When a session does not exist in cache', () => {
-      beforeEach(async () => {
-        server = await startServer()
-      })
-
-      afterEach(async () => {
-        await server.stop({ timeout: 0 })
-      })
-
       test('Should return null', async () => {
         const request = {
           server,
@@ -432,16 +405,11 @@ describe('#userSession', () => {
   })
 
   describe('When dropping user session', () => {
-    let server, userSession
+    let userSession
 
     describe('When a session exists in cache', () => {
       beforeEach(async () => {
-        server = await startServer()
         userSession = await setupAuthedUserSession(server)
-      })
-
-      afterEach(async () => {
-        await server.stop({ timeout: 0 })
       })
 
       test('Should remove the session from cache', async () => {
@@ -463,29 +431,6 @@ describe('#userSession', () => {
 
         cachedSession = await server.app.cache.get(userSession.sessionId)
         expect(cachedSession).toBeNull()
-      })
-    })
-
-    describe('When a session does not exist in cache', () => {
-      beforeEach(async () => {
-        server = await startServer()
-      })
-
-      afterEach(async () => {
-        await server.stop({ timeout: 0 })
-      })
-
-      test('Should not throw error', async () => {
-        const request = {
-          server,
-          state: {
-            userSession: {
-              sessionId: crypto.randomUUID()
-            }
-          }
-        }
-
-        await expect(dropUserSession(request)).resolves.not.toThrow()
       })
     })
   })

@@ -17,6 +17,14 @@ export const signInCallback = {
             auth: 'defraId'
           },
           ...signInCallbackController
+        },
+        {
+          method: ['GET', 'POST'],
+          path: paths.SIGNIN_ENTRA_ID_CALLBACK,
+          options: {
+            auth: 'entraId'
+          },
+          ...signInCallbackController
         }
       ])
     }

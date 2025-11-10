@@ -1,13 +1,12 @@
-import { createServer } from '../server.js'
 import { statusCodes } from '../common/constants/status-codes.js'
 import { paths } from '../../config/paths.js'
+import { initialiseServer } from '../../test-utils/initialise-server.js'
 
 describe('#homeController', () => {
   let server
 
   beforeAll(async () => {
-    server = await createServer()
-    await server.initialize()
+    server = await initialiseServer()
   })
 
   afterAll(async () => {

@@ -6,6 +6,7 @@ import { constants } from 'http2'
 const logger = createLogger()
 
 export const getOpenIdConfig = async (oidcConfigurationUrl) => {
+  console.log('oidcConfigurationUrl', oidcConfigurationUrl)
   const { payload } = await wreck.get(oidcConfigurationUrl, {
     json: 'strict'
   })

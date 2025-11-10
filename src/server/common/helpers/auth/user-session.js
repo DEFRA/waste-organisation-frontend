@@ -83,6 +83,7 @@ export async function validateUserSession(server, request, session) {
   }
 
   const minutesBeforeExpiry = 5
+
   const tokenIsExpiring = isPast(
     subMinutes(parseISO(authedUser.expiresAt), minutesBeforeExpiry)
   )
