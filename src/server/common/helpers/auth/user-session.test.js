@@ -1,3 +1,4 @@
+import crypto from 'node:crypto'
 import {
   removeUserSession,
   setUserSession,
@@ -71,9 +72,6 @@ describe('#userSession', () => {
       await setUserSession(request, authedUser.sessionId)
 
       const cachedSession = await server.app.cache.get(authedUser.sessionId)
-
-      console.log(cachedSession)
-
       expect(cachedSession).not.toBeNull()
       expect(cachedSession.isAuthenticated).toBeTruthy()
     })

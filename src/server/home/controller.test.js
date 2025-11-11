@@ -1,5 +1,6 @@
 import { statusCodes } from '../common/constants/status-codes.js'
 import { initialiseServer } from '../../test-utils/initialise-server.js'
+import { homeController } from './controller.js'
 
 describe('#homeController', () => {
   let server
@@ -10,6 +11,50 @@ describe('#homeController', () => {
 
   afterAll(async () => {
     await server.stop({ timeout: 0 })
+  })
+
+  test('should redirect to search if authenticated', () => {
+    let actualUrl
+
+    const request = {
+      auth: {
+        isAuthenticated: true
+      }
+    }
+
+    const nextHandler = {
+      redirect: (url) => (actualUrl = url)
+    }
+
+    homeController.handler(request, nextHandler)
+
+    expect(actualUrl).toBe('/search')
+  })
+
+  test('should redirect to search if authenticated', () => {
+    let actualPath
+    let actualOptions
+
+    const request = {
+      auth: {
+        isAuthenticated: false
+      }
+    }
+
+    const nextHandler = {
+      view: (path, options) => {
+        actualPath = path
+        actualOptions = options
+      }
+    }
+
+    homeController.handler(request, nextHandler)
+
+    expect(actualPath).toBe('home/index')
+    expect(actualOptions).toEqual({
+      pageTitle: 'Home',
+      heading: 'Home'
+    })
   })
 
   test('Should provide expected response', async () => {

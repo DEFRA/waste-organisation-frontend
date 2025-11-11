@@ -1,8 +1,8 @@
-import crypto from 'node:crypto'
 import { addSeconds } from 'date-fns'
 import iron from '@hapi/iron'
 import jwt from '@hapi/jwt'
-import { config } from '../../../../../config/config.js'
+import { config } from '../config/config.js'
+import crypto from 'node:crypto'
 
 const authConfig = config.get('auth')
 const sessionConfig = config.get('session')

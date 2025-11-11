@@ -4,8 +4,6 @@
  */
 export const searchController = {
   handler(request, h) {
-    console.log('credentials', request.auth.credentials)
-
     return h.view('search/index', {
       pageTitle: 'Search',
       heading: 'You are logged in',

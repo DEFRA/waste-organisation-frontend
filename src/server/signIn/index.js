@@ -7,24 +7,24 @@ import { signInController } from './controller.js'
  */
 export const signIn = {
   plugin: {
-    name: 'signin',
+    name: 'signIn',
     register(server) {
       server.route([
         {
-          method: 'GET',
-          path: paths.SIGN_IN,
+          method: ['GET', 'POST'],
+          path: paths.SIGNIN_DEFRA_ID_CALLBACK,
           options: {
             auth: 'defraId'
           },
-          ...signInController
+          ...signInController('signIn.defraId')
         },
         {
-          method: 'GET',
-          path: paths.SIGN_IN_ENTRA,
+          method: ['GET', 'POST'],
+          path: paths.SIGNIN_ENTRA_ID_CALLBACK,
           options: {
             auth: 'entraId'
           },
-          ...signInController
+          ...signInController('signIn.entraId')
         }
       ])
     }
