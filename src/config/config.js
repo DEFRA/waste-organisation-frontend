@@ -275,42 +275,6 @@ export const config = convict({
         default: '#'
       }
     },
-    entraId: {
-      oidcConfigurationUrl: {
-        doc: 'Entra ID OIDC configuration URL',
-        format: String,
-        env: 'AUTH_ENTRA_ID_OIDC_CONFIGURATION_URL',
-        default:
-          'https://dcidmtest.b2clogin.com/dcidmtest.onmicrosoft.com/b2c_1a_cui_signin_stub/.well-known/openid-configuration'
-      },
-      clientId: {
-        doc: 'ENTRA ID client ID',
-        format: String,
-        env: 'AUTH_ENTRA_ID_CLIENT_ID',
-        default: '2fb0d715-affa-4bf1-836e-44a464e3fbea'
-      },
-      clientSecret: {
-        doc: 'ENTRA ID client secret',
-        format: String,
-        sensitive: true,
-        env: 'AUTH_ENTRA_ID_CLIENT_SECRET',
-        default: ''
-      },
-      groups: {
-        doc: 'ENTRA ID user groups',
-        format: Array,
-        sensitive: true,
-        env: 'AUTH_ENTRA_ID_SECURITY_GROUPS',
-        default: []
-      },
-      scopes: {
-        doc: 'ENTRA ID scopes',
-        format: Array,
-        sensitive: true,
-        env: 'AUTH_ENTRA_ID_SCOPES',
-        default: ['openid', 'offline_access']
-      }
-    },
     origins: {
       doc: 'Auth provider origins for CSP header',
       format: Array,

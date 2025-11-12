@@ -21,10 +21,6 @@ describe('signIn', () => {
     {
       url: paths.SIGNIN_DEFRA_ID_CALLBACK,
       oidcConfigurationUrl: 'auth.defraId.oidcConfigurationUrl'
-    },
-    {
-      url: paths.SIGNIN_ENTRA_ID_CALLBACK,
-      oidcConfigurationUrl: 'auth.entraId.oidcConfigurationUrl'
     }
   ])(
     'user redirected to Auth Provider when not logged in',
@@ -47,22 +43,22 @@ describe('signIn', () => {
     }
   )
 
-  test.each([
-    { url: paths.SIGNIN_DEFRA_ID_CALLBACK, strategy: 'defraId' },
-    { url: paths.SIGNIN_ENTRA_ID_CALLBACK, strategy: 'entraId' }
-  ])('user redirected to search when logged in', async ({ url, strategy }) => {
-    const credentials = await setupAuthedUserSession(server)
+  test.each([{ url: paths.SIGNIN_DEFRA_ID_CALLBACK, strategy: 'defraId' }])(
+    'user redirected to search when logged in',
+    async ({ url, strategy }) => {
+      const credentials = await setupAuthedUserSession(server)
 
-    const { headers, statusCode } = await server.inject({
-      method: 'get',
-      url,
-      auth: {
-        strategy,
-        credentials
-      }
-    })
+      const { headers, statusCode } = await server.inject({
+        method: 'get',
+        url,
+        auth: {
+          strategy,
+          credentials
+        }
+      })
 
-    expect(statusCode).toBe(302)
-    expect(headers.location).toBe(paths.SEARCH)
-  })
+      expect(statusCode).toBe(302)
+      expect(headers.location).toBe(paths.SEARCH)
+    }
+  )
 })
