@@ -6,7 +6,7 @@ export const openId = {
   plugin: {
     name: 'open-id',
     register: async (server) => {
-      const { defraId, entraId } = config.get('auth')
+      const { defraId } = config.get('auth')
       const { cookie } = config.get('session')
       const baseUrl = config.get('appBaseUrl')
 
@@ -21,16 +21,6 @@ export const openId = {
         providerParams: {
           serviceId: defraId.serviceId
         }
-      })
-
-      const entra = await openIdProvider('entraId', entraId)
-      server.auth.strategy('entraId', 'bell', {
-        location: () => `${baseUrl}${paths.SIGNIN_ENTRA_ID_CALLBACK}`,
-        provider: entra,
-        password: cookie.password,
-        clientId: entraId.clientId,
-        clientSecret: entraId.clientSecret,
-        isSecure: cookie.secure
       })
     }
   }

@@ -94,31 +94,3 @@ test('setup defraId strategy correctly', async () => {
 
   server.stop()
 })
-
-test('setup entraId strategy correctly', async () => {
-  const strategyName = 'entraId'
-  const { server, name, strategyScheme, strategyOptions } =
-    await makeServer(strategyName)
-
-  expect(name).toBe(strategyName)
-  expect(strategyScheme).toBe('bell')
-  expect(openId.plugin.name).toBe('open-id')
-  expect(strategyOptions.location()).toEqual(
-    `${BASE_URL}${paths.SIGNIN_ENTRA_ID_CALLBACK}`
-  )
-  expect(strategyOptions).toEqual(
-    expect.objectContaining({
-      provider: {
-        name: strategyName,
-        auth: 'http://some-auth-endpoint/path',
-        token: 'http://some-token-endpoint/path'
-      },
-      password: SESSION_COOKIE_PASSWORD,
-      clientId: AUTH_ENTRA_CLIENTID,
-      clientSecret: AUTH_ENTRA_CLIENTSECRET,
-      isSecure: true
-    })
-  )
-
-  server.stop()
-})

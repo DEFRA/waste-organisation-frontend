@@ -42,31 +42,6 @@ test('refreshes user signed in with DefraId', async () => {
   ])
 })
 
-test('refreshes user signed in with EntraId', async () => {
-  const authedUser = createAuthedUser(null, 'entraId')
-  const clientId = authConfig.entraId.clientId
-  const clientSecret = authConfig.entraId.clientSecret
-  const redirectUri = config.get('appBaseUrl') + paths.SIGNIN_ENTRA_ID_CALLBACK
-
-  getUserSession.mockReturnValue(authedUser)
-
-  await refreshAccessToken({})
-
-  expect(mockGetOpenIdRefreshToken.mock.calls).toEqual([
-    [
-      authedUser.tokenUrl,
-      {
-        client_id: clientId,
-        client_secret: clientSecret,
-        grant_type: 'refresh_token',
-        refresh_token: authedUser.refreshToken,
-        scope: 'openid offline_access',
-        redirect_uri: redirectUri
-      }
-    ]
-  ])
-})
-
 test('logs missing if refresh token missing', async () => {
   const { refreshToken, ...authedUser } = createAuthedUser()
   getUserSession.mockReturnValue(authedUser)
