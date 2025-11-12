@@ -12,6 +12,9 @@ export default defineConfig({
       include: ['src/**'],
       exclude: [
         ...configDefaults.exclude,
+        'src/test-utils',
+        'src/client/javascripts',
+        'src/index.js',
         '.public',
         'coverage',
         'postcss.config.js',

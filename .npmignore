@@ -1,3 +1,5 @@
 *.config.*
 *.test.*
+
 test-helpers
+src/test-utils

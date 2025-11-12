@@ -1,6 +1,7 @@
 import path from 'path'
 import hapi from '@hapi/hapi'
 import Scooter from '@hapi/scooter'
+import bell from '@hapi/bell'
 
 import { router } from './router.js'
 import { config } from '../config/config.js'
@@ -14,6 +15,7 @@ import { sessionCache } from './common/helpers/session-cache/session-cache.js'
 import { getCacheEngine } from './common/helpers/session-cache/cache-engine.js'
 import { secureContext } from '@defra/hapi-secure-context'
 import { contentSecurityPolicy } from './common/helpers/content-security-policy.js'
+import plugins from './common/plugins/index.js'
 
 export async function createServer() {
   setupProxy()
@@ -21,6 +23,9 @@ export async function createServer() {
     host: config.get('host'),
     port: config.get('port'),
     routes: {
+      auth: {
+        mode: 'try'
+      },
       validate: {
         options: {
           abortEarly: false
@@ -53,16 +58,25 @@ export async function createServer() {
       strictHeader: false
     }
   })
+
+  server.app.cache = server.cache({
+    cache: 'session',
+    expiresIn: config.get('session.cache.ttl'),
+    segment: 'session'
+  })
+
   await server.register([
+    bell,
     requestLogger,
     requestTracing,
     secureContext,
     pulse,
-    sessionCache,
+    ...plugins,
     nunjucksConfig,
     Scooter,
     contentSecurityPolicy,
-    router // Register all the controllers/routes defined in src/server/router.js
+    router, // Register all the controllers/routes defined in src/server/router.js
+    sessionCache
   ])
 
   server.ext('onPreResponse', catchAll)

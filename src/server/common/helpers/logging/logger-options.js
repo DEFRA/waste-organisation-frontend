@@ -2,6 +2,7 @@ import { ecsFormat } from '@elastic/ecs-pino-format'
 import { getTraceId } from '@defra/hapi-tracing'
 
 import { config } from '../../../../config/config.js'
+import { paths } from '../../../../config/paths.js'
 
 const logConfig = config.get('log')
 const serviceName = config.get('serviceName')
@@ -19,7 +20,7 @@ const formatters = {
 
 export const loggerOptions = {
   enabled: logConfig.enabled,
-  ignorePaths: ['/health'],
+  ignorePaths: [paths.HEALTH],
   redact: {
     paths: logConfig.redact,
     remove: true

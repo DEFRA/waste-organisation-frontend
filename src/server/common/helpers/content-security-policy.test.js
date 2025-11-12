@@ -1,11 +1,10 @@
-import { createServer } from '../../server.js'
+import { initialiseServer } from '../../../test-utils/initialise-server.js'
 
 describe('#contentSecurityPolicy', () => {
   let server
 
   beforeAll(async () => {
-    server = await createServer()
-    await server.initialize()
+    server = await initialiseServer()
   })
 
   afterAll(async () => {

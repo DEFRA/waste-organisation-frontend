@@ -2,6 +2,7 @@ import { vi } from 'vitest'
 
 import hapi from '@hapi/hapi'
 import { statusCodes } from '../constants/status-codes.js'
+import { mockOidcConfig } from '../../../test-utils/mock-oidc-config.js'
 
 describe('#startServer', () => {
   let createServerSpy
@@ -11,6 +12,8 @@ describe('#startServer', () => {
 
   beforeAll(async () => {
     vi.stubEnv('PORT', '3097')
+
+    mockOidcConfig()
 
     createServerImport = await import('../../server.js')
     startServerImport = await import('./start-server.js')
