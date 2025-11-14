@@ -1,17 +1,83 @@
 {% extends 'layouts/page.njk' %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
-  {{ appHeading({
-    text: heading,
-    caption: "waste-organisation-frontend"
-  }) }}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-body" data-testid="app-page-body">
-        <p></p>
+      <h1 class="govuk-heading-xl">Report receipt of waste</h1>
+      <p class="govuk-body">
+        If you operate a licensed site that receives waste, you can use this
+        service to:
+      </p>
+      <ol class="govuk-list govuk-list--bullet">
+        <li>register for a Defra account</li>
+        <li>dd businesses or organisations to your account</li>
+        <li>pay the annual service charge</li>
+        <li>get an API code to send us your waste movements</li>
+      </ol>
+
+      <h2 class="govuk-heading-m">Before you start</h2>
+
+      <p class="govuk-body">
+        You must check if your business or organisation's software can use our
+        APIs. Contact your software provider if you are unsure.
+      </p>
+
+      <p class="govuk-body">You will also need to:</p>
+
+      <ol class="govuk-list govuk-list--number">
+        <li>
+          Sign in or create a Government Gateway or OneLogin account for your
+          business or organisation.
+        </li>
+        <li>
+          Use your business or organisation's Government Gateway or OneLogin ID
+          to register for a Defra account.
+        </li>
+        <li>
+          Provide the address, contact details and company registration number
+          (if it is a limited company) of your business or organisation.
+        </li>
+      </ol>
+
+      {{
+        govukWarningText({
+        text: "Do not use a personal Government Gateway account for this service.",
+        iconFallbackText: "Warning",
+        classes: "govuk-!-margin-top-6"
+        })
+      }}
+
+      <div>
+        <h2 class="govuk-heading-m govuk-!-margin-top-6">Cost</h2>
+
+        <p class="govuk-body">
+          It costs £20 a year per business or organisation on your account. You
+          will need a debit or credit card to make your payment online.
+        </p>
+
+        {{
+          govukButton({
+          text: "Start now",
+          href: "/signin-oidc",
+          isStartButton: true,
+          classes: "govuk-!-margin-top-5" })
+        }}
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-6">Get help</h2>
+
+        <p class="govuk-body">
+          Contact the support team if you are having problems using the service.
+        </p>
+
+        <p class="govuk-body">
+          Email:
+          <a href="#" class="govuk-link">WasteTracking_Testing@defra.gov.uk</a>
+        </p>
+
+        <p class="govuk-body">Telephone: 0800 876 6458</p>
       </div>
     </div>
   </div>
-
 {% endblock %}

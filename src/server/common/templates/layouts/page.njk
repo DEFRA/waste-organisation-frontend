@@ -6,27 +6,27 @@
 
 {# Import custom components globally #}
 {% from "heading/macro.njk" import appHeading %}
-
-{% set mainClasses = "app-main-wrapper" %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
 {% block head %}
-  <link href="{{ getAssetPath('stylesheets/application.scss') }}" rel="stylesheet">
+  <link
+    href="{{ getAssetPath('stylesheets/application.scss') }}"
+    rel="stylesheet"
+  />
 {% endblock %}
 
 {% block header %}
   {# serviceName being used in govukHeader will be @deprecated in v6. It has moved to govukServiceNavigation - https://github.com/alphagov/govuk-frontend/blob/main/CHANGELOG.md#move-service-name-and-navigation-links-from-the-govuk-header-to-service-navigation-component #}
-  {{ govukHeader({
-    homepageUrl: "https://www.gov.uk/",
-    classes: "app-header",
-    containerClasses: "govuk-width-container",
-    serviceName: serviceName,
-    serviceUrl: serviceUrl,
-    useTudorCrown: true
-  }) }}
-
-  {{ govukServiceNavigation({
-    navigation: navigation
-  }) }}
+  {{
+    govukHeader({
+      homepageUrl: "https://www.gov.uk/",
+      classes: "app-header",
+      containerClasses: "govuk-width-container",
+      serviceName: serviceName,
+      serviceUrl: serviceUrl,
+      useTudorCrown: true
+    })
+  }}
 {% endblock %}
 
 {% block pageTitle %}
@@ -34,34 +34,48 @@
 {% endblock %}
 
 {% block beforeContent %}
+  {{
+    govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: 'This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback (opens in new tab)</a>.'
+    })
+  }}
+
   {% if breadcrumbs.length > 1 %}
-    {{ govukBreadcrumbs({
-      items: breadcrumbs
-    }) }}
+    {{
+      govukBreadcrumbs({
+        items: breadcrumbs
+      })
+    }}
   {% endif %}
 {% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+{% endblock %}
 
 {% block footer %}
-  {{ govukFooter({
-    meta: {
-      items: [
-        {
-          href: "https://www.gov.uk/help/privacy-notice",
-          text: "Privacy"
-        },
-        {
-          href: "https://www.gov.uk/help/cookies",
-          text: "Cookies"
-        },
-        {
-          href: "https://www.gov.uk/help/accessibility-statement",
-          text: "Accessibility statement"
-        }
-      ]
-    }
-  }) }}
+  {{
+    govukFooter({
+      meta: {
+        items: [
+          {
+            href: "https://www.gov.uk/help/privacy-notice",
+            text: "Privacy"
+          },
+          {
+            href: "https://www.gov.uk/help/cookies",
+            text: "Cookies"
+          },
+          {
+            href: "https://www.gov.uk/help/accessibility-statement",
+            text: "Accessibility statement"
+          }
+        ]
+      }
+    })
+  }}
 {% endblock %}
 
 {% block bodyEnd %}
