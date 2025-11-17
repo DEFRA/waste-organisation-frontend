@@ -1,6 +1,5 @@
 version: '3.4'
 services:
-
   localstack:
     image: localstack/localstack:3.0.2
     ports:
@@ -13,6 +12,7 @@ services:
       LS_LOG: WARN # Localstack DEBUG Level
       SERVICES: s3,sqs,sns,firehose
       LOCALSTACK_HOST: 127.0.0.1
+
     volumes:
       - '${TMPDIR:-/tmp}/localstack:/var/lib/localstack'
       - ./compose/start-localstack.sh:/etc/localstack/init/ready.d/start-localstack.sh
@@ -42,9 +42,9 @@ services:
       - mongodb-data:/data
     restart: always
 
-################################################################################
+  ################################################################################
 
-  your-frontend:
+  waste-organisation-frontend:
     build: ./
     ports:
       - '3000:3000'
@@ -56,6 +56,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+      cdp-defra-id-stub:
+        condition: service_started
     env_file:
       - 'compose/aws.env'
     environment:
@@ -63,6 +65,24 @@ services:
       NODE_ENV: development
       REDIS_HOST: redis
       LOCALSTACK_ENDPOINT: http://localstack:4566
+      USE_SINGLE_INSTANCE_CACHE: true
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://cdp-defra-id-stub:3200/cdp-defra-id-stub/.well-known/openid-configuration'
+    networks:
+      - cdp-tenant
+
+  cdp-defra-id-stub:
+    image: defradigital/cdp-defra-id-stub:latest
+    ports:
+      - '3200:3200'
+    links:
+      - 'redis:redis'
+    depends_on:
+      redis:
+        condition: service_started
+    environment:
+      PORT: 3200
+      NODE_ENV: development
+      REDIS_HOST: redis
       USE_SINGLE_INSTANCE_CACHE: true
     networks:
       - cdp-tenant
