@@ -19,7 +19,7 @@ describe('#homeController', () => {
 
     const { result, statusCode } = await server.inject({
       method: 'GET',
-      url: paths.SEARCH,
+      url: paths.search,
       auth: {
         strategy: 'session',
         credentials
@@ -33,7 +33,7 @@ describe('#homeController', () => {
   test('Should provide expected response', async () => {
     const { statusCode } = await server.inject({
       method: 'GET',
-      url: paths.SEARCH
+      url: paths.search
     })
 
     expect(statusCode).toBe(statusCodes.unauthorized)

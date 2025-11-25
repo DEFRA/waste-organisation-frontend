@@ -19,7 +19,7 @@ describe('signIn', () => {
 
   test.each([
     {
-      url: paths.SIGNIN_DEFRA_ID_CALLBACK,
+      url: paths.signinDefraIdCallback,
       oidcConfigurationUrl: 'auth.defraId.oidcConfigurationUrl'
     }
   ])(
@@ -43,7 +43,7 @@ describe('signIn', () => {
     }
   )
 
-  test.each([{ url: paths.SIGNIN_DEFRA_ID_CALLBACK, strategy: 'defraId' }])(
+  test.each([{ url: paths.signinDefraIdCallback, strategy: 'defraId' }])(
     'user redirected to search when logged in',
     async ({ url, strategy }) => {
       const credentials = await setupAuthedUserSession(server)
@@ -58,7 +58,7 @@ describe('signIn', () => {
       })
 
       expect(statusCode).toBe(302)
-      expect(headers.location).toBe(paths.SEARCH)
+      expect(headers.location).toBe(paths.search)
     }
   )
 })

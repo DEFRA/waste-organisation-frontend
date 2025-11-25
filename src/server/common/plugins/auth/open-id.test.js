@@ -73,7 +73,7 @@ test('setup defraId strategy correctly', async () => {
   expect(strategyScheme).toBe('bell')
   expect(openId.plugin.name).toBe('open-id')
   expect(strategyOptions.location()).toEqual(
-    `${BASE_URL}${paths.SIGNIN_DEFRA_ID_CALLBACK}`
+    `${BASE_URL}${paths.signinDefraIdCallback}`
   )
   expect(strategyOptions).toEqual(
     expect.objectContaining({

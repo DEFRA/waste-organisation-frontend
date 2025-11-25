@@ -13,6 +13,11 @@ const isProduction = process.env.NODE_ENV === 'production'
 const isTest = process.env.NODE_ENV === 'test'
 const isDevelopment = process.env.NODE_ENV === 'development'
 
+export const cacheControlNoStore = {
+  privacy: 'default',
+  otherwise: 'no-store'
+}
+
 convict.addFormats(convictFormatWithValidator)
 
 export const config = convict({

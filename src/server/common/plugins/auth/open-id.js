@@ -12,7 +12,7 @@ export const openId = {
 
       const defra = await openIdProvider('defraId', defraId)
       server.auth.strategy('defraId', 'bell', {
-        location: () => `${baseUrl}${paths.SIGNIN_DEFRA_ID_CALLBACK}`,
+        location: () => `${baseUrl}${paths.signinDefraIdCallback}`,
         provider: defra,
         password: cookie.password,
         clientId: defraId.clientId,

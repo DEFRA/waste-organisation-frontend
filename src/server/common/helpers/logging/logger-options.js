@@ -20,7 +20,7 @@ const formatters = {
 
 export const loggerOptions = {
   enabled: logConfig.enabled,
-  ignorePaths: [paths.HEALTH],
+  ignorePaths: [paths.health],
   redact: {
     paths: logConfig.redact,
     remove: true

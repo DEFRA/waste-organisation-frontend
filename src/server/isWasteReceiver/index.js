@@ -1,24 +1,24 @@
 import { paths } from '../../config/paths.js'
 import { cacheControlNoStore } from '../../config/config.js'
-import { searchController } from './controller.js'
+import { isWasteReceiverController } from './controller.js'
 
 /**
- * Sets up the routes used in the home page.
+ * Sets up the routes used in the isWasteReceiver page.
  * These routes are registered in src/server/router.js.
  */
-export const search = {
+export const isWasteReceiver = {
   plugin: {
-    name: 'search',
+    name: 'isWasteReceiver',
     register(server) {
       server.route([
         {
           method: 'GET',
-          path: paths.search,
+          path: paths.isWasteReceiver,
           options: {
             auth: 'session',
             cache: cacheControlNoStore
           },
-          ...searchController
+          ...isWasteReceiverController
         }
       ])
     }
