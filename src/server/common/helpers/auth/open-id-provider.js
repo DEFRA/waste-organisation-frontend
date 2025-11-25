@@ -1,7 +1,6 @@
 import jwt from '@hapi/jwt'
 import { getOpenIdConfig } from './open-id-client.js'
 import { config } from '../../../../config/config.js'
-import { checkOrganisation } from './check-organisation.js'
 import { checkGroups } from './check-groups.js'
 
 const setOrigins = (providerEndpoints) => {
@@ -44,12 +43,6 @@ export const openIdProvider = async (name, authConfig) => {
       }
 
       const payload = jwt.token.decode(credentials.token).decoded.payload
-
-      const { currentRelationshipId, relationships } = payload
-
-      if (credentials.provider === 'defraId') {
-        checkOrganisation(currentRelationshipId, relationships)
-      }
 
       if (credentials.provider === 'entraId') {
         const { groups = [] } = jwt.token.decode(params.id_token).decoded
