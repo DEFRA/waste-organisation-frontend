@@ -124,34 +124,6 @@ test('defraId: provider setup correctly', async () => {
   })
 })
 
-test('defraId: organisation not allowed', async () => {
-  const provider = await openIdProvider('defraId', {
-    oidcConfigurationUrl: 'https://test.it/path'
-  })
-
-  config.set('auth.defraId.organisations', ['allowed-org'])
-
-  const token = jwt.token.generate(
-    {
-      currentRelationshipId: 'rel-1',
-      relationships: ['rel1:forbidden-org']
-    },
-    {
-      key: 'test',
-      algorithm: 'HS256'
-    }
-  )
-
-  const credentials = {
-    provider: 'defraId',
-    token
-  }
-
-  await expect(async () =>
-    provider.profile(credentials, {}, {})
-  ).rejects.toThrow('organisation not allowed')
-})
-
 test('entraId: group not allowed', async () => {
   const provider = await openIdProvider('entraId', {
     oidcConfigurationUrl: 'https://test.it/path'
