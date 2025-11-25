@@ -2,14 +2,28 @@
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <form>
+      {% if errors %}
+        {{
+          govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+              {
+                text: errors.text,
+                href: "#isWasteReceiverYes"
+              }
+            ]
+          })
+        }}
+      {% endif %}
+      <form action="{{ action }}" method="POST">
         {{
           govukRadios({
-            name: "whereDoYouLive",
+            name: "isWasteReceiver",
             fieldset: {
               legend: {
                 text: question,
@@ -20,17 +34,24 @@
             hint: {
               text: "If you are registering on behalf of a business or organisation, answer the questions with their details rather than your own."
             },
-            errorMessage: {text: "TODO ... fishy error"},
+            errorMessage: errors,
             items: [
               {
                 value: "yes",
-                text: "Yes"
+                text: "Yes",
+                id: "isWasteReceiverYes"
               },
               {
                 value: "no",
                 text: "No"
               }
             ]
+          })
+        }}
+        {{
+          govukButton({
+            text: "Continue",
+            type: "submit"
           })
         }}
       </form>
