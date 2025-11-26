@@ -15,7 +15,7 @@ export const isWasteReceiver = {
           method: 'GET',
           path: paths.isWasteReceiver,
           options: {
-            //   auth: 'session',
+            // auth: 'session',
             cache: cacheControlNoStore
           },
           ...isWasteReceiverGetController
@@ -24,7 +24,7 @@ export const isWasteReceiver = {
           method: 'POST',
           path: paths.isWasteReceiver,
           options: {
-            //   auth: 'session',
+            // auth: 'session',
             cache: cacheControlNoStore,
             ...validatePost
           },
