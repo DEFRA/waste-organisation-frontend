@@ -1,20 +1,11 @@
 import joi from 'joi'
 import { paths } from '../../config/paths.js'
 
-const getCompany = (apiService, userId) => {
-  // TODO get from async process
-  return { name: 'Joe Bloggs LTD', id: '8e4f7ffb-1936-4ca5-8f82-5be929e0de1b' }
-}
-
-const saveCompany = (companyId, isWasteReceiver) => {
-  return { id: companyId, isWasteReceiver: isWasteReceiver === 'yes' }
-}
-
 const userId = 'TODO - get from request'
 
 export const isWasteReceiverGetController = {
-  handler(request, h) {
-    const company = getCompany(userId)
+  async handler(request, h) {
+    const [company] = await request.backendApi.getOrganisations(userId)
     return h.view('isWasteReceiver/index', {
       pageTitle: 'Report receipt of waste',
       question: `Is ${company.name} a waste receiver?`,
@@ -32,8 +23,8 @@ export const validatePost = {
         .required()
         .regex(/^(yes|no)$/)
     }),
-    failAction: (request, h) => {
-      const company = getCompany(userId)
+    failAction: async (request, h) => {
+      const [company] = await request.backendApi.getOrganisations(userId)
       return h
         .view('isWasteReceiver/index', {
           pageTitle: 'Report receipt of waste',
@@ -47,9 +38,11 @@ export const validatePost = {
 }
 
 export const isWasteReceiverPostController = {
-  handler(request, h) {
-    const company = getCompany(userId)
-    saveCompany(company.id, request.payload.isWasteReceiver)
+  async handler(request, h) {
+    const [company] = await request.backendApi.getOrganisations(userId) // TODO get this from the request or session or something?
+    await request.backendApi.saveOrganisation(company.id, {
+      isWasteReceiver: request.payload.isWasteReceiver === 'yes'
+    })
     return h.redirect('/TODO-next-page')
   }
 }
