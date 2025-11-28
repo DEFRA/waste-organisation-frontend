@@ -15,9 +15,10 @@ import { sessionCache } from './common/helpers/session-cache/session-cache.js'
 import { getCacheEngine } from './common/helpers/session-cache/cache-engine.js'
 import { secureContext } from '@defra/hapi-secure-context'
 import { contentSecurityPolicy } from './common/helpers/content-security-policy.js'
-import plugins from './common/plugins/index.js'
 
-export async function createServer() {
+export async function createServer(plugins) {
+  const pluginList = Object.keys(plugins).map((key) => plugins[key])
+
   setupProxy()
   const server = hapi.server({
     host: config.get('host'),
@@ -71,7 +72,7 @@ export async function createServer() {
     requestTracing,
     secureContext,
     pulse,
-    ...plugins,
+    ...pluginList,
     nunjucksConfig,
     Scooter,
     contentSecurityPolicy,

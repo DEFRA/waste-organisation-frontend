@@ -6,7 +6,30 @@ describe('#isWasteReceiverController', () => {
   let server
 
   beforeAll(async () => {
-    server = await initialiseServer()
+    const mockBackendApi = {
+      plugin: {
+        name: 'backendApi',
+        register: async (server) => {
+          server.decorate('request', 'backendApi', {
+            getOrganisations: async (userId) => {
+              return [
+                {
+                  name: 'Joe Blogs LTD',
+                  id: '9c6a06d7-e691-4740-89a2-a64d23478034'
+                }
+              ]
+            },
+            saveOrganisation: async (userId, organisationId, data) => {
+              return { ...data, organisationId, userId }
+            }
+          })
+        }
+      }
+    }
+
+    server = await initialiseServer({
+      mockedPlugins: { backendApi: mockBackendApi }
+    })
   })
 
   afterAll(async () => {
@@ -24,7 +47,9 @@ describe('#isWasteReceiverController', () => {
       }
     })
     expect(statusCode).toBe(statusCodes.ok)
-    expect(result).toEqual(expect.stringContaining('a waste receiver?'))
+    expect(result).toEqual(
+      expect.stringContaining('Joe Blogs LTD a waste receiver?')
+    )
   })
 
   test.each([

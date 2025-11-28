@@ -40,7 +40,7 @@ export const validatePost = {
 export const isWasteReceiverPostController = {
   async handler(request, h) {
     const [company] = await request.backendApi.getOrganisations(userId) // TODO get this from the request or session or something?
-    await request.backendApi.saveOrganisation(company.id, {
+    await request.backendApi.saveOrganisation(userId, company.id, {
       isWasteReceiver: request.payload.isWasteReceiver === 'yes'
     })
     return h.redirect('/TODO-next-page')
