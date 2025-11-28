@@ -2,7 +2,7 @@ import { statusCodes } from '../common/constants/status-codes.js'
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 import { paths } from '../../config/paths.js'
 
-describe('#isWasteReceiverController', () => {
+describe('#addWasteReceiverController', () => {
   let server
 
   beforeAll(async () => {
@@ -39,7 +39,7 @@ describe('#isWasteReceiverController', () => {
   test('Should render question', async () => {
     const { result, statusCode } = await server.inject({
       method: 'GET',
-      url: paths.isWasteReceiver,
+      url: paths.addWasteReceiver,
       auth: {
         isAuthenticated: true,
         credentials: {},
@@ -48,19 +48,21 @@ describe('#isWasteReceiverController', () => {
     })
     expect(statusCode).toBe(statusCodes.ok)
     expect(result).toEqual(
-      expect.stringContaining('Joe Blogs LTD a waste receiver?')
+      expect.stringContaining(
+        'Would you like to add another waste receiver to your account?'
+      )
     )
   })
 
   test.each([
     {},
     { payload: {} },
-    { payload: { isWasteReceiver: null } },
-    { payload: { isWasteReceiver: 'fish' } }
+    { payload: { addWasteReceiver: null } },
+    { payload: { addWasteReceiver: 'fish' } }
   ])('Should render error response', async (postData) => {
     const { result, statusCode } = await server.inject({
       method: 'POST',
-      url: paths.isWasteReceiver,
+      url: paths.addWasteReceiver,
       auth: {
         isAuthenticated: true,
         credentials: {},
@@ -74,11 +76,11 @@ describe('#isWasteReceiverController', () => {
     )
   })
 
-  test.each(['yes', 'no'])('Save company details', async (isWasteReceiver) => {
+  test('Selected not to add a new waste recever', async () => {
     const { statusCode, headers } = await server.inject({
       method: 'POST',
-      url: paths.isWasteReceiver,
-      payload: { isWasteReceiver },
+      url: paths.addWasteReceiver,
+      payload: { addWasteReceiver: 'no' },
       auth: {
         isAuthenticated: true,
         credentials: {},
@@ -86,6 +88,21 @@ describe('#isWasteReceiverController', () => {
       }
     })
     expect(statusCode).toBe(statusCodes.found)
-    expect(headers.location).toBe(paths.addWasteReceiver)
+    expect(headers.location).toBe(paths.search)
+  })
+
+  test('Save company details', async () => {
+    const { statusCode, headers } = await server.inject({
+      method: 'POST',
+      url: paths.addWasteReceiver,
+      payload: { addWasteReceiver: 'yes' },
+      auth: {
+        isAuthenticated: true,
+        credentials: {},
+        strategy: {}
+      }
+    })
+    expect(statusCode).toBe(statusCodes.found)
+    expect(headers.location).toBe(paths.search)
   })
 })

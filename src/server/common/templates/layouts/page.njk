@@ -7,12 +7,13 @@
 {# Import custom components globally #}
 {% from "heading/macro.njk" import appHeading %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block head %}
   <link
     href="{{ getAssetPath('stylesheets/application.scss') }}"
     rel="stylesheet"
-  />
+/>
 {% endblock %}
 
 {% block header %}
@@ -50,10 +51,14 @@
       })
     }}
   {% endif %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "#"
+  }) }}
 {% endblock %}
 
-{% block content %}
-{% endblock %}
+{% block content %}{% endblock %}
 
 {% block footer %}
   {{
