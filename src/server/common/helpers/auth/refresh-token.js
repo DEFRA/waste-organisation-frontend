@@ -13,8 +13,8 @@ export async function refreshAccessToken(request) {
   const scopes = authConfig.scopes.join(' ')
   const callbackPath =
     authedUser.strategy === 'defraId'
-      ? paths.SIGNIN_DEFRA_ID_CALLBACK
-      : paths.SIGNIN_ENTRA_ID_CALLBACK
+      ? paths.signinDefraIdCallback
+      : paths.signinEntraIdCallback
   const redirectUri = config.get('appBaseUrl') + callbackPath
 
   if (!authedUser.refreshToken) {

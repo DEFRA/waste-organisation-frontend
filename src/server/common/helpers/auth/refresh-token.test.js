@@ -21,7 +21,7 @@ test('refreshes user signed in with DefraId', async () => {
   const authedUser = createAuthedUser()
   const clientId = authConfig.defraId.clientId
   const clientSecret = authConfig.defraId.clientSecret
-  const redirectUri = config.get('appBaseUrl') + paths.SIGNIN_DEFRA_ID_CALLBACK
+  const redirectUri = config.get('appBaseUrl') + paths.signinDefraIdCallback
 
   getUserSession.mockReturnValue(authedUser)
 

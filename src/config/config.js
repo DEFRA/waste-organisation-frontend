@@ -13,9 +13,30 @@ const isProduction = process.env.NODE_ENV === 'production'
 const isTest = process.env.NODE_ENV === 'test'
 const isDevelopment = process.env.NODE_ENV === 'development'
 
+export const cacheControlNoStore = {
+  privacy: 'default',
+  otherwise: 'no-store'
+}
+
 convict.addFormats(convictFormatWithValidator)
 
 export const config = convict({
+  backendApi: {
+    url: {
+      doc: 'The url of the Backend API service.',
+      format: String,
+      nullable: false,
+      default: 'http://localhost/TODO',
+      env: 'BACKEND_API'
+    },
+    presharedKey: {
+      doc: 'The preshared key for the Backend API service.',
+      format: String,
+      nullable: false,
+      default: 'abc123',
+      env: 'BACKEND_API_PRESHARED_KEY'
+    }
+  },
   serviceVersion: {
     doc: 'The service version, this variable is injected into your docker container in CDP environments',
     format: String,

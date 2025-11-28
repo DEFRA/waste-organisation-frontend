@@ -12,7 +12,7 @@ export const signIn = {
       server.route([
         {
           method: ['GET', 'POST'],
-          path: paths.SIGNIN_DEFRA_ID_CALLBACK,
+          path: paths.signinDefraIdCallback,
           options: {
             auth: 'defraId'
           },

@@ -1,10 +1,6 @@
 import { paths } from '../../config/paths.js'
+import { cacheControlNoStore } from '../../config/config.js'
 import { searchController } from './controller.js'
-
-const CACHE_CONTROL_NO_STORE = {
-  privacy: 'default',
-  otherwise: 'no-store'
-}
 
 /**
  * Sets up the routes used in the home page.
@@ -17,10 +13,10 @@ export const search = {
       server.route([
         {
           method: 'GET',
-          path: paths.SEARCH,
+          path: paths.search,
           options: {
             auth: 'session',
-            cache: CACHE_CONTROL_NO_STORE
+            cache: cacheControlNoStore
           },
           ...searchController
         }

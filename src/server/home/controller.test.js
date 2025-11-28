@@ -31,7 +31,7 @@ describe('#homeController', () => {
     expect(actualUrl).toBe('/search')
   })
 
-  test('should redirect to search if authenticated', () => {
+  test('should render page if not authenticated', () => {
     let actualPath
     let actualOptions
 
@@ -57,7 +57,7 @@ describe('#homeController', () => {
     })
   })
 
-  test('Should provide expected response', async () => {
+  test('Should contain "Home" title', async () => {
     const { result, statusCode } = await server.inject({
       method: 'GET',
       url: '/'

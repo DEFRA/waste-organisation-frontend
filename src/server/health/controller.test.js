@@ -13,7 +13,7 @@ describe('#healthController', () => {
     await server.stop({ timeout: 0 })
   })
 
-  test.each([paths.HEALTH, paths.CHROME_DEVTOOLS])(
+  test.each([paths.health, paths.chromeDevtools])(
     'Should provide expected response',
     async (url) => {
       const { result, statusCode } = await server.inject({
