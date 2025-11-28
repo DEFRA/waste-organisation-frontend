@@ -7,6 +7,7 @@ import { serveStaticFiles } from './common/helpers/serve-static-files.js'
 import { search } from './search/index.js'
 import { signIn } from './signIn/index.js'
 import { isWasteReceiver } from './isWasteReceiver/index.js'
+import { addWasteReceiver } from './addWasteReceiver/index.js'
 
 export const router = {
   plugin: {
@@ -18,7 +19,14 @@ export const router = {
       await server.register([health])
 
       // Application specific routes, add your own routes here
-      await server.register([signIn, home, about, search, isWasteReceiver])
+      await server.register([
+        signIn,
+        home,
+        about,
+        search,
+        isWasteReceiver,
+        addWasteReceiver
+      ])
 
       // Static assets
       await server.register([serveStaticFiles])

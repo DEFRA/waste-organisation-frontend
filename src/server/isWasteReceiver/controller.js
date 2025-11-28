@@ -43,6 +43,6 @@ export const isWasteReceiverPostController = {
     await request.backendApi.saveOrganisation(userId, company.id, {
       isWasteReceiver: request.payload.isWasteReceiver === 'yes'
     })
-    return h.redirect('/TODO-next-page')
+    return h.redirect(paths.addWasteReceiver)
   }
 }

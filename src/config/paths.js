@@ -7,6 +7,7 @@ export const paths = {
   accessibility: '/accessibility-statement',
   search: '/search',
   isWasteReceiver: '/is-waste-receiver',
+  addWasteReceiver: '/add-waste-receiver',
 
   signOut: '/sign-out',
   signedOut: '/signed-out',
