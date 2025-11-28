@@ -8,6 +8,7 @@ import { search } from './search/index.js'
 import { signIn } from './signIn/index.js'
 import { isWasteReceiver } from './isWasteReceiver/index.js'
 import { addWasteReceiver } from './addWasteReceiver/index.js'
+import { noWasteReceiver } from './noWasteReceiver/index.js'
 
 export const router = {
   plugin: {
@@ -25,7 +26,8 @@ export const router = {
         about,
         search,
         isWasteReceiver,
-        addWasteReceiver
+        addWasteReceiver,
+        noWasteReceiver
       ])
 
       // Static assets

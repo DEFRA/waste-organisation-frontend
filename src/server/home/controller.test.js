@@ -53,7 +53,8 @@ describe('#homeController', () => {
     expect(actualPath).toBe('home/index')
     expect(actualOptions).toEqual({
       pageTitle: 'Home',
-      heading: 'Home'
+      heading: 'Home',
+      hideBackLink: true
     })
   })
 

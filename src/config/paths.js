@@ -8,6 +8,7 @@ export const paths = {
   search: '/search',
   isWasteReceiver: '/is-waste-receiver',
   addWasteReceiver: '/add-waste-receiver',
+  noWasteReceiver: '/no-waste-receiver',
 
   signOut: '/sign-out',
   signedOut: '/signed-out',
