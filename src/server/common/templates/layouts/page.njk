@@ -52,10 +52,12 @@
     }}
   {% endif %}
 
-  {{ govukBackLink({
-    text: "Back",
-    href: "#"
-  }) }}
+  {% if hideBackLink === false or hideBackLink === undefined %}
+    {{ govukBackLink({
+      text: "Back",
+      href: "#"
+    }) }}
+  {% endif %}
 {% endblock %}
 
 {% block content %}{% endblock %}
