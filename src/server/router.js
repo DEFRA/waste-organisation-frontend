@@ -9,6 +9,7 @@ import { signIn } from './signIn/index.js'
 import { isWasteReceiver } from './isWasteReceiver/index.js'
 import { addWasteReceiver } from './addWasteReceiver/index.js'
 import { noWasteReceiver } from './noWasteReceiver/index.js'
+import { onboarding } from './onboarding/index.js'
 
 export const router = {
   plugin: {
@@ -25,6 +26,7 @@ export const router = {
         home,
         about,
         search,
+        onboarding,
         isWasteReceiver,
         addWasteReceiver,
         noWasteReceiver

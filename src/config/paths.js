@@ -10,6 +10,8 @@ export const paths = {
   addWasteReceiver: '/add-waste-receiver',
   noWasteReceiver: '/no-waste-receiver',
 
+  onboarding: '/onboarding',
+
   signOut: '/sign-out',
   signedOut: '/signed-out',
 
