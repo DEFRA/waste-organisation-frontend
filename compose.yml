@@ -45,7 +45,7 @@ services:
     image: defradigital/cdp-defra-id-stub:latest
     ports:
       - '3200:3200'
-      - '3000:3000'
+      - '3000:3000' # waste-organisation-frontend port passthrough for networking
     links:
       - 'redis:redis'
     depends_on:
@@ -85,9 +85,8 @@ services:
       LOCALSTACK_ENDPOINT: http://localstack:4566
       USE_SINGLE_INSTANCE_CACHE: true
       SESSION_CACHE_ENGINE: redis
-      # AUTH_DEFRA_ID_OIDC_AUTHORISATION_URL: 'http://localhost:3200/cdp-defra-id-stub/authorize'
       AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://localhost:3200/cdp-defra-id-stub/.well-known/openid-configuration'
-    network_mode: 'service:cdp-defra-id-stub'
+    network_mode: 'service:cdp-defra-id-stub' # used to allow localhost to cdp-defra-id-stub
 
   # your-backend:
   #   image: defradigital/your-backend:${YOUR_BACKEND_VERSION:-latest}
