@@ -86,7 +86,33 @@ services:
       USE_SINGLE_INSTANCE_CACHE: true
       SESSION_CACHE_ENGINE: redis
       AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://localhost:3200/cdp-defra-id-stub/.well-known/openid-configuration'
+      BACKEND_API: http://waste-organisation-backend:3001
     network_mode: 'service:cdp-defra-id-stub' # used to allow localhost to cdp-defra-id-stub
+
+  waste-organisation-backend:
+    build:
+      context: ../waste-organisation-backend
+      target: development
+    ports:
+      - '3001:3001'
+    volumes:
+      - ../waste-organisation-backend:/home/node/
+    links:
+      - 'localstack:localstack'
+      - 'mongodb:mongodb'
+    depends_on:
+      localstack:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - 'compose/aws.env'
+    environment:
+      PORT: 3001
+      NODE_ENV: development
+      MONGO_URI: mongodb://mongodb:27017/
+    networks:
+      - cdp-tenant
 
   # your-backend:
   #   image: defradigital/your-backend:${YOUR_BACKEND_VERSION:-latest}

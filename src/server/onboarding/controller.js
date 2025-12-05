@@ -1,23 +1,35 @@
 import { paths } from '../../config/paths.js'
 
-const userId = 'TODO - get from request'
+const userId = 'userid'
 
 export const onboardingGetController = {
   async handler(request, h) {
-    const [company] = await waitFor({
+    const organisations = await waitFor({
       func: async () => await request.backendApi.getOrganisations(userId),
       waitTime: 500,
       iteration: 10,
       delay: 50
     })
 
-    if (!request.query?.organsiationId) {
-      return h.redirect(`${paths.onboarding}?organsiationId=${company.id}`)
+    if (!organisations) {
+      return null
     }
+
+    // const organisations.filter((o) => o.isWasteReceiver === undefined)
+
+    // const firstOrganisation = []
+
+    // if (!request.query?.organsiationId) {
+    //   return h.redirect(`${paths.onboarding}?organsiationId=${company.id}`)
+    // }
+
+    const selectedOrg = organisations.find(
+      (o) => o.organisationId === request.query?.organsiationId
+    )
 
     return h.view('isWasteReceiver/index', {
       pageTitle: 'Report receipt of waste',
-      question: `Is ${company.name} a waste receiver?`,
+      question: `Is ${selectedOrg.name} a waste receiver?`,
       action: paths.isWasteReceiver,
       errors: null
     })

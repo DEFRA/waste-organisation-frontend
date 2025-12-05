@@ -1,10 +1,25 @@
+import wreck from '@hapi/wreck'
 import { config } from '../../../../config/config.js'
 
 const remoteCall = (_url, _presharedKey) => ({
-  getOrganisations: async (_userId) => {
-    return [
-      { name: 'Monkey Barrel LTD', id: '9c6a06d7-e691-4740-89a2-a64d23478034' }
-    ]
+  getOrganisations: async (userId) => {
+    console.log('calling api >>>>>>>>>>>>>>>>>>>>>>>>>')
+
+    const backendUrl = config.get('backendApi.url')
+
+    try {
+      const { payload } = await wreck.get(
+        `${backendUrl}/user/${userId}/organisations`,
+        {
+          json: 'strict'
+        }
+      )
+      console.log('payload >>>>>>>>>>>>>>>>>>>>>', payload)
+      return payload.organisations
+    } catch (e) {
+      console.log('ERROR calling api >>>>>>>>>>>>>>>>>>>>>>>>>', e)
+      return null
+    }
   },
   saveOrganisation: async (userId, organisationId, data) => {
     console.log('Saving org >>> ', userId, organisationId, data)
