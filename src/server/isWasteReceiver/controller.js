@@ -1,11 +1,11 @@
 import joi from 'joi'
 import { paths } from '../../config/paths.js'
 
-const userId = 'TODO - get from request'
-
 export const isWasteReceiverGetController = {
   async handler(request, h) {
-    const [company] = await request.backendApi.getOrganisations(userId)
+    const [company] = await request.backendApi.getOrganisations(
+      request.auth.credentials.id
+    )
     return h.view('isWasteReceiver/index', {
       pageTitle: 'Report receipt of waste',
       question: `Is ${company.name} a waste receiver?`,
@@ -18,13 +18,16 @@ export const isWasteReceiverGetController = {
 export const validatePost = {
   validate: {
     payload: joi.object({
+      organisationId: joi.string().required(),
       isWasteReceiver: joi
         .string()
         .required()
         .regex(/^(yes|no)$/)
     }),
     failAction: async (request, h) => {
-      const [company] = await request.backendApi.getOrganisations(userId)
+      const [company] = await request.backendApi.getOrganisations(
+        request.auth.credentials.id
+      )
       return h
         .view('isWasteReceiver/index', {
           pageTitle: 'Report receipt of waste',
@@ -39,10 +42,13 @@ export const validatePost = {
 
 export const isWasteReceiverPostController = {
   async handler(request, h) {
-    const [company] = await request.backendApi.getOrganisations(userId) // TODO get this from the request or session or something?
-    await request.backendApi.saveOrganisation(userId, company.id, {
-      isWasteReceiver: request.payload.isWasteReceiver === 'yes'
-    })
+    await request.backendApi.saveOrganisation(
+      request.auth.credentials.id,
+      request.payload.organisationId,
+      {
+        isWasteReceiver: request.payload.isWasteReceiver === 'yes'
+      }
+    )
     return h.redirect(paths.addWasteReceiver)
   }
 }

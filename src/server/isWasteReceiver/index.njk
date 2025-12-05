@@ -21,6 +21,11 @@
         }}
       {% endif %}
       <form action="{{ action }}" method="POST">
+        <input
+          type="hidden"
+          name="organisationId"
+          value="{{ organisationId }}"
+        />
         {{
           govukRadios({
             name: "isWasteReceiver",

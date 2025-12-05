@@ -1,31 +1,42 @@
 import wreck from '@hapi/wreck'
 import { config } from '../../../../config/config.js'
+import { createLogger } from '../../helpers/logging/logger.js'
 
-const remoteCall = (_url, _presharedKey) => ({
-  getOrganisations: async (userId) => {
-    console.log('calling api >>>>>>>>>>>>>>>>>>>>>>>>>')
+const logger = createLogger()
 
-    const backendUrl = config.get('backendApi.url')
-
-    try {
-      const { payload } = await wreck.get(
-        `${backendUrl}/user/${userId}/organisations`,
-        {
-          json: 'strict'
-        }
-      )
-      console.log('payload >>>>>>>>>>>>>>>>>>>>>', payload)
-      return payload.organisations
-    } catch (e) {
-      console.log('ERROR calling api >>>>>>>>>>>>>>>>>>>>>>>>>', e)
-      return null
+const remoteCall = (backendUrl, _presharedKey) => {
+  return {
+    getOrganisations: async (userId) => {
+      try {
+        const { payload } = await wreck.get(
+          `${backendUrl}/user/${userId}/organisations`,
+          {
+            json: 'strict'
+          }
+        )
+        return payload.organisations
+      } catch (e) {
+        logger.error('ERROR calling backend api', e)
+        return null
+      }
+    },
+    saveOrganisation: async (userId, organisationId, orgData) => {
+      try {
+        const { payload } = await wreck.put(
+          `${backendUrl}/user/${userId}/organisation/${organisationId}`,
+          {
+            json: 'strict',
+            payload: { organisation: orgData }
+          }
+        )
+        return payload.organisations
+      } catch (e) {
+        logger.error('ERROR calling backend api', e)
+        return null
+      }
     }
-  },
-  saveOrganisation: async (userId, organisationId, data) => {
-    console.log('Saving org >>> ', userId, organisationId, data)
-    return { ...data, organisationId, userId }
   }
-})
+}
 
 export const backendApi = {
   plugin: {
