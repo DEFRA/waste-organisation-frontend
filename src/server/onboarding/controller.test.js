@@ -1,7 +1,7 @@
-import { statusCodes } from '../common/constants/status-codes.js'
 import { initialiseServer } from '../../test-utils/initialise-server.js'
-import { onboardingGetController } from './controller.js'
+import { onboardingGetController, waitFor } from './controller.js'
 import { paths } from '../../config/paths.js'
+import { expect } from 'vitest'
 
 const testOrganisationId = '9c6a06d7-e691-4740-89a2-a64d23478034'
 const testOrganisationName = 'Monkey Barrel LTD'
@@ -63,15 +63,12 @@ describe('#onboardingController', () => {
 
     const nextHandler = {
       view: (path, options) => {
-        console.log(path)
         actualPath = path
         actualOptions = options
       }
     }
 
     await onboardingGetController.handler(request, nextHandler)
-
-    console.log(actualPath)
 
     expect(actualPath).toBe('isWasteReceiver/index')
     expect(actualOptions).toEqual({
@@ -81,14 +78,68 @@ describe('#onboardingController', () => {
       errors: null
     })
   })
+})
 
-  test.skip('Should contain "Home" title', async () => {
-    const { result, statusCode } = await server.inject({
-      method: 'GET',
-      url: '/'
-    })
+describe('waitForNewOrganisations', () => {
+  test.each([
+    {
+      // tests function called multiple times within waitTime
+      waitTime: 50,
+      iteration: 5,
+      delay: 20,
+      callsUntilData: 5,
+      times: 3,
+      response: null
+    },
+    {
+      // calls once if delay is too big
+      waitTime: 50,
+      iteration: 5,
+      delay: 51,
+      callsUntilData: 5,
+      times: 1,
+      response: null
+    },
+    {
+      // calls once if data is returned on first time
+      waitTime: 50,
+      iteration: 10,
+      delay: 1,
+      callsUntilData: 1,
+      times: 1,
+      response: 'fish'
+    },
+    {
+      // calls twice if data is returned on second time
+      waitTime: 50,
+      iteration: 10,
+      delay: 1,
+      callsUntilData: 2,
+      times: 2,
+      response: 'fish'
+    }
+  ])(
+    'should call function correct ammount of times',
+    async ({ waitTime, iteration, delay, callsUntilData, times, response }) => {
+      let timesCalled = 0
 
-    expect(result).toEqual(expect.stringContaining('Home |'))
-    expect(statusCode).toBe(statusCodes.ok)
-  })
+      const mockFunction = {
+        get: (_) => {
+          timesCalled++
+          if (timesCalled < callsUntilData) return null
+          return 'fish'
+        }
+      }
+
+      const result = await waitFor({
+        func: async () => mockFunction.get('userID'),
+        waitTime,
+        iteration,
+        delay
+      })
+
+      expect(timesCalled).toBe(times)
+      expect(result).toBe(response)
+    }
+  )
 })
