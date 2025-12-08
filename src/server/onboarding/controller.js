@@ -42,6 +42,7 @@ export const onboardingGetController = {
     // )
 
     return h.view('isWasteReceiver/index', {
+      // TODO move this into the isWasteReceiver controller (include org id in url)
       pageTitle: 'Report receipt of waste',
       question: `Is ${firstOrganisation.name} a waste receiver?`,
       action: paths.isWasteReceiver,
