@@ -1,4 +1,5 @@
-import { paths } from '../../config/paths.js'
+import { paths, pathTo } from '../../config/paths.js'
+import { statusCodes } from '../common/constants/status-codes.js'
 
 const fetchOrgs = async (backendApi, userId) => {
   // TODO think about tests for this?
@@ -41,14 +42,30 @@ export const onboardingGetController = {
     //   (o) => o.organisationId === request.query?.organsiationId
     // )
 
-    return h.view('isWasteReceiver/index', {
-      // TODO move this into the isWasteReceiver controller (include org id in url)
-      pageTitle: 'Report receipt of waste',
-      question: `Is ${firstOrganisation.name} a waste receiver?`,
-      action: paths.isWasteReceiver,
-      organisationId: firstOrganisation.organisationId,
-      errors: null
-    })
+    console.log('firstOrganisation: ', firstOrganisation)
+    console.log('paths.isWasteReceiver: ', paths.isWasteReceiver)
+    console.log('url', pathTo(paths.isWasteReceiver, firstOrganisation))
+    return h.redirect(pathTo(paths.isWasteReceiver, firstOrganisation))
+  }
+}
+
+export const isWasteReceiverGetController = {
+  async handler(request, h) {
+    // TODO fix this ...
+    const [company] = await request.backendApi
+      .getOrganisations(request.auth.credentials.id)
+      .filter((o) => o.organsiationId === request.params.organisationId)
+    if (company) {
+      return h.view('isWasteReceiver/index', {
+        pageTitle: 'Report receipt of waste',
+        question: `Is ${company.name} a waste receiver?`,
+        organisationId: company.organisationId,
+        action: paths.isWasteReceiver,
+        errors: null
+      })
+    } else {
+      return h.status(statusCodes.notFound)
+    }
   }
 }
 

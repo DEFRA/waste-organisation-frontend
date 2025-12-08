@@ -6,7 +6,7 @@ export const paths = {
   landing: '/',
   accessibility: '/accessibility-statement',
   search: '/search',
-  isWasteReceiver: '/is-waste-receiver',
+  isWasteReceiver: '/onboarding/{organisationId}/is-waste-receiver',
   addWasteReceiver: '/add-waste-receiver',
   noWasteReceiver: '/no-waste-receiver',
 
@@ -23,7 +23,6 @@ export const paths = {
 
 export const pathTo = (route, params) => {
   const routeParams = route.match(/\{\w+\*?\}/g)
-
   for (const r of routeParams) {
     const parts = r.match(/\{(\w+)\*?\}/)
     const src = params[parts[1]]
@@ -33,7 +32,9 @@ export const pathTo = (route, params) => {
     if (src) {
       route = route.replace(dst, src)
     } else {
-      throw new Error(`Missing key ${key} in route ${route}`)
+      throw new Error(
+        `Missing key ${key} in route ${route}. Data provided: ${JSON.stringify(params)}`
+      )
     }
   }
   return route

@@ -1,19 +1,23 @@
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 import { onboardingGetController, waitFor } from './controller.js'
-import { paths } from '../../config/paths.js'
+import { paths, pathTo } from '../../config/paths.js'
 import { expect } from 'vitest'
+import { faker } from '@faker-js/faker'
 
 const testOrganisationId = '9c6a06d7-e691-4740-89a2-a64d23478034'
 const testOrganisationName = 'Monkey Barrel LTD'
 
-const backendApi = {
-  getOrganisations: async (_) => [
-    {
-      name: testOrganisationName,
-      id: testOrganisationId
-    }
-  ]
-}
+const fakeOrg = (override) => ({
+  organisationId: faker.string.uuid(),
+  users: [faker.string.uuid()],
+  name: faker.company.name(),
+  isWasteReceiver: faker.datatype.boolean(),
+  ...override
+})
+
+const backendApi = (getOrganisationsResponse) => ({
+  getOrganisations: async (_) => getOrganisationsResponse
+})
 
 describe('#onboardingController', () => {
   let server
@@ -26,14 +30,24 @@ describe('#onboardingController', () => {
     await server.stop({ timeout: 0 })
   })
 
-  test('should redirect with query string when no org is given', async () => {
+  test('should redirect to is-waste-receiver page when at least one org is unknown', async () => {
     let actualUrl
+
+    const wasteRecievers = [fakeOrg({ isWasteReceiver: true })]
+    const notWasteRecievers = [fakeOrg({ isWasteReceiver: false })]
+    const unknownOrgs = [fakeOrg({ isWasteReceiver: null })]
+    const userId = faker.string.uuid()
 
     const request = {
       auth: {
-        isAuthenticated: true
+        isAuthenticated: true,
+        credentials: { id: userId }
       },
-      backendApi
+      backendApi: backendApi([
+        ...wasteRecievers,
+        ...notWasteRecievers,
+        ...unknownOrgs
+      ])
     }
 
     const nextHandler = {
@@ -42,8 +56,11 @@ describe('#onboardingController', () => {
 
     await onboardingGetController.handler(request, nextHandler)
 
+    console.log('unknownOrgs[0]: ', unknownOrgs[0])
     expect(actualUrl).toBe(
-      `${paths.onboarding}?organsiationId=${testOrganisationId}`
+      pathTo(paths.isWasteReceiver, {
+        organisationId: unknownOrgs[0].organisationId
+      })
     )
   })
 
