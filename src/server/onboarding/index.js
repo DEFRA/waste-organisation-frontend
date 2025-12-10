@@ -1,9 +1,9 @@
 import { paths } from '../../config/paths.js'
 import { cacheControlNoStore } from '../../config/config.js'
 import {
-  onboardingGetController,
-  isWasteReceiverGetController,
-  isWasteReceiverPostController
+  onboardingGetController
+  // isWasteReceiverGetController,
+  // isWasteReceiverPostController
 } from './controller.js'
 
 export const onboarding = {
@@ -12,9 +12,9 @@ export const onboarding = {
     register(server) {
       server.route(
         [
-          ['GET', onboardingGetController],
-          ['GET', isWasteReceiverGetController],
-          ['POST', isWasteReceiverPostController]
+          ['GET', onboardingGetController]
+          // ['GET', isWasteReceiverGetController],
+          // ['POST', isWasteReceiverPostController]
         ].map(([method, controller]) => ({
           method,
           path: paths.onboarding,

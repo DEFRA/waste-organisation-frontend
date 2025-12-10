@@ -34,17 +34,6 @@ export const onboardingGetController = {
     // TODO how do we go around the loop of organisations??? and terminate the loop???
     const [firstOrganisation] = organisations
 
-    // if (!request.query?.organsiationId) {
-    //   return h.redirect(`${paths.onboarding}?organsiationId=${company.id}`)
-    // }
-
-    // const selectedOrg = organisations.find(
-    //   (o) => o.organisationId === request.query?.organsiationId
-    // )
-
-    console.log('firstOrganisation: ', firstOrganisation)
-    console.log('paths.isWasteReceiver: ', paths.isWasteReceiver)
-    console.log('url', pathTo(paths.isWasteReceiver, firstOrganisation))
     return h.redirect(pathTo(paths.isWasteReceiver, firstOrganisation))
   }
 }
@@ -52,11 +41,20 @@ export const onboardingGetController = {
 export const isWasteReceiverGetController = {
   async handler(request, h) {
     // TODO fix this ...
-    const [company] = await request.backendApi
-      .getOrganisations(request.auth.credentials.id)
-      .filter((o) => o.organsiationId === request.params.organisationId)
+    const r = await request.backendApi.getOrganisations(
+      request.auth.credentials.id
+    )
+
+    console.log('request', request)
+    console.log('r', r)
+
+    const [company] = r.filter(
+      (o) => o.organisationId === request?.params?.organisationId
+    )
+
+    console.log(company)
     if (company) {
-      return h.view('isWasteReceiver/index', {
+      return h.view('onboarding/isWasteReceiver', {
         pageTitle: 'Report receipt of waste',
         question: `Is ${company.name} a waste receiver?`,
         organisationId: company.organisationId,
@@ -66,6 +64,19 @@ export const isWasteReceiverGetController = {
     } else {
       return h.status(statusCodes.notFound)
     }
+  }
+}
+
+export const isWasteReceiverPostController = {
+  async handler(request, h) {
+    await request.backendApi.saveOrganisation(
+      request.auth.credentials.id,
+      request.payload.organisationId,
+      {
+        isWasteReceiver: request.payload.isWasteReceiver === 'yes'
+      }
+    )
+    return h.redirect(paths.addWasteReceiver)
   }
 }
 

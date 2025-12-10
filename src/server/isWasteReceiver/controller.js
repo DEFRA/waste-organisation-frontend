@@ -10,7 +10,7 @@ export const isWasteReceiverGetController = {
     return h.view('isWasteReceiver/index', {
       pageTitle: 'Report receipt of waste',
       question: `Is ${company.name} a waste receiver?`,
-      organisationId: firstOrganisation.organisationId,
+      organisationId: company.organisationId,
       action: paths.isWasteReceiver,
       errors: null
     })

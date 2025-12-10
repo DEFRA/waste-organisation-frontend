@@ -1,6 +1,7 @@
-import { beforeEach, describe, expect } from 'vitest'
+import { beforeEach, describe, expect, vi } from 'vitest'
 import hapi from '@hapi/hapi'
 import { backendApi } from './index.js'
+import wreck from '@hapi/wreck'
 
 describe('backendApi', () => {
   let backendApiService
@@ -32,6 +33,10 @@ describe('backendApi', () => {
     const expectedOrganisation = [
       { name: 'Monkey Barrel LTD', id: '9c6a06d7-e691-4740-89a2-a64d23478034' }
     ]
+
+    vi.spyOn(wreck, 'get').mockImplementation({
+      organisations: expectedOrganisation
+    })
 
     const actualOrganisations =
       await backendApiService.getOrganisations('userId')
