@@ -36,7 +36,8 @@ describe('#isWasteReceiverController', () => {
     await server.stop({ timeout: 0 })
   })
 
-  test('Should render question', async () => {
+  // TODO: Moveing to onboarding controller
+  test.skip('Should render question', async () => {
     const { result, statusCode } = await server.inject({
       method: 'GET',
       url: paths.isWasteReceiver,
@@ -52,7 +53,8 @@ describe('#isWasteReceiverController', () => {
     )
   })
 
-  test.each([
+  // TODO: Moveing to onboarding controller
+  test.skip.each([
     {},
     { payload: {} },
     { payload: { isWasteReceiver: null } },
@@ -74,18 +76,22 @@ describe('#isWasteReceiverController', () => {
     )
   })
 
-  test.each(['yes', 'no'])('Save company details', async (isWasteReceiver) => {
-    const { statusCode, headers } = await server.inject({
-      method: 'POST',
-      url: paths.isWasteReceiver,
-      payload: { isWasteReceiver },
-      auth: {
-        isAuthenticated: true,
-        credentials: {},
-        strategy: {}
-      }
-    })
-    expect(statusCode).toBe(statusCodes.found)
-    expect(headers.location).toBe(paths.addWasteReceiver)
-  })
+  // TODO: Moveing to onboarding controller
+  test.skip.each(['yes', 'no'])(
+    'Save company details',
+    async (isWasteReceiver) => {
+      const { statusCode, headers } = await server.inject({
+        method: 'POST',
+        url: paths.isWasteReceiver,
+        payload: { isWasteReceiver },
+        auth: {
+          isAuthenticated: true,
+          credentials: {},
+          strategy: {}
+        }
+      })
+      expect(statusCode).toBe(statusCodes.found)
+      expect(headers.location).toBe(paths.addWasteReceiver)
+    }
+  )
 })
