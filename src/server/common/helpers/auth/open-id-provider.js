@@ -39,11 +39,14 @@ export const openIdProvider = async (name, authConfig) => {
     pkce: 'S256',
     scope: authConfig.scopes,
     profile: async (credentials, params, _get) => {
-      logger.info(credentials, 'are JWT credentials found')
-      logger.info(params, 'are params found')
-      logger.info(oidcConf, 'are oidcConf found')
-      logger.info(authConfig, 'are authConfig found')
-      logger.info(config.get('auth.origins'), 'are auth.origins found')
+      logger.info({ payload: credentials }, 'are JWT credentials found')
+      logger.info({ payload: params }, 'are params found')
+      logger.info({ payload: oidcConf }, 'are oidcConf found')
+      logger.info({ payload: authConfig }, 'are authConfig found')
+      logger.info(
+        { payload: config }.get('auth.origins'),
+        'are auth.origins found'
+      )
 
       if (!credentials?.token) {
         throw new Error(
