@@ -7,6 +7,7 @@ import {
 import { paths, pathTo } from '../../config/paths.js'
 import { expect } from 'vitest'
 import { faker } from '@faker-js/faker'
+import { statusCodes } from '../common/constants/status-codes.js'
 
 const fakeOrg = (override) => ({
   organisationId: faker.string.uuid(),
@@ -106,6 +107,33 @@ describe('#onboardingController', () => {
       action: paths.isWasteReceiver,
       errors: null
     })
+  })
+
+  test('should return not found if no organisations found', async () => {
+    let actualCode
+    const notWasteRecievers = [fakeOrg({ isWasteReceiver: false })]
+    const userId = faker.string.uuid()
+
+    const request = {
+      auth: {
+        isAuthenticated: true,
+        credentials: { id: userId }
+      },
+      params: {
+        organisationId: 'noneOrganisationID'
+      },
+      backendApi: backendApi([...notWasteRecievers])
+    }
+
+    const nextHandler = {
+      status: (code) => {
+        actualCode = code
+      }
+    }
+
+    await isWasteReceiverGetController.handler(request, nextHandler)
+
+    expect(actualCode).toBe(statusCodes.notFound)
   })
 })
 

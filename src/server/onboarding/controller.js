@@ -1,5 +1,5 @@
 import { paths, pathTo } from '../../config/paths.js'
-import { statusCodes } from '../common/constants/status-codes.js'
+import boom from '@hapi/boom'
 
 const fetchOrgs = async (backendApi, userId) => {
   // TODO think about tests for this?
@@ -31,6 +31,7 @@ export const onboardingGetController = {
         errors: null
       })
     }
+
     // TODO how do we go around the loop of organisations??? and terminate the loop???
     const [firstOrganisation] = organisations
 
@@ -45,14 +46,10 @@ export const isWasteReceiverGetController = {
       request.auth.credentials.id
     )
 
-    console.log('request', request)
-    console.log('r', r)
-
     const [company] = r.filter(
       (o) => o.organisationId === request?.params?.organisationId
     )
 
-    console.log(company)
     if (company) {
       return h.view('onboarding/isWasteReceiver', {
         pageTitle: 'Report receipt of waste',
@@ -62,7 +59,7 @@ export const isWasteReceiverGetController = {
         errors: null
       })
     } else {
-      return h.status(statusCodes.notFound)
+      throw boom.notFound('You Broke it', 'Seomthoing')
     }
   }
 }
