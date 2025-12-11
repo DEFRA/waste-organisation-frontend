@@ -44,7 +44,7 @@ export const openIdProvider = async (name, authConfig) => {
       logger.info({ payload: oidcConf }, 'are oidcConf found')
       logger.info({ payload: authConfig }, 'are authConfig found')
       logger.info(
-        { payload: config }.get('auth.origins'),
+        { payload: config.get('auth.origins') },
         'are auth.origins found'
       )
 
