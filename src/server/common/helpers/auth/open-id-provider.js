@@ -2,6 +2,9 @@ import jwt from '@hapi/jwt'
 import { getOpenIdConfig } from './open-id-client.js'
 import { config } from '../../../../config/config.js'
 import { checkGroups } from './check-groups.js'
+import { createLogger } from '../logging/logger.js'
+
+const logger = createLogger()
 
 const setOrigins = (providerEndpoints) => {
   const { origins } = config.get('auth')
@@ -36,6 +39,12 @@ export const openIdProvider = async (name, authConfig) => {
     pkce: 'S256',
     scope: authConfig.scopes,
     profile: async (credentials, params, _get) => {
+      logger.info(credentials, 'are JWT credentials found')
+      logger.info(params, 'are params found')
+      logger.info(oidcConf, 'are oidcConf found')
+      logger.info(authConfig, 'are authConfig found')
+      logger.info(config.get('auth.origins'), 'are auth.origins found')
+
       if (!credentials?.token) {
         throw new Error(
           `${name} Auth Access Token not present. Unable to retrieve profile.`
