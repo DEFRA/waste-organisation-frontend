@@ -12,6 +12,7 @@ const SESSION_COOKIE_PASSWORD = 'Password1!'
 const AUTH_DEFRA_CLIENTID = 'defraClientId'
 const AUTH_DEFRA_CLIENTSECRET = 'defraClientSecret'
 const AUTH_DEFRA_SERVICEID = 'defraClientSecret'
+const AUTH_DEFRA_RESPONSE_TYPE = 'code'
 
 const AUTH_ENTRA_CLIENTID = 'entraClientId'
 const AUTH_ENTRA_CLIENTSECRET = 'entraClientSecret'
@@ -46,6 +47,7 @@ const makeServer = async (strategyName) => {
   config.set('auth.defraId.clientId', AUTH_DEFRA_CLIENTID)
   config.set('auth.defraId.clientSecret', AUTH_DEFRA_CLIENTSECRET)
   config.set('auth.defraId.serviceId', AUTH_DEFRA_SERVICEID)
+  config.set('auth.defraId.responseType', AUTH_DEFRA_RESPONSE_TYPE)
 
   config.set('auth.entraId.clientId', AUTH_ENTRA_CLIENTID)
   config.set('auth.entraId.clientSecret', AUTH_ENTRA_CLIENTSECRET)
@@ -87,7 +89,8 @@ test('setup defraId strategy correctly', async () => {
       clientSecret: AUTH_DEFRA_CLIENTSECRET,
       isSecure: true,
       providerParams: {
-        serviceId: AUTH_DEFRA_SERVICEID
+        serviceId: AUTH_DEFRA_SERVICEID,
+        response_type: AUTH_DEFRA_RESPONSE_TYPE
       }
     })
   )

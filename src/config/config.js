@@ -295,6 +295,12 @@ export const config = convict({
         env: 'AUTH_DEFRA_ID_ACCOUNT_MANAGEMENT_URL',
         default:
           'http://localhost:3200/cdp-defra-id-stub/register/8a8dffb4-06c2-478f-a47c-1ea08ef29378/relationship?redirect_uri=http://localhost:3000/is-waste-receiver'
+      },
+      responseType: {
+        doc: 'Defra ID Token response type',
+        format: String,
+        env: 'AUTH_DEFRA_ID_RESPONSE_TYPE',
+        default: 'code'
       }
     },
     origins: {
