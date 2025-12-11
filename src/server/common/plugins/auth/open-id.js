@@ -19,7 +19,8 @@ export const openId = {
         clientSecret: defraId.clientSecret,
         isSecure: cookie.secure,
         providerParams: {
-          serviceId: defraId.serviceId
+          serviceId: defraId.serviceId,
+          response_type: defraId.responseType
         }
       })
     }
