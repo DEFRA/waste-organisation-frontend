@@ -4,6 +4,7 @@ export const paths = {
 
   health: '/health',
   landing: '/',
+  dashboard: '/dashboard',
   accessibility: '/accessibility-statement',
   search: '/search',
   isWasteReceiver: '/onboarding/{organisationId}/is-waste-receiver',
