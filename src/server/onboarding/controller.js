@@ -61,6 +61,16 @@ export const onboardingGetController = {
       // return to go away page
       return h.redirect(paths.cannotUseService)
     }
+
+    if (!organisations) {
+      // no response: error case
+      return h.view('isWasteReceiver/index', {
+        pageTitle: 'TODO ???????????????',
+        question: `TODO ??????????????`,
+        action: paths.isWasteReceiver,
+        errors: null
+      })
+    }
   }
 }
 

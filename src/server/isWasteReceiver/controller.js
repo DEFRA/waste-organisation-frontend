@@ -2,7 +2,7 @@ import joi from 'joi'
 import { paths } from '../../config/paths.js'
 
 export const isWasteReceiverGetController = {
-  async handler(request, h) {
+  async handler(_request, h) {
     // TODO fix this ...
 
     return h.view('isWasteReceiver/index', {
