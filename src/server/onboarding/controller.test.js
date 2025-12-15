@@ -5,9 +5,8 @@ import {
   waitFor
 } from './controller.js'
 import { paths, pathTo } from '../../config/paths.js'
-import { expect } from 'vitest'
 import { faker } from '@faker-js/faker'
-import { statusCodes } from '../common/constants/status-codes.js'
+import boom from '@hapi/boom'
 
 const fakeOrg = (override) => ({
   organisationId: faker.string.uuid(),
@@ -32,85 +31,133 @@ describe('#onboardingController', () => {
     await server.stop({ timeout: 0 })
   })
 
-  test('should redirect to is-waste-receiver page when at least one org is unknown', async () => {
-    let actualUrl
+  describe('onboardingGetController', () => {
+    test('should redirect to is-waste-receiver page when at least one org is unknown', async () => {
+      let actualUrl
 
-    const wasteRecievers = [fakeOrg({ isWasteReceiver: true })]
-    const notWasteRecievers = [fakeOrg({ isWasteReceiver: false })]
-    const unknownOrgs = [fakeOrg({ isWasteReceiver: null })]
-    const userId = faker.string.uuid()
+      const wasteRecievers = [fakeOrg({ isWasteReceiver: true })]
+      const notWasteRecievers = [fakeOrg({ isWasteReceiver: false })]
+      const unknownOrgs = [fakeOrg({ isWasteReceiver: null })]
+      const userId = faker.string.uuid()
 
-    const request = {
-      auth: {
-        isAuthenticated: true,
-        credentials: { id: userId }
-      },
-      backendApi: backendApi([
-        ...wasteRecievers,
-        ...notWasteRecievers,
-        ...unknownOrgs
-      ])
-    }
+      const request = {
+        auth: {
+          isAuthenticated: true,
+          credentials: { id: userId }
+        },
+        backendApi: backendApi([
+          ...wasteRecievers,
+          ...notWasteRecievers,
+          ...unknownOrgs
+        ])
+      }
 
-    const nextHandler = {
-      redirect: (url) => (actualUrl = url)
-    }
+      const nextHandler = {
+        redirect: (url) => (actualUrl = url),
+        view: (_path, _options) => {}
+      }
 
-    await onboardingGetController.handler(request, nextHandler)
+      await onboardingGetController.handler(request, nextHandler)
 
-    console.log('unknownOrgs[0]: ', unknownOrgs[0])
-    expect(actualUrl).toBe(
-      pathTo(paths.isWasteReceiver, {
-        organisationId: unknownOrgs[0].organisationId
-      })
-    )
+      expect(actualUrl).toBe(pathTo(paths.isWasteReceiver, unknownOrgs[0]))
+    })
+
+    test('should redirect to dashboard if there is a waste receiver', async () => {
+      let actualUrl
+
+      const wasteRecievers = [fakeOrg({ isWasteReceiver: true })]
+      const notWasteRecievers = [fakeOrg({ isWasteReceiver: false })]
+      const userId = faker.string.uuid()
+
+      const request = {
+        auth: {
+          isAuthenticated: true,
+          credentials: { id: userId }
+        },
+        backendApi: backendApi([...wasteRecievers, ...notWasteRecievers])
+      }
+
+      const nextHandler = {
+        redirect: (url) => (actualUrl = url),
+        view: (_path, _options) => {}
+      }
+
+      await onboardingGetController.handler(request, nextHandler)
+
+      expect(actualUrl).toBe(paths.dashboard)
+    })
+
+    test('should redirect to cannot use service page if there is no asked waste receiver', async () => {
+      let actualUrl
+
+      const notWasteRecievers = [fakeOrg({ isWasteReceiver: false })]
+      const userId = faker.string.uuid()
+
+      const request = {
+        auth: {
+          isAuthenticated: true,
+          credentials: { id: userId }
+        },
+        backendApi: backendApi(notWasteRecievers)
+      }
+
+      const nextHandler = {
+        redirect: (url) => (actualUrl = url),
+        view: (_path, _options) => {}
+      }
+
+      await onboardingGetController.handler(request, nextHandler)
+
+      expect(actualUrl).toBe(paths.cannotUseService)
+    })
   })
 
-  test('should render page if organisationId is found', async () => {
-    let actualPath
-    let actualOptions
+  describe('isWasteReceiverGetController', () => {
+    test('should render page if organisationId is found', async () => {
+      let actualPath
+      let actualOptions
 
-    const wasteRecievers = [fakeOrg({ isWasteReceiver: true })]
-    const notWasteRecievers = [fakeOrg({ isWasteReceiver: false })]
-    const unknownOrgs = [fakeOrg({ isWasteReceiver: null })]
-    const userId = faker.string.uuid()
+      const wasteRecievers = [fakeOrg({ isWasteReceiver: true })]
+      const notWasteRecievers = [fakeOrg({ isWasteReceiver: false })]
+      const unknownOrgs = [fakeOrg({ isWasteReceiver: null })]
+      const userId = faker.string.uuid()
 
-    const request = {
-      auth: {
-        isAuthenticated: true,
-        credentials: { id: userId }
-      },
-      params: {
-        organisationId: unknownOrgs[0].organisationId
-      },
-      backendApi: backendApi([
-        ...wasteRecievers,
-        ...notWasteRecievers,
-        ...unknownOrgs
-      ])
-    }
-
-    const nextHandler = {
-      view: (path, options) => {
-        actualPath = path
-        actualOptions = options
+      const request = {
+        auth: {
+          isAuthenticated: true,
+          credentials: { id: userId }
+        },
+        params: {
+          organisationId: unknownOrgs[0].organisationId
+        },
+        backendApi: backendApi([
+          ...wasteRecievers,
+          ...notWasteRecievers,
+          ...unknownOrgs
+        ])
       }
-    }
 
-    await isWasteReceiverGetController.handler(request, nextHandler)
+      const nextHandler = {
+        view: (path, options) => {
+          actualPath = path
+          actualOptions = options
+        }
+      }
 
-    expect(actualPath).toBe('onboarding/isWasteReceiver')
-    expect(actualOptions).toEqual({
-      pageTitle: 'Report receipt of waste',
-      question: `Is ${unknownOrgs[0].name} a waste receiver?`,
-      organisationId: unknownOrgs[0].organisationId,
-      action: paths.isWasteReceiver,
-      errors: null
+      await isWasteReceiverGetController.handler(request, nextHandler)
+
+      expect(actualPath).toBe('onboarding/isWasteReceiver')
+      expect(actualOptions).toEqual({
+        pageTitle: 'Report receipt of waste',
+        question: `Is ${unknownOrgs[0].name} a waste receiver?`,
+        organisationId: unknownOrgs[0].organisationId,
+        action: paths.isWasteReceiver,
+        errors: null
+      })
     })
   })
 
   test('should return not found if no organisations found', async () => {
-    let actualCode
     const notWasteRecievers = [fakeOrg({ isWasteReceiver: false })]
     const userId = faker.string.uuid()
 
@@ -125,15 +172,9 @@ describe('#onboardingController', () => {
       backendApi: backendApi([...notWasteRecievers])
     }
 
-    const nextHandler = {
-      status: (code) => {
-        actualCode = code
-      }
-    }
-
-    await isWasteReceiverGetController.handler(request, nextHandler)
-
-    expect(actualCode).toBe(statusCodes.notFound)
+    await expect(
+      async () => await isWasteReceiverGetController.handler(request, null)
+    ).rejects.toThrow(boom.notFound('Oranisation not found'))
   })
 })
 
@@ -190,6 +231,7 @@ describe('waitForNewOrganisations', () => {
 
       const result = await waitFor({
         func: async () => mockFunction.get('userID'),
+        isDone: (r) => r !== null,
         waitTime,
         iteration,
         delay

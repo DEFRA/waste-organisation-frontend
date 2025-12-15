@@ -3,14 +3,26 @@ import boom from '@hapi/boom'
 
 const fetchOrgs = async (backendApi, userId) => {
   // TODO think about tests for this?
-  let orgs = await backendApi.getOrganisations(userId)
-  orgs = orgs?.filter(
-    (o) => o.isWasteReceiver === undefined || o.isWasteReceiver === null
+  const wasteRecivers = await backendApi.getOrganisations(userId)
+
+  const unaskedWasteRecivers = wasteRecivers?.filter(
+    (wr) => wr.isWasteReceiver === undefined || wr.isWasteReceiver === null
   )
-  if (orgs === null || orgs.length === 0) {
-    return null
+
+  const isWasteRecivers = wasteRecivers?.filter(
+    (wr) => wr.isWasteReceiver === true
+  )
+
+  const isNotWasteRecivers = wasteRecivers?.filter(
+    (wr) => wr.isWasteReceiver === false
+  )
+
+  return {
+    unaskedWasteRecivers,
+    wasteRecivers,
+    isWasteRecivers,
+    isNotWasteRecivers
   }
-  return orgs
 }
 
 export const onboardingGetController = {
@@ -18,12 +30,14 @@ export const onboardingGetController = {
     const organisations = await waitFor({
       // TODO check that the id is the user id and we shouldn't be using one of the other referency looking things in the token data...
       func: () => fetchOrgs(request.backendApi, request.auth.credentials.id),
+      isDone: (data) => data.unaskedWasteRecivers !== null,
       waitTime: 500,
       iteration: 2,
       delay: 50
     })
 
-    if (organisations === null) {
+    if (!organisations) {
+      // no response: error case
       return h.view('isWasteReceiver/index', {
         pageTitle: 'TODO ???????????????',
         question: `TODO ??????????????`,
@@ -32,10 +46,21 @@ export const onboardingGetController = {
       })
     }
 
-    // TODO how do we go around the loop of organisations??? and terminate the loop???
-    const [firstOrganisation] = organisations
+    if (organisations.unaskedWasteRecivers[0]) {
+      // Ask if waste reciver
+      const firstOrganisation = organisations.unaskedWasteRecivers[0]
+      return h.redirect(pathTo(paths.isWasteReceiver, firstOrganisation))
+    }
 
-    return h.redirect(pathTo(paths.isWasteReceiver, firstOrganisation))
+    if (organisations.isWasteRecivers[0]) {
+      // return to list page
+      return h.redirect(paths.dashboard)
+    }
+
+    if (organisations.isNotWasteRecivers[0]) {
+      // return to go away page
+      return h.redirect(paths.cannotUseService)
+    }
   }
 }
 
@@ -59,7 +84,7 @@ export const isWasteReceiverGetController = {
         errors: null
       })
     } else {
-      throw boom.notFound('You Broke it', 'Seomthoing')
+      throw boom.notFound('Oranisation not found')
     }
   }
 }
@@ -79,6 +104,7 @@ export const isWasteReceiverPostController = {
 
 export const waitFor = async ({
   func,
+  isDone,
   waitTime,
   iteration,
   delay,
@@ -95,7 +121,7 @@ export const waitFor = async ({
 
   const response = await func()
 
-  if (response) {
+  if (isDone(response)) {
     return response
   }
 
@@ -103,6 +129,7 @@ export const waitFor = async ({
 
   return waitFor({
     func,
+    isDone,
     waitTime,
     iteration,
     delay,

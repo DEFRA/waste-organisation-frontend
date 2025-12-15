@@ -10,6 +10,7 @@ import { addWasteReceiver } from './addWasteReceiver/index.js'
 import { noWasteReceiver } from './noWasteReceiver/index.js'
 import { onboarding } from './onboarding/index.js'
 import { dashboard } from './dashboard/index.js'
+import { cannotUseService } from './cannotUseService/index.js'
 
 export const router = {
   plugin: {
@@ -26,6 +27,7 @@ export const router = {
         home,
         about,
         dashboard,
+        cannotUseService,
         search,
         onboarding,
         addWasteReceiver,

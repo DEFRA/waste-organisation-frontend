@@ -1,0 +1,58 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errors %}
+        {{
+          govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: [
+              {
+                text: errors.text,
+                href: "#isWasteReceiverYes"
+              }
+            ]
+          })
+        }}
+      {% endif %}
+      <form action="{{ action }}" method="POST">
+        {{
+          govukRadios({
+            name: "addWasteReceiver",
+            classes: "govuk-radios--inline",
+            fieldset: {
+              legend: {
+                text: question,
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
+            errorMessage: errors,
+            items: [
+              {
+                value: "yes",
+                text: "Yes",
+                id: "addWasteReceiverYes"
+              },
+              {
+                value: "no",
+                text: "No"
+              }
+            ]
+          })
+        }}
+        {{
+          govukButton({
+            text: "Continue",
+            type: "submit"
+          })
+        }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -5,6 +5,7 @@ export const paths = {
   health: '/health',
   landing: '/',
   dashboard: '/dashboard',
+  cannotUseService: '/cannot-use-service',
   accessibility: '/accessibility-statement',
   search: '/search',
   isWasteReceiver: '/onboarding/{organisationId}/is-waste-receiver',
