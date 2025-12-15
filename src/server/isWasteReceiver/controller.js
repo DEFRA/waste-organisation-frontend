@@ -4,13 +4,11 @@ import { paths } from '../../config/paths.js'
 export const isWasteReceiverGetController = {
   async handler(request, h) {
     // TODO fix this ...
-    const [company] = await request.backendApi.getOrganisations(
-      request.auth.credentials.id
-    )
+
     return h.view('isWasteReceiver/index', {
       pageTitle: 'Report receipt of waste',
-      question: `Is ${company.name} a waste receiver?`,
-      organisationId: company.organisationId,
+      question: `Is a waste receiver?`,
+      organisationId: '',
       action: paths.isWasteReceiver,
       errors: null
     })

@@ -9,6 +9,7 @@ export const paths = {
   accessibility: '/accessibility-statement',
   search: '/search',
   isWasteReceiver: '/onboarding/{organisationId}/is-waste-receiver',
+  isWasteReceiver2: '/is-waste-receiver',
   addWasteReceiver: '/add-waste-receiver',
   noWasteReceiver: '/no-waste-receiver',
 

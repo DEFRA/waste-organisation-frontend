@@ -13,7 +13,7 @@ export const isWasteReceiver = {
       server.route([
         {
           method: 'GET',
-          path: paths.isWasteReceiver,
+          path: paths.isWasteReceiver2,
           options: {
             auth: 'session',
             cache: cacheControlNoStore
@@ -22,7 +22,7 @@ export const isWasteReceiver = {
         },
         {
           method: 'POST',
-          path: paths.isWasteReceiver,
+          path: paths.isWasteReceiver2,
           options: {
             auth: 'session',
             cache: cacheControlNoStore,
