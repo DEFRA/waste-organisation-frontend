@@ -110,6 +110,39 @@ describe('#onboardingController', () => {
 
       expect(actualUrl).toBe(paths.cannotUseService)
     })
+
+    test('should show error page if no organisations are found', async () => {
+      let actualPath
+      let actualOptions
+
+      const userId = faker.string.uuid()
+
+      const request = {
+        auth: {
+          isAuthenticated: true,
+          credentials: { id: userId }
+        },
+        backendApi: backendApi([])
+      }
+
+      const nextHandler = {
+        redirect: (_url) => {},
+        view: (path, options) => {
+          actualPath = path
+          actualOptions = options
+        }
+      }
+
+      await onboardingGetController.handler(request, nextHandler)
+
+      expect(actualPath).toBe('isWasteReceiver/index')
+      expect(actualOptions).toEqual({
+        pageTitle: 'TODO ???????????????',
+        question: `TODO ??????????????`,
+        action: paths.isWasteReceiver,
+        errors: null
+      })
+    })
   })
 
   describe('isWasteReceiverGetController', () => {

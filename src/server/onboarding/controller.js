@@ -48,8 +48,9 @@ export const onboardingGetController = {
 
     if (organisations.unaskedWasteRecivers[0]) {
       // Ask if waste reciver
-      const firstOrganisation = organisations.unaskedWasteRecivers[0]
-      return h.redirect(pathTo(paths.isWasteReceiver, firstOrganisation))
+      return h.redirect(
+        pathTo(paths.isWasteReceiver, organisations.unaskedWasteRecivers[0])
+      )
     }
 
     if (organisations.isWasteRecivers[0]) {
@@ -62,15 +63,13 @@ export const onboardingGetController = {
       return h.redirect(paths.cannotUseService)
     }
 
-    if (!organisations) {
-      // no response: error case
-      return h.view('isWasteReceiver/index', {
-        pageTitle: 'TODO ???????????????',
-        question: `TODO ??????????????`,
-        action: paths.isWasteReceiver,
-        errors: null
-      })
-    }
+    console.log('ff')
+    return h.view('isWasteReceiver/index', {
+      pageTitle: 'TODO ???????????????',
+      question: `TODO ??????????????`,
+      action: paths.isWasteReceiver,
+      errors: null
+    })
   }
 }
 
