@@ -21,14 +21,9 @@
         }}
       {% endif %}
       <form action="{{ action }}" method="POST">
-        <input
-          type="hidden"
-          name="organisationId"
-          value="{{ organisationId }}"
-        />
         {{
           govukRadios({
-            name: "isWasteReceiver",
+            name: "addWasteReceiver",
             classes: "govuk-radios--inline",
             fieldset: {
               legend: {
@@ -42,7 +37,7 @@
               {
                 value: "yes",
                 text: "Yes",
-                id: "isWasteReceiverYes"
+                id: "addWasteReceiverYes"
               },
               {
                 value: "no",

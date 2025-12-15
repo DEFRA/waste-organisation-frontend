@@ -3,7 +3,7 @@ import { paths } from '../../config/paths.js'
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
 
-describe('#isWasteReciverController', () => {
+describe('#dashboardController', () => {
   let server
 
   beforeAll(async () => {
@@ -19,21 +19,21 @@ describe('#isWasteReciverController', () => {
 
     const { result, statusCode } = await server.inject({
       method: 'GET',
-      url: paths.isWasteReceiver2,
+      url: paths.dashboard,
       auth: {
         strategy: 'session',
         credentials
       }
     })
 
-    expect(result).toEqual(expect.stringContaining('Report receipt of waste |'))
+    expect(result).toEqual(expect.stringContaining('Dashboard |'))
     expect(statusCode).toBe(statusCodes.ok)
   })
 
   test('Should provide expected response', async () => {
     const { statusCode } = await server.inject({
       method: 'GET',
-      url: paths.isWasteReceiver2
+      url: paths.dashboard
     })
 
     expect(statusCode).toBe(statusCodes.unauthorized)

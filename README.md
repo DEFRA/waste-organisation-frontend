@@ -100,6 +100,12 @@ To run the application in `development` mode run:
 npm run dev
 ```
 
+To run all of the application and services with nodemon live reloading run:
+
+```bash
+docker compose up --build
+```
+
 ### Production
 
 To mimic the application running in `production` mode locally run:

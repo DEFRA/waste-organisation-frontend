@@ -1,16 +1,42 @@
+import wreck from '@hapi/wreck'
 import { config } from '../../../../config/config.js'
+import { createLogger } from '../../helpers/logging/logger.js'
 
-const remoteCall = (_url, _presharedKey) => ({
-  getOrganisations: async (_userId) => {
-    return [
-      { name: 'Monkey Barrel LTD', id: '9c6a06d7-e691-4740-89a2-a64d23478034' }
-    ]
-  },
-  saveOrganisation: async (userId, organisationId, data) => {
-    console.log('Saving org >>> ', userId, organisationId, data)
-    return { ...data, organisationId, userId }
+const logger = createLogger()
+
+const remoteCall = (backendUrl, _presharedKey) => {
+  return {
+    getOrganisations: async (userId) => {
+      try {
+        const { payload } = await wreck.get(
+          `${backendUrl}/user/${userId}/organisations`,
+          {
+            json: 'strict'
+          }
+        )
+        return payload.organisations
+      } catch (e) {
+        logger.error('ERROR calling backend api', e)
+        return null
+      }
+    },
+    saveOrganisation: async (userId, organisationId, orgData) => {
+      try {
+        const { payload } = await wreck.put(
+          `${backendUrl}/user/${userId}/organisation/${organisationId}`,
+          {
+            json: 'strict',
+            payload: { organisation: orgData }
+          }
+        )
+        return payload.organisations
+      } catch (e) {
+        logger.error('ERROR calling backend api', e)
+        return null
+      }
+    }
   }
-})
+}
 
 export const backendApi = {
   plugin: {
