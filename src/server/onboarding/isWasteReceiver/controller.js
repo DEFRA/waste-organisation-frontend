@@ -1,17 +1,30 @@
 import joi from 'joi'
-import { paths } from '../../config/paths.js'
+import { paths } from '../../../config/paths.js'
+import boom from '@hapi/boom'
 
 export const isWasteReceiverGetController = {
-  async handler(_request, h) {
-    // TODO fix this ...
+  async handler(request, h) {
+    const r = await request.backendApi.getOrganisations(
+      request.auth.credentials.id
+    )
 
-    return h.view('isWasteReceiver/index', {
-      pageTitle: 'Report receipt of waste',
-      question: `Is a waste receiver?`,
-      organisationId: '',
-      action: paths.isWasteReceiver,
-      errors: null
-    })
+    const [company] = r.filter(
+      (o) => o.organisationId === request?.params?.organisationId
+    )
+
+    if (company) {
+      const [error] = request.yar.flash('AuthenticationError')
+
+      return h.view('onboarding/isWasteReceiver/index', {
+        pageTitle: 'Report receipt of waste',
+        question: `Is ${company.name} a waste receiver?`,
+        organisationId: company.organisationId,
+        action: paths.isWasteReceiver,
+        errors: error
+      })
+    } else {
+      throw boom.notFound('Oranisation not found')
+    }
   }
 }
 
@@ -28,8 +41,11 @@ export const validatePost = {
       const [company] = await request.backendApi.getOrganisations(
         request.auth.credentials.id
       )
+      request.yar.flash('AuthenticationError', {
+        text: 'TODO - get real error msg Please select an option'
+      })
       return h
-        .view('isWasteReceiver/index', {
+        .view('onboarding/isWasteReceiver/index', {
           pageTitle: 'Report receipt of waste',
           question: `Is ${company.name} a waste receiver?`,
           action: paths.isWasteReceiver,

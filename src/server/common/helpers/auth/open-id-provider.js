@@ -39,14 +39,6 @@ export const openIdProvider = async (name, authConfig) => {
     pkce: 'S256',
     scope: authConfig.scopes,
     profile: async (credentials, params, _get) => {
-      logger.info(JSON.stringify(credentials) + ' - are JWT credentials found')
-      logger.info(JSON.stringify(params) + ' - are params found')
-      logger.info(JSON.stringify(oidcConf) + ' - are oidcConf found')
-      logger.info(JSON.stringify(authConfig) + ' - are authConfig found')
-      logger.info(
-        JSON.stringify(config.get('auth.origins')) + ' - are auth.origins found'
-      )
-
       if (!credentials?.token) {
         throw new Error(
           `${name} Auth Access Token not present. Unable to retrieve profile.`
@@ -54,6 +46,7 @@ export const openIdProvider = async (name, authConfig) => {
       }
 
       const payload = jwt.token.decode(credentials.token).decoded.payload
+      logger.info(payload, 'token payload')
 
       if (credentials.provider === 'entraId') {
         const { groups = [] } = jwt.token.decode(params.id_token).decoded

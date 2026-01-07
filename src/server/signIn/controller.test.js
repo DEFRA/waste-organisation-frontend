@@ -1,9 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { paths } from '../../config/paths.js'
 import { initialiseServer } from '../../test-utils/initialise-server.js'
-import { wreckGetMock } from '../../test-utils/mock-oidc-config.js'
-import { config } from '../../config/config.js'
-import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
+import { faker } from '@faker-js/faker'
+import { signInController } from './controller.js'
 
 describe('signIn', () => {
   const domain = 'http://localhost:2'
@@ -17,48 +15,178 @@ describe('signIn', () => {
     await server.stop()
   })
 
-  test.each([
-    {
-      url: paths.signinDefraIdCallback,
-      oidcConfigurationUrl: 'auth.defraId.oidcConfigurationUrl'
-    }
-  ])(
-    'user redirected to Auth Provider when not logged in',
-    async ({ url, oidcConfigurationUrl }) => {
-      const { headers, statusCode } = await server.inject({
-        method: 'get',
-        url
-      })
+  describe('save token organisation', () => {
+    let handler
+    let request
 
-      const configUrl = config.get(oidcConfigurationUrl)
+    let savedData
 
-      const actualURL = new URL(headers.location)
-      const expectedURL = new URL(domain)
+    beforeEach(() => {
+      savedData = []
 
-      expect(wreckGetMock).toBeCalledWith(configUrl, {
-        json: 'strict'
-      })
-      expect(statusCode).toBe(302)
-      expect(actualURL.origin).toBe(expectedURL.origin)
-    }
-  )
+      handler = {
+        redirect: () => {}
+      }
 
-  test.each([{ url: paths.signinDefraIdCallback, strategy: 'defraId' }])(
-    'user redirected to search when logged in',
-    async ({ url, strategy }) => {
-      const credentials = await setupAuthedUserSession(server)
-
-      const { headers, statusCode } = await server.inject({
-        method: 'get',
-        url,
+      request = {
         auth: {
-          strategy,
-          credentials
+          credentials: null,
+          strategy: 'defraId',
+          isAuthenticated: true,
+          token: faker.internet.jwt(),
+          refreshToken: faker.internet.jwt()
+        },
+        cookieAuth: {
+          set: (_data) => {}
+        },
+        server: {
+          app: {
+            cache: {
+              set: () => {}
+            }
+          }
+        },
+        backendApi: {
+          saveOrganisation: async (userId, organisationId, orgData) => {
+            savedData.push({
+              userId,
+              organisationId,
+              orgData
+            })
+          }
         }
-      })
+      }
+    })
 
-      expect(statusCode).toBe(302)
-      expect(headers.location).toBe(paths.isWasteReceiver)
-    }
-  )
+    test.each([null, undefined, [], [''], [':']])(
+      'user with no organisations doesnt send data to backendApi',
+      async (relationships) => {
+        const userTokenData = {
+          profile: {
+            relationships
+          },
+          expiresIn: 1000
+        }
+
+        request.auth.credentials = userTokenData
+
+        await signInController('TestMetric').handler(request, handler)
+
+        expect(savedData.length).toBe(0)
+      }
+    )
+
+    test.each(['', ':'])(
+      'user with mix of valid relationships and valid only saves valid data',
+      async (relationships) => {
+        const userId = faker.string.uuid()
+        const organisationId = faker.string.uuid()
+        const organisationName = faker.company.name()
+
+        const userTokenData = {
+          profile: {
+            id: userId,
+            relationships: [
+              relationships,
+              `RelationshipID:${organisationId}:${organisationName}:0:Employee:0`
+            ]
+          },
+          expiresIn: 1000
+        }
+
+        request.auth.credentials = userTokenData
+
+        await signInController('TestMetric').handler(request, handler)
+
+        expect(savedData.length).toBe(1)
+        expect(savedData[0].userId).toBe(userId)
+        expect(savedData[0].organisationId).toBe(organisationId)
+        expect(savedData[0].orgData).toEqual({ name: organisationName })
+      }
+    )
+
+    test('user with one organisation has their organisation set to backend api', async () => {
+      const userId = faker.string.uuid()
+      const organisationId = faker.string.uuid()
+      const organisationName = faker.company.name()
+
+      const userTokenData = {
+        profile: {
+          id: userId,
+          relationships: [
+            `RelationshipID:${organisationId}:${organisationName}:0:Employee:0`
+          ]
+        },
+        expiresIn: 1000
+      }
+
+      request.auth.credentials = userTokenData
+
+      await signInController('TestMetric').handler(request, handler)
+
+      expect(savedData.length).toBe(1)
+      expect(savedData[0].userId).toBe(userId)
+      expect(savedData[0].organisationId).toBe(organisationId)
+      expect(savedData[0].orgData).toEqual({ name: organisationName })
+    })
+
+    test('user with multiple organisations has their organisations set to backend api', async () => {
+      const userId = faker.string.uuid()
+      const organisationId = faker.string.uuid()
+      const organisationName = faker.company.name()
+
+      const organisationId2 = faker.string.uuid()
+      const organisationName2 = faker.company.name()
+
+      const userTokenData = {
+        profile: {
+          id: userId,
+          relationships: [
+            `RelationshipID:${organisationId}:${organisationName}:0:Employee:0`,
+            `RelationshipID:${organisationId2}:${organisationName2}:0:Employee:0`
+          ]
+        },
+        expiresIn: 1000
+      }
+
+      request.auth.credentials = userTokenData
+
+      await signInController('TestMetric').handler(request, handler)
+
+      expect(savedData.length).toBe(2)
+      expect(savedData[0].userId).toBe(userId)
+      expect(savedData[0].organisationId).toBe(organisationId)
+      expect(savedData[0].orgData).toEqual({ name: organisationName })
+
+      expect(savedData[1].userId).toBe(userId)
+      expect(savedData[1].organisationId).toBe(organisationId2)
+      expect(savedData[1].orgData).toEqual({ name: organisationName2 })
+    })
+
+    test('user with multiple organisations has their organisations set to backend api', async () => {
+      const userId = faker.string.uuid()
+      const organisationId = faker.string.uuid()
+      const organisationName = faker.company.name()
+
+      const userTokenData = {
+        profile: {
+          id: userId,
+          relationships: [
+            `RelationshipID:${organisationId}:${organisationName}:0:Employee:0`,
+            `RelationshipID:${organisationId}:${organisationName}:0:Employee:0`
+          ]
+        },
+        expiresIn: 1000
+      }
+
+      request.auth.credentials = userTokenData
+
+      await signInController('TestMetric').handler(request, handler)
+
+      expect(savedData.length).toBe(1)
+      expect(savedData[0].userId).toBe(userId)
+      expect(savedData[0].organisationId).toBe(organisationId)
+      expect(savedData[0].orgData).toEqual({ name: organisationName })
+    })
+  })
 })

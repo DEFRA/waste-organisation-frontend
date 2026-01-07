@@ -1,5 +1,5 @@
-import { paths } from '../../config/paths.js'
-import { cacheControlNoStore } from '../../config/config.js'
+import { paths } from '../../../config/paths.js'
+import { cacheControlNoStore } from '../../../config/config.js'
 import {
   isWasteReceiverGetController,
   isWasteReceiverPostController,
@@ -13,7 +13,7 @@ export const isWasteReceiver = {
       server.route([
         {
           method: 'GET',
-          path: paths.isWasteReceiver2,
+          path: paths.isWasteReceiver,
           options: {
             auth: 'session',
             cache: cacheControlNoStore
@@ -22,7 +22,7 @@ export const isWasteReceiver = {
         },
         {
           method: 'POST',
-          path: paths.isWasteReceiver2,
+          path: paths.isWasteReceiver,
           options: {
             auth: 'session',
             cache: cacheControlNoStore,

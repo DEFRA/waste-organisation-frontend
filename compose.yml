@@ -32,7 +32,7 @@ services:
       - cdp-tenant
 
   mongodb:
-    image: mongo:6.0.13
+    image: mongo:latest
     networks:
       - cdp-tenant
     ports:
@@ -87,6 +87,8 @@ services:
       SESSION_CACHE_ENGINE: redis
       AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://localhost:3200/cdp-defra-id-stub/.well-known/openid-configuration'
       BACKEND_API: http://waste-organisation-backend:3001
+      LOG_FORMAT: ecs
+      BACKEND_API_PRESHARED_KEY: supersecretapitoken
     network_mode: 'service:cdp-defra-id-stub' # used to allow localhost to cdp-defra-id-stub
 
   waste-organisation-backend:
@@ -111,6 +113,8 @@ services:
       PORT: 3001
       NODE_ENV: development
       MONGO_URI: mongodb://mongodb:27017/
+      LOG_FORMAT: ecs
+      WASTE_CLIENT_AUTH_FRONTEND: supersecretapitoken
     networks:
       - cdp-tenant
 

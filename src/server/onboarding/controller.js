@@ -1,5 +1,4 @@
 import { paths, pathTo } from '../../config/paths.js'
-import boom from '@hapi/boom'
 
 const fetchOrgs = async (backendApi, userId) => {
   // TODO think about tests for this?
@@ -38,7 +37,7 @@ export const onboardingGetController = {
 
     if (!organisations) {
       // no response: error case
-      return h.view('isWasteReceiver/index', {
+      return h.view('onboarding/isWasteReceiver/index', {
         pageTitle: 'TODO ???????????????',
         question: `TODO ??????????????`,
         action: paths.isWasteReceiver,
@@ -63,50 +62,12 @@ export const onboardingGetController = {
       return h.redirect(paths.cannotUseService)
     }
 
-    return h.view('isWasteReceiver/index', {
+    return h.view('onboarding/isWasteReceiver/index', {
       pageTitle: 'TODO ???????????????',
       question: `TODO ??????????????`,
       action: paths.isWasteReceiver,
       errors: null
     })
-  }
-}
-
-export const isWasteReceiverGetController = {
-  async handler(request, h) {
-    // TODO fix this ...
-    const r = await request.backendApi.getOrganisations(
-      request.auth.credentials.id
-    )
-
-    const [company] = r.filter(
-      (o) => o.organisationId === request?.params?.organisationId
-    )
-
-    if (company) {
-      return h.view('onboarding/isWasteReceiver', {
-        pageTitle: 'Report receipt of waste',
-        question: `Is ${company.name} a waste receiver?`,
-        organisationId: company.organisationId,
-        action: paths.isWasteReceiver,
-        errors: null
-      })
-    } else {
-      throw boom.notFound('Oranisation not found')
-    }
-  }
-}
-
-export const isWasteReceiverPostController = {
-  async handler(request, h) {
-    await request.backendApi.saveOrganisation(
-      request.auth.credentials.id,
-      request.payload.organisationId,
-      {
-        isWasteReceiver: request.payload.isWasteReceiver === 'yes'
-      }
-    )
-    return h.redirect(paths.addWasteReceiver)
   }
 }
 

@@ -4,6 +4,12 @@ import { createLogger } from '../../helpers/logging/logger.js'
 
 const logger = createLogger()
 
+const { presharedKey } = config.get('backendApi')
+
+const headers = {
+  'x-auth-token': presharedKey
+}
+
 const remoteCall = (backendUrl, _presharedKey) => {
   return {
     getOrganisations: async (userId) => {
@@ -11,7 +17,8 @@ const remoteCall = (backendUrl, _presharedKey) => {
         const { payload } = await wreck.get(
           `${backendUrl}/user/${userId}/organisations`,
           {
-            json: 'strict'
+            json: 'strict',
+            headers
           }
         )
         return payload.organisations
@@ -26,7 +33,8 @@ const remoteCall = (backendUrl, _presharedKey) => {
           `${backendUrl}/user/${userId}/organisation/${organisationId}`,
           {
             json: 'strict',
-            payload: { organisation: orgData }
+            payload: { organisation: orgData },
+            headers
           }
         )
         return payload.organisations
