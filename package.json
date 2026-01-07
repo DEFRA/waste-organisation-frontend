@@ -72,6 +72,8 @@
   "devDependencies": {
     "@babel/preset-env": "7.27.2",
     "@faker-js/faker": "10.1.0",
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "6.9.1",
     "@vitest/coverage-v8": "3.2.4",
     "autoprefixer": "10.4.21",
     "babel-loader": "10.0.0",
@@ -79,6 +81,7 @@
     "clean-webpack-plugin": "4.0.0",
     "copy-webpack-plugin": "13.0.0",
     "eslint": "9.31.0",
+    "global-jsdom": "27.0.0",
     "husky": "9.1.7",
     "neostandard": "0.12.1",
     "nodemon": "3.1.10",

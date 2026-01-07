@@ -71,7 +71,7 @@ export const config = convict({
   serviceName: {
     doc: 'Applications Service Name',
     format: String,
-    default: 'waste-organisation-frontend'
+    default: 'Report receipt of waste'
   },
   root: {
     doc: 'Project root',

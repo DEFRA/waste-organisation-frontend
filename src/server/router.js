@@ -6,12 +6,9 @@ import { health } from './health/index.js'
 import { serveStaticFiles } from './common/helpers/serve-static-files.js'
 import { search } from './search/index.js'
 import { signIn } from './signIn/index.js'
-import { addWasteReceiver } from './addWasteReceiver/index.js'
-import { noWasteReceiver } from './noWasteReceiver/index.js'
 import { onboarding } from './onboarding/index.js'
 import { dashboard } from './dashboard/index.js'
 import { cannotUseService } from './cannotUseService/index.js'
-import { isWasteReceiver } from './isWasteReceiver/index.js'
 
 export const router = {
   plugin: {
@@ -30,10 +27,7 @@ export const router = {
         dashboard,
         cannotUseService,
         search,
-        onboarding,
-        addWasteReceiver,
-        noWasteReceiver,
-        isWasteReceiver
+        onboarding
       ])
 
       // Static assets
