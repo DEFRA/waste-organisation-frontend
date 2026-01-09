@@ -108,6 +108,89 @@ test('defraId: credentials exist', async () => {
   ])
 })
 
+test('defraId: broken credentials are broken', async () => {
+  const provider = await openIdProvider('defraId', {
+    oidcConfigurationUrl: 'https://test.it/path',
+    scopes: ['email']
+  })
+
+  const currentRelationshipId = 'rel-id-909'
+  const organisationId = 'org-id-123'
+
+  config.set('auth.defraId.organisations', [organisationId])
+
+  const token = jwt.token.generate(
+    {
+      sub: 'testSub',
+      correlationId: 'testCorrelationId',
+      sessionId: 'testSessionId',
+      contactId: 'testContactId',
+      serviceId: 'testServiceId',
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'testEmail',
+      uniqueReference: 'testUniqueRef',
+      loa: 'testLoa',
+      aal: 'testAal',
+      enrolmentCount: 1,
+      enrolmentRequestCount: 1,
+      currentRelationshipId,
+      relationships: [
+        `garbage${currentRelationshipId}:${organisationId}:my org name with a : in it:0:Employee:0`
+      ],
+      roles: 'testRoles',
+      aud: 'test',
+      iss: 'test',
+      user: 'Test User'
+    },
+    {
+      key: 'test',
+      algorithm: 'HS256'
+    },
+    {
+      ttlSec: 1
+    }
+  )
+
+  const credentials = { token }
+
+  await provider.profile(credentials, { id_token: 'test-id-token' }, {})
+
+  expect(credentials.profile).toEqual({
+    id: 'testSub',
+    correlationId: 'testCorrelationId',
+    sessionId: 'testSessionId',
+    contactId: 'testContactId',
+    serviceId: 'testServiceId',
+    firstName: 'Test',
+    lastName: 'User',
+    displayName: 'Test User',
+    email: 'testEmail',
+    uniqueReference: 'testUniqueRef',
+    loa: 'testLoa',
+    aal: 'testAal',
+    enrolmentCount: 1,
+    enrolmentRequestCount: 1,
+    currentRelationshipId,
+    currentOrganisationId: undefined,
+    currentOrganisationName: undefined,
+    relationships: [
+      `garbage${currentRelationshipId}:${organisationId}:my org name with a : in it:0:Employee:0`
+    ],
+    roles: 'testRoles',
+    idToken: 'test-id-token',
+    tokenUrl: 'http://some-token-endpoint/path',
+    logoutUrl: 'http://some-end-session-endpoint/path'
+  })
+
+  expect(config.get('auth.origins')).toEqual([
+    'https://test.it',
+    'http://some-auth-endpoint',
+    'http://some-token-endpoint',
+    'http://some-end-session-endpoint'
+  ])
+})
+
 test('defraId: provider setup correctly', async () => {
   const provider = await openIdProvider('defraId', {
     oidcConfigurationUrl: 'https://test.it/path',
