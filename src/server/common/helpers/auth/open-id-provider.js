@@ -65,6 +65,10 @@ export const openIdProvider = async (name, authConfig) => {
         .filter((part) => part)
         .join(' ')
 
+      const currentOrganisationId = payload.relationships
+        .filter((r) => r.startsWith(payload.currentRelationshipId + ':'))[0]
+        ?.replace(/[^:]*:([^:]*):.*/, '$1')
+
       credentials.profile = {
         id: payload.sub,
         correlationId: payload.correlationId,
@@ -81,6 +85,7 @@ export const openIdProvider = async (name, authConfig) => {
         enrolmentCount: payload.enrolmentCount,
         enrolmentRequestCount: payload.enrolmentRequestCount,
         currentRelationshipId: payload.currentRelationshipId,
+        currentOrganisationId,
         relationships: payload.relationships,
         roles: payload.roles,
         idToken: params.id_token,
