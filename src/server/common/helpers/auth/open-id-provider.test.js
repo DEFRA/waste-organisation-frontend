@@ -90,7 +90,7 @@ test('defraId: credentials exist', async () => {
     enrolmentRequestCount: 1,
     currentRelationshipId,
     currentOrganisationId: organisationId,
-    currentOrganisationNmae: 'my org name with a : in it',
+    currentOrganisationName: 'my org name with a : in it',
     relationships: [
       `${currentRelationshipId}:${organisationId}:my org name with a : in it:0:Employee:0`
     ],
