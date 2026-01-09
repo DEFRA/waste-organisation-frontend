@@ -5,11 +5,18 @@ export const onboarding = {
   plugin: {
     name: 'onboarding',
     register(server) {
-      server.route({
-        method: 'GET',
-        path: paths.ukPermit,
-        ...ukPermitController
-      })
+      server.route([
+        {
+          method: 'GET',
+          path: paths.ukPermit,
+          ...ukPermitController.get
+        },
+        {
+          method: 'POST',
+          path: paths.ukPermit,
+          ...ukPermitController.post
+        }
+      ])
     }
   }
 }

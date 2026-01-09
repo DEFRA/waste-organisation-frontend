@@ -1,34 +1,9 @@
 import jwt from '@hapi/jwt'
 import { getOpenIdConfig } from './open-id-client.js'
-import { config } from '../../../../config/config.js'
 import { checkGroups } from './check-groups.js'
-import { createLogger } from '../logging/logger.js'
-
-const logger = createLogger()
-
-const setOrigins = (providerEndpoints) => {
-  const { origins } = config.get('auth')
-
-  const newOrigins = providerEndpoints.filter(Boolean).map((endpoint) => {
-    const { origin } = new URL(endpoint)
-    return origin
-  })
-
-  const updatedOrigins = [...new Set([...origins, ...newOrigins])]
-
-  config.set('auth.origins', updatedOrigins)
-}
 
 export const openIdProvider = async (name, authConfig) => {
   const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
-
-  const providerEndpoints = [
-    authConfig.oidcConfigurationUrl,
-    oidcConf.authorization_endpoint,
-    oidcConf.token_endpoint,
-    oidcConf.end_session_endpoint
-  ]
-  setOrigins(providerEndpoints)
 
   return {
     name,
@@ -39,14 +14,6 @@ export const openIdProvider = async (name, authConfig) => {
     pkce: 'S256',
     scope: authConfig.scopes,
     profile: async (credentials, params, _get) => {
-      logger.info(JSON.stringify(credentials) + ' - are JWT credentials found')
-      logger.info(JSON.stringify(params) + ' - are params found')
-      logger.info(JSON.stringify(oidcConf) + ' - are oidcConf found')
-      logger.info(JSON.stringify(authConfig) + ' - are authConfig found')
-      logger.info(
-        JSON.stringify(config.get('auth.origins')) + ' - are auth.origins found'
-      )
-
       if (!credentials?.token) {
         throw new Error(
           `${name} Auth Access Token not present. Unable to retrieve profile.`

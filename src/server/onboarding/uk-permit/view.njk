@@ -7,28 +7,23 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {% if errors %}
+      {% if error %}
         {{
           govukErrorSummary({
             titleText: "There is a problem",
             errorList: [
               {
-                text: errors.text,
-                href: "#isWasteReceiverYes"
+                text: "[REAL TEXT GOES HERE]",
+                href: "#isPermitYes"
               }
             ]
           })
         }}
       {% endif %}
       <form action="{{ action }}" method="POST">
-        <input
-          type="hidden"
-          name="organisationId"
-          value="{{ organisationId }}"
-/>
         {{
           govukRadios({
-            name: "isWasteReceiver",
+            name: "isPermit",
             classes: "govuk-radios--inline",
             fieldset: {
               legend: {
@@ -37,12 +32,12 @@
                 classes: "govuk-fieldset__legend--l"
               }
             },
-            errorMessage: errors,
+            errorMessage: error,
             items: [
               {
                 value: "yes",
                 text: "Yes",
-                id: "isWasteReceiverYes"
+                id: "isPermitYes"
               },
               {
                 value: "no",

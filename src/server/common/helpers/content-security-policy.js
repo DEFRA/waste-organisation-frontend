@@ -1,5 +1,5 @@
 import Blankie from 'blankie'
-
+import { config } from '../../../config/config.js'
 /**
  * Manage content security policies.
  * @satisfies {import('@hapi/hapi').Plugin}
@@ -22,7 +22,7 @@ const contentSecurityPolicy = {
     frameSrc: ['self', 'data:'],
     objectSrc: ['none'],
     frameAncestors: ['none'],
-    formAction: ['self'],
+    formAction: ['self', config.get('auth.origins')],
     manifestSrc: ['self'],
     generateNonces: false
   }
