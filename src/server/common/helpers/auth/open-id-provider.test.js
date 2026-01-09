@@ -52,7 +52,9 @@ test('defraId: credentials exist', async () => {
       enrolmentCount: 1,
       enrolmentRequestCount: 1,
       currentRelationshipId,
-      relationships: [`${currentRelationshipId}:${organisationId}`],
+      relationships: [
+        `${currentRelationshipId}:${organisationId}:my org name with a : in it:0:Employee:0`
+      ],
       roles: 'testRoles',
       aud: 'test',
       iss: 'test',
@@ -88,7 +90,10 @@ test('defraId: credentials exist', async () => {
     enrolmentRequestCount: 1,
     currentRelationshipId,
     currentOrganisationId: organisationId,
-    relationships: [`${currentRelationshipId}:${organisationId}`],
+    currentOrganisationNmae: 'my org name with a : in it',
+    relationships: [
+      `${currentRelationshipId}:${organisationId}:my org name with a : in it:0:Employee:0`
+    ],
     roles: 'testRoles',
     idToken: 'test-id-token',
     tokenUrl: 'http://some-token-endpoint/path',

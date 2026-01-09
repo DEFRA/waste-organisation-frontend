@@ -65,9 +65,11 @@ export const openIdProvider = async (name, authConfig) => {
         .filter((part) => part)
         .join(' ')
 
-      const currentOrganisationId = payload.relationships
-        .filter((r) => r.startsWith(payload.currentRelationshipId + ':'))[0]
-        ?.replace(/[^:]*:([^:]*):.*/, '$1')
+      // eslint-disable-next-line no-unused-vars
+      const [_, currentOrganisationId, currentOrganisationName] =
+        payload.relationships
+          .filter((r) => r.startsWith(payload.currentRelationshipId + ':'))[0]
+          ?.match(/[^:]*:([^:]*):(.*)[^:]*:[^:]*:[^:]*:[^:]*/)
 
       credentials.profile = {
         id: payload.sub,
@@ -86,6 +88,7 @@ export const openIdProvider = async (name, authConfig) => {
         enrolmentRequestCount: payload.enrolmentRequestCount,
         currentRelationshipId: payload.currentRelationshipId,
         currentOrganisationId,
+        currentOrganisationName,
         relationships: payload.relationships,
         roles: payload.roles,
         idToken: params.id_token,
