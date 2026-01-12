@@ -2,9 +2,11 @@ import { expect, test } from 'vitest'
 import { initialiseServer } from '../../../test-utils/initialise-server'
 import { paths } from '../../../config/paths'
 import { JSDOM } from 'jsdom'
+import { content } from '../../../config/content'
 
 describe('ukPermit', () => {
   let server
+  const pageContent = content.ukPermit()
 
   beforeAll(async () => {
     server = await initialiseServer()
@@ -27,16 +29,14 @@ describe('ukPermit', () => {
         'h1.govuk-fieldset__heading'
       )[0].textContent
 
-      expect(document.title).toBe('ukPermit | Report receipt of waste')
-      expect(pageHeading).toEqual(
-        expect.stringContaining(
-          'Do you operate one or more licensed or permitted waste receiving sites?'
-        )
+      expect(document.title).toBe(
+        `${pageContent.title} | Report receipt of waste`
       )
+      expect(pageHeading).toEqual(expect.stringContaining(pageContent.heading))
     })
 
     test('should show error message if there is an error', async () => {
-      const expectedErrorMessage = '[REAL TEXT GOES HERE]'
+      const expectedErrorMessage = pageContent.error.message
 
       server = await initialiseServer({
         state: {
