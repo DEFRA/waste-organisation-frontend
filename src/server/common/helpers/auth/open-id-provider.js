@@ -32,6 +32,14 @@ export const openIdProvider = async (name, authConfig) => {
         .filter((part) => part)
         .join(' ')
 
+      // ignoring sonar regex warning because token is securely communicated from defra id
+      // eslint-disable-next-line no-unused-vars
+      const [_, currentOrganisationId, currentOrganisationName] =
+        payload?.relationships
+          ?.filter((r) => r.startsWith(payload.currentRelationshipId + ':'))[0]
+          ?.match(/[^:]*:([^:]*):(.*)[^:]*:[^:]*:[^:]*:[^:]*/) || // NOSONAR
+        []
+
       credentials.profile = {
         id: payload.sub,
         correlationId: payload.correlationId,
@@ -48,6 +56,8 @@ export const openIdProvider = async (name, authConfig) => {
         enrolmentCount: payload.enrolmentCount,
         enrolmentRequestCount: payload.enrolmentRequestCount,
         currentRelationshipId: payload.currentRelationshipId,
+        currentOrganisationId,
+        currentOrganisationName,
         relationships: payload.relationships,
         roles: payload.roles,
         idToken: params.id_token,
