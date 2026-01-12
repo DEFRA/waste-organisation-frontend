@@ -13,8 +13,8 @@ services:
       LOCALSTACK_HOST: 127.0.0.1
 
     volumes:
-      - '${TMPDIR:-/tmp}/localstack:/var/lib/localstack'
-      - ./compose/start-localstack.sh:/etc/localstack/init/ready.d/start-localstack.sh
+      - '${TMPDIR:-/tmp}/localstack:/var/lib/localstack:z'
+      - './compose/start-localstack.sh:/etc/localstack/init/ready.d/01-start-localstack.sh:z'
     healthcheck:
       test: ['CMD', 'curl', 'localhost:4566']
       interval: 5s
@@ -60,6 +60,33 @@ services:
       APP_BASE_URL: http://localhost:3200
     networks:
       - cdp-tenant
+
+  cdp-uploader:
+    image: defradigital/cdp-uploader:latest
+    ports:
+      - '7337:7337'
+    depends_on:
+      localstack:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - 'compose/aws.env'
+    environment:
+      VIRTUAL_HOST: ~^uploader\..*\.sslip\.io
+      VIRTUAL_PATH: /
+      VIRTUAL_PORT: 7337
+      PORT: 7337
+      NODE_ENV: development
+      REDIS_HOST: redis
+      USE_SINGLE_INSTANCE_CACHE: true
+      MOCK_VIRUS_SCAN_ENABLED: true
+      MOCK_VIRUS_RESULT_DELAY: 3
+      SQS_ENDPOINT: http://localstack:4566
+      S3_ENDPOINT: http://localstack:4566
+    networks:
+      - cdp-tenant
+
 
   ################################################################################
 
