@@ -60,7 +60,7 @@ describe('context and cache', () => {
               href: '/about'
             }
           ],
-          serviceName: 'waste-organisation-frontend',
+          serviceName: 'Report receipt of waste',
           serviceUrl: '/'
         })
       })
@@ -149,7 +149,7 @@ describe('context and cache', () => {
               href: '/about'
             }
           ],
-          serviceName: 'waste-organisation-frontend',
+          serviceName: 'Report receipt of waste',
           serviceUrl: '/'
         })
       })

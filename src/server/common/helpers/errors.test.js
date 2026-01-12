@@ -22,7 +22,7 @@ describe('#errors', () => {
     })
 
     expect(result).toEqual(
-      expect.stringContaining('Page not found | waste-organisation-frontend')
+      expect.stringContaining('Page not found | Report receipt of waste')
     )
     expect(statusCode).toBe(statusCodes.notFound)
   })

@@ -15,6 +15,6 @@ export const signInController = (metricName) => ({
     request.cookieAuth.set({ sessionId })
 
     metricsCounter(metricName)
-    return h.redirect(paths.isWasteReceiver)
+    return h.redirect(paths.search)
   }
 })

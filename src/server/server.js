@@ -75,9 +75,9 @@ export async function createServer(plugins) {
     ...pluginList,
     nunjucksConfig,
     Scooter,
-    contentSecurityPolicy,
     router, // Register all the controllers/routes defined in src/server/router.js
-    sessionCache
+    sessionCache,
+    contentSecurityPolicy
   ])
 
   server.ext('onPreResponse', catchAll)
