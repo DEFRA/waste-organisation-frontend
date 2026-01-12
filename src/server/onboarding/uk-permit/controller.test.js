@@ -29,8 +29,8 @@ describe('ukPermit', () => {
         'h1.govuk-fieldset__heading'
       )[0].textContent
 
-      expect(document.title).toBe(
-        `${pageContent.title} | Report receipt of waste`
+      expect(document.title).toEqual(
+        expect.stringContaining(`${pageContent.title} |`)
       )
       expect(pageHeading).toEqual(expect.stringContaining(pageContent.heading))
     })

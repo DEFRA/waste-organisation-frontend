@@ -12,5 +12,15 @@ export const content = {
       message: '[REAL TEXT GOES HERE]'
     },
     continueAction: 'Continue'
+  }),
+  cannotUseService: () => ({
+    title: 'Sorry, you cannot use the service',
+    heading: 'Sorry, you cannot use the service',
+    description:
+      'Based on your answer, you cannot use this service as you do not operate any businesses or organisations that receive waste.',
+    link: {
+      href: '/',
+      text: 'Find out more about Digital waste tracking'
+    }
   })
 }

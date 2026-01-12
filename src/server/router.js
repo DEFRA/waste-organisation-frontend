@@ -8,7 +8,6 @@ import { search } from './search/index.js'
 import { signIn } from './signIn/index.js'
 import { onboarding } from './onboarding/index.js'
 import { dashboard } from './dashboard/index.js'
-import { cannotUseService } from './cannotUseService/index.js'
 
 export const router = {
   plugin: {
@@ -25,7 +24,6 @@ export const router = {
         home,
         about,
         dashboard,
-        cannotUseService,
         search,
         onboarding
       ])
