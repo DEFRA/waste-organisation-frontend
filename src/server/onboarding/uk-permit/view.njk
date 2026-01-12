@@ -10,17 +10,17 @@
       {% if error %}
         {{
           govukErrorSummary({
-            titleText: "There is a problem",
+            titleText: error.title,
             errorList: [
               {
-                text: "[REAL TEXT GOES HERE]",
+                text: error.message,
                 href: "#isPermitYes"
               }
             ]
           })
         }}
       {% endif %}
-      <form action="{{ action }}" method="POST">
+      <form action="{{ action.url }}" method="POST">
         {{
           govukRadios({
             name: "isPermit",
@@ -36,19 +36,19 @@
             items: [
               {
                 value: "yes",
-                text: "Yes",
+                text: questions.yes,
                 id: "isPermitYes"
               },
               {
                 value: "no",
-                text: "No"
+                text: questions.no
               }
             ]
           })
         }}
         {{
           govukButton({
-            text: "Continue",
+            text: action.text,
             type: "submit"
           })
         }}

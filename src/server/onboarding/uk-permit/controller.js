@@ -1,19 +1,30 @@
 import joi from 'joi'
 import { paths } from '../../../config/paths.js'
+import { content } from '../../../config/content.js'
 
 const flashMessage = 'isPermitError'
 
 export const ukPermitController = {
   get: {
     handler(request, h) {
+      const pageContent = content.ukPermit()
+
       const [error] = request.yar.flash(flashMessage)
+      let errorContent
+
+      if (error) {
+        errorContent = pageContent.error
+      }
 
       return h.view('onboarding/uk-permit/view', {
-        pageTitle: 'ukPermit',
-        heading:
-          'Do you operate one or more licensed or permitted waste receiving sites?',
-        action: paths.isPermit,
-        error
+        pageTitle: pageContent.title,
+        heading: pageContent.heading,
+        action: {
+          url: paths.isPermit,
+          text: pageContent.continueAction
+        },
+        questions: pageContent.questions,
+        error: errorContent
       })
     }
   },
