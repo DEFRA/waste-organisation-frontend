@@ -58,7 +58,7 @@ describe('signIn', () => {
       })
 
       expect(statusCode).toBe(302)
-      expect(headers.location).toBe(paths.isWasteReceiver)
+      expect(headers.location).toBe(paths.search)
     }
   )
 })

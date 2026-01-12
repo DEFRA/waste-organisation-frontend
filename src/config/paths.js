@@ -6,14 +6,9 @@ export const paths = {
   landing: '/',
   dashboard: '/dashboard',
   cannotUseService: '/cannot-use-service',
+  ukPermit: '/uk-permit',
   accessibility: '/accessibility-statement',
   search: '/search',
-  isWasteReceiver: '/onboarding/{organisationId}/is-waste-receiver',
-  isWasteReceiver2: '/is-waste-receiver',
-  addWasteReceiver: '/add-waste-receiver',
-  noWasteReceiver: '/no-waste-receiver',
-
-  onboarding: '/onboarding',
 
   signOut: '/sign-out',
   signedOut: '/signed-out',

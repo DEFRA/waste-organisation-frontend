@@ -99,13 +99,6 @@ test('defraId: credentials exist', async () => {
     tokenUrl: 'http://some-token-endpoint/path',
     logoutUrl: 'http://some-end-session-endpoint/path'
   })
-
-  expect(config.get('auth.origins')).toEqual([
-    'https://test.it',
-    'http://some-auth-endpoint',
-    'http://some-token-endpoint',
-    'http://some-end-session-endpoint'
-  ])
 })
 
 test('defraId: broken credentials are broken', async () => {
@@ -182,13 +175,6 @@ test('defraId: broken credentials are broken', async () => {
     tokenUrl: 'http://some-token-endpoint/path',
     logoutUrl: 'http://some-end-session-endpoint/path'
   })
-
-  expect(config.get('auth.origins')).toEqual([
-    'https://test.it',
-    'http://some-auth-endpoint',
-    'http://some-token-endpoint',
-    'http://some-end-session-endpoint'
-  ])
 })
 
 test('defraId: provider setup correctly', async () => {

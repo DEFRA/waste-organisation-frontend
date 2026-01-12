@@ -6,6 +6,7 @@
 
 {# Import custom components globally #}
 {% from "heading/macro.njk" import appHeading %}
+
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
@@ -23,9 +24,15 @@
       homepageUrl: "https://www.gov.uk/",
       classes: "app-header",
       containerClasses: "govuk-width-container",
+      useTudorCrown: true
+    })
+  }}
+
+  {{
+    govukServiceNavigation({
       serviceName: serviceName,
       serviceUrl: serviceUrl,
-      useTudorCrown: true
+      classes: "govuk-!-margin-bottom-2"
     })
   }}
 {% endblock %}

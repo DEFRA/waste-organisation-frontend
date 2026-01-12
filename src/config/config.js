@@ -87,7 +87,7 @@ export const config = convict({
   serviceName: {
     doc: 'Applications Service Name',
     format: String,
-    default: 'waste-organisation-frontend'
+    default: 'Report receipt of waste'
   },
   root: {
     doc: 'Project root',
@@ -320,9 +320,10 @@ export const config = convict({
       }
     },
     origins: {
-      doc: 'Auth provider origins for CSP header',
-      format: Array,
-      default: []
+      doc: 'Auth provider origins for CSP header seperated by space',
+      format: String,
+      env: 'AUTH_ORIGINS',
+      default: 'http://localhost:3200'
     }
   }
 })
