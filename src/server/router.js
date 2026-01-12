@@ -12,6 +12,7 @@ import { onboarding } from './onboarding/index.js'
 import { dashboard } from './dashboard/index.js'
 import { cannotUseService } from './cannotUseService/index.js'
 import { isWasteReceiver } from './isWasteReceiver/index.js'
+import { spreadsheet } from './spreadsheet/index.js'
 
 export const router = {
   plugin: {
@@ -33,7 +34,8 @@ export const router = {
         onboarding,
         addWasteReceiver,
         noWasteReceiver,
-        isWasteReceiver
+        isWasteReceiver,
+        spreadsheet
       ])
 
       // Static assets

@@ -21,10 +21,17 @@ export const paths = {
   signInChoose: '/sign-in',
 
   signinDefraIdCallback: '/signin-oidc',
-  signinEntraIdCallback: '/signin-entra-id'
+  signinEntraIdCallback: '/signin-entra-id',
+
+  spreadsheetUpload: '/organisation/{organisationId}/spreadsheet/begin-upload',
+  spreadsheetUploaded:
+    '/organisation/{organisationId}/spreadsheet/file-uploaded',
+  spreadsheetUploadCallback:
+    '/organisation/{organisationId}/spreadsheet/upload-callback'
 }
 
 export const pathTo = (route, params) => {
+  console.log('route, params >>> ', route, params)
   const routeParams = route.match(/\{\w+\*?\}/g)
   for (const r of routeParams) {
     const parts = r.match(/\{(\w+)\*?\}/)

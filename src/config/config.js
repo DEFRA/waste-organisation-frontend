@@ -37,6 +37,22 @@ export const config = convict({
       env: 'BACKEND_API_PRESHARED_KEY'
     }
   },
+  fileUpload: {
+    url: {
+      doc: 'The url of the File Upload API service.',
+      format: String,
+      nullable: false,
+      default: 'http://localhost:7337',
+      env: 'FILE_UPLOAD_SERVICE_URL'
+    },
+    bucketName: {
+      doc: 'The S3 bucket name the uploaded file will be written to.',
+      format: String,
+      nullable: false,
+      default: 'my-bucket',
+      env: 'FILE_UPLOAD_S3_BUCKET'
+    }
+  },
   serviceVersion: {
     doc: 'The service version, this variable is injected into your docker container in CDP environments',
     format: String,
