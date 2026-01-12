@@ -16,13 +16,7 @@ export const paths = {
   signInChoose: '/sign-in',
 
   signinDefraIdCallback: '/signin-oidc',
-  signinEntraIdCallback: '/signin-entra-id',
-
-  onboarding: '/onboarding',
-  isWasteReceiver: '/onboarding/{organisationId}/is-waste-receiver',
-  isWasteReceiver2: '/is-waste-receiver',
-  addWasteReceiver: '/add-waste-receiver',
-  noWasteReceiver: '/no-waste-receiver'
+  signinEntraIdCallback: '/signin-entra-id'
 }
 
 export const pathTo = (route, params) => {
