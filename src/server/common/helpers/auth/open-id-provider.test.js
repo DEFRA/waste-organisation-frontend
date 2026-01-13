@@ -195,7 +195,13 @@ test('defraId: provider setup correctly', async () => {
     token: 'http://some-token-endpoint/path',
     pkce: 'S256',
     scope: ['email'],
-    profile: expect.any(Function)
+    profile: expect.any(Function),
+    providerEndpoints: [
+      'https://test.it',
+      'http://some-auth-endpoint',
+      'http://some-token-endpoint',
+      'http://some-end-session-endpoint'
+    ]
   })
 })
 
