@@ -26,7 +26,6 @@ export const paths = {
 }
 
 export const pathTo = (route, params) => {
-  console.log('route, params >>> ', route, params)
   const routeParams = route.match(/\{\w+\*?\}/g)
   for (const r of routeParams) {
     const parts = r.match(/\{(\w+)\*?\}/)

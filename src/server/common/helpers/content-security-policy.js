@@ -22,7 +22,7 @@ const contentSecurityPolicy = {
     frameSrc: ['self', 'data:'],
     objectSrc: ['none'],
     frameAncestors: ['none'],
-    formAction: ['self', config.get('auth.origins')],
+    formAction: ['self'].concat(config.get('auth.origins')),
     manifestSrc: ['self'],
     generateNonces: false
   }

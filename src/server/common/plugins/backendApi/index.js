@@ -34,6 +34,21 @@ const remoteCall = (backendUrl, _presharedKey) => {
         logger.error('ERROR calling backend api', e)
         return null
       }
+    },
+    saveSpreadsheet: async (userId, organisationId, uploadId) => {
+      try {
+        const { payload } = await wreck.put(
+          `${backendUrl}/spreadsheet/${organisationId}/${uploadId}`,
+          {
+            json: 'strict',
+            payload: { organisation: orgData }
+          }
+        )
+        return payload.organisations
+      } catch (e) {
+        logger.error('ERROR calling backend api', e)
+        return null
+      }
     }
   }
 }
