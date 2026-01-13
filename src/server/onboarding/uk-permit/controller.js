@@ -7,6 +7,9 @@ const flashMessage = 'isPermitError'
 export const ukPermitController = {
   get: {
     handler(request, h) {
+      request.contentSecurityPolicy = {
+        extraAuthOrigins: request.authProviderEndpoints
+      }
       const pageContent = content.ukPermit()
 
       const [error] = request.yar.flash(flashMessage)

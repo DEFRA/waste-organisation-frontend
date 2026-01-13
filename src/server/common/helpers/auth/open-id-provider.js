@@ -5,8 +5,25 @@ import { checkGroups } from './check-groups.js'
 export const openIdProvider = async (name, authConfig) => {
   const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
 
+  const providerEndpoints = Array.from(
+    new Set(
+      [
+        authConfig.oidcConfigurationUrl,
+        oidcConf.authorization_endpoint,
+        oidcConf.token_endpoint,
+        oidcConf.end_session_endpoint
+      ]
+        .filter(Boolean)
+        .map((endpoint) => {
+          const { origin } = new URL(endpoint)
+          return origin
+        })
+    )
+  )
+
   return {
     name,
+    providerEndpoints,
     protocol: 'oauth2',
     useParamsAuth: true,
     auth: oidcConf.authorization_endpoint,
@@ -19,7 +36,6 @@ export const openIdProvider = async (name, authConfig) => {
           `${name} Auth Access Token not present. Unable to retrieve profile.`
         )
       }
-
       const payload = jwt.token.decode(credentials.token).decoded.payload
 
       if (credentials.provider === 'entraId') {

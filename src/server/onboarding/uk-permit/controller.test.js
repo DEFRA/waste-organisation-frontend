@@ -24,7 +24,6 @@ describe('ukPermit', () => {
       })
 
       const { document } = new JSDOM(payload).window
-
       const pageHeading = document.querySelectorAll(
         'h1.govuk-fieldset__heading'
       )[0].textContent

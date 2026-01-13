@@ -20,6 +20,12 @@ export const cacheControlNoStore = {
 
 convict.addFormats(convictFormatWithValidator)
 
+convict.addFormat({
+  name: 'space-separated-string',
+  validate: (val) => typeof val === 'string',
+  coerce: (val) => val?.split(/ +/).filter((s) => s)
+})
+
 export const config = convict({
   backendApi: {
     url: {
@@ -305,9 +311,9 @@ export const config = convict({
     },
     origins: {
       doc: 'Auth provider origins for CSP header seperated by space',
-      format: String,
+      format: 'space-separated-string',
       env: 'AUTH_ORIGINS',
-      default: 'http://localhost:3200'
+      default: ['http://localhost:7337']
     }
   }
 })
