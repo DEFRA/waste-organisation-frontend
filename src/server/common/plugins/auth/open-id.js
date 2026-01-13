@@ -11,6 +11,11 @@ export const openId = {
       const baseUrl = config.get('appBaseUrl')
 
       const defra = await openIdProvider('defraId', defraId)
+      const providerEndpoints = Array.isArray(defraId.providerEndpoints)
+        ? [...defra.providerEndpoints]
+        : []
+      delete defra.providerEndpoints
+      server.decorate('request', 'authProviderEndpoints', providerEndpoints)
       server.auth.strategy('defraId', 'bell', {
         location: () => `${baseUrl}${paths.signinDefraIdCallback}`,
         provider: defra,

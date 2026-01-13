@@ -4,6 +4,9 @@
  */
 export const searchController = {
   handler(request, h) {
+    request.contentSecurityPolicy = {
+      extraAuthOrigins: request.auth.credentials.providerEndpoints
+    }
     return h.view('search/index', {
       pageTitle: 'Search',
       heading: 'You are logged in',

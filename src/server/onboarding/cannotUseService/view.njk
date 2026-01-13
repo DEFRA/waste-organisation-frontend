@@ -1,0 +1,14 @@
+{% from "govuk/components/exit-this-page/macro.njk" import govukExitThisPage %}
+{% extends 'layouts/page.njk' %}
+
+{% block content %}
+  {{ appHeading({
+    text: heading,
+    caption: description
+  }) }}
+
+  <p class="govuk-body">
+    <a class="govuk-link" href="{{link.href}}">{{link.text}}</a>
+  </p>
+
+{% endblock %}
