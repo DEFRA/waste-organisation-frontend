@@ -313,7 +313,7 @@ export const config = convict({
       doc: 'Auth provider origins for CSP header seperated by space',
       format: 'space-separated-string',
       env: 'AUTH_ORIGINS',
-      default: ['http://localhost:7337']
+      default: []
     }
   }
 })
