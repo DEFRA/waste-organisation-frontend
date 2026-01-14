@@ -55,7 +55,7 @@ describe('backendApi', () => {
 
     vi.spyOn(wreck, 'put').mockImplementation(async () => ({
       payload: {
-        organisations: expectedResponse
+        organisation: expectedResponse
       }
     }))
 

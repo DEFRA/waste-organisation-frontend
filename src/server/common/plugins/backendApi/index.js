@@ -13,20 +13,11 @@ const logErr = async (f) => {
   }
 }
 
-const apiGet = (url, payload) => {
+const apiCall = (asyncFunc, url, payload) => {
   return async () => {
     const r = { json: 'strict' }
     if (payload) r.payload = payload
-    const response = await wreck.get(url, r)
-    return response.payload
-  }
-}
-
-const apiPut = (url, payload) => {
-  return async () => {
-    const r = { json: 'strict' }
-    if (payload) r.payload = payload
-    const response = await wreck.put(url, r)
+    const response = await asyncFunc(url, r)
     return response.payload
   }
 }
@@ -34,20 +25,32 @@ const apiPut = (url, payload) => {
 const remoteCall = (backendUrl, _presharedKey) => {
   return {
     getOrganisations: async (userId) => {
-      return await logErr(apiGet(`${backendUrl}/user/${userId}/organisations`))
+      const { organisations } = await logErr(
+        apiCall(wreck.get, `${backendUrl}/user/${userId}/organisations`)
+      )
+      return organisations
     },
     saveOrganisation: async (userId, organisationId, orgData) => {
-      return await logErr(
-        apiPut(`${backendUrl}/user/${userId}/organisation/${organisationId}`, {
-          organisation: orgData
-        })
+      const { organisation } = await logErr(
+        apiCall(
+          wreck.put,
+          `${backendUrl}/user/${userId}/organisation/${organisationId}`,
+          {
+            organisation: orgData
+          }
+        )
       )
+      return organisation
     },
     saveSpreadsheet: async (organisationId, uploadId, statusUrl) => {
       return await logErr(
-        apiPut(`${backendUrl}/spreadsheet/${organisationId}/${uploadId}`, {
-          spreadsheet: { statusUrl }
-        })
+        apiCall(
+          wreck.put,
+          `${backendUrl}/spreadsheet/${organisationId}/${uploadId}`,
+          {
+            spreadsheet: { statusUrl }
+          }
+        )
       )
     }
   }
