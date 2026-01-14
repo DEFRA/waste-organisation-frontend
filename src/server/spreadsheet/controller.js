@@ -35,13 +35,22 @@ export const beginUpload = {
     const { uploadId, uploadUrl, statusUrl } = await initiateUpload(
       request.auth.credentials.currentOrganisationId
     )
+    const { origin } = new URL(uploadUrl)
+    request.contentSecurityPolicy = {
+      extraAuthOrigins: origin
+    }
+
     console.log(
       'uploadId, uploadUrl, statusUrl: ',
       uploadId,
       uploadUrl,
       statusUrl
     )
-    await request.backendApi.saveSpreadsheet() // TODO get user id from session
+    await request.backendApi.saveSpreadsheet(
+      request.auth.credentials.currentorganisationid,
+      uploadId,
+      statusUrl
+    )
     return h.view('spreadsheet/begin-upload', {
       pageTitle: 'Upload a Waste Movement Spreadsheet',
       action: uploadUrl,

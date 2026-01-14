@@ -4,51 +4,51 @@ import { createLogger } from '../../helpers/logging/logger.js'
 
 const logger = createLogger()
 
+const logErr = async (f) => {
+  try {
+    return await f()
+  } catch (e) {
+    logger.error('ERROR calling backend api', e)
+    return null
+  }
+}
+
+const apiGet = (url, payload) => {
+  return async () => {
+    const r = { json: 'strict' }
+    if (payload) r.payload = payload
+    const response = await wreck.get(url, r)
+    return response.payload
+  }
+}
+
+const apiPut = (url, payload) => {
+  return async () => {
+    const r = { json: 'strict' }
+    if (payload) r.payload = payload
+    const response = await wreck.put(url, r)
+    return response.payload
+  }
+}
+
 const remoteCall = (backendUrl, _presharedKey) => {
   return {
     getOrganisations: async (userId) => {
-      try {
-        const { payload } = await wreck.get(
-          `${backendUrl}/user/${userId}/organisations`,
-          {
-            json: 'strict'
-          }
-        )
-        return payload.organisations
-      } catch (e) {
-        logger.error('ERROR calling backend api', e)
-        return null
-      }
+      return await logErr(apiGet(`${backendUrl}/user/${userId}/organisations`))
     },
     saveOrganisation: async (userId, organisationId, orgData) => {
-      try {
-        const { payload } = await wreck.put(
-          `${backendUrl}/user/${userId}/organisation/${organisationId}`,
-          {
-            json: 'strict',
-            payload: { organisation: orgData }
-          }
-        )
-        return payload.organisations
-      } catch (e) {
-        logger.error('ERROR calling backend api', e)
-        return null
-      }
+      return await logErr(
+        apiPut(`${backendUrl}/user/${userId}/organisation/${organisationId}`, {
+          organisation: orgData
+        })
+      )
     },
-    saveSpreadsheet: async (userId, organisationId, uploadId) => {
-      try {
-        const { payload } = await wreck.put(
-          `${backendUrl}/spreadsheet/${organisationId}/${uploadId}`,
-          {
-            json: 'strict',
-            payload: { organisation: orgData }
-          }
-        )
-        return payload.organisations
-      } catch (e) {
-        logger.error('ERROR calling backend api', e)
-        return null
-      }
+    saveSpreadsheet: async (organisationId, uploadId, statusUrl) => {
+      return await logErr(
+        apiPut(`${backendUrl}/spreadsheet/${organisationId}/${uploadId}`, {
+          spreadsheet: { statusUrl }
+        })
+      )
     }
   }
 }
