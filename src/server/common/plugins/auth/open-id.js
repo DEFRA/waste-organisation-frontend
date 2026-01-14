@@ -19,7 +19,9 @@ export const openId = {
         : []
       delete defra.providerEndpoints
       server.decorate('request', 'authProviderEndpoints', providerEndpoints)
-      logger.info('Initialising oauth providerEndpoints: ', providerEndpoints)
+      logger.info(
+        `Initialising oauth providerEndpoints: ${JSON.stringify(providerEndpoints)}`
+      )
       server.auth.strategy('defraId', 'bell', {
         location: () => `${baseUrl}${paths.signinDefraIdCallback}`,
         provider: defra,

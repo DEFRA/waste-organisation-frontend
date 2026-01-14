@@ -13,8 +13,7 @@ export const ukPermitController = {
         extraAuthOrigins: request.authProviderEndpoints
       }
       logger.info(
-        'request.contentSecurityPolicy: ',
-        request.contentSecurityPolicy
+        `uk permit controller - request.contentSecurityPolicy: ${JSON.stringify(request.contentSecurityPolicy)}`
       )
       const pageContent = content.ukPermit()
 
