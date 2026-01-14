@@ -1,8 +1,10 @@
 import joi from 'joi'
 import { paths } from '../../../config/paths.js'
 import { content } from '../../../config/content.js'
+import { createLogger } from '../../common/helpers/logging/logger.js'
 
 const flashMessage = 'isPermitError'
+const logger = createLogger()
 
 export const ukPermitController = {
   get: {
@@ -10,6 +12,10 @@ export const ukPermitController = {
       request.contentSecurityPolicy = {
         extraAuthOrigins: request.authProviderEndpoints
       }
+      logger.info(
+        'request.contentSecurityPolicy: ',
+        request.contentSecurityPolicy
+      )
       const pageContent = content.ukPermit()
 
       const [error] = request.yar.flash(flashMessage)
