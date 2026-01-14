@@ -14,7 +14,7 @@ export const openId = {
       const baseUrl = config.get('appBaseUrl')
 
       const defra = await openIdProvider('defraId', defraId)
-      const providerEndpoints = Array.isArray(defraId.providerEndpoints)
+      const providerEndpoints = Array.isArray(defra.providerEndpoints)
         ? [...defra.providerEndpoints]
         : []
       delete defra.providerEndpoints
