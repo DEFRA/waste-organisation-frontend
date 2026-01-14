@@ -19,7 +19,9 @@ const contentSecurityPolicy = {
       )
       .filter((s) => s)
     if (request?.contentSecurityPolicy?.extraAuthOrigins) {
-      logger.info(`Updating content security policy: ${formAction}`)
+      logger.info(
+        `Updating content security policy: ${request.url} - ${formAction} - ${JSON.stringify(request?.contentSecurityPolicy?.extraAuthOrigins)}`
+      )
     }
     return {
       // Hash 'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw=' is to support a GOV.UK frontend script bundled within Nunjucks macros
