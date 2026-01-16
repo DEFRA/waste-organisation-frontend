@@ -8,6 +8,7 @@ import { search } from './search/index.js'
 import { signIn } from './signIn/index.js'
 import { onboarding } from './onboarding/index.js'
 import { dashboard } from './dashboard/index.js'
+import { nextAction } from './nextAction/index.js'
 
 export const router = {
   plugin: {
@@ -25,7 +26,8 @@ export const router = {
         about,
         dashboard,
         search,
-        onboarding
+        onboarding,
+        nextAction
       ])
 
       // Static assets

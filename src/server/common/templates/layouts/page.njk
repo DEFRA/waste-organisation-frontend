@@ -42,12 +42,17 @@
 {% endblock %}
 
 {% block beforeContent %}
+
+  {% set phaseHtml %}
+    This is a new service. Help us improve it and <a class="govuk-link" href="{{feedbackUrl}}" data-testid="feedback-link">give your feedback (opens in new tab)</a>.
+  {% endset -%}
+
   {{
     govukPhaseBanner({
     tag: {
       text: "Beta"
     },
-    html: 'This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback (opens in new tab)</a>.'
+    html: phaseHtml
     })
   }}
 
@@ -59,10 +64,13 @@
     }}
   {% endif %}
 
-  {% if hideBackLink === false or hideBackLink === undefined %}
+  {% if backLink %}
     {{ govukBackLink({
       text: "Back",
-      href: "#"
+      href: backLink,
+      attributes: {
+        "data-testid": "back-link"
+      }
     }) }}
   {% endif %}
 {% endblock %}

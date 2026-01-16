@@ -58,7 +58,7 @@ describe('signIn', () => {
       })
 
       expect(statusCode).toBe(302)
-      expect(headers.location).toBe(paths.search)
+      expect(headers.location).toBe(paths.nextAction)
     }
   )
 })

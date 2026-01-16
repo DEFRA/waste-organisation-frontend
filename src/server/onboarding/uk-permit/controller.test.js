@@ -6,7 +6,7 @@ import { content } from '../../../config/content'
 
 describe('ukPermit', () => {
   let server
-  const pageContent = content.ukPermit()
+  const pageContent = content.ukPermit({})
 
   beforeAll(async () => {
     server = await initialiseServer()
@@ -24,14 +24,17 @@ describe('ukPermit', () => {
       })
 
       const { document } = new JSDOM(payload).window
+
       const pageHeading = document.querySelectorAll(
-        'h1.govuk-fieldset__heading'
+        '[data-testid="app-heading-title"]'
       )[0].textContent
 
       expect(document.title).toEqual(
         expect.stringContaining(`${pageContent.title} |`)
       )
-      expect(pageHeading).toEqual(expect.stringContaining(pageContent.heading))
+      expect(pageHeading).toEqual(
+        expect.stringContaining(pageContent.heading.text)
+      )
     })
 
     test('should show error message if there is an error', async () => {
@@ -59,6 +62,24 @@ describe('ukPermit', () => {
         expect.stringContaining(expectedErrorMessage)
       )
     })
+
+    test.each(Object.entries(pageContent.questions))(
+      'Should show question',
+      async (key, value) => {
+        const { payload } = await server.inject({
+          method: 'GET',
+          url: paths.ukPermit
+        })
+
+        const { document } = new JSDOM(payload).window
+
+        const radioLabel = document.querySelectorAll(
+          `[data-testid="${key}-label"]`
+        )[0].textContent
+
+        expect(radioLabel).toEqual(expect.stringContaining(value))
+      }
+    )
   })
 
   describe('POST', () => {
