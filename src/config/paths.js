@@ -7,6 +7,7 @@ export const paths = {
   dashboard: '/dashboard',
   cannotUseService: '/cannot-use-service',
   ukPermit: '/uk-permit',
+  nextAction: '/next-action',
   accessibility: '/accessibility-statement',
   search: '/search',
 
