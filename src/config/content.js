@@ -4,8 +4,8 @@ const heading = (text, caption, organisationName) => ({
   organisationName
 })
 
-const getContentForLanguage = (_request, content) => {
-  return content['en']
+const getContentForLanguage = (_request, data) => {
+  return data['en']
 }
 
 export const content = {
