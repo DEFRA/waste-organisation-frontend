@@ -1,6 +1,7 @@
 import { statusCodes } from '../common/constants/status-codes.js'
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 import { homeController } from './controller.js'
+import { paths } from '../../config/paths.js'
 
 describe('#homeController', () => {
   let server
@@ -11,24 +12,6 @@ describe('#homeController', () => {
 
   afterAll(async () => {
     await server.stop({ timeout: 0 })
-  })
-
-  test('should redirect to search if authenticated', () => {
-    let actualUrl
-
-    const request = {
-      auth: {
-        isAuthenticated: true
-      }
-    }
-
-    const nextHandler = {
-      redirect: (url) => (actualUrl = url)
-    }
-
-    homeController.handler(request, nextHandler)
-
-    expect(actualUrl).toBe('/search')
   })
 
   test('should render page if not authenticated', () => {
@@ -54,14 +37,15 @@ describe('#homeController', () => {
     expect(actualOptions).toEqual({
       pageTitle: 'Home',
       heading: 'Home',
-      hideBackLink: true
+      hideBackLink: true,
+      startNowLink: paths.ukPermit
     })
   })
 
   test('Should contain "Home" title', async () => {
     const { result, statusCode } = await server.inject({
       method: 'GET',
-      url: '/'
+      url: paths.startPage
     })
 
     expect(result).toEqual(expect.stringContaining('Home |'))
