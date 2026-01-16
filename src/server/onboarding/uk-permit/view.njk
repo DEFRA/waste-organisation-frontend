@@ -38,7 +38,10 @@
         {{
           govukButton({
             text: action.text,
-            type: "submit"
+            type: "submit",
+            attributes: {
+              "data-testid": "uk-permit-submit-button"
+            }
           })
         }}
       </form>

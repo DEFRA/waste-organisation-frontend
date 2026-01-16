@@ -47,7 +47,8 @@ export const ukPermitController = {
           text: pageContent.continueAction
         },
         questions,
-        error: errorContent
+        error: errorContent,
+        backLink: paths.startPage
       })
     }
   },

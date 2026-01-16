@@ -37,7 +37,6 @@ describe('#homeController', () => {
     expect(actualOptions).toEqual({
       pageTitle: 'Home',
       heading: 'Home',
-      hideBackLink: true,
       startNowLink: paths.ukPermit
     })
   })

@@ -7,8 +7,7 @@ export const cannotUseServiceController = {
     return h.view('onboarding/cannotUseService/view', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
-      link: pageContent.link,
-      hideBackLink: true
+      link: pageContent.link
     })
   }
 }

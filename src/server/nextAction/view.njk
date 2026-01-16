@@ -39,7 +39,10 @@
         {{
           govukButton({
             text: action.text,
-            type: "submit"
+            type: "submit",
+            attributes: {
+              "data-testid": "next-action-submit-button"
+            }
           })
         }}
       </form>
@@ -47,7 +50,6 @@
     <div class="govuk-grid-column-one-third">
       <div class="govuk-card govuk-card--contained">
         <div class="govuk-card__content govuk-!-margin-bottom-4">
-
           <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
             Service charge:
           </h3>

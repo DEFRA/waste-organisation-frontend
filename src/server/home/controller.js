@@ -9,7 +9,6 @@ export const homeController = {
     return h.view('home/index', {
       pageTitle: 'Home',
       heading: 'Home',
-      hideBackLink: true,
       startNowLink: paths.ukPermit
     })
   }
