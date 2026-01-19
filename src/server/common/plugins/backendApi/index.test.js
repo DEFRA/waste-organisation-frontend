@@ -34,11 +34,13 @@ describe('backendApi', () => {
       { name: 'Monkey Barrel LTD', id: '9c6a06d7-e691-4740-89a2-a64d23478034' }
     ]
 
-    vi.spyOn(wreck, 'get').mockImplementation(async () => ({
-      payload: {
-        organisations: expectedOrganisation
+    vi.spyOn(wreck, 'get').mockImplementation(async () => {
+      return {
+        payload: {
+          organisations: expectedOrganisation
+        }
       }
-    }))
+    })
 
     const actualOrganisations =
       await backendApiService.getOrganisations('userId')

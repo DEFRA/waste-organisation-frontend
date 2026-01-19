@@ -147,6 +147,8 @@ services:
       NODE_ENV: development
       MONGO_URI: mongodb://mongodb:27017/
       WASTE_CLIENT_AUTH_TEST: test
+      S3_ENDPOINT: http://localstack:4566
+      AWS_S3_FORCE_PATH_STYLE: true
     networks:
       - cdp-tenant
 

@@ -4,54 +4,54 @@ import { createLogger } from '../../helpers/logging/logger.js'
 
 const logger = createLogger()
 
-const logErr = async (f) => {
+const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
   try {
-    return await f()
+    const headers = { 'x-auth-token': preSharedKey }
+    const r = { json: 'strict', headers }
+    if (payload) {
+      r.payload = payload
+    }
+    const response = await asyncFunc(url, r)
+    return response.payload
   } catch (e) {
-    logger.error('ERROR calling backend api', e)
+    logger.error(
+      `ERROR calling backend api ${JSON.stringify({ e, url, payload })}`
+    )
     return null
   }
 }
 
-const apiCall = (asyncFunc, url, payload) => {
-  return async () => {
-    const r = { json: 'strict' }
-    if (payload) r.payload = payload
-    const response = await asyncFunc(url, r)
-    return response.payload
-  }
-}
-
-const remoteCall = (backendUrl, _presharedKey) => {
+const remoteCall = (backendUrl, presharedKey) => {
   return {
     getOrganisations: async (userId) => {
-      const { organisations } = await logErr(
-        apiCall(wreck.get, `${backendUrl}/user/${userId}/organisations`)
+      const { organisations } = await apiCall(
+        (url, r) => wreck.get(url, r),
+        presharedKey,
+        `${backendUrl}/user/${userId}/organisations`
       )
+
       return organisations
     },
     saveOrganisation: async (userId, organisationId, orgData) => {
-      const { organisation } = await logErr(
-        apiCall(
-          wreck.put,
-          `${backendUrl}/user/${userId}/organisation/${organisationId}`,
-          {
-            organisation: orgData
-          }
-        )
+      const { organisation } = await apiCall(
+        (url, r) => wreck.put(url, r),
+        presharedKey,
+        `${backendUrl}/user/${userId}/organisation/${organisationId}`,
+        {
+          organisation: orgData
+        }
       )
+
       return organisation
     },
-    saveSpreadsheet: async (organisationId, uploadId, statusUrl) => {
-      return await logErr(
-        apiCall(
-          wreck.put,
-          `${backendUrl}/spreadsheet/${organisationId}/${uploadId}`,
-          {
-            spreadsheet: { statusUrl }
-          }
-        )
+    saveSpreadsheet: async (organisationId, uploadId, spreadsheet) => {
+      const x = await apiCall(
+        (url, r) => wreck.put(url, r),
+        presharedKey,
+        `${backendUrl}/spreadsheet/${organisationId}/${uploadId}`,
+        { spreadsheet }
       )
+      return x
     }
   }
 }
