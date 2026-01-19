@@ -1,3 +1,4 @@
+import { paths } from '../../config/paths.js'
 import { homeController } from './controller.js'
 
 /**
@@ -11,7 +12,7 @@ export const home = {
       server.route([
         {
           method: 'GET',
-          path: '/',
+          path: paths.startPage,
           ...homeController
         }
       ])

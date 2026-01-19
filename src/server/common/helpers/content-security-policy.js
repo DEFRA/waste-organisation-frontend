@@ -20,7 +20,7 @@ const contentSecurityPolicy = {
       .filter((s) => s)
     if (request?.contentSecurityPolicy?.extraAuthOrigins) {
       logger.info(
-        `Updating content security policy: ${request.url} - ${formAction} - ${JSON.stringify(request?.contentSecurityPolicy?.extraAuthOrigins)}`
+        `Updating content security policy: ${request.url} - ${formAction}`
       )
     }
     return {

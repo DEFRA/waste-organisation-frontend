@@ -3,10 +3,11 @@ export const paths = {
   cookies: '/cookies',
 
   health: '/health',
-  landing: '/',
+  startPage: '/start-page',
   dashboard: '/dashboard',
   cannotUseService: '/cannot-use-service',
-  ukPermit: '/uk-permit',
+  ukPermit: '/',
+  nextAction: '/next-action',
   accessibility: '/accessibility-statement',
   search: '/search',
 

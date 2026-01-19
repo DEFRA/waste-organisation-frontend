@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import { config } from '../../config.js'
 
 const mockReadFileSync = vi.fn()
 const mockLoggerError = vi.fn()
@@ -61,7 +62,8 @@ describe('context and cache', () => {
             }
           ],
           serviceName: 'Report receipt of waste',
-          serviceUrl: '/'
+          serviceUrl: config.get('links.startPage'),
+          feedbackUrl: config.get('links.feedback')
         })
       })
 
@@ -150,7 +152,8 @@ describe('context and cache', () => {
             }
           ],
           serviceName: 'Report receipt of waste',
-          serviceUrl: '/'
+          serviceUrl: config.get('links.startPage'),
+          feedbackUrl: config.get('links.feedback')
         })
       })
     })
