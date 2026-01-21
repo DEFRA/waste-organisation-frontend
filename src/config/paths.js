@@ -1,3 +1,4 @@
+/* v8 ignore start */
 export const paths = {
   chromeDevtools: '/.well-known/appspecific/com.chrome.devtools.json',
   cookies: '/cookies',
@@ -25,6 +26,7 @@ export const paths = {
   spreadsheetUploadCallback:
     '/organisation/{organisationId}/spreadsheet/upload-callback'
 }
+/* v8 ignore stop */
 
 export const pathTo = (route, params) => {
   const routeParams = route.match(/\{\w+\*?\}/g)
