@@ -90,7 +90,8 @@ test('setup defraId strategy correctly', async () => {
       isSecure: true,
       providerParams: {
         serviceId: AUTH_DEFRA_SERVICEID,
-        response_type: AUTH_DEFRA_RESPONSE_TYPE
+        response_type: AUTH_DEFRA_RESPONSE_TYPE,
+        forceReselection: true
       }
     })
   )

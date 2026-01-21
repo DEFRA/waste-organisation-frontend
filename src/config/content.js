@@ -24,7 +24,8 @@ export const content = {
         },
         error: {
           title: 'There is a problem',
-          message: '[REAL TEXT GOES HERE]'
+          message:
+            'Select Yes if you operate one or more licensed or permitted waste receiving sites.'
         },
         continueAction: 'Continue'
       }
