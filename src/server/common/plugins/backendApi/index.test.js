@@ -76,7 +76,7 @@ describe('backendApi', () => {
     }
 
     vi.spyOn(wreck, 'put').mockImplementation(async () => ({
-      payload: expectedResponse
+      payload: { spreadsheet: expectedResponse }
     }))
 
     const actualResponse = await backendApiService.saveSpreadsheet(

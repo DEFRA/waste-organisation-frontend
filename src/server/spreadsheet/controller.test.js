@@ -68,7 +68,7 @@ describe('spreadsheet upload controller', () => {
 
   test('callback', async () => {
     wreckPutMock.mockReturnValue({
-      payload: { message: 'success' }
+      payload: { message: 'success', spreadsheet: {} }
     })
 
     const { statusCode, payload } = await server.inject({
@@ -78,8 +78,24 @@ describe('spreadsheet upload controller', () => {
       }),
       payload: {
         metadata: { preSharedKey },
-        payload: { form: { thing: { fileId: '123' } } }
+        form: { thing: { fileId: '123' } }
       }
+    })
+    expect(statusCode).toBe(200)
+    expect(JSON.parse(payload)).toEqual({ message: 'success' })
+  })
+
+  test('callback ignores missing spreadsheets', async () => {
+    wreckPutMock.mockReturnValue({
+      payload: { message: 'success', spreadsheet: {} }
+    })
+
+    const { statusCode, payload } = await server.inject({
+      method: 'POST',
+      url: pathTo(paths.spreadsheetUploadCallback, {
+        organisationId: 'abc-321'
+      }),
+      payload: { metadata: { preSharedKey } }
     })
     expect(statusCode).toBe(200)
     expect(JSON.parse(payload)).toEqual({ message: 'success' })
@@ -94,5 +110,38 @@ describe('spreadsheet upload controller', () => {
       payload: { metadata: { preSharedKey: 'fish' } }
     })
     expect(statusCode).toBe(403)
+  })
+
+  test('callback retries callback in event of error', async () => {
+    wreckPutMock.mockImplementation(async () => {
+      throw Error()
+    })
+
+    const { statusCode } = await server.inject({
+      method: 'POST',
+      url: pathTo(paths.spreadsheetUploadCallback, {
+        organisationId: 'abc-321'
+      }),
+      payload: {
+        metadata: { preSharedKey },
+        form: { thing: { fileId: '123' } }
+      }
+    })
+    expect(statusCode).toBe(500)
+  })
+
+  test('callback retries callback when no data', async () => {
+    wreckPutMock.mockReturnValue({ payload: { message: 'success' } })
+    const { statusCode } = await server.inject({
+      method: 'POST',
+      url: pathTo(paths.spreadsheetUploadCallback, {
+        organisationId: 'abc-321'
+      }),
+      payload: {
+        metadata: { preSharedKey },
+        form: { thing: { fileId: '123' } }
+      }
+    })
+    expect(statusCode).toBe(502)
   })
 })

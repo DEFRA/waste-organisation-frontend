@@ -23,7 +23,6 @@ const initiateUpload = async (orgId) => {
         }),
       s3Bucket: bucketName,
       metadata: {
-        // Note: Probably need to track the user to notify in some way?
         preSharedKey
       }
     }
@@ -33,8 +32,7 @@ const initiateUpload = async (orgId) => {
 
 export const beginUpload = {
   async handler(request, h) {
-    // eslint-disable-next-line no-unused-vars
-    const { _uploadId, uploadUrl, _statusUrl } = await initiateUpload(
+    const { uploadUrl } = await initiateUpload(
       request.auth.credentials.currentOrganisationId
     )
     const { origin } = new URL(uploadUrl)
@@ -42,16 +40,6 @@ export const beginUpload = {
       extraAuthOrigins: origin
     }
 
-    // Note: we can only track the statusUrl if we save the details here, but we don't get the uploadId in the callback
-    // (without parsing it out of the `s3Key`). However, I don't think we have an actual need for this other that
-    // debugging later, unless we need to store something about the user that uploaded the file in order to notify them
-    // later?
-
-    // await request.backendApi.saveSpreadsheet(
-    //   request.auth.credentials.currentOrganisationId,
-    //   uploadId,
-    //   { statusUrl }
-    // )
     return h.view('spreadsheet/begin-upload', {
       pageTitle: 'Upload a Waste Movement Spreadsheet',
       action: uploadUrl,
@@ -81,35 +69,6 @@ export const fileUploaded = {
 
 export const callback = {
   async handler(request, h) {
-    // TODO maybe delay response if org / upload id not found?
-    //  cdp-uploader: {
-    //    "uploadId": "15c9e2af-17f8-4e6b-8a83-252c412c41c6",
-    //    "uploadStatus": "ready",
-    //    "fileIds": [
-    //      "3f135f3c-48f2-4f10-8773-7ec512fe3abc"
-    //    ]
-    //  }
-
-    // callback request.params:  { organisationId: '7f2f65e0-4858-11f0-afd0-f3af378128f9' }
-    // callback request.payload:  {
-    //   uploadStatus: 'ready',
-    //   metadata: { reference: 'reference-identifier', customerId: 'customer' },
-    //   form: {
-    //     fileUpload1: {
-    //       fileId: '231916bf-b6bd-48ed-adf3-a887c274071d',
-    //       filename: 'bumblebee.jpg',
-    //       contentType: 'image/jpeg',
-    //       fileStatus: 'complete',
-    //       contentLength: 140886,
-    //       checksumSha256: '8/pBJD+bqgM4ds378XnrIQ3NNBitBwOOCNttUYYmxDs=',
-    //       detectedContentType: 'image/jpeg',
-    //       s3Key: '32792dc6-6ed1-41ea-aaa5-bd774974545c/231916bf-b6bd-48ed-adf3-a887c274071d',
-    //       s3Bucket: 'my-bucket'
-    //     }
-    //   },
-    //   numberOfRejectedFiles: 0
-    // }
-
     if (request.payload?.metadata?.preSharedKey !== preSharedKey) {
       throw boom.forbidden('Not Allowed')
     } else {
@@ -119,15 +78,19 @@ export const callback = {
       }
       for (const spreadsheet of Object.values(spreadsheets)) {
         try {
-          await request.backendApi.saveSpreadsheet(
+          const s = await request.backendApi.saveSpreadsheet(
             request.params.organisationId,
             spreadsheet.fileId,
             spreadsheet
           )
+          if (!s) {
+            throw boom.badGateway()
+          }
         } catch (e) {
           logger.error(
             `Error in spreadsheet callback ${e} - spreadsheet ${spreadsheet}`
           )
+          throw e
         }
       }
       return h.response({ message: 'success' })

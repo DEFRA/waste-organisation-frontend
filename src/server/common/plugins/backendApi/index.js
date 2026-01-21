@@ -42,14 +42,14 @@ const remoteCall = (backendUrl, presharedKey) => {
       )
       return organisation
     },
-    saveSpreadsheet: async (organisationId, uploadId, spreadsheet) => {
-      const x = await apiCall(
+    saveSpreadsheet: async (organisationId, uploadId, s) => {
+      const { spreadsheet } = await apiCall(
         (url, r) => wreck.put(url, r),
         presharedKey,
         `${backendUrl}/spreadsheet/${organisationId}/${uploadId}`,
-        { spreadsheet }
+        { spreadsheet: s }
       )
-      return x
+      return spreadsheet
     }
   }
 }
