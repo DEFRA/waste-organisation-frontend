@@ -2,7 +2,6 @@ import wreck from '@hapi/wreck'
 import { config } from '../../config/config.js'
 import { pathTo, paths } from '../../config/paths.js'
 import { createLogger } from '../common/helpers/logging/logger.js'
-import { statusCodes } from '../common/constants/status-codes.js'
 import boom from '@hapi/boom'
 
 const logger = createLogger()
