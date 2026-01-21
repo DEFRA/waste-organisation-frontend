@@ -1,7 +1,7 @@
-import { mockOidcConfig } from './mock-oidc-config.js'
+import * as mockOidc from './mock-oidc-config.js'
 
 export async function initialiseServer({ domain, mockedPlugins, state } = {}) {
-  mockOidcConfig(domain)
+  mockOidc.mockOidcConfig(domain)
 
   const { createServer } = await import('../server/server.js')
   const plugins = await import('../server/common/plugins/index.js')
@@ -19,3 +19,7 @@ export async function initialiseServer({ domain, mockedPlugins, state } = {}) {
 
   return server
 }
+
+export const wreckGetMock = mockOidc.wreckGetMock
+export const wreckPostMock = mockOidc.wreckPostMock
+export const wreckPutMock = mockOidc.wreckPutMock
