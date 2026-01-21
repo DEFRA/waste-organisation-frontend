@@ -114,19 +114,20 @@ export const callback = {
       throw boom.forbidden('Not Allowed')
     } else {
       const spreadsheets = request.payload?.form
-      if (spreadsheets) {
-        for (const spreadsheet of Object.values(spreadsheets)) {
-          try {
-            await request.backendApi.saveSpreadsheet(
-              request.params.organisationId,
-              spreadsheet.fileId,
-              spreadsheet
-            )
-          } catch (e) {
-            logger.error(
-              `Error in spreadsheet callback ${e} - spreadsheet ${spreadsheet}`
-            )
-          }
+      if (!spreadsheets) {
+        return h.response({ message: 'success' })
+      }
+      for (const spreadsheet of Object.values(spreadsheets)) {
+        try {
+          await request.backendApi.saveSpreadsheet(
+            request.params.organisationId,
+            spreadsheet.fileId,
+            spreadsheet
+          )
+        } catch (e) {
+          logger.error(
+            `Error in spreadsheet callback ${e} - spreadsheet ${spreadsheet}`
+          )
         }
       }
       return h.response({ message: 'success' })
