@@ -31,7 +31,8 @@ export const openId = {
         isSecure: cookie.secure,
         providerParams: {
           serviceId: defraId.serviceId,
-          response_type: defraId.responseType
+          response_type: defraId.responseType,
+          forceReselection: true
         }
       })
     }
