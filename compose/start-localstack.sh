@@ -10,6 +10,8 @@ export AWS_SECRET_ACCESS_KEY=test
 # SQS queues
 # aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name my-queue
 
+# waste receiver backend processing queue
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name waste-receiver-background-process
 
 
 # Copied from cdp-uploader/compose/01-start-localstack.sh
@@ -32,3 +34,4 @@ aws --endpoint-url=http://localhost:4566 sqs create-queue --region $AWS_REGION -
 
 echo READY > /tmp/READY
 # end of copypasta
+

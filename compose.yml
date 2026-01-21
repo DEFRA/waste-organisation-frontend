@@ -116,7 +116,6 @@ services:
       PORT: 3000
       NODE_ENV: development
       REDIS_HOST: redis
-      LOCALSTACK_ENDPOINT: http://localstack:4566
       USE_SINGLE_INSTANCE_CACHE: true
       SESSION_CACHE_ENGINE: redis
       AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://localhost:3200/cdp-defra-id-stub/.well-known/openid-configuration'
@@ -148,7 +147,9 @@ services:
       MONGO_URI: mongodb://mongodb:27017/
       WASTE_CLIENT_AUTH_TEST: test
       S3_ENDPOINT: http://localstack:4566
+      SQS_ENDPOINT: http://localstack:4566
       AWS_S3_FORCE_PATH_STYLE: true
+      SPREADSHEET_SQS_QUEUE: waste-receiver-background-process
     networks:
       - cdp-tenant
 
