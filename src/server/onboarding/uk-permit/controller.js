@@ -7,10 +7,11 @@ const flashMessage = 'isPermitError'
 export const ukPermitController = {
   get: {
     handler(request, h) {
+      const pageContent = content.ukPermit(request)
+
       request.contentSecurityPolicy = {
         extraAuthOrigins: request.authProviderEndpoints
       }
-      const pageContent = content.ukPermit()
 
       const [error] = request.yar.flash(flashMessage)
       let errorContent
@@ -19,6 +20,25 @@ export const ukPermitController = {
         errorContent = pageContent.error
       }
 
+      const questions = Object.entries(pageContent.questions).map(
+        (question) => {
+          const [key, value] = question
+          return {
+            value: key,
+            text: value,
+            id: key,
+            attributes: {
+              'data-testid': `${key}-radio`
+            },
+            label: {
+              attributes: {
+                'data-testid': `${key}-label`
+              }
+            }
+          }
+        }
+      )
+
       return h.view('onboarding/uk-permit/view', {
         pageTitle: pageContent.title,
         heading: pageContent.heading,
@@ -26,8 +46,9 @@ export const ukPermitController = {
           url: paths.isPermit,
           text: pageContent.continueAction
         },
-        questions: pageContent.questions,
-        error: errorContent
+        questions,
+        error: errorContent,
+        backLink: paths.startPage
       })
     }
   },

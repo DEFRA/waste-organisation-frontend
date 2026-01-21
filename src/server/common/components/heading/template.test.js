@@ -7,7 +7,8 @@ describe('Heading Component', () => {
     beforeEach(() => {
       $heading = renderComponent('heading', {
         text: 'Services',
-        caption: 'A page showing available services'
+        caption: 'A page showing available services',
+        organisationName: 'Organisation Name'
       })
     })
 
@@ -25,6 +26,12 @@ describe('Heading Component', () => {
       expect(
         $heading('[data-testid="app-heading-caption"]').text().trim()
       ).toBe('A page showing available services')
+    })
+
+    test('Should have expected organisation name', () => {
+      expect(
+        $heading('[data-testid="app-heading-organisation-name"]').text().trim()
+      ).toBe('Organisation Name')
     })
   })
 })

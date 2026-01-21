@@ -2,13 +2,13 @@
 {% extends 'layouts/page.njk' %}
 
 {% block content %}
-  {{ appHeading({
-    text: heading,
-    caption: description
-  }) }}
+  <div class="govuk-grid-row" data-testid="app-heading">
+    <div class="govuk-grid-column-two-thirds">
+      {{ appHeading(heading) }}
 
-  <p class="govuk-body">
-    <a class="govuk-link" href="{{link.href}}">{{link.text}}</a>
-  </p>
-
+      <p class="govuk-body">
+        <a class="govuk-link" href="{{link.href}}">{{link.text}}</a>
+      </p>
+    </div>
+  </div>
 {% endblock %}

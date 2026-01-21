@@ -8,6 +8,7 @@ import { search } from './search/index.js'
 import { signIn } from './signIn/index.js'
 import { onboarding } from './onboarding/index.js'
 import { dashboard } from './dashboard/index.js'
+import { nextAction } from './nextAction/index.js'
 import { spreadsheet } from './spreadsheet/index.js'
 
 export const router = {
@@ -27,6 +28,7 @@ export const router = {
         dashboard,
         search,
         onboarding,
+        nextAction,
         spreadsheet
       ])
 

@@ -59,6 +59,20 @@ export const config = convict({
       env: 'FILE_UPLOAD_S3_BUCKET'
     }
   },
+  links: {
+    startPage: {
+      doc: 'Link to guidance start page',
+      format: String,
+      default: '/start-page',
+      env: 'LINK-GUIDANCE-START-PAGE'
+    },
+    feedback: {
+      doc: 'Link to feedback page',
+      format: String,
+      default: '/start-page',
+      env: 'LINK-FEEDBACK-PAGE'
+    }
+  },
   serviceVersion: {
     doc: 'The service version, this variable is injected into your docker container in CDP environments',
     format: String,

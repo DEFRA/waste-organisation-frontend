@@ -4,7 +4,7 @@ import { initialiseServer } from '../../../test-utils/initialise-server.js'
 
 import { JSDOM } from 'jsdom'
 
-describe('#dashboardController', () => {
+describe('#cannotUseServiceController', () => {
   let server
 
   beforeAll(async () => {
@@ -35,9 +35,11 @@ describe('#dashboardController', () => {
     expect(document.title).toEqual(
       expect.stringContaining(`${pageContent.title} |`)
     )
-    expect(pageHeading).toEqual(expect.stringContaining(pageContent.heading))
+    expect(pageHeading).toEqual(
+      expect.stringContaining(pageContent.heading.text)
+    )
     expect(pageDescription).toEqual(
-      expect.stringContaining(pageContent.description)
+      expect.stringContaining(pageContent.heading.caption)
     )
   })
 })

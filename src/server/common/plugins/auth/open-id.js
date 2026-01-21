@@ -1,6 +1,9 @@
 import { config } from '../../../../config/config.js'
 import { paths } from '../../../../config/paths.js'
 import { openIdProvider } from '../../helpers/auth/open-id-provider.js'
+import { createLogger } from '../../helpers/logging/logger.js'
+
+const logger = createLogger()
 
 export const openId = {
   plugin: {
@@ -11,11 +14,14 @@ export const openId = {
       const baseUrl = config.get('appBaseUrl')
 
       const defra = await openIdProvider('defraId', defraId)
-      const providerEndpoints = Array.isArray(defraId.providerEndpoints)
+      const providerEndpoints = Array.isArray(defra.providerEndpoints)
         ? [...defra.providerEndpoints]
         : []
       delete defra.providerEndpoints
       server.decorate('request', 'authProviderEndpoints', providerEndpoints)
+      logger.info(
+        `Initialising oauth providerEndpoints: ${JSON.stringify(providerEndpoints)}`
+      )
       server.auth.strategy('defraId', 'bell', {
         location: () => `${baseUrl}${paths.signinDefraIdCallback}`,
         provider: defra,
