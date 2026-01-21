@@ -69,4 +69,22 @@ describe('backendApi', () => {
 
     expect(actualResponse).toEqual(expectedResponse)
   })
+
+  test('saveSpreadsheet dummy test for coverage reasons', async () => {
+    const expectedResponse = {
+      randomData: 'Some Data'
+    }
+
+    vi.spyOn(wreck, 'put').mockImplementation(async () => ({
+      payload: expectedResponse
+    }))
+
+    const actualResponse = await backendApiService.saveSpreadsheet(
+      'organisationId',
+      'uploadId',
+      expectedResponse
+    )
+
+    expect(actualResponse).toEqual(expectedResponse)
+  })
 })

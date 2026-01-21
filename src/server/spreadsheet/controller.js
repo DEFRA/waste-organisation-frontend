@@ -3,15 +3,11 @@ import { config } from '../../config/config.js'
 import { pathTo, paths } from '../../config/paths.js'
 import { createLogger } from '../common/helpers/logging/logger.js'
 import { statusCodes } from '../common/constants/status-codes.js'
+import boom from '@hapi/boom'
 
 const logger = createLogger()
 
-// POST https://cdp-uploader.{env}.cdp-int.defra.cloud/initiate
-// Content-Type: application/json
-
-// "callback": "https://tenant-service.{env}.cdp-int.defra.cloud/upload-received/reference-identifier",
-
-const preSharedKey = 'a9f7971f-4992-49eb-8fcc-83c93b5f233c'
+export const preSharedKey = 'a9f7971f-4992-49eb-8fcc-83c93b5f233c'
 
 const initiateUpload = async (orgId) => {
   const { url, bucketName } = config.get('fileUpload')
@@ -116,20 +112,22 @@ export const callback = {
     // }
 
     if (request.payload?.metadata?.preSharedKey !== preSharedKey) {
-      return h.code(statusCodes.forbidden)
+      throw boom.forbidden('Not Allowed')
     } else {
-      const spreadsheets = Object.values(request.payload?.form)
-      for (const spreadsheet of spreadsheets) {
-        try {
-          await request.backendApi.saveSpreadsheet(
-            request.params.organisationId,
-            spreadsheet.fileId,
-            spreadsheet
-          )
-        } catch (e) {
-          logger.error(
-            `Error in spreadsheet callback ${e} - spreadsheet ${spreadsheet}`
-          )
+      const spreadsheets = request.payload?.form
+      if (spreadsheets) {
+        for (const spreadsheet of Object.values(spreadsheets)) {
+          try {
+            await request.backendApi.saveSpreadsheet(
+              request.params.organisationId,
+              spreadsheet.fileId,
+              spreadsheet
+            )
+          } catch (e) {
+            logger.error(
+              `Error in spreadsheet callback ${e} - spreadsheet ${spreadsheet}`
+            )
+          }
         }
       }
       return h.response({ message: 'success' })

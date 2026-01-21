@@ -29,7 +29,6 @@ const remoteCall = (backendUrl, presharedKey) => {
         presharedKey,
         `${backendUrl}/user/${userId}/organisations`
       )
-
       return organisations
     },
     saveOrganisation: async (userId, organisationId, orgData) => {
@@ -41,7 +40,6 @@ const remoteCall = (backendUrl, presharedKey) => {
           organisation: orgData
         }
       )
-
       return organisation
     },
     saveSpreadsheet: async (organisationId, uploadId, spreadsheet) => {
