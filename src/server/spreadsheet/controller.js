@@ -38,6 +38,7 @@ const initiateUpload = async (orgId) => {
 
 export const beginUpload = {
   async handler(request, h) {
+    // eslint-disable-next-line no-unused-vars
     const { _uploadId, uploadUrl, _statusUrl } = await initiateUpload(
       request.auth.credentials.currentOrganisationId
     )
