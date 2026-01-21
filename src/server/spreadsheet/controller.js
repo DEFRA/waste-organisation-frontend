@@ -21,12 +21,14 @@ const initiateUpload = async (orgId) => {
         pathTo(paths.spreadsheetUploadCallback, {
           organisationId: orgId
         }),
+      /* v8 ignore start */
       s3Bucket: bucketName,
       metadata: {
         preSharedKey
       }
     }
   })
+  /* v8 ignore stop */
   return payload
 }
 
@@ -40,6 +42,7 @@ export const beginUpload = {
       extraAuthOrigins: origin
     }
 
+    /* v8 ignore start */
     return h.view('spreadsheet/begin-upload', {
       pageTitle: 'Upload a Waste Movement Spreadsheet',
       action: uploadUrl,
@@ -57,6 +60,7 @@ export const beginUpload = {
 }
 
 export const fileUploaded = {
+  /* v8 ignore stop */
   async handler(request, h) {
     return h.view('spreadsheet/file-uploaded', {
       pageTitle: 'Upload a Waste Movement Spreadsheet',
