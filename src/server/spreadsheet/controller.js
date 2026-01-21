@@ -67,33 +67,40 @@ export const fileUploaded = {
   }
 }
 
+const saveSpreadsheet = async (backendApi, organisationId, spreadsheet) => {
+  try {
+    return await backendApi.saveSpreadsheet(
+      organisationId,
+      spreadsheet.fileId,
+      spreadsheet
+    )
+  } catch (e) {
+    logger.error(
+      `Error in spreadsheet callback ${e} - spreadsheet ${spreadsheet}`
+    )
+    throw e
+  }
+}
+
 export const callback = {
   async handler(request, h) {
     if (request.payload?.metadata?.preSharedKey !== preSharedKey) {
       throw boom.forbidden('Not Allowed')
-    } else {
-      const spreadsheets = request.payload?.form
-      if (!spreadsheets) {
-        return h.response({ message: 'success' })
-      }
-      for (const spreadsheet of Object.values(spreadsheets)) {
-        try {
-          const s = await request.backendApi.saveSpreadsheet(
-            request.params.organisationId,
-            spreadsheet.fileId,
-            spreadsheet
-          )
-          if (!s) {
-            throw boom.badGateway()
-          }
-        } catch (e) {
-          logger.error(
-            `Error in spreadsheet callback ${e} - spreadsheet ${spreadsheet}`
-          )
-          throw e
-        }
-      }
+    }
+    const spreadsheets = request.payload?.form
+    if (!spreadsheets) {
       return h.response({ message: 'success' })
     }
+    for (const spreadsheet of Object.values(spreadsheets)) {
+      const s = await saveSpreadsheet(
+        request.backendApi,
+        request.params.organisationId,
+        spreadsheet
+      )
+      if (!s) {
+        throw boom.badGateway()
+      }
+    }
+    return h.response({ message: 'success' })
   }
 }
