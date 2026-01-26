@@ -1,21 +1,31 @@
 {% extends 'layouts/page.njk' %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
-  {{ appHeading({
-    text: heading,
-    caption: "waste-organisation-frontend"
-  }) }}
+  {{
+    appHeading({
+      text: heading,
+      caption: "waste-organisation-frontend"
+    })
+  }}
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-body" data-testid="app-page-body">
+        {{
+          govukButton({
+          text: "Login again",
+          href: "/signin-oidc",
+          isStartButton: true,
+          id: "start-now-button",
+          classes: "govuk-!-margin-top-5" })
+        }}
 
         <pre>
-          {{credentials}}
-        </pre>
-
+          {{ credentials }}
+        </pre
+        >
       </div>
     </div>
   </div>
-
 {% endblock %}

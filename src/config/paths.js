@@ -1,3 +1,4 @@
+/* v8 ignore start */
 export const paths = {
   chromeDevtools: '/.well-known/appspecific/com.chrome.devtools.json',
   cookies: '/cookies',
@@ -17,8 +18,15 @@ export const paths = {
   signInChoose: '/sign-in',
 
   signinDefraIdCallback: '/signin-oidc',
-  signinEntraIdCallback: '/signin-entra-id'
+  signinEntraIdCallback: '/signin-entra-id',
+
+  spreadsheetUpload: '/organisation/{organisationId}/spreadsheet/begin-upload',
+  spreadsheetUploaded:
+    '/organisation/{organisationId}/spreadsheet/file-uploaded',
+  spreadsheetUploadCallback:
+    '/organisation/{organisationId}/spreadsheet/upload-callback'
 }
+/* v8 ignore stop */
 
 export const pathTo = (route, params) => {
   const routeParams = route.match(/\{\w+\*?\}/g)
