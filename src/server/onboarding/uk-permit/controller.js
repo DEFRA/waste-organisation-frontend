@@ -26,7 +26,7 @@ export const ukPermitController = {
           return {
             value: key,
             text: value,
-            id: key,
+            id: `isPermit${value}`,
             attributes: {
               'data-testid': `${key}-radio`
             },
