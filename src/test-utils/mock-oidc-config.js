@@ -1,6 +1,8 @@
 import { vi } from 'vitest'
 
 export const wreckGetMock = vi.fn()
+export const wreckPostMock = vi.fn()
+export const wreckPutMock = vi.fn()
 
 export const mockOidcConfig = (domain = 'http://localhost:2') => {
   vi.doMock('@hapi/wreck', () => ({
@@ -53,7 +55,9 @@ export const mockOidcConfig = (domain = 'http://localhost:2') => {
             'auth_time'
           ]
         }
-      })
+      }),
+      post: wreckPostMock.mockReturnValue({ payload: { post: 'response' } }),
+      put: wreckPutMock.mockReturnValue({ payload: { put: 'response' } })
     }
   }))
 }

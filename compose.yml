@@ -11,12 +11,11 @@ services:
       LS_LOG: WARN # Localstack DEBUG Level
       SERVICES: s3,sqs,sns,firehose
       LOCALSTACK_HOST: 127.0.0.1
-
     volumes:
-      - '${TMPDIR:-/tmp}/localstack:/var/lib/localstack'
-      - ./compose/start-localstack.sh:/etc/localstack/init/ready.d/start-localstack.sh
+      - '${TMPDIR:-/tmp}/localstack:/var/lib/localstack:z'
+      - './compose/start-localstack.sh:/etc/localstack/init/ready.d/01-start-localstack.sh:z'
     healthcheck:
-      test: ['CMD', 'curl', 'localhost:4566']
+      test: ["CMD", "stat", "/tmp/READY"]
       interval: 5s
       start_period: 5s
       retries: 3
@@ -38,7 +37,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - mongodb-data:/data
+      - ./mongodb-data:/data:z
     restart: always
 
   cdp-defra-id-stub:
@@ -46,8 +45,7 @@ services:
     ports:
       - '3200:3200'
       - '3000:3000' # waste-organisation-frontend port passthrough for networking
-    links:
-      - 'redis:redis'
+      - '7337:7337'
     depends_on:
       redis:
         condition: service_started
@@ -61,14 +59,46 @@ services:
     networks:
       - cdp-tenant
 
-  ################################################################################
+  cdp-uploader:
+    image: defradigital/cdp-uploader:latest
+    depends_on:
+      localstack:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - 'compose/aws.env'
+    environment:
+      VIRTUAL_HOST: ~^uploader\..*\.sslip\.io
+      VIRTUAL_PATH: /
+      VIRTUAL_PORT: 7337
+      PORT: 7337
+      NODE_ENV: development
+      REDIS_HOST: redis
+      USE_SINGLE_INSTANCE_CACHE: true
+      MOCK_VIRUS_SCAN_ENABLED: true
+      MOCK_VIRUS_RESULT_DELAY: 3
+      SQS_ENDPOINT: http://localstack:4566
+      S3_ENDPOINT: http://localstack:4566
+    network_mode: 'service:cdp-defra-id-stub'  # used to allow localhost to cdp-defra-id-stub
+    # networks:
+    #   - cdp-tenant
+
+
+################################################################################
 
   waste-organisation-frontend:
     build:
       context: .
       target: development
     volumes:
-      - .:/home/node/
+      - ./package.json:/home/node/package.json:z
+      - ./package-lock.json:/home/node/package-lock.json:z
+      - ./src:/home/node/src:z
+      - ./node_modules:/home/node/node_modules:z
+      - ./webpack.config.js:/home/node/webpack.config.js:z
+      - ./postcss.config.js:/home/node/postcss.config.js:z
+      - ./postcss.config.js:/home/node/postcss.config.js:z
     depends_on:
       localstack:
         condition: service_healthy
@@ -76,18 +106,23 @@ services:
         condition: service_started
       cdp-defra-id-stub:
         condition: service_started
+      waste-organisation-backend:
+        condition: service_started
+      cdp-uploader:
+        condition: service_started
     env_file:
       - 'compose/aws.env'
     environment:
       PORT: 3000
       NODE_ENV: development
       REDIS_HOST: redis
-      LOCALSTACK_ENDPOINT: http://localstack:4566
       USE_SINGLE_INSTANCE_CACHE: true
       SESSION_CACHE_ENGINE: redis
       AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://localhost:3200/cdp-defra-id-stub/.well-known/openid-configuration'
       BACKEND_API: http://waste-organisation-backend:3001
-    network_mode: 'service:cdp-defra-id-stub' # used to allow localhost to cdp-defra-id-stub
+      FILE_UPLOAD_SERVICE_URL: http://localhost:7337
+      BACKEND_API_PRESHARED_KEY: test
+    network_mode: 'service:cdp-defra-id-stub'  # used to allow localhost to cdp-defra-id-stub
 
   waste-organisation-backend:
     build:
@@ -96,14 +131,13 @@ services:
     ports:
       - '3001:3001'
     volumes:
-      - ../waste-organisation-backend:/home/node/
-    links:
-      - 'localstack:localstack'
-      - 'mongodb:mongodb'
+      - ../waste-organisation-backend:/home/node/:z
     depends_on:
       localstack:
         condition: service_healthy
       redis:
+        condition: service_started
+      mongodb:
         condition: service_started
     env_file:
       - 'compose/aws.env'
@@ -111,34 +145,15 @@ services:
       PORT: 3001
       NODE_ENV: development
       MONGO_URI: mongodb://mongodb:27017/
+      WASTE_CLIENT_AUTH_TEST: test
+      S3_ENDPOINT: http://localstack:4566
+      SQS_ENDPOINT: http://localstack:4566
+      AWS_S3_FORCE_PATH_STYLE: true
+      SPREADSHEET_SQS_QUEUE: waste-receiver-background-process
     networks:
       - cdp-tenant
 
-  # your-backend:
-  #   image: defradigital/your-backend:${YOUR_BACKEND_VERSION:-latest}
-  #   ports:
-  #     - '3555:3555'
-  #   links:
-  #     - 'localstack:localstack'
-  #     - 'mongodb:mongodb'
-  #   depends_on:
-  #     localstack:
-  #       condition: service_healthy
-  #     mongodb:
-  #       condition: service_started
-  #   env_file:
-  #     - 'compose/aws.env'
-  #   environment:
-  #     PORT: 3555
-  #     NODE_ENV: development
-  #     LOCALSTACK_ENDPOINT: http://localstack:4566
-  #   networks:
-  #     - cdp-tenant
-
 ################################################################################
-
-volumes:
-  mongodb-data:
 
 networks:
   cdp-tenant:

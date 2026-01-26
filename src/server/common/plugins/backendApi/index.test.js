@@ -34,11 +34,13 @@ describe('backendApi', () => {
       { name: 'Monkey Barrel LTD', id: '9c6a06d7-e691-4740-89a2-a64d23478034' }
     ]
 
-    vi.spyOn(wreck, 'get').mockImplementation(async () => ({
-      payload: {
-        organisations: expectedOrganisation
+    vi.spyOn(wreck, 'get').mockImplementation(async () => {
+      return {
+        payload: {
+          organisations: expectedOrganisation
+        }
       }
-    }))
+    })
 
     const actualOrganisations =
       await backendApiService.getOrganisations('userId')
@@ -55,7 +57,7 @@ describe('backendApi', () => {
 
     vi.spyOn(wreck, 'put').mockImplementation(async () => ({
       payload: {
-        organisations: expectedResponse
+        organisation: expectedResponse
       }
     }))
 
@@ -63,6 +65,24 @@ describe('backendApi', () => {
       'userId',
       'organisationId',
       { randomData: 'Some Data' }
+    )
+
+    expect(actualResponse).toEqual(expectedResponse)
+  })
+
+  test('saveSpreadsheet dummy test for coverage reasons', async () => {
+    const expectedResponse = {
+      randomData: 'Some Data'
+    }
+
+    vi.spyOn(wreck, 'put').mockImplementation(async () => ({
+      payload: { spreadsheet: expectedResponse }
+    }))
+
+    const actualResponse = await backendApiService.saveSpreadsheet(
+      'organisationId',
+      'uploadId',
+      expectedResponse
     )
 
     expect(actualResponse).toEqual(expectedResponse)
