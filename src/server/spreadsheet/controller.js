@@ -13,6 +13,7 @@ const initiateUpload = async (orgId) => {
     const { url, bucketName } = config.get('fileUpload')
     const initiateUrl = `${url}/initiate`
     logger.info(`Info initiating upload: ${initiateUrl}`)
+    /* v8 ignore start */
     const { payload } = await wreck.post(initiateUrl, {
       json: 'strict',
       payload: {
@@ -24,19 +25,18 @@ const initiateUpload = async (orgId) => {
           pathTo(paths.spreadsheetUploadCallback, {
             organisationId: orgId
           }),
-        /* v8 ignore start */
         s3Bucket: bucketName,
         metadata: {
           preSharedKey
         }
       }
     })
-    /* v8 ignore stop */
     return payload
   } catch (e) {
     logger.error(`Error initiating upload - ${e}`)
   }
 }
+/* v8 ignore stop */
 
 export const beginUpload = {
   async handler(request, h) {
@@ -44,12 +44,12 @@ export const beginUpload = {
       request.auth.credentials.currentOrganisationId
     )
     logger.info(`uploaded requested - ${uploadId}`)
+    /* v8 ignore start */
     const { origin } = new URL(uploadUrl)
     request.contentSecurityPolicy = {
       extraAuthOrigins: origin
     }
 
-    /* v8 ignore start */
     return h.view('spreadsheet/begin-upload', {
       pageTitle: 'Upload a Waste Movement Spreadsheet',
       action: uploadUrl,
