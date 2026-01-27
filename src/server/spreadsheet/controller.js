@@ -27,7 +27,9 @@ const initiateUpload = async (orgId) => {
     const { payload } = await wreck.post(initiateUrl, {
       json: 'strict',
       payload: {
-        redirect: redirectUrl,
+        redirect: pathTo(paths.spreadsheetUploaded, {
+          organisationId: orgId
+        }),
         callback: callbackUrl,
         s3Bucket: bucketName,
         metadata: {
