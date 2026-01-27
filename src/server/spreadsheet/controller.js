@@ -8,15 +8,22 @@ const logger = createLogger()
 
 export const preSharedKey = 'a9f7971f-4992-49eb-8fcc-83c93b5f233c'
 
+/* v8 ignore start */
 const initiateUpload = async (orgId) => {
   try {
     const { url, bucketName } = config.get('fileUpload')
     const initiateUrl = `${url}/initiate`
-    const callbackUrl = pathTo(paths.spreadsheetUploadCallback, {
+    const callbackUrl =
+      config.get('appBaseUrl') +
+      pathTo(paths.spreadsheetUploadCallback, {
+        organisationId: orgId
+      })
+    const redirectUrl = pathTo(paths.spreadsheetUploaded, {
       organisationId: orgId
     })
-    logger.info(`Info initiating upload: ${initiateUrl} - ${callbackUrl}`)
-    /* v8 ignore start */
+    logger.info(
+      `Info initiating upload: ${initiateUrl} callback: ${callbackUrl} redirect: ${redirectUrl}`
+    )
     const { payload } = await wreck.post(initiateUrl, {
       json: 'strict',
       payload: {
