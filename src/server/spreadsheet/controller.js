@@ -8,6 +8,7 @@ const logger = createLogger()
 
 export const preSharedKey = 'a9f7971f-4992-49eb-8fcc-83c93b5f233c'
 
+/* v8 ignore start */
 const initiateUpload = async (orgId) => {
   try {
     const { url, bucketName } = config.get('fileUpload')
@@ -23,7 +24,6 @@ const initiateUpload = async (orgId) => {
     logger.info(
       `Info initiating upload: ${initiateUrl} callback: ${callbackUrl} redirect: ${redirectUrl}`
     )
-    /* v8 ignore start */
     const { payload } = await wreck.post(initiateUrl, {
       json: 'strict',
       payload: {
