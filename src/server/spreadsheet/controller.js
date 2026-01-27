@@ -9,34 +9,41 @@ const logger = createLogger()
 export const preSharedKey = 'a9f7971f-4992-49eb-8fcc-83c93b5f233c'
 
 const initiateUpload = async (orgId) => {
-  const { url, bucketName } = config.get('fileUpload')
-  const { payload } = await wreck.post(`${url}/initiate`, {
-    json: 'strict',
-    payload: {
-      redirect: pathTo(paths.spreadsheetUploaded, {
-        organisationId: orgId
-      }),
-      callback:
-        config.get('appBaseUrl') +
-        pathTo(paths.spreadsheetUploadCallback, {
+  try {
+    const { url, bucketName } = config.get('fileUpload')
+    const initiateUrl = `${url}/initiate`
+    logger.info(`Info initiating upload: ${initiateUrl}`)
+    const { payload } = await wreck.post(initiateUrl, {
+      json: 'strict',
+      payload: {
+        redirect: pathTo(paths.spreadsheetUploaded, {
           organisationId: orgId
         }),
-      /* v8 ignore start */
-      s3Bucket: bucketName,
-      metadata: {
-        preSharedKey
+        callback:
+          config.get('appBaseUrl') +
+          pathTo(paths.spreadsheetUploadCallback, {
+            organisationId: orgId
+          }),
+        /* v8 ignore start */
+        s3Bucket: bucketName,
+        metadata: {
+          preSharedKey
+        }
       }
-    }
-  })
-  /* v8 ignore stop */
-  return payload
+    })
+    /* v8 ignore stop */
+    return payload
+  } catch (e) {
+    logger.error(`Error initiating upload - ${e}`)
+  }
 }
 
 export const beginUpload = {
   async handler(request, h) {
-    const { uploadUrl } = await initiateUpload(
+    const { uploadId, uploadUrl } = await initiateUpload(
       request.auth.credentials.currentOrganisationId
     )
+    logger.info(`uploaded requested - ${uploadId}`)
     const { origin } = new URL(uploadUrl)
     request.contentSecurityPolicy = {
       extraAuthOrigins: origin
