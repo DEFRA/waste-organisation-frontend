@@ -12,7 +12,10 @@ const initiateUpload = async (orgId) => {
   try {
     const { url, bucketName } = config.get('fileUpload')
     const initiateUrl = `${url}/initiate`
-    logger.info(`Info initiating upload: ${initiateUrl}`)
+    const callbackUrl = pathTo(paths.spreadsheetUploadCallback, {
+      organisationId: orgId
+    })
+    logger.info(`Info initiating upload: ${initiateUrl} - ${callbackUrl}`)
     /* v8 ignore start */
     const { payload } = await wreck.post(initiateUrl, {
       json: 'strict',
@@ -20,11 +23,7 @@ const initiateUpload = async (orgId) => {
         redirect: pathTo(paths.spreadsheetUploaded, {
           organisationId: orgId
         }),
-        callback:
-          config.get('appBaseUrl') +
-          pathTo(paths.spreadsheetUploadCallback, {
-            organisationId: orgId
-          }),
+        callback: callbackUrl,
         s3Bucket: bucketName,
         metadata: {
           preSharedKey
