@@ -34,6 +34,7 @@ const initiateUpload = async (orgId) => {
     return payload
   } catch (e) {
     logger.error(`Error initiating upload - ${e}`)
+    throw e
   }
 }
 /* v8 ignore stop */
