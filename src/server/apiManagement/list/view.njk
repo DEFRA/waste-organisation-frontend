@@ -1,0 +1,141 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% macro actionButtons(code) %}
+  <span data-copyText="{{code}}"></span>
+  {{govukButton({
+    text: "Disable",
+    classes: "govuk-button--secondary"
+  })}}
+{% endmacro %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ appHeading(heading) }}
+    </div>
+    <div class="govuk-grid-column-full">
+
+      <div class="govuk-summary-card govuk-!-margin-top-4 govuk-!-padding-bottom-4">
+        <div class="govuk-summary-card__content">
+          {{ govukSummaryList({
+            rows: [
+              {
+                key: {
+                  text: "API code 1"
+                },
+                value: {
+                  text: "af552bd3-f929-4924-a86d-d8e4f0cb8d61"
+                },
+                actions: {
+                  items: [
+                    {
+                      href: "/",
+                      text: "Disable",
+                      classes: "govuk-button govuk-button--secondary",
+                      attributes: {
+                        "data-copyText": "Meh 3"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                key: {
+                  text: "Name"
+                },
+                value: {
+                  text: "[Waste receiving organisation or business name]_Code 1"
+                },
+                actions: {
+                  items: [
+                    {
+                      href: "#",
+                      text: "Change"
+                    }
+                  ]
+                }
+              },
+              {
+                key: {
+                  text: "API code 1"
+                },
+                value: {
+                  text: "af552bd3-f929-4924-a86d-d8e4f0cb8d61"
+                },
+                actions: {
+                  items: [
+                    {
+                      href: "/",
+                      text: "Disable",
+                      classes: "govuk-button govuk-button--secondary",
+                      attributes: {
+                        "data-copyText": "Meh 4"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                key: {
+                  text: "Name"
+                },
+                value: {
+                  text: "[Waste receiving organisation or business name]_Code 1"
+                },
+                actions: {
+                  items: [
+                    {
+                      href: "#",
+                      text: "Change"
+                    }
+                  ]
+                }
+              }
+            ]
+          }) }}
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}
+{% block bodyEnd %}
+  <script nonce="{{ scriptNonce }}">
+
+    const copyText = "Copy";
+    const copiedText = "Copied";
+
+    const buttonHTML = `{{govukButton({
+                        text: "${copyText}",
+                        classes: "govuk-!-margin-right-1"
+                      })}}`;
+
+    const actionButtons = document.querySelectorAll('[data-copyText]')
+
+    for (const actionButton of actionButtons) {
+      const code = actionButton.getAttribute('data-copyText');
+      const parentElement = actionButton.parentNode;
+
+      parentElement.innerHTML = buttonHTML + parentElement.innerHTML;
+
+      const copyButton = parentElement.firstChild;
+      copyButton.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        navigator
+          .clipboard
+          .writeText(code);
+
+        copyButton.innerHTML = copiedText;
+
+        setTimeout(() => {
+          copyButton.innerHTML = copyText;
+        }, 3000);
+
+      })
+    }
+  </script>
+
+{% endblock %}

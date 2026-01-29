@@ -64,5 +64,12 @@ export const content = {
         },
         continueAction: 'Continue'
       }
+    }),
+  apiList: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'API Code',
+        heading: heading('Your API code', null, organisationName)
+      }
     })
 }
