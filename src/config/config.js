@@ -57,6 +57,13 @@ export const config = convict({
       nullable: false,
       default: 'my-bucket',
       env: 'FILE_UPLOAD_S3_BUCKET'
+    },
+    presharedKey: {
+      doc: 'The preshared key to authenticate file upload API callback. Passed into the initiate call and returned to this service by the CDP Upload Service',
+      format: String,
+      nullable: false,
+      default: 'abc123',
+      env: 'BACKEND_API_PRESHARED_KEY'
     }
   },
   links: {
