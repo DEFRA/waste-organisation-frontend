@@ -6,12 +6,10 @@ import boom from '@hapi/boom'
 
 const logger = createLogger()
 
-export const preSharedKey = 'a9f7971f-4992-49eb-8fcc-83c93b5f233c'
-
 /* v8 ignore start */
 const initiateUpload = async (orgId) => {
   try {
-    const { url, bucketName } = config.get('fileUpload')
+    const { url, bucketName, preSharedKey } = config.get('fileUpload')
     const initiateUrl = `${url}/initiate`
     const callbackUrl =
       config.get('appBaseUrl') +
@@ -22,7 +20,7 @@ const initiateUpload = async (orgId) => {
       organisationId: orgId
     })
     logger.info(
-      `Info initiating upload: ${initiateUrl} callback: ${callbackUrl} redirect: ${redirectUrl}`
+      `Info initiating upload: ${initiateUrl} callback: ${callbackUrl} redirect: ${redirectUrl} bucketName: ${bucketName}`
     )
     const { payload } = await wreck.post(initiateUrl, {
       json: 'strict',
@@ -40,6 +38,7 @@ const initiateUpload = async (orgId) => {
     return payload
   } catch (e) {
     logger.error(`Error initiating upload - ${e}`)
+    logger.error(`Error payload - ${e.payload}`)
     throw e
   }
 }
@@ -102,6 +101,7 @@ const saveSpreadsheet = async (backendApi, organisationId, spreadsheet) => {
 
 export const callback = {
   async handler(request, h) {
+    const { preSharedKey } = config.get('fileUpload')
     if (request.payload?.metadata?.preSharedKey !== preSharedKey) {
       throw boom.forbidden('Not Allowed')
     }
