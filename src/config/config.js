@@ -63,7 +63,7 @@ export const config = convict({
       format: String,
       nullable: false,
       default: 'abc123',
-      env: 'BACKEND_API_PRESHARED_KEY'
+      env: 'FILE_UPLOAD_PRESHARED_KEY'
     }
   },
   links: {
