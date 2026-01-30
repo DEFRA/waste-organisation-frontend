@@ -71,13 +71,13 @@ export const config = convict({
       doc: 'Link to guidance start page',
       format: String,
       default: '/start-page',
-      env: 'LINK-GUIDANCE-START-PAGE'
+      env: 'LINK_GUIDANCE_START_PAGE'
     },
     feedback: {
       doc: 'Link to feedback page',
       format: String,
       default: '/start-page',
-      env: 'LINK-FEEDBACK-PAGE'
+      env: 'LINK_FEEDBACK_PAGE'
     }
   },
   serviceVersion: {
