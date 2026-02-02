@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import {
   wreckGetMock,
   initialiseServer
@@ -168,6 +168,9 @@ describe('apiList', () => {
     let actualOptions
 
     const request = {
+      yar: {
+        flash: vi.fn().mockImplementation(() => ['something'])
+      },
       contentSecurityPolicy: {},
       auth: {
         credentials: {
@@ -262,5 +265,35 @@ describe('apiList', () => {
         }
       }
     ])
+  })
+
+  test('should create apiCode if none exist', async () => {
+    const request = {
+      yar: {
+        flash: vi.fn().mockImplementation(() => ['something'])
+      },
+      contentSecurityPolicy: {},
+      auth: {
+        credentials: {
+          currentOrganisationId: organisationId
+        }
+      },
+      backendApi: {
+        getApiCodes: () => null,
+        createApiCodes: vi.fn().mockImplementation(async () => ({
+          code: 'd05d0c78-c0c4-457c-8161-67a88c0f9ba4',
+          name: 'Joe Bloggs LTD_code_2',
+          isDisabled: false
+        }))
+      }
+    }
+
+    const handler = {
+      view: () => vi.fn()
+    }
+
+    await apiManagementController.list.handler(request, handler)
+
+    expect(request.backendApi.createApiCodes).toHaveBeenCalled()
   })
 })

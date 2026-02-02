@@ -2,6 +2,8 @@ import { paths } from '../../../config/paths.js'
 import { content } from '../../../config/content.js'
 import crypto from 'node:crypto'
 
+const flashDisabledMessage = 'disabledSuccessful'
+
 export const apiManagementController = {
   list: {
     async handler(request, h) {
@@ -15,6 +17,13 @@ export const apiManagementController = {
         request?.auth?.credentials?.currentOrganisationName
 
       const pageContent = content.apiList(request, organisationName)
+
+      const [code] = request.yar.flash(flashDisabledMessage)
+      let disabledSuccessMessage
+
+      if (code) {
+        disabledSuccessMessage = pageContent.disabledSuccessMessage(code)
+      }
 
       let apiCodes = await request.backendApi.getApiCodes(
         request.auth.credentials.currentOrganisationId
@@ -30,14 +39,19 @@ export const apiManagementController = {
       }
 
       const enabledApiCodes = apiCodes.filter((apiCode) => !apiCode.isDisabled)
+      const disabledApiCodes = apiCodes.filter((apiCode) => apiCode.isDisabled)
 
       return h.view('apiManagement/list/view', {
         pageTitle: pageContent.title,
         heading: pageContent.heading,
-        backLink: paths.startPage,
+        backLink: paths.nextAction,
         noEnabledApiCodes: pageContent.noEnabledApiCodes,
         apiCodeRows: convertToListRows(enabledApiCodes),
-        scriptNonce
+        disabledApiCodeRows: disabledApiCodes,
+        additionalCode: pageContent.additionalCode,
+        returnAction: pageContent.returnAction,
+        scriptNonce,
+        disabledSuccessMessage
       })
     }
   }
