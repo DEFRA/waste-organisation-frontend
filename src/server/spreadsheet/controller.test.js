@@ -127,7 +127,7 @@ describe('spreadsheet upload controller', () => {
         form: { thing: { fileId: '123' } }
       }
     })
-    expect(statusCode).toBe(500)
+    expect(statusCode).toBe(502)
   })
 
   test('callback retries callback when no data', async () => {

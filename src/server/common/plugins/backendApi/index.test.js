@@ -87,4 +87,97 @@ describe('backendApi', () => {
 
     expect(actualResponse).toEqual(expectedResponse)
   })
+
+  test('getApiCodes get correct data', async () => {
+    const expectedApiCodes = [
+      {
+        code: 'f81e62f4-3875-488f-bbe3-3cb0be5fde5b',
+        name: 'API Code 1',
+        isDisabled: false
+      }
+    ]
+
+    vi.spyOn(wreck, 'get').mockImplementation(async () => {
+      return {
+        payload: {
+          apiCodes: expectedApiCodes
+        }
+      }
+    })
+
+    const actualApiCodes = await backendApiService.getApiCodes('organisationId')
+
+    expect(actualApiCodes).toEqual(expectedApiCodes)
+  })
+
+  test('createApiCodes should send data to create code', async () => {
+    const expectedResponse = {
+      code: 'f81e62f4-3875-488f-bbe3-3cb0be5fde5b',
+      name: 'API Code 1',
+      isDisabled: false
+    }
+
+    vi.spyOn(wreck, 'post').mockImplementation(async () => ({
+      payload: expectedResponse
+    }))
+
+    const actualResponse = await backendApiService.createApiCodes(
+      'organisationId',
+      {}
+    )
+
+    expect(actualResponse).toEqual(expectedResponse)
+  })
+
+  describe('Handle Exceptions', () => {
+    test('getOrganisations Should handle Errors', async () => {
+      vi.spyOn(wreck, 'get').mockImplementation(async () => {
+        throw new Error()
+      })
+
+      const actualResponse = await backendApiService.getOrganisations('userId')
+
+      expect(actualResponse).toBeUndefined()
+    })
+
+    test('saveOrganisation Should handle Errors', async () => {
+      vi.spyOn(wreck, 'put').mockImplementation(async () => {
+        throw new Error()
+      })
+
+      const actualResponse = await backendApiService.saveOrganisation('userId')
+
+      expect(actualResponse).toBeUndefined()
+    })
+
+    test('saveSpreadsheet Should handle Errors', async () => {
+      vi.spyOn(wreck, 'put').mockImplementation(async () => {
+        throw new Error()
+      })
+
+      const actualResponse = await backendApiService.saveSpreadsheet('userId')
+
+      expect(actualResponse).toBeUndefined()
+    })
+
+    test('getApiCodes Should handle Errors', async () => {
+      vi.spyOn(wreck, 'get').mockImplementation(async () => {
+        throw new Error()
+      })
+
+      const actualResponse = await backendApiService.getApiCodes('userId')
+
+      expect(actualResponse).toBeUndefined()
+    })
+
+    test('createApiCodes Should handle Errors', async () => {
+      vi.spyOn(wreck, 'post').mockImplementation(async () => {
+        throw new Error()
+      })
+
+      const actualResponse = await backendApiService.createApiCodes('userId')
+
+      expect(actualResponse).toBeNull()
+    })
+  })
 })

@@ -14,9 +14,7 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
     const response = await asyncFunc(url, r)
     return response.payload
   } catch (e) {
-    logger.error(
-      `ERROR calling backend api ${JSON.stringify({ e, url, payload })}`
-    )
+    logger.error(`ERROR calling backend api ${e}, ${url}, ${payload}`)
     return null
   }
 }
@@ -24,15 +22,15 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
 const remoteCall = (backendUrl, presharedKey) => {
   return {
     getOrganisations: async (userId) => {
-      const { organisations } = await apiCall(
+      const response = await apiCall(
         (url, r) => wreck.get(url, r),
         presharedKey,
         `${backendUrl}/user/${userId}/organisations`
       )
-      return organisations
+      return response?.organisations
     },
     saveOrganisation: async (userId, organisationId, orgData) => {
-      const { organisation } = await apiCall(
+      const response = await apiCall(
         (url, r) => wreck.put(url, r),
         presharedKey,
         `${backendUrl}/user/${userId}/organisation/${organisationId}`,
@@ -40,16 +38,34 @@ const remoteCall = (backendUrl, presharedKey) => {
           organisation: orgData
         }
       )
-      return organisation
+      return response?.organisation
     },
     saveSpreadsheet: async (organisationId, uploadId, s) => {
-      const { spreadsheet } = await apiCall(
+      const response = await apiCall(
         (url, r) => wreck.put(url, r),
         presharedKey,
         `${backendUrl}/spreadsheet/${organisationId}/${uploadId}`,
         { spreadsheet: s }
       )
-      return spreadsheet
+      return response?.spreadsheet
+    },
+    getApiCodes: async (organisationId) => {
+      const apiCodes = await apiCall(
+        (url, r) => wreck.get(url, r),
+        presharedKey,
+        `${backendUrl}/organisation/${organisationId}/apiCodes`
+      )
+
+      return apiCodes?.apiCodes
+    },
+    createApiCodes: async (organisationId, apiCodeData) => {
+      const apiCode = await apiCall(
+        (url, r) => wreck.post(url, r),
+        presharedKey,
+        `${backendUrl}/organisation/${organisationId}/apiCodes`,
+        apiCodeData
+      )
+      return apiCode
     }
   }
 }

@@ -64,5 +64,27 @@ export const content = {
         },
         continueAction: 'Continue'
       }
+    }),
+  apiList: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'API Code',
+        heading: heading('Your API code', null, organisationName),
+        noEnabledApiCodes: 'You have no API codes',
+        additionalCode: {
+          title: 'Do you need to create an additional API code?',
+          content:
+            'If you work with multiple software providers, you should give each one an API code.',
+          action: {
+            additional: 'Create additional code',
+            new: 'Create new code'
+          }
+        },
+        disabledSuccessMessage: (apiCode) => ({
+          title: 'We have disabled this code',
+          description: `The code <strong>${apiCode}</strong> cannot be used to send any new waste movements.`
+        }),
+        returnAction: `Return to ${organisationName}`
+      }
     })
 }

@@ -1,0 +1,122 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% macro actionButtons(code) %}
+  <span data-copyText="{{code}}"></span>
+  {{govukButton({
+    text: "Disable",
+    classes: "govuk-button--secondary"
+  })}}
+{% endmacro %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    {% if disabledSuccessMessage %}
+      <div class="govuk-grid-column-two-thirds">
+        {% set html %}
+        <p class="govuk-notification-banner__heading">{{disabledSuccessMessage.title}}</p>
+        <p class="govuk-body">{{disabledSuccessMessage.description | safe}}</p>
+        {% endset %}
+        {{ govukNotificationBanner({
+          html: html,
+          type: "success"
+        }) }}
+      </div>
+    {% endif %}
+
+    <div class="govuk-grid-column-two-thirds">
+      {{ appHeading(heading) }}
+    </div>
+    <div class="govuk-grid-column-full">
+
+      {% if apiCodeRows.length > 0 %}
+        <div class="govuk-summary-card govuk-!-margin-top-4 govuk-!-padding-bottom-4">
+          <div class="govuk-summary-card__content">
+            {{ govukSummaryList({ rows: apiCodeRows, attributes: {"data-testid": "app-api-summary-list"} }) }}
+          </div>
+        </div>
+      {% else %}
+        <p class="govuk-body govuk-!-margin-top-4" data-testid="app-api-summary-list-no-items">{{ noEnabledApiCodes }}</p>
+      {% endif %}
+
+      {% if apiCodeRows.length > 0 %}
+        <h3 class="govuk-!-padding-top-4 govuk-heading-m">{{additionalCode.title}}</h3>
+        <p class="govuk-body">{{additionalCode.content}}</p>
+        {{ govukButton({
+          text: additionalCode.action.additional,
+          classes: "govuk-button--secondary",
+          href: '/'
+        }) }}
+      {% else %}
+        {{ govukButton({
+          text: additionalCode.action.new,
+          href: '/'
+        }) }}
+      {% endif %}
+
+      {% if disabledApiCodeRows.length > 0 %}
+        <div class="govuk-summary-card govuk-!-margin-top-4">
+          <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+              {% for apiCode in disabledApiCodeRows %}
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key {{ 'govuk-!-padding-top-6' if not loop.first}} {{ 'govuk-!-padding-bottom-6' if not loop.last }}">
+                    {{apiCode.name}}
+                  </dt>
+                  <dd class="govuk-summary-list__value">{{apiCode.code}}</dd>
+                  <dd class="govuk-summary-list__actions">
+                    {{ govukTag({
+                    text: "Disabled",
+                    classes: "govuk-tag--orange"
+                  }) }}
+                  </dd>
+                </div>
+              {% endfor %}
+            </dl>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+{% block bodyEnd %}
+  <script nonce="{{ scriptNonce }}">
+
+    const copyText = "Copy";
+    const copiedText = "Copied";
+
+    const buttonHTML = `{{govukButton({
+                        text: "${copyText}",
+                        classes: "govuk-!-margin-right-1"
+                      })}}`;
+
+    const actionButtons = document.querySelectorAll('[data-copyText]')
+
+    for (const actionButton of actionButtons) {
+      const code = actionButton.getAttribute('data-copyText');
+      const parentElement = actionButton.parentNode;
+
+      parentElement.innerHTML = buttonHTML + parentElement.innerHTML;
+
+      const copyButton = parentElement.firstChild;
+      copyButton.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        navigator
+          .clipboard
+          .writeText(code);
+
+        copyButton.innerHTML = copiedText;
+
+        setTimeout(() => {
+          copyButton.innerHTML = copyText;
+        }, 3000);
+
+      })
+    }
+  </script>
+
+{% endblock %}
