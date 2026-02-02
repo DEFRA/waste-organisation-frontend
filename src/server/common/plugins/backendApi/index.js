@@ -75,7 +75,11 @@ export const backendApi = {
     name: 'backendApi',
     register: async (server) => {
       const { url, presharedKey } = config.get('backendApi')
-      server.decorate('request', 'backendApi', remoteCall(url, presharedKey))
+      server.decorate(
+        'request',
+        'backendApi',
+        remoteCall(url.replace(/\/$/, ''), presharedKey)
+      )
     }
   }
 }
