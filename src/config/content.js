@@ -69,7 +69,8 @@ export const content = {
     getContentForLanguage(request, {
       en: {
         title: 'API Code',
-        heading: heading('Your API code', null, organisationName)
+        heading: heading('Your API code', null, organisationName),
+        noEnabledApiCodes: 'You have no API codes'
       }
     })
 }

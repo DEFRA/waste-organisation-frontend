@@ -17,86 +17,15 @@
     </div>
     <div class="govuk-grid-column-full">
 
-      <div class="govuk-summary-card govuk-!-margin-top-4 govuk-!-padding-bottom-4">
-        <div class="govuk-summary-card__content">
-          {{ govukSummaryList({
-            rows: [
-              {
-                key: {
-                  text: "API code 1"
-                },
-                value: {
-                  text: "af552bd3-f929-4924-a86d-d8e4f0cb8d61"
-                },
-                actions: {
-                  items: [
-                    {
-                      href: "/",
-                      text: "Disable",
-                      classes: "govuk-button govuk-button--secondary",
-                      attributes: {
-                        "data-copyText": "Meh 3"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                key: {
-                  text: "Name"
-                },
-                value: {
-                  text: "[Waste receiving organisation or business name]_Code 1"
-                },
-                actions: {
-                  items: [
-                    {
-                      href: "#",
-                      text: "Change"
-                    }
-                  ]
-                }
-              },
-              {
-                key: {
-                  text: "API code 1"
-                },
-                value: {
-                  text: "af552bd3-f929-4924-a86d-d8e4f0cb8d61"
-                },
-                actions: {
-                  items: [
-                    {
-                      href: "/",
-                      text: "Disable",
-                      classes: "govuk-button govuk-button--secondary",
-                      attributes: {
-                        "data-copyText": "Meh 4"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                key: {
-                  text: "Name"
-                },
-                value: {
-                  text: "[Waste receiving organisation or business name]_Code 1"
-                },
-                actions: {
-                  items: [
-                    {
-                      href: "#",
-                      text: "Change"
-                    }
-                  ]
-                }
-              }
-            ]
-          }) }}
+      {% if apiCodeRows.length > 0 %}
+        <div class="govuk-summary-card govuk-!-margin-top-4 govuk-!-padding-bottom-4">
+          <div class="govuk-summary-card__content">
+            {{ govukSummaryList({ rows: apiCodeRows, attributes: {"data-testid": "app-api-summary-list"} }) }}
+          </div>
         </div>
-      </div>
+      {% else %}
+        <p class="govuk-body govuk-!-margin-top-4" data-testid="app-api-summary-list-no-items">{{ noEnabledApiCodes }}</p>
+      {% endif %}
 
     </div>
   </div>

@@ -15,7 +15,7 @@ services:
       - '${TMPDIR:-/tmp}/localstack:/var/lib/localstack:z'
       - './compose/start-localstack.sh:/etc/localstack/init/ready.d/01-start-localstack.sh:z'
     healthcheck:
-      test: ["CMD", "stat", "/tmp/READY"]
+      test: ['CMD', 'stat', '/tmp/READY']
       interval: 5s
       start_period: 5s
       retries: 3
@@ -80,12 +80,11 @@ services:
       MOCK_VIRUS_RESULT_DELAY: 3
       SQS_ENDPOINT: http://localstack:4566
       S3_ENDPOINT: http://localstack:4566
-    network_mode: 'service:cdp-defra-id-stub'  # used to allow localhost to cdp-defra-id-stub
+    network_mode: 'service:cdp-defra-id-stub' # used to allow localhost to cdp-defra-id-stub
     # networks:
     #   - cdp-tenant
 
-
-################################################################################
+  ################################################################################
 
   waste-organisation-frontend:
     build:
@@ -122,7 +121,7 @@ services:
       BACKEND_API: http://waste-organisation-backend:3001
       FILE_UPLOAD_SERVICE_URL: http://localhost:7337
       BACKEND_API_PRESHARED_KEY: test
-    network_mode: 'service:cdp-defra-id-stub'  # used to allow localhost to cdp-defra-id-stub
+    network_mode: 'service:cdp-defra-id-stub' # used to allow localhost to cdp-defra-id-stub
 
   waste-organisation-backend:
     build:
