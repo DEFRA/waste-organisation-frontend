@@ -5,16 +5,11 @@ import { aboutController } from './controller.js'
  * These routes are registered in src/server/router.js.
  */
 export const about = {
-  plugin: {
-    name: 'about',
-    register(server) {
-      server.route([
-        {
-          method: 'GET',
-          path: '/about',
-          ...aboutController
-        }
-      ])
+  openRoutes: [
+    {
+      method: 'GET',
+      path: '/about',
+      ...aboutController
     }
-  }
+  ]
 }

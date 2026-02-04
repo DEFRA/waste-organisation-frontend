@@ -1,26 +1,18 @@
 import { paths } from '../../config/paths.js'
-import { cacheControlNoStore } from '../../config/config.js'
 import { beginUpload, fileUploaded, callback } from './controller.js'
 
+const createRoute = ([method, path, controller]) => ({
+  method: method || 'GET',
+  path,
+  ...controller
+})
+
 export const spreadsheet = {
-  plugin: {
-    name: 'spreadsheet',
-    register(server) {
-      server.route(
-        [
-          ['GET', paths.spreadsheetUpload, beginUpload, 'session'],
-          ['GET', paths.spreadsheetUploaded, fileUploaded, 'session'],
-          ['POST', paths.spreadsheetUploadCallback, callback]
-        ].map(([method, path, controller, auth]) => ({
-          method: method || 'GET',
-          path,
-          options: {
-            auth,
-            cache: cacheControlNoStore
-          },
-          ...controller
-        }))
-      )
-    }
-  }
+  authedRoutes: [
+    ['GET', paths.spreadsheetUpload, beginUpload, 'session'],
+    ['GET', paths.spreadsheetUploaded, fileUploaded, 'session']
+  ].map(createRoute),
+  openRoutes: [['POST', paths.spreadsheetUploadCallback, callback]].map(
+    createRoute
+  )
 }
