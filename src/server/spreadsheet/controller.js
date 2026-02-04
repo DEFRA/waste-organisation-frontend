@@ -49,7 +49,7 @@ export const beginUpload = {
     const { uploadId, uploadUrl } = await initiateUpload(
       request.auth.credentials.currentOrganisationId
     )
-    logger.info(`uploaded requested - ${uploadId}`)
+    logger.info(`uploaded requested - ${uploadId} ${uploadUrl}`)
     /* v8 ignore start */
     const { origin } = new URL(uploadUrl)
     request.contentSecurityPolicy = {
