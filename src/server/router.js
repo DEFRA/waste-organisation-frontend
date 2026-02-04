@@ -13,35 +13,35 @@ import { nextAction } from './nextAction/index.js'
 import { spreadsheet } from './spreadsheet/index.js'
 import { apiManagement } from './apiManagement/index.js'
 
+const createPlugin = (plugins, [item, routes]) => {
+  plugins.push({
+    plugin: {
+      name: item,
+      register(server) {
+        server.route(routes)
+      }
+    }
+  })
+  return plugins
+}
+
+const addAuth = (route) => {
+  if (route.options == null) {
+    route.options = {}
+  }
+  route.options.auth = 'session'
+  route.options.cache = cacheControlNoStore
+  return route
+}
+
 export const router = {
   plugin: {
     name: 'router',
     async register(server) {
-      const createPlugin = (plugins, [item, routes]) => {
-        plugins.push({
-          plugin: {
-            name: item,
-            register(server) {
-              server.route(routes)
-            }
-          }
-        })
-        return plugins
-      }
-
-      const addAuth = (route) => {
-        if (route.options == null) {
-          route.options = {}
-        }
-        route.options.auth = 'session'
-        route.options.cache = cacheControlNoStore
-        return route
-      }
-
       await server.register([inert])
 
       // prettier-ignore
-      const routes = Object.entries({
+      const plugins = Object.entries({
         // Open routes
         home:           home.openRoutes,
         about:          about.openRoutes,
@@ -49,15 +49,15 @@ export const router = {
         health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:     onboarding.openRoutes,
         // Routes that require auth
-        search:         search.authedRoutes.map(addAuth),
-        spreadsheet:    spreadsheet.authedRoutes.map(addAuth).concat(spreadsheet.openRoutes),
-        dashboard:      dashboard.authedRoutes.map(addAuth),
-        nextAction:     nextAction.authedRoutes.map(addAuth),
-        apiManagement:  apiManagement.authedRoutes.map(addAuth),
-      }).reduce(createPlugin, [])
+        search:         search.authedRoutes.map((a) => addAuth(a)),
+        spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuth(a)).concat(spreadsheet.openRoutes),
+        dashboard:      dashboard.authedRoutes.map((a) => addAuth(a)),
+        nextAction:     nextAction.authedRoutes.map((a) => addAuth(a)),
+        apiManagement:  apiManagement.authedRoutes.map((a) => addAuth(a)),
+      }).reduce((p, entry) => createPlugin(p, entry), [])
 
       // Application specific routes, add your own routes here
-      await server.register(routes)
+      await server.register(plugins)
 
       // Static assets
       await server.register([serveStaticFiles])
