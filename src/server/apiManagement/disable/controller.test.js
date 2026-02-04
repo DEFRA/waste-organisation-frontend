@@ -4,9 +4,12 @@ import { paths, pathTo } from '../../../config/paths'
 import { JSDOM } from 'jsdom'
 import { content } from '../../../config/content'
 import { faker } from '@faker-js/faker'
+import { setupAuthedUserSession } from '../../../test-utils/session-helper'
+const organisationName = 'ORG NAME'
 
 describe('apiDisable', () => {
   let server
+  let credentials
   const pageContent = content.apiDisable({}, 'OrgName')
 
   beforeAll(async () => {
@@ -17,13 +20,22 @@ describe('apiDisable', () => {
     await server.stop({ timeout: 0 })
   })
 
+  beforeEach(async () => {
+    credentials = await setupAuthedUserSession(server)
+    credentials.currentOrganisationName = organisationName
+  })
+
   describe('GET', () => {
     test('should render the correct content on the page', async () => {
       const { payload } = await server.inject({
         method: 'GET',
         url: pathTo(paths.apiDisable, {
           apiCode: faker.string.uuid()
-        })
+        }),
+        auth: {
+          strategy: 'session',
+          credentials
+        }
       })
 
       const { document } = new JSDOM(payload).window
@@ -54,7 +66,11 @@ describe('apiDisable', () => {
         method: 'GET',
         url: pathTo(paths.apiDisable, {
           apiCode: faker.string.uuid()
-        })
+        }),
+        auth: {
+          strategy: 'session',
+          credentials
+        }
       })
 
       const { document } = new JSDOM(payload).window
@@ -75,7 +91,11 @@ describe('apiDisable', () => {
           method: 'GET',
           url: pathTo(paths.apiDisable, {
             apiCode: faker.string.uuid()
-          })
+          }),
+          auth: {
+            strategy: 'session',
+            credentials
+          }
         })
 
         const { document } = new JSDOM(payload).window

@@ -66,7 +66,7 @@ describe('spreadsheet upload controller', () => {
     expect(heading).toEqual(expect.stringContaining('Upload'))
   })
 
-  test('callback', async () => {
+  test('callback does not require session auth', async () => {
     wreckPutMock.mockReturnValue({
       payload: { message: 'success', spreadsheet: {} }
     })

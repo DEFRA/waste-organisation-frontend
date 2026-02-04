@@ -6,19 +6,14 @@ import { signInController } from './controller.js'
  * These routes are registered in src/server/router.js.
  */
 export const signIn = {
-  plugin: {
-    name: 'signIn',
-    register(server) {
-      server.route([
-        {
-          method: ['GET', 'POST'],
-          path: paths.signinDefraIdCallback,
-          options: {
-            auth: 'defraId'
-          },
-          ...signInController('signIn.defraId')
-        }
-      ])
+  routes: [
+    {
+      method: ['GET', 'POST'],
+      path: paths.signinDefraIdCallback,
+      options: {
+        auth: 'defraId'
+      },
+      ...signInController('signIn.defraId')
     }
-  }
+  ]
 }
