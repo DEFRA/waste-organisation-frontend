@@ -13,31 +13,31 @@ import { nextAction } from './nextAction/index.js'
 import { spreadsheet } from './spreadsheet/index.js'
 import { apiManagement } from './apiManagement/index.js'
 
-const createPlugin = (plugins, [item, routes]) => {
-  plugins.push({
-    plugin: {
-      name: item,
-      register(server) {
-        server.route(routes)
-      }
-    }
-  })
-  return plugins
-}
-
-const addAuth = (route) => {
-  if (route.options == null) {
-    route.options = {}
-  }
-  route.options.auth = 'session'
-  route.options.cache = cacheControlNoStore
-  return route
-}
-
 export const router = {
   plugin: {
     name: 'router',
     async register(server) {
+      const createPlugin = (plugins, [item, routes]) => {
+        plugins.push({
+          plugin: {
+            name: item,
+            register(server) {
+              server.route(routes)
+            }
+          }
+        })
+        return plugins
+      }
+
+      const addAuth = (route) => {
+        if (route.options == null) {
+          route.options = {}
+        }
+        route.options.auth = 'session'
+        route.options.cache = cacheControlNoStore
+        return route
+      }
+
       await server.register([inert])
 
       // prettier-ignore
