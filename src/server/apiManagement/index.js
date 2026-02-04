@@ -7,7 +7,13 @@ export const apiManagement = {
       method: 'GET',
       path: paths.apiList,
       ...apiManagementController.list
+    },
+    {
+      method: 'POST',
+      path: paths.apiCreate,
+      ...apiManagementController.create
     }
+
     // {
     //   method: 'POST',
     //   path: paths.ukPermit,

@@ -54,6 +54,15 @@ export const apiManagementController = {
         disabledSuccessMessage
       })
     }
+  },
+  create: {
+    async handler(request, h) {
+      await request.backendApi.createApiCodes(
+        request.auth.credentials.currentOrganisationId,
+        {}
+      )
+      return h.redirect(paths.apiList).takeover()
+    }
   }
 }
 
