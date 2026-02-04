@@ -49,16 +49,20 @@
       {% if apiCodeRows.length > 0 %}
         <h3 class="govuk-!-padding-top-4 govuk-heading-m">{{additionalCode.title}}</h3>
         <p class="govuk-body">{{additionalCode.content}}</p>
-        {{ govukButton({
-          text: additionalCode.action.additional,
-          classes: "govuk-button--secondary",
-          href: '/'
-        }) }}
+        <form method="POST" action="{{ createAction }}">
+          {{ govukButton({
+               text: additionalCode.action.additional,
+               classes: "govuk-button--secondary",
+               type: 'submit'
+          }) }}
+        </form>
       {% else %}
-        {{ govukButton({
-          text: additionalCode.action.new,
-          href: '/'
-        }) }}
+        <form method="POST" action="{{ createAction }}">
+          {{ govukButton({
+               text: additionalCode.action.new,
+               type: 'submit'
+          }) }}
+        </form>
       {% endif %}
 
       {% if disabledApiCodeRows.length > 0 %}

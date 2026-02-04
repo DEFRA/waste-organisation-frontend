@@ -296,4 +296,32 @@ describe('apiList', () => {
 
     expect(request.backendApi.createApiCodes).toHaveBeenCalled()
   })
+
+  test('should create apiCode when requested', async () => {
+    const request = {
+      contentSecurityPolicy: {},
+      auth: {
+        credentials: {
+          currentOrganisationId: organisationId
+        }
+      },
+      backendApi: {
+        createApiCodes: vi.fn().mockImplementation(async () => ({
+          code: 'd05d0c78-c0c4-457c-8161-67a88c0f9ba4',
+          name: 'Joe Bloggs LTD_code_2',
+          isDisabled: false
+        }))
+      }
+    }
+    const handler = {
+      redirect: (url) => ({ takeover: () => ({ myTestRedirect: url }) })
+    }
+
+    const result = await apiManagementController.create.handler(
+      request,
+      handler
+    )
+    expect(request.backendApi.createApiCodes).toHaveBeenCalled()
+    expect(result).toEqual({ myTestRedirect: paths.apiList })
+  })
 })

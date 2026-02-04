@@ -51,9 +51,19 @@ export const apiManagementController = {
         disabledApiCodeRows: disabledApiCodes,
         additionalCode: pageContent.additionalCode,
         returnAction: pageContent.returnAction,
+        createAction: paths.apiCode,
         scriptNonce,
         disabledSuccessMessage
       })
+    }
+  },
+  create: {
+    async handler(request, h) {
+      await request.backendApi.createApiCodes(
+        request.auth.credentials.currentOrganisationId,
+        {}
+      )
+      return h.redirect(paths.apiList).takeover()
     }
   }
 }

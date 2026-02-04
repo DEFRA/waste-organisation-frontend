@@ -18,16 +18,11 @@ export const apiManagement = {
       method: 'POST',
       path: paths.apiDisable,
       ...apiDisableController.post
+    },
+    {
+      method: 'POST',
+      path: paths.apiCreate,
+      ...apiManagementController.create
     }
-    // {
-    //   method: 'POST',
-    //   path: paths.ukPermit,
-    //   ...ukPermitController.post
-    // },
-    // {
-    //   method: 'GET',
-    //   path: paths.cannotUseService,
-    //   ...cannotUseServiceController
-    // }
   ]
 }
