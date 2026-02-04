@@ -313,9 +313,8 @@ describe('apiList', () => {
         }))
       }
     }
-    const mockRedirectSentinal = new Date()
     const handler = {
-      redirect: () => ({ takeover: () => mockRedirectSentinal })
+      redirect: (url) => ({ takeover: () => ({ myTestRedirect: url }) })
     }
 
     const result = await apiManagementController.create.handler(
@@ -323,6 +322,6 @@ describe('apiList', () => {
       handler
     )
     expect(request.backendApi.createApiCodes).toHaveBeenCalled()
-    expect(result).toBe(mockRedirectSentinal)
+    expect(result).toEqual({ myTestRedirect: paths.apiList })
   })
 })
