@@ -6,16 +6,11 @@ import { homeController } from './controller.js'
  * These routes are registered in src/server/router.js.
  */
 export const home = {
-  plugin: {
-    name: 'home',
-    register(server) {
-      server.route([
-        {
-          method: 'GET',
-          path: paths.startPage,
-          ...homeController
-        }
-      ])
+  openRoutes: [
+    {
+      method: 'GET',
+      path: paths.startPage,
+      ...homeController
     }
-  }
+  ]
 }

@@ -12,6 +12,7 @@ const pageContent = content.nextAction({})
 
 describe('#nextActionController', () => {
   let server
+  let credentials
 
   beforeAll(async () => {
     server = await initialiseServer()
@@ -21,11 +22,13 @@ describe('#nextActionController', () => {
     await server.stop({ timeout: 0 })
   })
 
+  beforeEach(async () => {
+    credentials = await setupAuthedUserSession(server)
+    credentials.currentOrganisationName = organisationName
+  })
+
   test('Should provide expected response', async () => {
     const pageContent = content.nextAction()
-
-    const credentials = await setupAuthedUserSession(server)
-    credentials.currentOrganisationName = organisationName
     const { payload } = await server.inject({
       method: 'GET',
       url: paths.nextAction,
@@ -62,7 +65,11 @@ describe('#nextActionController', () => {
     async (key, value) => {
       const { payload } = await server.inject({
         method: 'GET',
-        url: paths.nextAction
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        }
       })
 
       const { document } = new JSDOM(payload).window
@@ -87,7 +94,11 @@ describe('#nextActionController', () => {
 
     const { payload } = await server.inject({
       method: 'GET',
-      url: paths.nextAction
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
     })
 
     const { document } = new JSDOM(payload).window

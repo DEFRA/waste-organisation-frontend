@@ -1,5 +1,4 @@
 import { paths } from '../../config/paths.js'
-import { cacheControlNoStore } from '../../config/config.js'
 import { searchController } from './controller.js'
 
 /**
@@ -7,20 +6,11 @@ import { searchController } from './controller.js'
  * These routes are registered in src/server/router.js.
  */
 export const search = {
-  plugin: {
-    name: 'search',
-    register(server) {
-      server.route([
-        {
-          method: 'GET',
-          path: paths.search,
-          options: {
-            auth: 'session',
-            cache: cacheControlNoStore
-          },
-          ...searchController
-        }
-      ])
+  authedRoutes: [
+    {
+      method: 'GET',
+      path: paths.search,
+      ...searchController
     }
-  }
+  ]
 }
