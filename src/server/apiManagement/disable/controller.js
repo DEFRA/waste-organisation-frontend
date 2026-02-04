@@ -2,23 +2,21 @@ import joi from 'joi'
 import { paths } from '../../../config/paths.js'
 import { content } from '../../../config/content.js'
 
-const flashMessage = 'isPermitError'
+const flashMessage = 'disableError'
 
-export const ukPermitController = {
+export const apiDisableController = {
   get: {
     handler(request, h) {
-      const pageContent = content.ukPermit(request)
-
-      request.contentSecurityPolicy = {
-        extraAuthOrigins: request.authProviderEndpoints
-      }
+      const organisationName =
+        request?.auth?.credentials?.currentOrganisationName
+      const pageContent = content.apiDisable(request, organisationName)
 
       const [error] = request.yar.flash(flashMessage)
       let errorContent
 
       if (error) {
         errorContent = pageContent.error
-        errorContent.href = '#isPermitYes'
+        errorContent.href = '#disableYes'
       }
 
       const questions = Object.entries(pageContent.questions).map(
@@ -27,7 +25,7 @@ export const ukPermitController = {
           return {
             value: key,
             text: value,
-            id: `isPermit${value}`,
+            id: `disable${value}`,
             attributes: {
               'data-testid': `${key}-radio`
             },
@@ -40,16 +38,17 @@ export const ukPermitController = {
         }
       )
 
-      return h.view('common/templates/layouts/questions', {
+      return h.view('apiManagement/disable/view', {
         pageTitle: pageContent.title,
         heading: pageContent.heading,
         action: {
-          url: paths.isPermit,
+          url: paths.apiList,
           text: pageContent.continueAction
         },
         questions,
         error: errorContent,
-        backLink: paths.startPage
+        backLink: paths.startPage,
+        caption: {}
       })
     }
   },

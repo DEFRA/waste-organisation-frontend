@@ -22,7 +22,8 @@ export const apiManagementController = {
       let disabledSuccessMessage
 
       if (code) {
-        disabledSuccessMessage = pageContent.disabledSuccessMessage(code)
+        disabledSuccessMessage = pageContent.disabledSuccessMessage()
+        disabledSuccessMessage.code = code
       }
 
       let apiCodes = await request.backendApi.getApiCodes(

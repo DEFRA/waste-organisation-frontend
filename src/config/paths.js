@@ -26,7 +26,8 @@ export const paths = {
   spreadsheetUploadCallback:
     '/organisation/{organisationId}/spreadsheet/upload-callback',
 
-  apiList: '/api'
+  apiList: '/api',
+  apiDisable: '/api/disable/{apiCode}'
 }
 /* v8 ignore stop */
 

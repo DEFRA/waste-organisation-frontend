@@ -18,7 +18,11 @@
       <div class="govuk-grid-column-two-thirds">
         {% set html %}
         <p class="govuk-notification-banner__heading">{{disabledSuccessMessage.title}}</p>
-        <p class="govuk-body">{{disabledSuccessMessage.description | safe}}</p>
+        <p class="govuk-body">
+          {{disabledSuccessMessage.description.pre}}
+          <strong>{{disabledSuccessMessage.code}}</strong>
+          {{disabledSuccessMessage.description.post}}
+        </p>
         {% endset %}
         {{ govukNotificationBanner({
           html: html,
