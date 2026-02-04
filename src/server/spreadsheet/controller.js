@@ -51,14 +51,16 @@ export const beginUpload = {
     )
     /* v8 ignore start */
     logger.info(`uploaded requested - ${uploadId} ${uploadUrl}`)
-    const { origin } = new URL(uploadUrl)
+    const { origin } = new URL(
+      uploadUrl?.startsWith('h') ? uploadUrl : config.get('fileUpload.url')
+    )
     request.contentSecurityPolicy = {
       extraAuthOrigins: origin
     }
 
     return h.view('spreadsheet/begin-upload', {
       pageTitle: 'Upload a Waste Movement Spreadsheet',
-      action: uploadUrl,
+      action: uploadUrl?.startsWith('h') ? uploadUrl : `${origin}${uploadUrl}`,
       uploadWidgetSettings: {
         id: 'file-upload-1',
         name: 'fileUpload1',
