@@ -46,6 +46,30 @@ describe('spreadsheet upload controller', () => {
     expect(form.action).toEqual('http://example.com/test')
   })
 
+  test('begin upload defaults to initiate domain when upload not provided', async () => {
+    const credentials = await setupAuthedUserSession(server)
+    credentials.currentOrganisationId = 'abc-123'
+
+    wreckPostMock.mockReturnValue({
+      payload: { uploadUrl: '/test' }
+    })
+
+    const { statusCode, payload } = await server.inject({
+      method: 'GET',
+      url: pathTo(paths.spreadsheetUpload, {
+        organisationId: credentials.currentOrganisationId
+      }),
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+    const { document } = new JSDOM(payload).window
+    expect(statusCode).toBe(200)
+    const form = document.querySelectorAll('form')[0]
+    expect(form.action).toEqual('http://localhost:7337/test') // from config - fileUpload.url
+  })
+
   test('file uploaded page renders', async () => {
     const credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationId = 'abc-123'
