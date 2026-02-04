@@ -49,8 +49,8 @@ export const beginUpload = {
     const { uploadId, uploadUrl } = await initiateUpload(
       request.auth.credentials.currentOrganisationId
     )
-    logger.info(`uploaded requested - ${uploadId} ${uploadUrl}`)
     /* v8 ignore start */
+    logger.info(`uploaded requested - ${uploadId} ${uploadUrl}`)
     const { origin } = new URL(uploadUrl)
     request.contentSecurityPolicy = {
       extraAuthOrigins: origin
