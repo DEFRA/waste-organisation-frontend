@@ -215,7 +215,7 @@ describe('apiList', () => {
         actions: {
           items: [
             {
-              href: '/',
+              href: '/api/disable/d05d0c78-c0c4-457c-8161-67a88c0f9ba4',
               text: 'Disable',
               classes: 'govuk-button govuk-button--secondary',
               attributes: {
@@ -245,7 +245,7 @@ describe('apiList', () => {
         actions: {
           items: [
             {
-              href: '/',
+              href: '/api/disable/d05d0c78-c0c4-457c-8161-67a88c0f9ba4',
               text: 'Disable',
               classes: 'govuk-button govuk-button--secondary',
               attributes: {

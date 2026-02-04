@@ -1,6 +1,5 @@
 import { paths } from '../../config/paths.js'
 import { apiDisableController } from './disable/controller.js'
-// import { apiDisableController } from './disable/controller.js'
 import { apiManagementController } from './list/controller.js'
 
 export const apiManagement = {
@@ -14,6 +13,11 @@ export const apiManagement = {
       method: 'GET',
       path: paths.apiDisable,
       ...apiDisableController.get
+    },
+    {
+      method: 'POST',
+      path: paths.apiDisable,
+      ...apiDisableController.post
     }
     // {
     //   method: 'POST',

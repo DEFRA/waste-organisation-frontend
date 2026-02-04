@@ -105,8 +105,7 @@ export const content = {
         },
         error: {
           title: 'There is a problem',
-          message:
-            'Select Yes if you operate one or more licensed or permitted waste receiving sites.'
+          message: 'Select Yes if want to disable this API code.'
         },
         continueAction: 'Continue'
       }

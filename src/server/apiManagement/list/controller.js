@@ -1,4 +1,4 @@
-import { paths } from '../../../config/paths.js'
+import { paths, pathTo } from '../../../config/paths.js'
 import { content } from '../../../config/content.js'
 import crypto from 'node:crypto'
 
@@ -73,7 +73,7 @@ const convertToListRows = (apiCodes) => {
       actions: {
         items: [
           {
-            href: '/',
+            href: pathTo(paths.apiDisable, { apiCode: apiCode.code }),
             text: 'Disable',
             classes: 'govuk-button govuk-button--secondary',
             attributes: {

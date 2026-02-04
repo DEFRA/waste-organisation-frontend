@@ -66,6 +66,15 @@ const remoteCall = (backendUrl, presharedKey) => {
         apiCodeData
       )
       return apiCode
+    },
+    updateApiCodes: async (organisationId, code, apiCodeData) => {
+      const apiCode = await apiCall(
+        (url, r) => wreck.put(url, r),
+        presharedKey,
+        `${backendUrl}/organisation/${organisationId}/apiCodes/${code}`,
+        { apiCode: apiCodeData }
+      )
+      return apiCode
     }
   }
 }

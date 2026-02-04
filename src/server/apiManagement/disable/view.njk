@@ -9,7 +9,7 @@
 {% set headingHtml %}
 {{ appHeading(heading) }}
 <p class="govuk-body govuk-!-margin-top-3 "
-            data-testid="app-heading-caption">If you agree this code <strong>af552bd3-f929-4924-a86d-d8e4f0cb8d61</strong> will no longer work.</p>
+            data-testid="app-heading-caption">If you agree this code <strong>{{apiCode}}</strong> will no longer work.</p>
 
 {{ govukWarningText({
   text: "You will not be able to use this code to send any new waste movements.",
@@ -37,7 +37,7 @@
       <form action="{{ action.url }}" method="POST">
         {{
           govukRadios({
-            name: "isPermit",
+            name: "disable",
             classes: "govuk-radios--inline",
             fieldset: {
               legend: {
@@ -54,7 +54,7 @@
             text: action.text,
             type: "submit",
             attributes: {
-              "data-testid": "uk-permit-submit-button"
+              "data-testid": "uk-disable-submit-button"
             }
           })
         }}

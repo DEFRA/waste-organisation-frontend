@@ -1,8 +1,9 @@
 import joi from 'joi'
-import { paths } from '../../../config/paths.js'
+import { paths, pathTo } from '../../../config/paths.js'
 import { content } from '../../../config/content.js'
 
 const flashMessage = 'disableError'
+const flashDisabledMessage = 'disabledSuccessful'
 
 export const apiDisableController = {
   get: {
@@ -10,6 +11,8 @@ export const apiDisableController = {
       const organisationName =
         request?.auth?.credentials?.currentOrganisationName
       const pageContent = content.apiDisable(request, organisationName)
+
+      const { apiCode } = request.params
 
       const [error] = request.yar.flash(flashMessage)
       let errorContent
@@ -42,13 +45,14 @@ export const apiDisableController = {
         pageTitle: pageContent.title,
         heading: pageContent.heading,
         action: {
-          url: paths.apiList,
+          url: pathTo(paths.apiDisable, { apiCode }),
           text: pageContent.continueAction
         },
         questions,
         error: errorContent,
         backLink: paths.startPage,
-        caption: {}
+        caption: {},
+        apiCode
       })
     }
   },
@@ -56,25 +60,41 @@ export const apiDisableController = {
     options: {
       validate: {
         payload: joi.object({
-          isPermit: joi
+          disable: joi
             .string()
             .required()
             .regex(/^(yes|no)$/)
         }),
         failAction: (request, h) => {
           request.yar.flash(flashMessage, true)
-          return h.redirect(paths.ukPermit).takeover()
+          return h
+            .redirect(
+              pathTo(paths.apiDisable, {
+                apiCode: request.params.apiCode
+              })
+            )
+            .takeover()
         }
       }
     },
-    handler(request, h) {
-      const isPermit = request.payload.isPermit
+    async handler(request, h) {
+      const disable = request.payload.disable
 
-      if (isPermit === 'yes') {
-        return h.redirect(paths.signinDefraIdCallback)
+      console.log('request.params.apiCode', request.params.apiCode)
+
+      if (disable === 'yes') {
+        await request.backendApi.updateApiCodes(
+          request.auth.credentials.currentOrganisationId,
+          request.params.apiCode,
+          {
+            isDisabled: true
+          }
+        )
+        request.yar.flash(flashDisabledMessage, request.params.apiCode)
+        return h.redirect(paths.apiList)
       }
 
-      return h.redirect(paths.cannotUseService)
+      return h.redirect(paths.apiList)
     }
   }
 }

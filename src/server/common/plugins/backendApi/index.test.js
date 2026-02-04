@@ -129,6 +129,26 @@ describe('backendApi', () => {
     expect(actualResponse).toEqual(expectedResponse)
   })
 
+  test('updateApiCodes should send data to update code', async () => {
+    const expectedResponse = {
+      code: 'f81e62f4-3875-488f-bbe3-3cb0be5fde5b',
+      name: 'API Code 1',
+      isDisabled: false
+    }
+
+    vi.spyOn(wreck, 'put').mockImplementation(async () => ({
+      payload: expectedResponse
+    }))
+
+    const actualResponse = await backendApiService.updateApiCodes(
+      'organisationId',
+      'apiCode',
+      {}
+    )
+
+    expect(actualResponse).toEqual(expectedResponse)
+  })
+
   describe('Handle Exceptions', () => {
     test('getOrganisations Should handle Errors', async () => {
       vi.spyOn(wreck, 'get').mockImplementation(async () => {

@@ -1,11 +1,15 @@
 import { expect, test } from 'vitest'
-import { initialiseServer } from '../../../test-utils/initialise-server'
+import {
+  initialiseServer,
+  wreckPutMock
+} from '../../../test-utils/initialise-server'
 import { paths, pathTo } from '../../../config/paths'
 import { JSDOM } from 'jsdom'
 import { content } from '../../../config/content'
 import { faker } from '@faker-js/faker'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper'
 const organisationName = 'ORG NAME'
+const organisationId = 'ORG ID'
 
 describe('apiDisable', () => {
   let server
@@ -23,14 +27,17 @@ describe('apiDisable', () => {
   beforeEach(async () => {
     credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationName = organisationName
+    credentials.currentOrganisationId = organisationId
   })
 
   describe('GET', () => {
     test('should render the correct content on the page', async () => {
+      const apiCode = faker.string.uuid()
+
       const { payload } = await server.inject({
         method: 'GET',
         url: pathTo(paths.apiDisable, {
-          apiCode: faker.string.uuid()
+          apiCode
         }),
         auth: {
           strategy: 'session',
@@ -44,11 +51,18 @@ describe('apiDisable', () => {
         '[data-testid="app-heading-title"]'
       )[0].textContent
 
+      const pageCaption = document.querySelectorAll(
+        '[data-testid="app-heading-caption"]'
+      )[0].textContent
+
       expect(document.title).toEqual(
         expect.stringContaining(`${pageContent.title} |`)
       )
       expect(pageHeading).toEqual(
         expect.stringContaining(pageContent.heading.text)
+      )
+      expect(pageCaption).toEqual(
+        `If you agree this code ${apiCode} will no longer work.`
       )
     })
 
@@ -109,42 +123,68 @@ describe('apiDisable', () => {
     )
   })
 
-  // describe('POST', () => {
-  //   test('should redirect to login if yes is selected', async () => {
-  //     const { headers } = await server.inject({
-  //       method: 'POST',
-  //       url: paths.ukPermit,
-  //       payload: {
-  //         isPermit: 'yes'
-  //       }
-  //     })
+  describe('POST', () => {
+    test('should redirect to login if yes is selected', async () => {
+      const apiCode = faker.string.uuid()
+      const { headers } = await server.inject({
+        method: 'POST',
+        url: pathTo(paths.apiDisable, {
+          apiCode
+        }),
+        payload: {
+          disable: 'yes'
+        },
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
 
-  //     expect(headers.location).toBe(paths.signinDefraIdCallback)
-  //   })
+      expect(headers.location).toBe(paths.apiList)
+      expect(wreckPutMock).toHaveBeenCalled()
+    })
 
-  //   test('should redirect to cannotUseService if no is selected', async () => {
-  //     const { headers } = await server.inject({
-  //       method: 'POST',
-  //       url: paths.ukPermit,
-  //       payload: {
-  //         isPermit: 'no'
-  //       }
-  //     })
+    test('should redirect to cannotUseService if no is selected', async () => {
+      const { headers } = await server.inject({
+        method: 'POST',
+        url: pathTo(paths.apiDisable, {
+          apiCode: faker.string.uuid()
+        }),
+        payload: {
+          disable: 'no'
+        },
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
 
-  //     expect(headers.location).toBe(paths.cannotUseService)
-  //   })
+      expect(headers.location).toBe(paths.apiList)
+    })
 
-  //   test.each([{}, { payload: {} }, { payload: { isPermit: 'foo' } }])(
-  //     'should redirect to get endpoint if there is an error',
-  //     async (payload) => {
-  //       const { headers } = await server.inject({
-  //         method: 'POST',
-  //         url: paths.ukPermit,
-  //         ...payload
-  //       })
+    test.each([{}, { payload: {} }, { payload: { isPermit: 'foo' } }])(
+      'should redirect to get endpoint if there is an error',
+      async (payload) => {
+        const apiCode = faker.string.uuid()
 
-  //       expect(headers.location).toBe(paths.ukPermit)
-  //     }
-  //   )
-  // })
+        const { headers } = await server.inject({
+          method: 'POST',
+          url: pathTo(paths.apiDisable, {
+            apiCode
+          }),
+          auth: {
+            strategy: 'session',
+            credentials
+          },
+          ...payload
+        })
+
+        expect(headers.location).toBe(
+          pathTo(paths.apiDisable, {
+            apiCode
+          })
+        )
+      }
+    )
+  })
 })
