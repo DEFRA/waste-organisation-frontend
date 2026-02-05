@@ -80,11 +80,40 @@ export const content = {
             new: 'Create new code'
           }
         },
-        disabledSuccessMessage: (apiCode) => ({
+        disabledSuccessMessage: () => ({
           title: 'We have disabled this code',
-          description: `The code <strong>${apiCode}</strong> cannot be used to send any new waste movements.`
+          description: {
+            pre: 'The code',
+            post: 'cannot be used to send any new waste movements.'
+          }
         }),
         returnAction: `Return to ${organisationName}`
+      }
+    }),
+  apiDisable: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Disable API',
+        heading: heading(
+          'Do you want to disable this API code?',
+          null,
+          organisationName
+        ),
+        caption: {
+          pre: 'If you agree this code',
+          post: 'will no longer work.'
+        },
+        warning:
+          'You will not be able to use this code to send any new waste movements.',
+        questions: {
+          yes: 'Yes',
+          no: 'No'
+        },
+        error: {
+          title: 'There is a problem',
+          message: 'Select Yes if want to disable this API code.'
+        },
+        continueAction: 'Continue'
       }
     })
 }

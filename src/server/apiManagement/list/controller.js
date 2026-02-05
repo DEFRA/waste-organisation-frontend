@@ -1,4 +1,4 @@
-import { paths } from '../../../config/paths.js'
+import { paths, pathTo } from '../../../config/paths.js'
 import { content } from '../../../config/content.js'
 import crypto from 'node:crypto'
 
@@ -22,7 +22,8 @@ export const apiManagementController = {
       let disabledSuccessMessage
 
       if (code) {
-        disabledSuccessMessage = pageContent.disabledSuccessMessage(code)
+        disabledSuccessMessage = pageContent.disabledSuccessMessage()
+        disabledSuccessMessage.code = code
       }
 
       let apiCodes = await request.backendApi.getApiCodes(
@@ -82,7 +83,7 @@ const convertToListRows = (apiCodes) => {
       actions: {
         items: [
           {
-            href: '/',
+            href: pathTo(paths.apiDisable, { apiCode: apiCode.code }),
             text: 'Disable',
             classes: 'govuk-button govuk-button--secondary',
             attributes: {

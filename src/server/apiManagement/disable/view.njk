@@ -3,6 +3,22 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "heading/macro.njk" import appHeading %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set headingHtml %}
+{{ appHeading(heading) }}
+<p class="govuk-body govuk-!-margin-top-3 "
+            data-testid="app-heading-caption">{{caption.pre}}
+  <strong>{{apiCode}}</strong>
+  {{caption.post}}</p>
+
+{{ govukWarningText({
+  text: warning,
+  iconFallbackText: "Warning",
+  classes: 'govuk-!-margin-bottom-2'
+}) }}
+{% endset %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -23,12 +39,12 @@
       <form action="{{ action.url }}" method="POST">
         {{
           govukRadios({
-            name: "isPermit",
+            name: "disable",
             classes: "govuk-radios--inline",
             fieldset: {
               legend: {
-                html: appHeading(heading),
-                classes: "govuk-fieldset__legend--l"
+                html: headingHtml,
+                classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-0"
               }
             },
             errorMessage: error,
@@ -40,7 +56,7 @@
             text: action.text,
             type: "submit",
             attributes: {
-              "data-testid": "uk-permit-submit-button"
+              "data-testid": "uk-disable-submit-button"
             }
           })
         }}

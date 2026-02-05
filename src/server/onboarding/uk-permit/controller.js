@@ -18,6 +18,7 @@ export const ukPermitController = {
 
       if (error) {
         errorContent = pageContent.error
+        errorContent.href = '#isPermitYes'
       }
 
       const questions = Object.entries(pageContent.questions).map(
