@@ -80,8 +80,6 @@ export const apiDisableController = {
     async handler(request, h) {
       const disable = request.payload.disable
 
-      console.log('request.params.apiCode', request.params.apiCode)
-
       if (disable === 'yes') {
         await request.backendApi.updateApiCodes(
           request.auth.credentials.currentOrganisationId,
