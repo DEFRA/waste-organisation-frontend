@@ -40,7 +40,6 @@ export const apiDisableController = {
           }
         }
       )
-
       return h.view('apiManagement/disable/view', {
         pageTitle: pageContent.title,
         heading: pageContent.heading,
