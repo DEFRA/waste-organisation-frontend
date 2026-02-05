@@ -51,7 +51,7 @@ export const apiManagementController = {
         disabledApiCodeRows: disabledApiCodes,
         additionalCode: pageContent.additionalCode,
         returnAction: pageContent.returnAction,
-        createAction: paths.apiCode,
+        createAction: paths.apiCreate,
         scriptNonce,
         disabledSuccessMessage
       })
