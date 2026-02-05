@@ -40,7 +40,7 @@ export const ukPermitController = {
         }
       )
 
-      return h.view('common/templates/layouts/questions', {
+      return h.view('onboarding/uk-permit/view', {
         pageTitle: pageContent.title,
         heading: pageContent.heading,
         action: {

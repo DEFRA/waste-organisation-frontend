@@ -80,7 +80,7 @@ export const content = {
             new: 'Create new code'
           }
         },
-        disabledSuccessMessage: (apiCode) => ({
+        disabledSuccessMessage: () => ({
           title: 'We have disabled this code',
           description: {
             pre: 'The code',
@@ -99,6 +99,12 @@ export const content = {
           null,
           organisationName
         ),
+        caption: {
+          pre: 'If you agree this code',
+          post: 'will no longer work.'
+        },
+        warning:
+          'You will not be able to use this code to send any new waste movements.',
         questions: {
           yes: 'Yes',
           no: 'No'

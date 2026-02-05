@@ -9,10 +9,12 @@
 {% set headingHtml %}
 {{ appHeading(heading) }}
 <p class="govuk-body govuk-!-margin-top-3 "
-            data-testid="app-heading-caption">If you agree this code <strong>{{apiCode}}</strong> will no longer work.</p>
+            data-testid="app-heading-caption">{{caption.pre}}
+  <strong>{{apiCode}}</strong>
+  {{caption.post}}</p>
 
 {{ govukWarningText({
-  text: "You will not be able to use this code to send any new waste movements.",
+  text: warning,
   iconFallbackText: "Warning",
   classes: 'govuk-!-margin-bottom-2'
 }) }}

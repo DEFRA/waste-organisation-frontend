@@ -61,7 +61,7 @@ describe('apiDisable', () => {
       expect(pageHeading).toEqual(
         expect.stringContaining(pageContent.heading.text)
       )
-      expect(pageCaption).toEqual(
+      expect(pageCaption.replace(/[\n\r\t ]+/gm, ' ')).toEqual(
         `If you agree this code ${apiCode} will no longer work.`
       )
     })

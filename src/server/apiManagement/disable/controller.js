@@ -44,6 +44,8 @@ export const apiDisableController = {
       return h.view('apiManagement/disable/view', {
         pageTitle: pageContent.title,
         heading: pageContent.heading,
+        caption: pageContent.caption,
+        warning: pageContent.warning,
         action: {
           url: pathTo(paths.apiDisable, { apiCode }),
           text: pageContent.continueAction
@@ -51,7 +53,6 @@ export const apiDisableController = {
         questions,
         error: errorContent,
         backLink: paths.startPage,
-        caption: {},
         apiCode
       })
     }
