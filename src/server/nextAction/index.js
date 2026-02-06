@@ -6,7 +6,12 @@ export const nextAction = {
     {
       method: 'GET',
       path: paths.nextAction,
-      ...nextActionController
+      ...nextActionController.get
+    },
+    {
+      method: 'POST',
+      path: paths.nextAction,
+      ...nextActionController.post
     }
   ]
 }

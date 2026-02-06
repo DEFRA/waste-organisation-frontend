@@ -53,10 +53,7 @@ export const content = {
         questions: {
           connectYourSoftware: 'Connect your software to the API',
           uploadSpreadsheet: 'Upload a new spreadsheet',
-          updateSpreadsheet:
-            'Update an existing waste movement in the spreadsheet',
-          changeWasteReceiver: 'Choose another waste receiver in my account',
-          addWasteReceiver: 'Add another waste receiver to my account'
+          changeWasteReceiver: 'Choose another waste receiver in my account'
         },
         error: {
           title: 'There is a problem',
