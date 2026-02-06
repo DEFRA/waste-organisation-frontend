@@ -109,4 +109,55 @@ describe('#nextActionController', () => {
 
     expect(errorMessage).toEqual(expect.stringContaining(expectedErrorMessage))
   })
+
+  describe('POST', () => {
+    test('should redirect to login if yes is selected', async () => {
+      const { headers } = await server.inject({
+        method: 'POST',
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        },
+        payload: {
+          nextAction: 'connectYourSoftware'
+        }
+      })
+
+      expect(headers.location).toBe(paths.apiList)
+    })
+
+    test('should redirect to cannotUseService if no is selected', async () => {
+      const { headers } = await server.inject({
+        method: 'POST',
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        },
+        payload: {
+          nextAction: 'changeWasteReceiver'
+        }
+      })
+
+      expect(headers.location).toBe(paths.signinDefraIdCallback)
+    })
+
+    test.each([{}, { payload: {} }, { payload: { nextAction: 'foo' } }])(
+      'should redirect to get endpoint if there is an error',
+      async (payload) => {
+        const { headers } = await server.inject({
+          method: 'POST',
+          url: paths.nextAction,
+          auth: {
+            strategy: 'session',
+            credentials
+          },
+          ...payload
+        })
+
+        expect(headers.location).toBe(paths.nextAction)
+      }
+    )
+  })
 })
