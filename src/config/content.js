@@ -52,7 +52,6 @@ export const content = {
         heading: heading('What do you want to do?', null, organisationName),
         questions: {
           connectYourSoftware: 'Connect your software to the API',
-          uploadSpreadsheet: 'Upload a new spreadsheet',
           changeWasteReceiver: 'Choose another waste receiver in my account'
         },
         error: {
