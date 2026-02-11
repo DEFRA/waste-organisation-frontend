@@ -11,7 +11,7 @@ const logger = createLogger()
 const contentSecurityPolicy = {
   plugin: Blankie,
   options: (request) => {
-    const baseUrl = config.get('appBaseUrl')
+    const baseUrl = config.get('appBaseUrl').replace(/\/$/, '')
 
     const formAction = ['self', baseUrl, `${baseUrl}/`]
       .concat(
