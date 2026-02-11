@@ -60,7 +60,7 @@ export const beginUpload = {
 
     return h.view('spreadsheet/begin-upload', {
       pageTitle: 'Upload a Waste Movement Spreadsheet',
-      action: uploadUrl?.startsWith('h') ? uploadUrl : `${origin}${uploadUrl}`,
+      action: uploadUrl,
       uploadWidgetSettings: {
         id: 'file-upload-1',
         name: 'fileUpload1',
