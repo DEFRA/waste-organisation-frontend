@@ -67,7 +67,7 @@ describe('spreadsheet upload controller', () => {
     const { document } = new JSDOM(payload).window
     expect(statusCode).toBe(200)
     const form = document.querySelectorAll('form')[0]
-    expect(form.action).toEqual('http://localhost:7337/test') // from config - fileUpload.url
+    expect(form.action).toEqual('/test') // from config - fileUpload.url
   })
 
   test('file uploaded page renders', async () => {
