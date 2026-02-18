@@ -7,6 +7,7 @@ import {
 import { paths, pathTo } from '../../config/paths.js'
 import { JSDOM } from 'jsdom'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
+import { content } from '../../config/content.js'
 // import { preSharedKey } from './controller.js'
 
 describe('spreadsheet upload controller', () => {
@@ -74,6 +75,8 @@ describe('spreadsheet upload controller', () => {
     const credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationId = 'abc-123'
 
+    const pageContent = content.spreadsheetUploaded({}, 'Joe Bloggs Ltd')
+
     const { statusCode, payload } = await server.inject({
       method: 'GET',
       url: pathTo(paths.spreadsheetUploaded, {
@@ -86,8 +89,9 @@ describe('spreadsheet upload controller', () => {
     })
     const { document } = new JSDOM(payload).window
     expect(statusCode).toBe(200)
-    const heading = document.querySelectorAll('.govuk-heading-l')[0].textContent
-    expect(heading).toEqual(expect.stringContaining('Upload'))
+    const heading = document.querySelectorAll('h1.govuk-panel__title')[0]
+      .textContent
+    expect(heading).toEqual(expect.stringContaining(pageContent.heading.text))
   })
 
   test('callback does not require session auth', async () => {

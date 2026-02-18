@@ -4,6 +4,7 @@ import { pathTo, paths } from '../../config/paths.js'
 import { createLogger } from '../common/helpers/logging/logger.js'
 import boom from '@hapi/boom'
 import { encrypt } from '../common/helpers/encryption/encrypt.js'
+import { content } from '../../config/content.js'
 
 const logger = createLogger()
 
@@ -53,6 +54,10 @@ const initiateUpload = async (orgId, email) => {
 
 export const beginUpload = {
   async handler(request, h) {
+    const organisationName = request?.auth?.credentials?.currentOrganisationName
+
+    const pageContent = content.spreadsheetUpload(request, organisationName)
+
     const { uploadId, uploadUrl } = await initiateUpload(
       request.auth.credentials.currentOrganisationId,
       request.auth.credentials.email
@@ -67,17 +72,10 @@ export const beginUpload = {
     }
 
     return h.view('spreadsheet/begin-upload', {
-      pageTitle: 'Upload a Waste Movement Spreadsheet',
+      pageTitle: 'Upload a receipt of waste movement spreadsheet',
+      heading: pageContent.heading,
       action: uploadUrl,
-      uploadWidgetSettings: {
-        id: 'file-upload-1',
-        name: 'fileUpload1',
-        label: {
-          text: 'Upload a waste movement spreadsheet'
-        },
-        javascript: true,
-        accept: '.xlsx'
-      }
+      backLink: paths.nextAction
     })
   }
 }
@@ -85,11 +83,17 @@ export const beginUpload = {
 export const fileUploaded = {
   /* v8 ignore stop */
   async handler(request, h) {
+    const organisationName = request?.auth?.credentials?.currentOrganisationName
+
+    const pageContent = content.spreadsheetUploaded(request, organisationName)
+
     return h.view('spreadsheet/file-uploaded', {
-      pageTitle: 'Upload a Waste Movement Spreadsheet',
-      uploadLink: pathTo(paths.spreadsheetUpload, {
-        organisationId: request.params.organisationId
-      })
+      pageTitle: pageContent.heading.text,
+      content: pageContent.content,
+      returnAction: {
+        text: pageContent.returnLink,
+        link: paths.nextAction
+      }
     })
   }
 }

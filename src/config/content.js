@@ -52,6 +52,7 @@ export const content = {
         heading: heading('What do you want to do?', null, organisationName),
         questions: {
           connectYourSoftware: 'Connect your software to the API',
+          uploadSpreadsheet: 'Upload a new spreadsheet',
           changeWasteReceiver: 'Choose another waste receiver in my account'
         },
         error: {
@@ -110,6 +111,38 @@ export const content = {
           message: 'Select Yes if want to disable this API code.'
         },
         continueAction: 'Continue'
+      }
+    }),
+  spreadsheetUpload: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Upload spreadsheet',
+        heading: heading(
+          'Upload a receipt of waste movement spreadsheet',
+          null,
+          organisationName
+        ),
+        error: {
+          title: 'There is a problem',
+          message: '[REAL TEXT GOES HERE]'
+        },
+        continueAction: 'Upload'
+      }
+    }),
+  spreadsheetUploaded: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Upload spreadsheet',
+        heading: heading('Spreadsheet upload successful', null, null),
+        content: {
+          heading: 'What happens next',
+          text: [
+            'We have received your receipt of waste spreadsheet.',
+            'We need to check for viruses and errors.',
+            'Once we complete the checks, we will send you a confirmation email.'
+          ]
+        },
+        returnLink: `Return to ${organisationName}`
       }
     })
 }
