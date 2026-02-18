@@ -140,6 +140,7 @@ services:
         condition: service_started
     env_file:
       - 'compose/aws.env'
+      - '../waste-organisation-backend/.env'
     environment:
       PORT: 3001
       NODE_ENV: development
