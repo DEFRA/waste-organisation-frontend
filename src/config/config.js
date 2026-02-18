@@ -352,6 +352,12 @@ export const config = convict({
       env: 'AUTH_ORIGINS',
       default: []
     }
+  },
+  encryptionKey: {
+    doc: 'base64 encryption key used for encrypting strings',
+    format: String,
+    env: 'ENCRYPTION_KEY',
+    default: '1r1S98SiPcNEN0vtKm3uiXchW0KYzScxArmmKrYkfKg='
   }
 })
 
