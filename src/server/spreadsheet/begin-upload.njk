@@ -5,9 +5,17 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">{{pageTitle}}</h1>
       <form action="{{ action }}" method="POST" enctype="multipart/form-data">
-        {{ govukFileUpload(uploadWidgetSettings) }}
+        {{ govukFileUpload({
+          id: 'file-upload-1',
+          label: {
+            html: appHeading(heading),
+            classes: 'govuk-label govuk-label--l'
+          },
+          name: 'fileUpload1',
+          javascript: true,
+          accept: '.xlsx'
+        })}}
         {{
           govukButton({
             text: "Upload",
