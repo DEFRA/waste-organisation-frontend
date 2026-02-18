@@ -8,13 +8,16 @@
       <form action="{{ action }}" method="POST" enctype="multipart/form-data">
         {{ govukFileUpload({
           id: 'file-upload-1',
+          name: 'fileUpload1',
           label: {
             html: appHeading(heading),
             classes: 'govuk-label govuk-label--l'
           },
-          name: 'fileUpload1',
           javascript: true,
-          accept: '.xlsx'
+          attributes: {
+            "accept": '.xlsx'
+          }
+
         })}}
         {{
           govukButton({
