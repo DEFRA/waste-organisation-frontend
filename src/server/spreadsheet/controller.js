@@ -27,8 +27,6 @@ const initiateUpload = async (orgId, email) => {
 
     const encryptedEmail = encrypt(email, config.get('encryptionKey'))
 
-    console.log('encryptedEmail =======================', encryptedEmail)
-
     const { payload } = await wreck.post(initiateUrl, {
       json: 'strict',
       payload: {
