@@ -76,6 +76,10 @@ export const nextActionController = {
         return h.redirect(paths.apiList)
       }
 
+      if (nextAction === 'downloadSpreadsheet') {
+        return h.redirect(paths.downloadSpreadsheet)
+      }
+
       if (nextAction === 'uploadSpreadsheet') {
         return h.redirect(pathTo(paths.spreadsheetUpload, { organisationId }))
       }
