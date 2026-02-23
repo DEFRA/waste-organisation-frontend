@@ -90,6 +90,14 @@ describe('#downloadSpreadsheetController', () => {
       '/public/receipt-of-waste-template.xlsx'
     )
     expect(downloadButton.hasAttribute('download')).toBe(true)
+    expect(downloadButton.getAttribute('aria-describedby')).toBe(
+      'file-metadata'
+    )
+
+    const fileMetadata = document.querySelector('[data-testid="file-metadata"]')
+    expect(fileMetadata.textContent).toEqual(
+      expect.stringContaining('XLSX, 1.1MB')
+    )
   })
 
   test('should render return link to next action page', async () => {

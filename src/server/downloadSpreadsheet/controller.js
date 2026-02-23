@@ -17,7 +17,8 @@ export const downloadSpreadsheetController = {
         body: pageContent.body,
         downloadButton: {
           text: pageContent.downloadButton,
-          href: templateFileUrl
+          href: templateFileUrl,
+          fileMetadata: pageContent.fileMetadata
         },
         returnLink: {
           text: pageContent.returnLink,
