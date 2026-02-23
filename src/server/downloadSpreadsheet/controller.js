@@ -1,7 +1,8 @@
+import { config } from '../../config/config.js'
 import { content } from '../../config/content.js'
 import { paths } from '../../config/paths.js'
 
-const templateFileUrl = '/public/receipt-of-waste-template.xlsx'
+const templateFileUrl = `${config.get('assetPath')}/receipt-of-waste-template.xlsx`
 
 export const downloadSpreadsheetController = {
   get: {
