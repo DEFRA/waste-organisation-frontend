@@ -3,12 +3,13 @@ import { config } from '../../config/config.js'
 import { pathTo, paths } from '../../config/paths.js'
 import { createLogger } from '../common/helpers/logging/logger.js'
 import boom from '@hapi/boom'
+import { encrypt } from '../common/helpers/encryption/encrypt.js'
 import { content } from '../../config/content.js'
 
 const logger = createLogger()
 
 /* v8 ignore start */
-const initiateUpload = async (orgId) => {
+const initiateUpload = async (orgId, email) => {
   try {
     const { url, bucketName, preSharedKey } = config.get('fileUpload')
     const initiateUrl = `${url}/initiate`
@@ -23,6 +24,9 @@ const initiateUpload = async (orgId) => {
     logger.info(
       `Info initiating upload: ${initiateUrl} callback: ${callbackUrl} redirect: ${redirectUrl} bucketName: ${bucketName}`
     )
+
+    const encryptedEmail = encrypt(email, config.get('encryptionKey'))
+
     const { payload } = await wreck.post(initiateUrl, {
       json: 'strict',
       payload: {
@@ -32,7 +36,8 @@ const initiateUpload = async (orgId) => {
         callback: callbackUrl,
         s3Bucket: bucketName,
         metadata: {
-          preSharedKey
+          preSharedKey,
+          encryptedEmail
         }
       }
     })
@@ -52,7 +57,8 @@ export const beginUpload = {
     const pageContent = content.spreadsheetUpload(request, organisationName)
 
     const { uploadId, uploadUrl } = await initiateUpload(
-      request.auth.credentials.currentOrganisationId
+      request.auth.credentials.currentOrganisationId,
+      request.auth.credentials.email
     )
     /* v8 ignore start */
     logger.info(`uploaded requested - ${uploadId} ${uploadUrl}`)
@@ -108,14 +114,19 @@ const saveSpreadsheet = async (backendApi, organisationId, spreadsheet) => {
 export const callback = {
   async handler(request, h) {
     const { preSharedKey } = config.get('fileUpload')
+
     if (request.payload?.metadata?.preSharedKey !== preSharedKey) {
       throw boom.forbidden('Not Allowed')
     }
+
     const spreadsheets = request.payload?.form
+
     if (!spreadsheets) {
       return h.response({ message: 'success' })
     }
+
     for (const spreadsheet of Object.values(spreadsheets)) {
+      spreadsheet.encryptedEmail = request.payload?.metadata?.encryptedEmail
       const s = await saveSpreadsheet(
         request.backendApi,
         request.params.organisationId,

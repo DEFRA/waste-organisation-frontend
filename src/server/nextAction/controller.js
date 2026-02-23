@@ -63,7 +63,6 @@ export const nextActionController = {
           nextAction: joi.string().required()
         }),
         failAction: (request, h) => {
-          console.log('failed')
           request.yar.flash(flashMessage, true)
           return h.redirect(paths.nextAction).takeover()
         }
@@ -73,7 +72,6 @@ export const nextActionController = {
       const nextAction = request.payload.nextAction
       const organisationId = request?.auth?.credentials?.currentOrganisationId
 
-      console.log('nextAction', nextAction)
       if (nextAction === 'connectYourSoftware') {
         return h.redirect(paths.apiList)
       }
