@@ -7,11 +7,6 @@ export const downloadSpreadsheet = {
       method: 'GET',
       path: paths.downloadSpreadsheet,
       ...downloadSpreadsheetController.get
-    },
-    {
-      method: 'GET',
-      path: paths.downloadSpreadsheetFile,
-      ...downloadSpreadsheetController.download
     }
   ]
 }

@@ -1,11 +1,7 @@
-import path from 'node:path'
 import { content } from '../../config/content.js'
 import { paths } from '../../config/paths.js'
 
-const templateFilePath = path.resolve(
-  import.meta.dirname,
-  'receipt-of-waste-template.xlsx'
-)
+const templateFileUrl = '/public/receipt-of-waste-template.xlsx'
 
 export const downloadSpreadsheetController = {
   get: {
@@ -21,7 +17,7 @@ export const downloadSpreadsheetController = {
         body: pageContent.body,
         downloadButton: {
           text: pageContent.downloadButton,
-          href: paths.downloadSpreadsheetFile
+          href: templateFileUrl
         },
         returnLink: {
           text: pageContent.returnLink,
@@ -29,20 +25,6 @@ export const downloadSpreadsheetController = {
         },
         backLink: paths.nextAction
       })
-    }
-  },
-  download: {
-    handler(_request, h) {
-      return h
-        .file(templateFilePath, { confine: false })
-        .header(
-          'Content-Disposition',
-          'attachment; filename="receipt-of-waste-template.xlsx"'
-        )
-        .header(
-          'Content-Type',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
     }
   }
 }

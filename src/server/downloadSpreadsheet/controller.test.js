@@ -69,7 +69,7 @@ describe('#downloadSpreadsheetController', () => {
     )
   })
 
-  test('should render download button linking to file route', async () => {
+  test('should render download button linking to template file', async () => {
     const { payload } = await server.inject({
       method: 'GET',
       url: paths.downloadSpreadsheet,
@@ -87,8 +87,9 @@ describe('#downloadSpreadsheetController', () => {
 
     expect(downloadButton).not.toBeNull()
     expect(downloadButton.getAttribute('href')).toBe(
-      paths.downloadSpreadsheetFile
+      '/public/receipt-of-waste-template.xlsx'
     )
+    expect(downloadButton.hasAttribute('download')).toBe(true)
   })
 
   test('should render return link to next action page', async () => {
@@ -109,25 +110,6 @@ describe('#downloadSpreadsheetController', () => {
     expect(returnLink.getAttribute('href')).toBe(paths.nextAction)
     expect(returnLink.textContent).toEqual(
       expect.stringContaining(`Return to ${organisationName}`)
-    )
-  })
-
-  test('should download file with correct headers', async () => {
-    const { statusCode, headers } = await server.inject({
-      method: 'GET',
-      url: paths.downloadSpreadsheetFile,
-      auth: {
-        strategy: 'session',
-        credentials
-      }
-    })
-
-    expect(statusCode).toBe(200)
-    expect(headers['content-disposition']).toBe(
-      'attachment; filename="receipt-of-waste-template.xlsx"'
-    )
-    expect(headers['content-type']).toBe(
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
   })
 })

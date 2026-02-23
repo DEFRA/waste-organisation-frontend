@@ -10,7 +10,6 @@ export const paths = {
   ukPermit: '/',
   nextAction: '/next-action',
   downloadSpreadsheet: '/download-spreadsheet',
-  downloadSpreadsheetFile: '/download-spreadsheet/file',
   accessibility: '/accessibility-statement',
   search: '/search',
 
