@@ -12,6 +12,8 @@
     "build:frontend": "NODE_ENV=production webpack",
     "dev": "NODE_ENV=local run-p frontend:watch server:watch",
     "dev:debug": "run-p frontend:watch server:debug",
+    "stop:docker": "docker compose down",
+    "start:docker": "docker compose up --build",
     "docker:dev": "npm run dev",
     "format": "prettier --write \"src/**/*.js\" \"**/*.{js,cjs,md,json,config.js,test.js}\"",
     "format:check": "prettier --check \"src/**/*.js\" \"**/*.{js,cjs,md,json,config.js,test.js}\"",
@@ -30,8 +32,7 @@
     "server:debug": "nodemon --inspect-brk=0.0.0.0 --ext js,json --legacy-watch ./src",
     "prestart": "npm run build:frontend",
     "start": "NODE_ENV=production node --use-strict .",
-    "setup:husky": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module",
-    "start:docker": "docker compose -f compose.yml -f ../waste-organisation-backend/compose.yml -f ../waste-organisation-backend/compose-localstack.yml up --build"
+    "setup:husky": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module"
   },
   "author": "Defra DDTS",
   "license": "OGL-UK-3.0",

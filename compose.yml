@@ -1,17 +1,12 @@
-services:
-  redis:
-    image: redis:7.2.3-alpine3.18
-    ports:
-      - '6379:6379'
-    restart: always
-    networks:
-      - cdp-tenant
+include:
+  - path: ../waste-organisation-backend/compose.yml
 
+services:
   cdp-defra-id-stub:
     image: defradigital/cdp-defra-id-stub:latest
     ports:
       - '3200:3200'
-      - '3000:3000' # waste-organisation-frontend port passthrough for networking
+      - '3000:3000'
       - '7337:7337'
     depends_on:
       redis:
@@ -47,11 +42,7 @@ services:
       MOCK_VIRUS_RESULT_DELAY: 3
       SQS_ENDPOINT: http://localstack:4566
       S3_ENDPOINT: http://localstack:4566
-    network_mode: 'service:cdp-defra-id-stub' # used to allow localhost to cdp-defra-id-stub
-    # networks:
-    #   - cdp-tenant
-
-  ################################################################################
+    network_mode: 'service:cdp-defra-id-stub'
 
   waste-organisation-frontend:
     build:
@@ -86,10 +77,4 @@ services:
       BACKEND_API: http://waste-organisation-backend:3001
       FILE_UPLOAD_SERVICE_URL: http://localhost:7337
       BACKEND_API_PRESHARED_KEY: test
-    network_mode: 'service:cdp-defra-id-stub' # used to allow localhost to cdp-defra-id-stub
-
-################################################################################
-
-networks:
-  cdp-tenant:
-    driver: bridge
+    network_mode: 'service:cdp-defra-id-stub'
