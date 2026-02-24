@@ -94,7 +94,6 @@ services:
       - ./package.json:/home/node/package.json:z
       - ./package-lock.json:/home/node/package-lock.json:z
       - ./src:/home/node/src:z
-      - /home/node/node_modules
       - ./webpack.config.js:/home/node/webpack.config.js:z
       - ./postcss.config.js:/home/node/postcss.config.js:z
     depends_on:
