@@ -86,6 +86,14 @@ return await fetch(url, {
 
 ### Setup
 
+The [waste-organisation-backend](https://github.com/DEFRA/waste-organisation-backend) repository must be checked out in a sibling directory next to this repository for Docker Compose to work:
+
+```
+parent-directory/
+  waste-organisation-backend/
+  waste-organisation-frontend/
+```
+
 Install application dependencies:
 
 ```bash
