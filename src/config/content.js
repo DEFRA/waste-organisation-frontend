@@ -52,6 +52,7 @@ export const content = {
         heading: heading('What do you want to do?', null, organisationName),
         questions: {
           connectYourSoftware: 'Connect your software to the API',
+          downloadSpreadsheet: 'Download the spreadsheet template',
           uploadSpreadsheet: 'Upload a new spreadsheet',
           changeWasteReceiver: 'Choose another waste receiver in my account'
         },
@@ -142,6 +143,21 @@ export const content = {
             'Once we complete the checks, we will send you a confirmation email.'
           ]
         },
+        returnLink: `Return to ${organisationName}`
+      }
+    }),
+  downloadSpreadsheet: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Download spreadsheet',
+        heading: heading(
+          'Download Receipt of waste spreadsheet',
+          null,
+          organisationName
+        ),
+        body: 'If you do not have the software needed to use the API, download the spreadsheet to report your waste.',
+        downloadButton: 'Download spreadsheet',
+        fileMetadata: 'XLSX, 1.1MB',
         returnLink: `Return to ${organisationName}`
       }
     })

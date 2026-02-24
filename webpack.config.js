@@ -174,6 +174,13 @@ export default {
         {
           from: path.join(govukFrontendPath, 'dist/govuk/assets/rebrand'),
           to: 'assets'
+        },
+        {
+          from: path.join(
+            dirname,
+            'src/server/downloadSpreadsheet/templates/receipt-of-waste-template.xlsx'
+          ),
+          to: 'receipt-of-waste-template.xlsx'
         }
       ]
     })

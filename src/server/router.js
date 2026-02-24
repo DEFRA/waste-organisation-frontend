@@ -12,6 +12,7 @@ import { dashboard } from './dashboard/index.js'
 import { nextAction } from './nextAction/index.js'
 import { spreadsheet } from './spreadsheet/index.js'
 import { apiManagement } from './apiManagement/index.js'
+import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -54,6 +55,7 @@ export const router = {
         dashboard:      dashboard.authedRoutes.map((a) => addAuth(a)),
         nextAction:     nextAction.authedRoutes.map((a) => addAuth(a)),
         apiManagement:  apiManagement.authedRoutes.map((a) => addAuth(a)),
+        downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuth(a)),
       }).reduce((p, entry) => createPlugin(p, entry), [])
 
       // Application specific routes, add your own routes here

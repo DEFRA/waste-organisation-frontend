@@ -47,6 +47,29 @@ describe('spreadsheet upload controller', () => {
     expect(form.action).toEqual('http://example.com/test')
   })
 
+  test('upload file input is required', async () => {
+    const credentials = await setupAuthedUserSession(server)
+    credentials.currentOrganisationId = 'abc-123'
+
+    wreckPostMock.mockReturnValue({
+      payload: { uploadUrl: 'http://example.com/test' }
+    })
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: pathTo(paths.spreadsheetUpload, {
+        organisationId: credentials.currentOrganisationId
+      }),
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+    const { document } = new JSDOM(payload).window
+    const fileInput = document.querySelector('input[type="file"]')
+    expect(fileInput.hasAttribute('required')).toBe(true)
+  })
+
   test('begin upload defaults to initiate domain when upload not provided', async () => {
     const credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationId = 'abc-123'
