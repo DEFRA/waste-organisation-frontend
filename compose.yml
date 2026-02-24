@@ -1,27 +1,4 @@
 services:
-  localstack:
-    image: localstack/localstack:3.0.2
-    ports:
-      - '4566:4566' # LocalStack Gateway
-      - '4510-4559:4510-4559' # external services port range
-    env_file:
-      - 'compose/aws.env'
-    environment:
-      DEBUG: ${DEBUG:-1}
-      LS_LOG: WARN # Localstack DEBUG Level
-      SERVICES: s3,sqs,sns,firehose
-      LOCALSTACK_HOST: 127.0.0.1
-    volumes:
-      - '${TMPDIR:-/tmp}/localstack:/var/lib/localstack:z'
-      - './compose/start-localstack.sh:/etc/localstack/init/ready.d/01-start-localstack.sh:z'
-    healthcheck:
-      test: ['CMD', 'stat', '/tmp/READY']
-      interval: 5s
-      start_period: 5s
-      retries: 3
-    networks:
-      - cdp-tenant
-
   redis:
     image: redis:7.2.3-alpine3.18
     ports:
@@ -29,16 +6,6 @@ services:
     restart: always
     networks:
       - cdp-tenant
-
-  mongodb:
-    image: mongo:6.0.13
-    networks:
-      - cdp-tenant
-    ports:
-      - '27017:27017'
-    volumes:
-      - ./mongodb-data:/data:z
-    restart: always
 
   cdp-defra-id-stub:
     image: defradigital/cdp-defra-id-stub:latest
@@ -120,37 +87,6 @@ services:
       FILE_UPLOAD_SERVICE_URL: http://localhost:7337
       BACKEND_API_PRESHARED_KEY: test
     network_mode: 'service:cdp-defra-id-stub' # used to allow localhost to cdp-defra-id-stub
-
-  waste-organisation-backend:
-    build:
-      context: ../waste-organisation-backend
-      target: development
-    ports:
-      - '3001:3001'
-    volumes:
-      - ../waste-organisation-backend:/home/node/:z
-    depends_on:
-      localstack:
-        condition: service_healthy
-      redis:
-        condition: service_started
-      mongodb:
-        condition: service_started
-    env_file:
-      - 'compose/aws.env'
-      - '../waste-organisation-backend/.env'
-    environment:
-      PORT: 3001
-      NODE_ENV: development
-      MONGO_URI: mongodb://mongodb:27017/
-      WASTE_CLIENT_AUTH_TEST: test
-      S3_ENDPOINT: http://localstack:4566
-      SQS_ENDPOINT: http://localstack:4566
-      AWS_S3_FORCE_PATH_STYLE: true
-      SPREADSHEET_SQS_QUEUE: waste-receiver-background-process
-      AWS_S3_CHECKSUM_MODE: DISABLED
-    networks:
-      - cdp-tenant
 
 ################################################################################
 
