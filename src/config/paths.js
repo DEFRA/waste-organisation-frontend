@@ -9,6 +9,7 @@ export const paths = {
   cannotUseService: '/cannot-use-service',
   ukPermit: '/',
   nextAction: '/next-action',
+  downloadSpreadsheet: '/download-spreadsheet',
   accessibility: '/accessibility-statement',
   search: '/search',
 

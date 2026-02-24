@@ -127,6 +127,22 @@ describe('#nextActionController', () => {
       expect(headers.location).toBe(paths.apiList)
     })
 
+    test('should redirect to downloadSpreadsheet if downloadSpreadsheet is selected', async () => {
+      const { headers } = await server.inject({
+        method: 'POST',
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        },
+        payload: {
+          nextAction: 'downloadSpreadsheet'
+        }
+      })
+
+      expect(headers.location).toBe(paths.downloadSpreadsheet)
+    })
+
     test('should redirect to cannotUseService if no is selected', async () => {
       const { headers } = await server.inject({
         method: 'POST',

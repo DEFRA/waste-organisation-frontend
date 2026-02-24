@@ -1,0 +1,28 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ appHeading(heading) }}
+      <p class="govuk-body govuk-!-margin-top-4">{{ body }}</p>
+      {{
+        govukButton({
+          text: downloadButton.text,
+          href: downloadButton.href,
+          element: "a",
+          classes: "govuk-!-margin-top-4",
+          attributes: {
+            "data-testid": "download-spreadsheet-button",
+            "download": "",
+            "aria-describedby": "file-metadata"
+          }
+        })
+      }}
+      <p class="govuk-visually-hidden" id="file-metadata" data-testid="file-metadata">{{ downloadButton.fileMetadata }}</p>
+      <p class="govuk-body govuk-!-padding-top-4">
+        <a class="govuk-link govuk-link--no-visited-state" href="{{ returnLink.href }}" data-testid="return-link">{{ returnLink.text }}</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}
