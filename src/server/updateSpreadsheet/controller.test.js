@@ -8,14 +8,15 @@ import { paths, pathTo } from '../../config/paths.js'
 import { JSDOM } from 'jsdom'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
 import { content } from '../../config/content.js'
+import { config } from '../../config/config.js'
+
+const { preSharedKey } = config.get('fileUpload')
 
 describe('update spreadsheet upload controller', () => {
   let server
-  let preSharedKey
 
   beforeAll(async () => {
     server = await initialiseServer()
-    preSharedKey = require('./controller.js').preSharedKey
   })
 
   afterAll(async () => {
