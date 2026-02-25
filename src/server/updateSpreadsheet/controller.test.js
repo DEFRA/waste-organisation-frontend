@@ -135,6 +135,26 @@ describe('update spreadsheet upload controller', () => {
     expect(JSON.parse(payload)).toEqual({ message: 'success' })
   })
 
+  test('callback passes uploadType metadata to backend', async () => {
+    wreckPutMock.mockReturnValue({
+      payload: { message: 'success', spreadsheet: {} }
+    })
+
+    await server.inject({
+      method: 'POST',
+      url: pathTo(paths.updateSpreadsheetUploadCallback, {
+        organisationId: 'abc-321'
+      }),
+      payload: {
+        metadata: { preSharedKey, uploadType: 'update' },
+        form: { thing: { fileId: '123' } }
+      }
+    })
+
+    const putPayload = wreckPutMock.mock.calls[0][1].payload
+    expect(putPayload.spreadsheet.uploadType).toBe('update')
+  })
+
   test('callback ignores missing spreadsheets', async () => {
     wreckPutMock.mockReturnValue({
       payload: { message: 'success', spreadsheet: {} }

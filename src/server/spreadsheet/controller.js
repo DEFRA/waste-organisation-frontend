@@ -37,7 +37,8 @@ const initiateUpload = async (orgId, email) => {
         s3Bucket: bucketName,
         metadata: {
           preSharedKey,
-          encryptedEmail
+          encryptedEmail,
+          uploadType: 'create'
         }
       }
     })
@@ -127,6 +128,7 @@ export const callback = {
 
     for (const spreadsheet of Object.values(spreadsheets)) {
       spreadsheet.encryptedEmail = request.payload?.metadata?.encryptedEmail
+      spreadsheet.uploadType = request.payload?.metadata?.uploadType
       const s = await saveSpreadsheet(
         request.backendApi,
         request.params.organisationId,
