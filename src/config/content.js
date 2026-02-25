@@ -54,6 +54,7 @@ export const content = {
           connectYourSoftware: 'Connect your software to the API',
           downloadSpreadsheet: 'Download the spreadsheet template',
           uploadSpreadsheet: 'Upload a new spreadsheet',
+          updateSpreadsheet: 'Upload an existing spreadsheet',
           changeWasteReceiver: 'Choose another waste receiver in my account'
         },
         error: {
@@ -139,6 +140,36 @@ export const content = {
           heading: 'What happens next',
           text: [
             'We have received your receipt of waste spreadsheet.',
+            'We need to check for viruses and errors.',
+            'Once we complete the checks, we will send you a confirmation email.'
+          ]
+        },
+        returnLink: `Return to ${organisationName}`
+      }
+    }),
+  updateSpreadsheetUpload: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Upload an existing spreadsheet',
+        heading: heading(
+          'Upload an existing spreadsheet',
+          null,
+          organisationName
+        ),
+        description:
+          'You will only be able to upload an existing spreadsheet if you have been given a Waste Tracking ID for that waste movement.',
+        continueAction: 'Continue'
+      }
+    }),
+  updateSpreadsheetUploaded: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Update spreadsheet',
+        heading: heading('Spreadsheet update successful', null, null),
+        content: {
+          heading: 'What happens next',
+          text: [
+            'We have received your updated receipt of waste spreadsheet.',
             'We need to check for viruses and errors.',
             'Once we complete the checks, we will send you a confirmation email.'
           ]
