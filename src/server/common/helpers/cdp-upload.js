@@ -7,7 +7,6 @@ import { encrypt } from './encryption/encrypt.js'
 
 const logger = createLogger()
 
-/* v8 ignore start */
 export const initiateUpload = async (
   orgId,
   email,
@@ -45,7 +44,6 @@ export const initiateUpload = async (
     throw e
   }
 }
-/* v8 ignore stop */
 
 const saveSpreadsheet = async (backendApi, organisationId, spreadsheet) => {
   try {
@@ -54,7 +52,6 @@ const saveSpreadsheet = async (backendApi, organisationId, spreadsheet) => {
       spreadsheet.fileId,
       spreadsheet
     )
-    /* v8 ignore next 6 */
   } catch (e) {
     logger.error(
       `Error in spreadsheet callback ${e} - spreadsheet ${spreadsheet}`
