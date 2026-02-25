@@ -84,6 +84,12 @@ export const nextActionController = {
         return h.redirect(pathTo(paths.spreadsheetUpload, { organisationId }))
       }
 
+      if (nextAction === 'updateSpreadsheet') {
+        return h.redirect(
+          pathTo(paths.updateSpreadsheetUpload, { organisationId })
+        )
+      }
+
       if (nextAction === 'changeWasteReceiver') {
         return h.redirect(paths.signinDefraIdCallback)
       }

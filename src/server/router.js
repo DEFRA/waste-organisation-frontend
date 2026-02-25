@@ -13,6 +13,7 @@ import { nextAction } from './nextAction/index.js'
 import { spreadsheet } from './spreadsheet/index.js'
 import { apiManagement } from './apiManagement/index.js'
 import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
+import { updateSpreadsheet } from './updateSpreadsheet/index.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -52,6 +53,7 @@ export const router = {
         // Routes that require auth
         search:         search.authedRoutes.map((a) => addAuth(a)),
         spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuth(a)).concat(spreadsheet.openRoutes),
+        updateSpreadsheet: updateSpreadsheet.authedRoutes.map((a) => addAuth(a)).concat(updateSpreadsheet.openRoutes),
         dashboard:      dashboard.authedRoutes.map((a) => addAuth(a)),
         nextAction:     nextAction.authedRoutes.map((a) => addAuth(a)),
         apiManagement:  apiManagement.authedRoutes.map((a) => addAuth(a)),
