@@ -1,7 +1,7 @@
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 import { content } from '../../config/content.js'
 
-import { paths } from '../../config/paths.js'
+import { paths, pathTo } from '../../config/paths.js'
 
 import { JSDOM } from 'jsdom'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
@@ -157,6 +157,25 @@ describe('#nextActionController', () => {
       })
 
       expect(headers.location).toBe(paths.signinDefraIdCallback)
+    })
+
+    test('should redirect to updateSpreadsheetUpload if updateSpreadsheet is selected', async () => {
+      credentials.currentOrganisationId = 'abc-123'
+      const { headers } = await server.inject({
+        method: 'POST',
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        },
+        payload: {
+          nextAction: 'updateSpreadsheet'
+        }
+      })
+
+      expect(headers.location).toBe(
+        pathTo(paths.updateSpreadsheetUpload, { organisationId: 'abc-123' })
+      )
     })
 
     test.each([{}, { payload: {} }, { payload: { nextAction: 'foo' } }])(

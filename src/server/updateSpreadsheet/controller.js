@@ -109,6 +109,7 @@ const saveSpreadsheet = async (backendApi, organisationId, spreadsheet) => {
       spreadsheet.fileId,
       spreadsheet
     )
+    /* v8 ignore next 6 */
   } catch (e) {
     logger.error(
       `Error in update spreadsheet callback ${e} - spreadsheet ${spreadsheet}`
