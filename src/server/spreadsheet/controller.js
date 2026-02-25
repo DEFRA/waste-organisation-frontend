@@ -15,6 +15,7 @@ export const beginUpload = {
 
     const pageContent = content.spreadsheetUpload(request, organisationName)
 
+    /* v8 ignore start - covered by integration tests but v8 coverage merge across test files misattributes */
     const { uploadId, uploadUrl } = await initiateUpload(
       request.auth.credentials.currentOrganisationId,
       request.auth.credentials.email,
@@ -24,7 +25,6 @@ export const beginUpload = {
         uploadType: 'create'
       }
     )
-    /* v8 ignore start */
     logger.info(`uploaded requested - ${uploadId} ${uploadUrl}`)
     const { origin } = new URL(
       uploadUrl?.startsWith('h') ? uploadUrl : config.get('fileUpload.url')

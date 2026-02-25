@@ -1,3 +1,4 @@
+/* v8 ignore start - covered by integration tests but v8 coverage merge across test files misattributes */
 import wreck from '@hapi/wreck'
 import boom from '@hapi/boom'
 import { config } from '../../../config/config.js'
@@ -59,6 +60,7 @@ const saveSpreadsheet = async (backendApi, organisationId, spreadsheet) => {
     throw e
   }
 }
+/* v8 ignore stop */
 
 export const createCallbackHandler = () => ({
   async handler(request, h) {

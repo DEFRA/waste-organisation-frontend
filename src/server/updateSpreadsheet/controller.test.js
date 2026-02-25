@@ -93,6 +93,27 @@ describe('update spreadsheet upload controller', () => {
     expect(form.action).toEqual('/test')
   })
 
+  test('begin upload returns 500 when initiate upload fails', async () => {
+    const credentials = await setupAuthedUserSession(server)
+    credentials.currentOrganisationId = 'abc-123'
+
+    wreckPostMock.mockImplementation(async () => {
+      throw new Error('upload service down')
+    })
+
+    const { statusCode } = await server.inject({
+      method: 'GET',
+      url: pathTo(paths.updateSpreadsheetUpload, {
+        organisationId: credentials.currentOrganisationId
+      }),
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+    expect(statusCode).toBe(500)
+  })
+
   test('file uploaded page renders', async () => {
     const credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationId = 'abc-123'
