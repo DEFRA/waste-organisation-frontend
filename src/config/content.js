@@ -49,12 +49,12 @@ export const content = {
     getContentForLanguage(request, {
       en: {
         title: 'Next Action',
-        heading: heading('What do you want to do?', null, organisationName),
+        heading: heading('Report receipt of waste', null, organisationName),
         questions: {
-          connectYourSoftware: 'Connect your software to the API',
-          downloadSpreadsheet: 'Download the spreadsheet template',
-          uploadSpreadsheet: 'Upload a new spreadsheet',
-          updateSpreadsheet: 'Upload an existing spreadsheet',
+          connectYourSoftware: 'Manage my API code',
+          downloadSpreadsheet: 'Download spreadsheet template',
+          uploadSpreadsheet: 'Upload a spreadsheet',
+          updateSpreadsheet: 'Upload a spreadsheet that has Waste tracking IDs',
           changeWasteReceiver: 'Choose another waste receiver in my account'
         },
         error: {
@@ -150,9 +150,9 @@ export const content = {
   updateSpreadsheetUpload: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Upload an existing spreadsheet',
+        title: 'Upload a spreadsheet that has Waste tracking IDs',
         heading: heading(
-          'Upload an existing spreadsheet',
+          'Upload a spreadsheet that has Waste tracking IDs',
           null,
           organisationName
         ),
