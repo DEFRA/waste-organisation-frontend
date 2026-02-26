@@ -150,14 +150,14 @@ export const content = {
   updateSpreadsheetUpload: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Upload a spreadsheet that has Waste tracking IDs',
+        title: 'Update an existing spreadsheet',
         heading: heading(
-          'Upload a spreadsheet that has Waste tracking IDs',
+          'Update an existing spreadsheet',
           null,
           organisationName
         ),
         description:
-          'You will only be able to upload an existing spreadsheet if you have been given a Waste Tracking ID for that waste movement.',
+          'You will only be able to update an existing spreadsheet if you have been given a Waste Tracking ID for that waste movement.',
         continueAction: 'Continue'
       }
     }),
