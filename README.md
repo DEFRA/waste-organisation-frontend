@@ -86,6 +86,14 @@ return await fetch(url, {
 
 ### Setup
 
+The [waste-organisation-backend](https://github.com/DEFRA/waste-organisation-backend) repository must be checked out in a sibling directory next to this repository for Docker Compose to work:
+
+```
+parent-directory/
+  waste-organisation-backend/
+  waste-organisation-frontend/
+```
+
 Install application dependencies:
 
 ```bash
@@ -94,16 +102,28 @@ npm install
 
 ### Development
 
-To run the application in `development` mode run:
+To run the application and all its dependencies (backend, Localstack, Redis, MongoDB, Defra ID stub) in Docker:
+
+```bash
+npm run start:docker
+```
+
+To run headless (detached mode):
+
+```bash
+npm run start:docker -- -d
+```
+
+To stop all services:
+
+```bash
+npm run stop:docker
+```
+
+To run the application outside of Docker (requires backend and infrastructure services to be running separately):
 
 ```bash
 npm run dev
-```
-
-To run all of the application and services with nodemon live reloading run:
-
-```bash
-docker compose up --build
 ```
 
 ### Production
@@ -185,12 +205,30 @@ A local environment with:
 - Localstack for AWS services (S3, SQS)
 - Redis
 - MongoDB
-- This service.
-- A commented out backend example.
+- waste-organisation-backend (and its sibling services)
+- cdp-defra-id-stub (OIDC authentication stub)
+- cdp-uploader (file upload service)
+- This service
 
-```bash
-docker compose up --build -d
+### Docker Compose `include`
+
+The frontend's `compose.yml` uses the Docker Compose [`include`](https://docs.docker.com/compose/how-tos/multiple-compose-files/include/) directive to pull in the backend's `compose.yml`:
+
+```yaml
+include:
+  - path: ../waste-organisation-backend/compose.yml
 ```
+
+This means infrastructure services (Localstack, Redis, MongoDB) and backend services are defined once in the backend's `compose.yml` and reused by the frontend. The frontend's `compose.yml` only defines services specific to the frontend (cdp-defra-id-stub, cdp-uploader, waste-organisation-frontend).
+
+Key benefits:
+
+- No duplicated service definitions across projects
+- Each compose file resolves relative paths (build contexts, volumes, env files) from its own directory
+- Running `docker compose up` from the frontend directory starts everything
+- The backend can still be run independently with its own `npm run start:docker`
+
+This approach differs from using multiple `-f` flags (`docker compose -f a.yml -f b.yml`), where all relative paths resolve from the first file's directory, causing incorrect build contexts and volume mounts when projects live in separate directories.
 
 ### Dependabot
 
