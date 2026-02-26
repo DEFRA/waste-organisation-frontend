@@ -353,6 +353,14 @@ export const config = convict({
       default: []
     }
   },
+  featureFlags: {
+    updateSpreadsheet: {
+      doc: 'Enable the update spreadsheet feature',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_UPDATE_SPREADSHEET'
+    }
+  },
   encryptionKey: {
     doc: 'base64 encryption key used for encrypting strings',
     format: String,
