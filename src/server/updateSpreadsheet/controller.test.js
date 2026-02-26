@@ -12,7 +12,7 @@ import { config } from '../../config/config.js'
 
 const { preSharedKey } = config.get('fileUpload')
 
-describe('spreadsheet upload controller', () => {
+describe('update spreadsheet upload controller', () => {
   let server
 
   beforeAll(async () => {
@@ -33,7 +33,7 @@ describe('spreadsheet upload controller', () => {
 
     const { statusCode, payload } = await server.inject({
       method: 'GET',
-      url: pathTo(paths.spreadsheetUpload, {
+      url: pathTo(paths.updateSpreadsheetUpload, {
         organisationId: credentials.currentOrganisationId
       }),
       auth: {
@@ -57,7 +57,7 @@ describe('spreadsheet upload controller', () => {
 
     const { payload } = await server.inject({
       method: 'GET',
-      url: pathTo(paths.spreadsheetUpload, {
+      url: pathTo(paths.updateSpreadsheetUpload, {
         organisationId: credentials.currentOrganisationId
       }),
       auth: {
@@ -80,7 +80,7 @@ describe('spreadsheet upload controller', () => {
 
     const { statusCode, payload } = await server.inject({
       method: 'GET',
-      url: pathTo(paths.spreadsheetUpload, {
+      url: pathTo(paths.updateSpreadsheetUpload, {
         organisationId: credentials.currentOrganisationId
       }),
       auth: {
@@ -91,7 +91,7 @@ describe('spreadsheet upload controller', () => {
     const { document } = new JSDOM(payload).window
     expect(statusCode).toBe(200)
     const form = document.querySelectorAll('form')[0]
-    expect(form.action).toEqual('/test') // from config - fileUpload.url
+    expect(form.action).toEqual('/test')
   })
 
   test('begin upload returns 500 when initiate upload fails', async () => {
@@ -104,7 +104,7 @@ describe('spreadsheet upload controller', () => {
 
     const { statusCode } = await server.inject({
       method: 'GET',
-      url: pathTo(paths.spreadsheetUpload, {
+      url: pathTo(paths.updateSpreadsheetUpload, {
         organisationId: credentials.currentOrganisationId
       }),
       auth: {
@@ -119,11 +119,11 @@ describe('spreadsheet upload controller', () => {
     const credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationId = 'abc-123'
 
-    const pageContent = content.spreadsheetUploaded({}, 'Joe Bloggs Ltd')
+    const pageContent = content.updateSpreadsheetUploaded({}, 'Joe Bloggs Ltd')
 
     const { statusCode, payload } = await server.inject({
       method: 'GET',
-      url: pathTo(paths.spreadsheetUploaded, {
+      url: pathTo(paths.updateSpreadsheetUploaded, {
         organisationId: credentials.currentOrganisationId
       }),
       auth: {
@@ -145,7 +145,7 @@ describe('spreadsheet upload controller', () => {
 
     const { statusCode, payload } = await server.inject({
       method: 'POST',
-      url: pathTo(paths.spreadsheetUploadCallback, {
+      url: pathTo(paths.updateSpreadsheetUploadCallback, {
         organisationId: 'abc-321'
       }),
       payload: {
@@ -164,17 +164,17 @@ describe('spreadsheet upload controller', () => {
 
     await server.inject({
       method: 'POST',
-      url: pathTo(paths.spreadsheetUploadCallback, {
+      url: pathTo(paths.updateSpreadsheetUploadCallback, {
         organisationId: 'abc-321'
       }),
       payload: {
-        metadata: { preSharedKey, uploadType: 'create' },
+        metadata: { preSharedKey, uploadType: 'update' },
         form: { thing: { fileId: '123' } }
       }
     })
 
     const putPayload = wreckPutMock.mock.calls[0][1].payload
-    expect(putPayload.spreadsheet.uploadType).toBe('create')
+    expect(putPayload.spreadsheet.uploadType).toBe('update')
   })
 
   test('callback ignores missing spreadsheets', async () => {
@@ -184,7 +184,7 @@ describe('spreadsheet upload controller', () => {
 
     const { statusCode, payload } = await server.inject({
       method: 'POST',
-      url: pathTo(paths.spreadsheetUploadCallback, {
+      url: pathTo(paths.updateSpreadsheetUploadCallback, {
         organisationId: 'abc-321'
       }),
       payload: { metadata: { preSharedKey } }
@@ -196,7 +196,7 @@ describe('spreadsheet upload controller', () => {
   test('callback rejects invalid auth token', async () => {
     const { statusCode } = await server.inject({
       method: 'POST',
-      url: pathTo(paths.spreadsheetUploadCallback, {
+      url: pathTo(paths.updateSpreadsheetUploadCallback, {
         organisationId: 'abc-321'
       }),
       payload: { metadata: { preSharedKey: 'fish' } }
@@ -211,7 +211,7 @@ describe('spreadsheet upload controller', () => {
 
     const { statusCode } = await server.inject({
       method: 'POST',
-      url: pathTo(paths.spreadsheetUploadCallback, {
+      url: pathTo(paths.updateSpreadsheetUploadCallback, {
         organisationId: 'abc-321'
       }),
       payload: {
@@ -226,7 +226,7 @@ describe('spreadsheet upload controller', () => {
     wreckPutMock.mockReturnValue({ payload: { message: 'success' } })
     const { statusCode } = await server.inject({
       method: 'POST',
-      url: pathTo(paths.spreadsheetUploadCallback, {
+      url: pathTo(paths.updateSpreadsheetUploadCallback, {
         organisationId: 'abc-321'
       }),
       payload: {

@@ -77,4 +77,5 @@ services:
       BACKEND_API: http://waste-organisation-backend:3001
       FILE_UPLOAD_SERVICE_URL: http://localhost:7337
       BACKEND_API_PRESHARED_KEY: test
+      FEATURE_FLAG_UPDATE_SPREADSHEET: true
     network_mode: 'service:cdp-defra-id-stub'

@@ -1,3 +1,4 @@
+import { config } from '../../config/config.js'
 import { content } from '../../config/content.js'
 import { paths, pathTo } from '../../config/paths.js'
 import joi from 'joi'
@@ -22,8 +23,15 @@ export const nextActionController = {
         errorContent = pageContent.error
       }
 
-      const questions = Object.entries(pageContent.questions).map(
-        (question) => {
+      const isUpdateSpreadsheetEnabled = config.get(
+        'featureFlags.updateSpreadsheet'
+      )
+
+      const questions = Object.entries(pageContent.questions)
+        .filter(
+          ([key]) => key !== 'updateSpreadsheet' || isUpdateSpreadsheetEnabled
+        )
+        .map((question) => {
           const [key, value] = question
           return {
             value: key,
@@ -38,8 +46,7 @@ export const nextActionController = {
               }
             }
           }
-        }
-      )
+        })
 
       return h.view('nextAction/view', {
         pageTitle: pageContent.title,
@@ -82,6 +89,12 @@ export const nextActionController = {
 
       if (nextAction === 'uploadSpreadsheet') {
         return h.redirect(pathTo(paths.spreadsheetUpload, { organisationId }))
+      }
+
+      if (nextAction === 'updateSpreadsheet') {
+        return h.redirect(
+          pathTo(paths.updateSpreadsheetUpload, { organisationId })
+        )
       }
 
       if (nextAction === 'changeWasteReceiver') {

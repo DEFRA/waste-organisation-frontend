@@ -13,16 +13,19 @@ export const beginUpload = {
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
 
-    const pageContent = content.spreadsheetUpload(request, organisationName)
+    const pageContent = content.updateSpreadsheetUpload(
+      request,
+      organisationName
+    )
 
     /* v8 ignore start - covered by integration tests but v8 coverage merge across test files misattributes */
     const { uploadId, uploadUrl } = await initiateUpload(
       request.auth.credentials.currentOrganisationId,
       request.auth.credentials.email,
       {
-        callbackPath: paths.spreadsheetUploadCallback,
-        redirectPath: paths.spreadsheetUploaded,
-        uploadType: 'create'
+        callbackPath: paths.updateSpreadsheetUploadCallback,
+        redirectPath: paths.updateSpreadsheetUploaded,
+        uploadType: 'update'
       }
     )
     logger.info(`uploaded requested - ${uploadId} ${uploadUrl}`)
@@ -33,9 +36,10 @@ export const beginUpload = {
       extraAuthOrigins: origin
     }
 
-    return h.view('spreadsheet/begin-upload', {
-      pageTitle: 'Upload a receipt of waste movement spreadsheet',
+    return h.view('updateSpreadsheet/begin-upload', {
+      pageTitle: pageContent.title,
       heading: pageContent.heading,
+      description: pageContent.description,
       action: uploadUrl,
       backLink: paths.nextAction
     })
@@ -47,9 +51,12 @@ export const fileUploaded = {
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
 
-    const pageContent = content.spreadsheetUploaded(request, organisationName)
+    const pageContent = content.updateSpreadsheetUploaded(
+      request,
+      organisationName
+    )
 
-    return h.view('spreadsheet/file-uploaded', {
+    return h.view('updateSpreadsheet/file-uploaded', {
       pageTitle: pageContent.heading.text,
       content: pageContent.content,
       returnAction: {

@@ -1,7 +1,7 @@
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 import { content } from '../../config/content.js'
 
-import { paths } from '../../config/paths.js'
+import { paths, pathTo } from '../../config/paths.js'
 
 import { JSDOM } from 'jsdom'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
@@ -60,27 +60,47 @@ describe('#nextActionController', () => {
     )
   })
 
-  test.each(Object.entries(pageContent.questions))(
-    'Should show question',
-    async (key, value) => {
-      const { payload } = await server.inject({
-        method: 'GET',
-        url: paths.nextAction,
-        auth: {
-          strategy: 'session',
-          credentials
-        }
-      })
+  test.each(
+    Object.entries(pageContent.questions).filter(
+      ([key]) => key !== 'updateSpreadsheet'
+    )
+  )('Should show question', async (key, value) => {
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
 
-      const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload).window
 
-      const pageHeading = document.querySelectorAll(
-        `[data-testid="${key}-label"]`
-      )[0].textContent
+    const pageHeading = document.querySelectorAll(
+      `[data-testid="${key}-label"]`
+    )[0].textContent
 
-      expect(pageHeading).toEqual(expect.stringContaining(value))
-    }
-  )
+    expect(pageHeading).toEqual(expect.stringContaining(value))
+  })
+
+  test('should hide updateSpreadsheet option when feature flag is off', async () => {
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    const updateSpreadsheetRadio = document.querySelector(
+      '[data-testid="updateSpreadsheet-radio"]'
+    )
+
+    expect(updateSpreadsheetRadio).toBeNull()
+  })
 
   test('should show error message if there is an error', async () => {
     const expectedErrorMessage = pageContent.error.message
@@ -157,6 +177,25 @@ describe('#nextActionController', () => {
       })
 
       expect(headers.location).toBe(paths.signinDefraIdCallback)
+    })
+
+    test('should redirect to updateSpreadsheetUpload if updateSpreadsheet is selected', async () => {
+      credentials.currentOrganisationId = 'abc-123'
+      const { headers } = await server.inject({
+        method: 'POST',
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        },
+        payload: {
+          nextAction: 'updateSpreadsheet'
+        }
+      })
+
+      expect(headers.location).toBe(
+        pathTo(paths.updateSpreadsheetUpload, { organisationId: 'abc-123' })
+      )
     })
 
     test.each([{}, { payload: {} }, { payload: { nextAction: 'foo' } }])(
