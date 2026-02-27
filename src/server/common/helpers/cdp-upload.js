@@ -35,7 +35,11 @@ export const initiateUpload = async (
           preSharedKey,
           encryptedEmail,
           uploadType
-        }
+        },
+        mimeTypes: [
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ],
+        maxFileSize: 2 * 1000 * 1000 //2MB
       }
     })
     return payload
