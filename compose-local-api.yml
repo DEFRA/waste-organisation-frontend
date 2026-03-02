@@ -1,0 +1,6 @@
+services:
+  waste-organisation-backend:
+    image: !reset null
+    build:
+      context: ../waste-organisation-backend
+      target: development
