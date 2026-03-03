@@ -41,7 +41,7 @@ services:
     volumes:
       - ./compose/start-localstack.sh:/etc/localstack/init/ready.d/start-localstack.sh:z
     healthcheck:
-      test: ['CMD', 'stat', '/var/lib/localstack/READY']
+      test: ['CMD', 'stat', '/tmp/READY']
       interval: 5s
       timeout: 5s
       retries: 10
