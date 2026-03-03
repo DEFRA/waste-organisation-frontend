@@ -23,6 +23,11 @@ export const beginUpload = {
       request.auth.credentials.currentOrganisationId,
       request.auth.credentials.email,
       {
+        firstName: request.auth.credentials.firstName,
+        lastName: request.auth.credentials.lastName,
+        displayName: request.auth.credentials.displayName
+      },
+      {
         callbackPath: paths.updateSpreadsheetUploadCallback,
         redirectPath: paths.updateSpreadsheetUploaded,
         uploadType: 'update'

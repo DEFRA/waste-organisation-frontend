@@ -11,6 +11,7 @@ const logger = createLogger()
 export const initiateUpload = async (
   orgId,
   email,
+  name,
   { callbackPath, redirectPath, uploadType }
 ) => {
   try {
@@ -24,6 +25,10 @@ export const initiateUpload = async (
     )
 
     const encryptedEmail = encrypt(email, config.get('encryptionKey'))
+    const encryptedName = encrypt(
+      JSON.stringify(name),
+      config.get('encryptionKey')
+    )
 
     const { payload } = await wreck.post(initiateUrl, {
       json: 'strict',
@@ -34,6 +39,7 @@ export const initiateUpload = async (
         metadata: {
           preSharedKey,
           encryptedEmail,
+          encryptedName,
           uploadType
         },
         mimeTypes: [
@@ -82,6 +88,8 @@ export const createCallbackHandler = () => ({
 
     for (const spreadsheet of Object.values(spreadsheets)) {
       spreadsheet.encryptedEmail = request.payload?.metadata?.encryptedEmail
+      spreadsheet.encryptedName = request.payload?.metadata?.encryptedName
+
       spreadsheet.uploadType = request.payload?.metadata?.uploadType
       const s = await saveSpreadsheet(
         request.backendApi,

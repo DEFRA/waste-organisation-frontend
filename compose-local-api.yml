@@ -1,0 +1,11 @@
+services:
+  waste-organisation-backend:
+    image: !reset null
+    build:
+      context: ../waste-organisation-backend/
+      dockerfile: ../waste-organisation-backend/Dockerfile
+      target: development
+    volumes:
+      - ../waste-organisation-backend/src:/home/node/src:z
+      - ../waste-organisation-backend/package.json:/home/node/package.json:z
+      - ../waste-organisation-backend/package-lock.json:/home/node/package-lock.json:z

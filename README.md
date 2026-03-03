@@ -102,6 +102,12 @@ npm install
 
 ### Development
 
+To Build the application and all its dependencies (backend, Localstack, Redis, MongoDB, Defra ID stub) in Docker:
+
+```bash
+npm run build:docker
+```
+
 To run the application and all its dependencies (backend, Localstack, Redis, MongoDB, Defra ID stub) in Docker:
 
 ```bash
@@ -112,6 +118,24 @@ To run headless (detached mode):
 
 ```bash
 npm run start:docker -- -d
+```
+
+To Build the application and all its dependencies (backend, Localstack, Redis, MongoDB, Defra ID stub) in Docker with a local version of the backend:
+
+```bash
+npm run build:docker:local
+```
+
+To run the application and all its dependencies (backend, Localstack, Redis, MongoDB, Defra ID stub) in Docker with a local version of the backend:
+
+```bash
+npm run start:docker:local
+```
+
+To run headless (detached mode):
+
+```bash
+npm run start:docker:local -- -d
 ```
 
 To stop all services:
