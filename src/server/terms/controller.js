@@ -1,15 +1,21 @@
+import { content } from '../../config/content.js'
+
 export const termsController = {
-  handler(_request, h) {
+  handler(request, h) {
+    const pageContent = content.terms(request)
+
     return h.view('terms/index', {
-      pageTitle: 'Terms',
-      heading: 'Terms',
+      pageTitle: pageContent.title,
+      heading: pageContent.heading,
+      leadParagraph: pageContent.leadParagraph,
+      conditions: pageContent.conditions,
       breadcrumbs: [
         {
           text: 'Home',
           href: '/'
         },
         {
-          text: 'Terms'
+          text: pageContent.title
         }
       ]
     })

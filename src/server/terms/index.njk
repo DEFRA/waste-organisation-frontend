@@ -5,13 +5,12 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">{{ heading }}</h1>
 
-      <p class="govuk-body-l">By using this service you confirm:</p>
+      <p class="govuk-body-l">{{ leadParagraph }}</p>
 
       <ul class="govuk-list govuk-list--bullet">
-        <li>you are authorised to act on behalf of your organisation</li>
-        <li>the information you have given is complete and correct</li>
-        <li>you understand your organisation's legal responsibility to provide this information</li>
-        <li>you understand that giving false or misleading information may be a criminal offence</li>
+        {% for condition in conditions %}
+          <li>{{ condition }}</li>
+        {% endfor %}
       </ul>
     </div>
 
