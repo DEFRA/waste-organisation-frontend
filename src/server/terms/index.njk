@@ -16,12 +16,12 @@
 
     <div class="govuk-grid-column-one-third">
       <aside class="app-related-content govuk-!-margin-top-6 govuk-!-padding-top-2" role="complementary">
-        <h2 class="govuk-heading-s">Related content</h2>
-        <nav aria-label="Related content">
+        <h2 class="govuk-heading-s">{{ relatedContent.heading }}</h2>
+        <nav aria-label="{{ relatedContent.heading }}">
           <ul class="govuk-list govuk-!-font-size-16">
-            <li><a class="govuk-link" href="https://www.gov.uk/help/privacy-notice">Privacy</a></li>
-            <li><a class="govuk-link" href="https://www.gov.uk/help/cookies">Cookies</a></li>
-            <li><a class="govuk-link" href="https://www.gov.uk/help/accessibility-statement">Accessibility statement</a></li>
+            {% for link in relatedContent.links %}
+              <li><a class="govuk-link" href="{{ link.href }}">{{ link.text }}</a></li>
+            {% endfor %}
           </ul>
         </nav>
       </aside>

@@ -63,5 +63,20 @@ describe('#termsController', () => {
         expect.stringContaining(condition)
       )
     })
+
+    const relatedHeading = document.querySelector(
+      '.app-related-content h2'
+    ).textContent
+    expect(relatedHeading).toEqual(
+      expect.stringContaining(pageContent.relatedContent.heading)
+    )
+
+    const relatedLinks = document.querySelectorAll('.app-related-content a')
+    expect(relatedLinks).toHaveLength(pageContent.relatedContent.links.length)
+    pageContent.relatedContent.links.forEach((link, index) => {
+      expect(relatedLinks[index].textContent).toEqual(
+        expect.stringContaining(link.text)
+      )
+    })
   })
 })

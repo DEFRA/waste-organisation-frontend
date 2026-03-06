@@ -203,7 +203,18 @@ export const content = {
           'the information you have given is complete and correct',
           "you understand your organisation's legal responsibility to provide this information",
           'you understand that giving false or misleading information may be a criminal offence'
-        ]
+        ],
+        relatedContent: {
+          heading: 'Related content',
+          links: [
+            { text: 'Privacy', href: 'https://www.gov.uk/help/privacy-notice' },
+            { text: 'Cookies', href: 'https://www.gov.uk/help/cookies' },
+            {
+              text: 'Accessibility statement',
+              href: 'https://www.gov.uk/help/accessibility-statement'
+            }
+          ]
+        }
       }
     })
 }
