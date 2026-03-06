@@ -68,13 +68,13 @@
     "hapi-pulse": "3.0.1",
     "ioredis": "5.6.1",
     "joi": "18.0.2",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "node-fetch": "3.3.2",
     "nunjucks": "3.2.4",
     "pino": "9.7.0",
     "pino-pretty": "13.0.0",
     "semver": "7.7.2",
-    "undici": "7.10.0"
+    "undici": "7.18.2"
   },
   "devDependencies": {
     "@babel/preset-env": "7.27.2",
@@ -105,7 +105,7 @@
     "terser-webpack-plugin": "5.3.14",
     "vitest": "3.2.4",
     "vitest-fetch-mock": "0.4.5",
-    "webpack": "5.99.9",
+    "webpack": "5.104.1",
     "webpack-assets-manifest": "6.2.1",
     "webpack-cli": "6.0.1"
   }
