@@ -191,5 +191,30 @@ export const content = {
         fileMetadata: 'XLSX, 1.1MB',
         returnLink: `Return to ${organisationName}`
       }
+    }),
+  terms: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Terms',
+        heading: 'Terms',
+        leadParagraph: 'By using this service you confirm:',
+        conditions: [
+          'you are authorised to act on behalf of your organisation',
+          'the information you have given is complete and correct',
+          "you understand your organisation's legal responsibility to provide this information",
+          'you understand that giving false or misleading information may be a criminal offence'
+        ],
+        relatedContent: {
+          heading: 'Related content',
+          links: [
+            { text: 'Privacy', href: 'https://www.gov.uk/help/privacy-notice' },
+            { text: 'Cookies', href: 'https://www.gov.uk/help/cookies' },
+            {
+              text: 'Accessibility statement',
+              href: 'https://www.gov.uk/help/accessibility-statement'
+            }
+          ]
+        }
+      }
     })
 }

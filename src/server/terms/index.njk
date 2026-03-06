@@ -1,0 +1,30 @@
+{% extends 'layouts/page.njk' %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ heading }}</h1>
+
+      <p class="govuk-body-l">{{ leadParagraph }}</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        {% for condition in conditions %}
+          <li>{{ condition }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <aside class="app-related-content govuk-!-margin-top-6 govuk-!-padding-top-2" role="complementary">
+        <h2 class="govuk-heading-s">{{ relatedContent.heading }}</h2>
+        <nav aria-label="{{ relatedContent.heading }}">
+          <ul class="govuk-list govuk-!-font-size-16">
+            {% for link in relatedContent.links %}
+              <li><a class="govuk-link" href="{{ link.href }}">{{ link.text }}</a></li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </aside>
+    </div>
+  </div>
+{% endblock %}

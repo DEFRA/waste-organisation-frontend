@@ -3,6 +3,7 @@ import inert from '@hapi/inert'
 import { cacheControlNoStore } from '../config/config.js'
 import { home } from './home/index.js'
 import { about } from './about/index.js'
+import { terms } from './terms/index.js'
 import { health } from './health/index.js'
 import { serveStaticFiles } from './common/helpers/serve-static-files.js'
 import { search } from './search/index.js'
@@ -47,6 +48,7 @@ export const router = {
         // Open routes
         home:           home.openRoutes,
         about:          about.openRoutes,
+        terms:          terms.openRoutes,
         signIn:         signIn.routes,
         health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:     onboarding.openRoutes,

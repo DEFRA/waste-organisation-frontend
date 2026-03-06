@@ -11,6 +11,7 @@ export const paths = {
   nextAction: '/next-action',
   downloadSpreadsheet: '/download-spreadsheet',
   accessibility: '/accessibility-statement',
+  terms: '/terms',
   search: '/search',
 
   signOut: '/sign-out',
