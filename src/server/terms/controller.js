@@ -9,16 +9,7 @@ export const termsController = {
       heading: pageContent.heading,
       leadParagraph: pageContent.leadParagraph,
       conditions: pageContent.conditions,
-      relatedContent: pageContent.relatedContent,
-      breadcrumbs: [
-        {
-          text: 'Home',
-          href: '/'
-        },
-        {
-          text: pageContent.title
-        }
-      ]
+      relatedContent: pageContent.relatedContent
     })
   }
 }
