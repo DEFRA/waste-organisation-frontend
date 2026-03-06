@@ -77,7 +77,7 @@ export const config = convict({
       doc: 'Link to feedback page',
       format: String,
       default:
-        'https://defragroup.eu.qualtrics.com/jfe/preview/previewId/6c3745ff-3933-4e45-bcc2-46c25a933b35/SV_1ALCrSKxbPNvlKC?Q_CHL=preview&Q_SurveyVersionID=current',
+        'https://defragroup.eu.qualtrics.com/jfe/form/SV_1ALCrSKxbPNvlKC',
       env: 'LINK_FEEDBACK_PAGE'
     }
   },
