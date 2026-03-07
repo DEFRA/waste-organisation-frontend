@@ -59,7 +59,9 @@ export const nextActionController = {
         },
         questions,
         error: errorContent,
-        backLink: paths.ukPermit
+        backLink: config.get('featureFlags.accountPage')
+          ? paths.account
+          : paths.ukPermit
       })
     }
   },
