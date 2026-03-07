@@ -9,14 +9,16 @@
       {{ govukButton({
         text: switchOrganisation,
         classes: "govuk-button--secondary",
+        href: switchOrganisationHref,
         attributes: {
-          "data-testid": "switch-organisation-button",
-          "disabled": "disabled"
+          "data-testid": "switch-organisation-button"
         }
       }) }}
 
-      <span class="govuk-caption-l">{{ heading.organisationName }}</span>
-      <h1 class="govuk-heading-l govuk-!-margin-bottom-1" data-testid="app-heading-title">{{ heading.text }}</h1>
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-1" data-testid="app-heading-title">
+        <span class="govuk-caption-l">{{ heading.organisationName }}</span>
+        {{ heading.text }}
+      </h1>
     </div>
 
     <div class="govuk-grid-column-full">
@@ -24,31 +26,31 @@
         <div class="govuk-grid-column-one-third">
           <div class="govuk-card govuk-card--contained">
             <div class="govuk-card__content">
-              <h3 class="govuk-heading-m">
+              <h2 class="govuk-heading-m">
                 <a href="{{ reportWasteHref }}" class="govuk-link--no-visited-state" data-testid="report-waste-link">
                   {{ cards.reportWaste.text }}
                 </a>
-              </h3>
+              </h2>
             </div>
           </div>
         </div>
         <div class="govuk-grid-column-one-third">
           <div class="govuk-card govuk-card--contained">
             <div class="govuk-card__content">
-              <h3 class="govuk-heading-m">
+              <h2 class="govuk-heading-m">
                 <a href="{{ manageAccountHref }}" class="govuk-link--no-visited-state" data-testid="manage-account-link">
                   {{ cards.manageAccount.text }}
                 </a>
-              </h3>
+              </h2>
             </div>
           </div>
         </div>
         <div class="govuk-grid-column-one-third">
           <div class="govuk-card govuk-card--contained">
             <div class="govuk-card__content">
-              <h3 class="govuk-heading-m govuk-!-margin-bottom-3" data-testid="service-charge-text">
+              <h2 class="govuk-heading-m govuk-!-margin-bottom-3" data-testid="service-charge-text">
                 {{ cards.serviceCharge.text }}
-              </h3>
+              </h2>
             </div>
             <div class="govuk-card__actions">
               {{ govukTag({

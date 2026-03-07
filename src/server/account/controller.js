@@ -17,6 +17,7 @@ export const accountController = {
       heading: pageContent.heading,
       switchOrganisation: pageContent.switchOrganisation,
       cards: pageContent.cards,
+      switchOrganisationHref: paths.signinDefraIdCallback,
       reportWasteHref: paths.nextAction,
       manageAccountHref: paths.manageAccount
     })

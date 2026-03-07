@@ -91,7 +91,9 @@ describe('#accountController', () => {
       )
 
       expect(switchButton).not.toBeNull()
-      expect(switchButton.hasAttribute('disabled')).toBe(true)
+      expect(switchButton.getAttribute('href')).toBe(
+        paths.signinDefraIdCallback
+      )
     })
 
     test('displays the report waste card with correct link', async () => {
