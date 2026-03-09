@@ -73,14 +73,17 @@ describe('#catchAll', () => {
     expect(mockToolkitCode).toHaveBeenCalledWith(statusCodes.forbidden)
   })
 
-  test('Should provide expected "Unauthorized" page', () => {
+  test('Should provide expected "Unauthorized" page with content', () => {
     catchAll(mockRequest(statusCodes.unauthorized), mockToolkit)
 
     expect(mockErrorLogger).not.toHaveBeenCalledWith(mockStack)
-    expect(mockToolkitView).toHaveBeenCalledWith(errorPage, {
-      pageTitle: 'Unauthorized',
-      heading: statusCodes.unauthorized,
-      message: 'Unauthorized'
+    expect(mockToolkitView).toHaveBeenCalledWith('error/unauthorized', {
+      pageTitle: 'You do not have permission to view this page',
+      heading: 'You do not have permission to view this page',
+      reasonsIntro: 'This could be because:',
+      reasons: ['you are not signed in', 'your session expired'],
+      action: 'Try signing in again or contact the support team for more help.',
+      signInButton: 'Sign in'
     })
     expect(mockToolkitCode).toHaveBeenCalledWith(statusCodes.unauthorized)
   })
