@@ -69,7 +69,9 @@ describe('#accountController', () => {
 
       const { document } = new JSDOM(payload).window
 
-      const orgName = document.querySelector('.govuk-caption-l').textContent
+      const orgName = document.querySelector(
+        '[data-testid="app-heading-organisation-name"]'
+      ).textContent
 
       expect(orgName).toEqual(expect.stringContaining(organisationName))
     })
@@ -160,12 +162,16 @@ describe('#accountController', () => {
         '[data-testid="service-charge-text"]'
       )
 
+      const pageContent = content.account({}, organisationName)
+
       expect(serviceChargeText).not.toBeNull()
       expect(serviceChargeText.textContent).toEqual(
-        expect.stringContaining('Service charge')
+        expect.stringContaining(pageContent.cards.serviceCharge.text)
       )
 
-      expect(payload).toEqual(expect.stringContaining('Due October 2026'))
+      expect(payload).toEqual(
+        expect.stringContaining(pageContent.cards.serviceCharge.tag)
+      )
     })
   })
 

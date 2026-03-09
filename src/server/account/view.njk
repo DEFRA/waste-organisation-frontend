@@ -15,10 +15,7 @@
         }
       }) }}
 
-      <h1 class="govuk-heading-l govuk-!-margin-bottom-1" data-testid="app-heading-title">
-        <span class="govuk-caption-l">{{ heading.organisationName }}</span>
-        {{ heading.text }}
-      </h1>
+      {{ appHeading(heading) }}
     </div>
 
     <div class="govuk-grid-column-full">
@@ -27,7 +24,7 @@
           <div class="govuk-card govuk-card--contained">
             <div class="govuk-card__content">
               <h2 class="govuk-heading-m">
-                <a href="{{ reportWasteHref }}" class="govuk-link--no-visited-state" data-testid="report-waste-link">
+                <a href="{{ reportWasteHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="report-waste-link">
                   {{ cards.reportWaste.text }}
                 </a>
               </h2>
@@ -38,7 +35,7 @@
           <div class="govuk-card govuk-card--contained">
             <div class="govuk-card__content">
               <h2 class="govuk-heading-m">
-                <a href="{{ manageAccountHref }}" class="govuk-link--no-visited-state" data-testid="manage-account-link">
+                <a href="{{ manageAccountHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="manage-account-link">
                   {{ cards.manageAccount.text }}
                 </a>
               </h2>
