@@ -1,0 +1,222 @@
+{% extends 'layouts/page.njk' %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l" data-testid="payment-details-heading">{{ heading }}</h1>
+
+      <div class="govuk-summary-card govuk-!-margin-bottom-7" data-testid="payment-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title" data-testid="payment-summary-title">{{ summary.heading }}</h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          <p class="govuk-body govuk-!-margin-bottom-2" data-testid="payment-summary-charge">{{ summary.charge }}</p>
+          <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0">{{ summary.totalLabel }}</p>
+          <p class="govuk-heading-m govuk-!-margin-bottom-0" data-testid="payment-summary-total">{{ summary.totalAmount }}</p>
+        </div>
+      </div>
+
+      <form method="POST" action="#" novalidate>
+        {{ govukInput({
+          label: {
+            text: card.numberLabel,
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: card.acceptedCards
+          },
+          classes: "govuk-input--width-20",
+          id: "card-number",
+          name: "cardNumber",
+          attributes: {
+            "data-testid": "card-number-input",
+            "inputmode": "numeric",
+            "autocomplete": "cc-number"
+          }
+        }) }}
+
+        <fieldset class="govuk-fieldset govuk-!-margin-bottom-6">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ card.expiryLabel }}</legend>
+          <div class="govuk-hint">{{ card.expiryHint }}</div>
+          <div class="govuk-date-input" id="card-expiry" data-testid="card-expiry-group">
+            <div class="govuk-date-input__item">
+              {{ govukInput({
+                label: {
+                  text: card.monthLabel,
+                  classes: "govuk-label--s"
+                },
+                classes: "govuk-input--width-2",
+                id: "expiry-month",
+                name: "expiryMonth",
+                attributes: {
+                  "data-testid": "expiry-month-input",
+                  "inputmode": "numeric",
+                  "autocomplete": "cc-exp-month"
+                }
+              }) }}
+            </div>
+            <div class="govuk-date-input__item">
+              {{ govukInput({
+                label: {
+                  text: card.yearLabel,
+                  classes: "govuk-label--s"
+                },
+                classes: "govuk-input--width-4",
+                id: "expiry-year",
+                name: "expiryYear",
+                attributes: {
+                  "data-testid": "expiry-year-input",
+                  "inputmode": "numeric",
+                  "autocomplete": "cc-exp-year"
+                }
+              }) }}
+            </div>
+          </div>
+        </fieldset>
+
+        {{ govukInput({
+          label: {
+            text: card.nameLabel,
+            classes: "govuk-label--m"
+          },
+          classes: "govuk-input--width-20",
+          id: "name-on-card",
+          name: "nameOnCard",
+          attributes: {
+            "data-testid": "name-on-card-input",
+            "autocomplete": "cc-name"
+          }
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: card.securityCodeLabel,
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: card.securityCodeHint
+          },
+          classes: "govuk-input--width-5",
+          id: "security-code",
+          name: "securityCode",
+          attributes: {
+            "data-testid": "security-code-input",
+            "inputmode": "numeric",
+            "autocomplete": "cc-csc"
+          }
+        }) }}
+
+        {{ govukDetails({
+          summaryText: card.securityCodeHelpLink,
+          text: "For example, for Visa and Mastercard it is the last 3 digits on the signature strip.",
+          attributes: {
+            "data-testid": "security-code-help"
+          }
+        }) }}
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-8" data-testid="billing-address-heading">{{ billingAddress.heading }}</h2>
+        <p class="govuk-body" data-testid="billing-address-hint">{{ billingAddress.hint }}</p>
+
+        {{ govukInput({
+          label: {
+            text: billingAddress.line1Label
+          },
+          classes: "govuk-input--width-20",
+          id: "address-line-1",
+          name: "addressLine1",
+          attributes: {
+            "data-testid": "address-line-1-input",
+            "autocomplete": "address-line1"
+          }
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: billingAddress.line2Label
+          },
+          classes: "govuk-input--width-20",
+          id: "address-line-2",
+          name: "addressLine2",
+          attributes: {
+            "data-testid": "address-line-2-input",
+            "autocomplete": "address-line2"
+          }
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: billingAddress.townCityLabel
+          },
+          classes: "govuk-input--width-10",
+          id: "address-town-city",
+          name: "addressTownCity",
+          attributes: {
+            "data-testid": "address-town-city-input",
+            "autocomplete": "address-level2"
+          }
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: billingAddress.countryLabel
+          },
+          classes: "govuk-input--width-10",
+          id: "address-country",
+          name: "addressCountry",
+          attributes: {
+            "data-testid": "address-country-input",
+            "autocomplete": "country-name"
+          }
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: billingAddress.postcodeLabel
+          },
+          classes: "govuk-input--width-5",
+          id: "address-postcode",
+          name: "addressPostcode",
+          attributes: {
+            "data-testid": "address-postcode-input",
+            "autocomplete": "postal-code"
+          }
+        }) }}
+
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+        <h2 class="govuk-heading-m" data-testid="contact-details-heading">{{ contactDetails.heading }}</h2>
+        <p class="govuk-body" data-testid="contact-details-hint">{{ contactDetails.hint }}</p>
+
+        {{ govukInput({
+          label: {
+            text: contactDetails.emailLabel
+          },
+          classes: "govuk-input--width-20",
+          id: "contact-email",
+          name: "contactEmail",
+          type: "email",
+          spellcheck: false,
+          attributes: {
+            "data-testid": "contact-email-input",
+            "autocomplete": "email"
+          }
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: continueText,
+            type: "submit",
+            attributes: {
+              "data-testid": "payment-details-continue-button"
+            }
+          }) }}
+          <a class="govuk-link" href="{{ cancelLink.href }}" data-testid="payment-details-cancel-link">{{ cancelLink.text }}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

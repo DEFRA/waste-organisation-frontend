@@ -13,6 +13,7 @@ export const reviewPaymentController = {
       sectionHeading: pageContent.sectionHeading,
       organisation: pageContent.organisation,
       continueText: pageContent.continue,
+      continueHref: paths.paymentDetails,
       cancelLink: {
         text: pageContent.cancel,
         href: paths.serviceCharge

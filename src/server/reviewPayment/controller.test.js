@@ -92,6 +92,7 @@ describe('#reviewPaymentController', () => {
     expect(continueButton.textContent).toEqual(
       expect.stringContaining(pageContent.continue)
     )
+    expect(continueButton.getAttribute('href')).toBe(paths.paymentDetails)
 
     expect(cancelLink).not.toBeNull()
     expect(cancelLink.getAttribute('href')).toBe(paths.serviceCharge)

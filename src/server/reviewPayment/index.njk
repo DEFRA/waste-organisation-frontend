@@ -43,7 +43,8 @@
       <div class="govuk-button-group">
         {{ govukButton({
           text: continueText,
-          type: "button",
+          element: "a",
+          href: continueHref,
           attributes: {
             "data-testid": "review-payment-continue-button"
           }
