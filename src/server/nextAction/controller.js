@@ -26,10 +26,14 @@ export const nextActionController = {
       const isUpdateSpreadsheetEnabled = config.get(
         'featureFlags.updateSpreadsheet'
       )
+      const isAccountPageEnabled = config.get('featureFlags.accountPage')
 
       const questions = Object.entries(pageContent.questions)
         .filter(
           ([key]) => key !== 'updateSpreadsheet' || isUpdateSpreadsheetEnabled
+        )
+        .filter(
+          ([key]) => key !== 'changeWasteReceiver' || !isAccountPageEnabled
         )
         .map((question) => {
           const [key, value] = question
@@ -59,7 +63,9 @@ export const nextActionController = {
         },
         questions,
         error: errorContent,
-        backLink: paths.ukPermit
+        backLink: config.get('featureFlags.accountPage')
+          ? paths.account
+          : paths.ukPermit
       })
     }
   },

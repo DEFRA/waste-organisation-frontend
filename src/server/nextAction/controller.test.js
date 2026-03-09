@@ -1,4 +1,5 @@
 import { initialiseServer } from '../../test-utils/initialise-server.js'
+import { config } from '../../config/config.js'
 import { content } from '../../config/content.js'
 
 import { paths, pathTo } from '../../config/paths.js'
@@ -20,6 +21,10 @@ describe('#nextActionController', () => {
 
   afterAll(async () => {
     await server.stop({ timeout: 0 })
+  })
+
+  afterEach(() => {
+    config.set('featureFlags.accountPage', false)
   })
 
   beforeEach(async () => {
@@ -81,6 +86,63 @@ describe('#nextActionController', () => {
     )[0].textContent
 
     expect(pageHeading).toEqual(expect.stringContaining(value))
+  })
+
+  test('should show back link to uk permit when account page flag is off', async () => {
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    const backLink = document.querySelector('[data-testid="back-link"]')
+
+    expect(backLink.getAttribute('href')).toBe(paths.ukPermit)
+  })
+
+  test('should show back link to account when account page flag is on', async () => {
+    config.set('featureFlags.accountPage', true)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    const backLink = document.querySelector('[data-testid="back-link"]')
+
+    expect(backLink.getAttribute('href')).toBe(paths.account)
+  })
+
+  test('should hide changeWasteReceiver option when account page flag is on', async () => {
+    config.set('featureFlags.accountPage', true)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    const changeWasteReceiverRadio = document.querySelector(
+      '[data-testid="changeWasteReceiver-radio"]'
+    )
+
+    expect(changeWasteReceiverRadio).toBeNull()
   })
 
   test('should hide updateSpreadsheet option when feature flag is off', async () => {
