@@ -19,6 +19,7 @@ export const accountController = {
       cards: pageContent.cards,
       switchOrganisationHref: paths.signinDefraIdCallback,
       reportWasteHref: paths.nextAction,
+      serviceChargeHref: paths.serviceCharge,
       manageAccountHref: config.get('auth.defraId.accountManagementUrl')
     })
   }

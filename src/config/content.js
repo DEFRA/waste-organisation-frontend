@@ -205,6 +205,23 @@ export const content = {
         }
       }
     }),
+  serviceCharge: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Pay annual report receipt of waste service charge',
+        heading: 'Pay the annual report receipt of waste service charge',
+        cost: 'The cost is £26 per organisation.',
+        requirementsIntro: 'To pay for the service charge, you will need:',
+        requirements: [
+          'a credit or debit card',
+          'an email address to receive the payment confirmation'
+        ],
+        warning:
+          'You will not be able to use this service to report your waste movements until you have paid the service charge.',
+        payServiceCharge: 'Pay service charge',
+        cancel: 'Cancel'
+      }
+    }),
   cookies: (request) =>
     getContentForLanguage(request, {
       en: {

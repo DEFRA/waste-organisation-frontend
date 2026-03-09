@@ -146,7 +146,7 @@ describe('#accountController', () => {
       )
     })
 
-    test('displays the service charge card with tag', async () => {
+    test('displays the service charge card with link and tag', async () => {
       const { payload } = await server.inject({
         method: 'GET',
         url: paths.account,
@@ -158,14 +158,15 @@ describe('#accountController', () => {
 
       const { document } = new JSDOM(payload).window
 
-      const serviceChargeText = document.querySelector(
-        '[data-testid="service-charge-text"]'
+      const serviceChargeLink = document.querySelector(
+        '[data-testid="service-charge-link"]'
       )
 
       const pageContent = content.account({}, organisationName)
 
-      expect(serviceChargeText).not.toBeNull()
-      expect(serviceChargeText.textContent).toEqual(
+      expect(serviceChargeLink).not.toBeNull()
+      expect(serviceChargeLink.getAttribute('href')).toBe(paths.serviceCharge)
+      expect(serviceChargeLink.textContent).toEqual(
         expect.stringContaining(pageContent.cards.serviceCharge.text)
       )
 

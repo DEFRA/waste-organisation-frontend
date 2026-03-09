@@ -45,8 +45,10 @@
         <div class="govuk-grid-column-one-third">
           <div class="govuk-card govuk-card--contained">
             <div class="govuk-card__content">
-              <h2 class="govuk-heading-m govuk-!-margin-bottom-3" data-testid="service-charge-text">
-                {{ cards.serviceCharge.text }}
+              <h2 class="govuk-heading-m govuk-!-margin-bottom-3">
+                <a href="{{ serviceChargeHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="service-charge-link">
+                  {{ cards.serviceCharge.text }}
+                </a>
               </h2>
             </div>
             <div class="govuk-card__actions">
