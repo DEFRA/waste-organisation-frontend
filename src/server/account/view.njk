@@ -1,0 +1,63 @@
+{% extends 'layouts/page.njk' %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% block content %}
+  <div class="govuk-!-margin-bottom-6 govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukButton({
+        text: switchOrganisation,
+        classes: "govuk-button--secondary",
+        href: switchOrganisationHref,
+        attributes: {
+          "data-testid": "switch-organisation-button"
+        }
+      }) }}
+
+      {{ appHeading(heading) }}
+    </div>
+
+    <div class="govuk-grid-column-full">
+      <div class="govuk-grid-row govuk-card-row govuk-!-margin-top-8" data-testid="account-cards">
+        <div class="govuk-grid-column-one-third">
+          <div class="govuk-card govuk-card--contained">
+            <div class="govuk-card__content">
+              <h2 class="govuk-heading-m">
+                <a href="{{ reportWasteHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="report-waste-link">
+                  {{ cards.reportWaste.text }}
+                </a>
+              </h2>
+            </div>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+          <div class="govuk-card govuk-card--contained">
+            <div class="govuk-card__content">
+              <h2 class="govuk-heading-m">
+                <a href="{{ manageAccountHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="manage-account-link">
+                  {{ cards.manageAccount.text }}
+                </a>
+              </h2>
+            </div>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+          <div class="govuk-card govuk-card--contained">
+            <div class="govuk-card__content">
+              <h2 class="govuk-heading-m govuk-!-margin-bottom-3" data-testid="service-charge-text">
+                {{ cards.serviceCharge.text }}
+              </h2>
+            </div>
+            <div class="govuk-card__actions">
+              {{ govukTag({
+                text: cards.serviceCharge.tag,
+                classes: "govuk-tag--yellow"
+              }) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

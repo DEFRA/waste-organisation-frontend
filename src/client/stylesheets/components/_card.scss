@@ -12,6 +12,15 @@
   padding: govuk-spacing(3);
 }
 
+.govuk-card-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.govuk-card-row .govuk-card--contained {
+  height: 100%;
+}
+
 .card {
   background-color: govuk-colour('light-grey');
   padding: govuk-spacing(6) govuk-spacing(6) govuk-spacing(2);
@@ -41,17 +50,24 @@
   }
 }
 
-.govuk-card--contained .govuk-card__content {
+.govuk-card__actions {
+  padding-top: govuk-spacing(3);
+}
+
+.govuk-card--contained .govuk-card__content,
+.govuk-card--contained .govuk-card__actions {
   padding-left: govuk-spacing(3);
   padding-right: govuk-spacing(3);
 }
 @media (min-width: 40.0625em) {
-  .govuk-card--contained .govuk-card__content {
+  .govuk-card--contained .govuk-card__content,
+  .govuk-card--contained .govuk-card__actions {
     padding-left: govuk-spacing(4);
   }
 }
 @media (min-width: 40.0625em) {
-  .govuk-card--contained .govuk-card__content {
+  .govuk-card--contained .govuk-card__content,
+  .govuk-card--contained .govuk-card__actions {
     padding-right: govuk-spacing(4);
   }
 }

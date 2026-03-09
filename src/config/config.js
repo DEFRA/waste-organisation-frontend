@@ -360,6 +360,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_UPDATE_SPREADSHEET'
+    },
+    accountPage: {
+      doc: 'Enable the account page as post-login landing page',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_ACCOUNT_PAGE'
     }
   },
   encryptionKey: {

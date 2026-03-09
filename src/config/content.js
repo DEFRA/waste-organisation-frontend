@@ -192,6 +192,19 @@ export const content = {
         returnLink: `Return to ${organisationName}`
       }
     }),
+  account: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Waste receiving account',
+        heading: heading('Waste receiving account', null, organisationName),
+        switchOrganisation: 'Switch organisation',
+        cards: {
+          reportWaste: { text: 'Report receipt of waste' },
+          manageAccount: { text: 'Manage account' },
+          serviceCharge: { text: 'Service charge', tag: 'Due October 2026' }
+        }
+      }
+    }),
   cookies: (request) =>
     getContentForLanguage(request, {
       en: {

@@ -35,6 +35,9 @@ export const paths = {
   updateSpreadsheetUploadCallback:
     '/organisation/{organisationId}/update-spreadsheet/upload-callback',
 
+  account: '/account',
+  manageAccount: '/manage-account',
+
   apiList: '/api',
   apiDisable: '/api/disable/{apiCode}',
   apiCreate: '/api/new'
