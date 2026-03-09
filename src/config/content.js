@@ -192,6 +192,38 @@ export const content = {
         returnLink: `Return to ${organisationName}`
       }
     }),
+  cookies: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Cookies',
+        heading: 'Cookies',
+        introParagraph:
+          'This service puts small files (known as cookies) onto your computer. These cookies are used to make the service work and cannot be turned off.',
+        essentialCookiesHeading: 'Essential cookies',
+        essentialCookiesDescription:
+          'Essential cookies keep your information secure while you use this service. We do not need to ask permission to use them.',
+        cookieTable: {
+          head: [{ text: 'Name' }, { text: 'Purpose' }, { text: 'Expires' }],
+          rows: [
+            [
+              { text: 'userSession' },
+              { text: 'Keeps you signed in' },
+              { text: '4 hours' }
+            ],
+            [
+              { text: 'session' },
+              { text: 'Stores session data' },
+              { text: '4 hours' }
+            ],
+            [
+              { text: 'bell-defraId' },
+              { text: 'Used to sign in with Defra ID' },
+              { text: 'When you close your browser' }
+            ]
+          ]
+        }
+      }
+    }),
   terms: (request) =>
     getContentForLanguage(request, {
       en: {
@@ -208,7 +240,7 @@ export const content = {
           heading: 'Related content',
           links: [
             { text: 'Privacy', href: 'https://www.gov.uk/help/privacy-notice' },
-            { text: 'Cookies', href: 'https://www.gov.uk/help/cookies' },
+            { text: 'Cookies', href: '/cookies' },
             {
               text: 'Accessibility statement',
               href: 'https://www.gov.uk/help/accessibility-statement'
