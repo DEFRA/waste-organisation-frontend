@@ -19,7 +19,7 @@ export const accountController = {
       cards: pageContent.cards,
       switchOrganisationHref: paths.signinDefraIdCallback,
       reportWasteHref: paths.nextAction,
-      manageAccountHref: paths.manageAccount
+      manageAccountHref: config.get('auth.defraId.accountManagementUrl')
     })
   }
 }

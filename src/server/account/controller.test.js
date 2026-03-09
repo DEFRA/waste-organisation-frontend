@@ -136,7 +136,9 @@ describe('#accountController', () => {
       )
 
       expect(manageAccountLink).not.toBeNull()
-      expect(manageAccountLink.getAttribute('href')).toBe(paths.manageAccount)
+      expect(manageAccountLink.getAttribute('href')).toBe(
+        config.get('auth.defraId.accountManagementUrl')
+      )
       expect(manageAccountLink.textContent).toEqual(
         expect.stringContaining('Manage account')
       )
