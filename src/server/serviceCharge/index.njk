@@ -28,7 +28,8 @@
       <div class="govuk-button-group">
         {{ govukButton({
           text: payServiceCharge,
-          type: "button",
+          element: "a",
+          href: payServiceChargeHref,
           attributes: {
             "data-testid": "pay-service-charge-button"
           }

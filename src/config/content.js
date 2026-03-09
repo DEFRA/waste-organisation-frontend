@@ -222,6 +222,26 @@ export const content = {
         cancel: 'Cancel'
       }
     }),
+  reviewPayment: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Annual Report receipt of waste charge',
+        heading: 'Annual Report receipt of waste charge',
+        intro:
+          'Once you have paid the service charge, your organisation will have full access to report waste movements until',
+        accessUntil: '11:59pm on Wednesday 10 September 2026',
+        sectionHeading: 'Review the payment amount',
+        organisation: {
+          heading: 'Organisation',
+          nameLabel: 'Name',
+          name: '[Waste receiving organisation or business name]',
+          totalCostLabel: 'Total cost',
+          totalCost: '£26.00'
+        },
+        continue: 'Continue',
+        cancel: 'Cancel'
+      }
+    }),
   cookies: (request) =>
     getContentForLanguage(request, {
       en: {

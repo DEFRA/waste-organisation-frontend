@@ -37,6 +37,7 @@ export const paths = {
 
   account: '/account',
   serviceCharge: '/service-charge',
+  reviewPayment: '/review-payment',
   manageAccount: '/manage-account',
 
   apiList: '/api',

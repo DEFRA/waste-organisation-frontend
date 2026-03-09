@@ -13,6 +13,7 @@ export const serviceChargeController = {
       requirements: pageContent.requirements,
       warning: pageContent.warning,
       payServiceCharge: pageContent.payServiceCharge,
+      payServiceChargeHref: paths.reviewPayment,
       cancelLink: {
         text: pageContent.cancel,
         href: paths.account

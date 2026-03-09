@@ -18,6 +18,7 @@ import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
 import { updateSpreadsheet } from './updateSpreadsheet/index.js'
 import { account } from './account/index.js'
 import { serviceCharge } from './serviceCharge/index.js'
+import { reviewPayment } from './reviewPayment/index.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -65,6 +66,7 @@ export const router = {
         apiManagement:  apiManagement.authedRoutes.map((a) => addAuth(a)),
         account:        account.authedRoutes.map((a) => addAuth(a)),
         serviceCharge:  serviceCharge.authedRoutes.map((a) => addAuth(a)),
+        reviewPayment:  reviewPayment.authedRoutes.map((a) => addAuth(a)),
         downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuth(a)),
       }).reduce((p, entry) => createPlugin(p, entry), [])
 

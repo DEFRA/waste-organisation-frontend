@@ -77,6 +77,7 @@ describe('#serviceChargeController', () => {
     expect(button.textContent).toEqual(
       expect.stringContaining(pageContent.payServiceCharge)
     )
+    expect(button.getAttribute('href')).toBe(paths.reviewPayment)
 
     expect(cancelLink).not.toBeNull()
     expect(cancelLink.getAttribute('href')).toBe(paths.account)
