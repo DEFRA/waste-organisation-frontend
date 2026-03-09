@@ -237,6 +237,18 @@ export const content = {
         }
       }
     }),
+  unauthorized: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'You do not have permission to view this page',
+        heading: 'You do not have permission to view this page',
+        reasons: ['you are not signed in', 'your session expired'],
+        reasonsIntro: 'This could be because:',
+        action:
+          'Try signing in again or contact the support team for more help.',
+        signInButton: 'Sign in'
+      }
+    }),
   terms: (request) =>
     getContentForLanguage(request, {
       en: {

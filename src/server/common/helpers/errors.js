@@ -1,3 +1,4 @@
+import { content } from '../../../config/content.js'
 import { statusCodes } from '../constants/status-codes.js'
 
 function statusCodeMessage(statusCode) {
@@ -23,11 +24,26 @@ export function catchAll(request, h) {
   }
 
   const statusCode = response.output.statusCode
-  const errorMessage = statusCodeMessage(statusCode)
 
   if (statusCode >= statusCodes.internalServerError) {
     request.logger.error(response?.stack)
   }
+
+  if (statusCode === statusCodes.unauthorized) {
+    const unauthorizedContent = content.unauthorized(request)
+    return h
+      .view('error/unauthorized', {
+        pageTitle: unauthorizedContent.title,
+        heading: unauthorizedContent.heading,
+        reasonsIntro: unauthorizedContent.reasonsIntro,
+        reasons: unauthorizedContent.reasons,
+        action: unauthorizedContent.action,
+        signInButton: unauthorizedContent.signInButton
+      })
+      .code(statusCode)
+  }
+
+  const errorMessage = statusCodeMessage(statusCode)
 
   return h
     .view('error/index', {
