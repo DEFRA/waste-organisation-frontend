@@ -1,9 +1,13 @@
-/**
- * A GDS styled example home page controller.
- * Provided as an example, remove or modify as required.
- */
+import Boom from '@hapi/boom'
+
+import { config } from '../../config/config.js'
+
 export const searchController = {
   handler(request, h) {
+    if (!config.get('featureFlags.searchPage')) {
+      return Boom.notFound()
+    }
+
     request.contentSecurityPolicy = {
       extraAuthOrigins: request.auth.credentials.providerEndpoints
     }
