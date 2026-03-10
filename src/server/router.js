@@ -17,6 +17,8 @@ import { apiManagement } from './apiManagement/index.js'
 import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
 import { updateSpreadsheet } from './updateSpreadsheet/index.js'
 import { account } from './account/index.js'
+import { signOut } from './signOut/index.js'
+import { signedOut } from './signedOut/index.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -55,6 +57,7 @@ export const router = {
         signIn:         signIn.routes,
         health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:     onboarding.openRoutes,
+        signedOut:      signedOut.openRoutes,
         // Routes that require auth
         search:         search.authedRoutes.map((a) => addAuth(a)),
         spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuth(a)).concat(spreadsheet.openRoutes),
@@ -63,6 +66,7 @@ export const router = {
         nextAction:     nextAction.authedRoutes.map((a) => addAuth(a)),
         apiManagement:  apiManagement.authedRoutes.map((a) => addAuth(a)),
         account:        account.authedRoutes.map((a) => addAuth(a)),
+        signOut:        signOut.authedRoutes.map((a) => addAuth(a)),
         downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuth(a)),
       }).reduce((p, entry) => createPlugin(p, entry), [])
 

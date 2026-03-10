@@ -22,6 +22,9 @@ export default {
   entry: {
     application: {
       import: ['./javascripts/application.js', './stylesheets/application.scss']
+    },
+    'sign-out': {
+      import: ['./javascripts/sign-out.js']
     }
   },
   experiments: {
