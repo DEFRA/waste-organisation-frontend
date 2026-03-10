@@ -1,7 +1,7 @@
 const signOutData = document.getElementById('sign-out-data')
 
 if (signOutData) {
-  const logoutUrl = signOutData.getAttribute('data-logout-url')
+  const logoutUrl = signOutData.dataset.logoutUrl
 
   try {
     window.localStorage.clear()
