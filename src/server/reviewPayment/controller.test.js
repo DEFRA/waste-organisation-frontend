@@ -6,9 +6,6 @@ import { statusCodes } from '../common/constants/status-codes.js'
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
 
-const GOV_PAY_PAYMENT_LINK =
-  'https://products.payments.service.gov.uk/pay/3df2570a378b4527a07b87337a9944bd?reference=DEMO-TEST'
-
 describe('#reviewPaymentController', () => {
   let server
   let credentials
@@ -101,7 +98,7 @@ describe('#reviewPaymentController', () => {
     expect(continueButton.textContent).toEqual(
       expect.stringContaining(pageContent.continue)
     )
-    expect(continueButton.getAttribute('href')).toBe(GOV_PAY_PAYMENT_LINK)
+    expect(continueButton.getAttribute('href')).toBe(paths.initiatePayment)
 
     expect(cancelLink).not.toBeNull()
     expect(cancelLink.getAttribute('href')).toBe(paths.serviceCharge)

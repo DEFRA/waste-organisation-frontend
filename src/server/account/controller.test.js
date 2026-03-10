@@ -174,6 +174,38 @@ describe('#accountController', () => {
         expect.stringContaining(pageContent.cards.serviceCharge.tag)
       )
     })
+
+    test('shows paid service charge state when payment success flash is present', async () => {
+      const stateServer = await initialiseServer({
+        state: {
+          type: 'paymentStatus',
+          message: 'success'
+        }
+      })
+
+      const stateCredentials = await setupAuthedUserSession(stateServer)
+      stateCredentials.currentOrganisationName = organisationName
+
+      const { payload } = await stateServer.inject({
+        method: 'GET',
+        url: paths.account,
+        auth: {
+          strategy: 'session',
+          credentials: stateCredentials
+        }
+      })
+
+      const pageContent = content.account({}, organisationName)
+
+      expect(payload).toEqual(
+        expect.stringContaining(pageContent.cards.serviceCharge.paidTag)
+      )
+      expect(payload).toEqual(
+        expect.stringContaining(pageContent.cards.serviceCharge.nextPaymentDue)
+      )
+
+      await stateServer.stop({ timeout: 0 })
+    })
   })
 
   describe('when feature flag is disabled', () => {

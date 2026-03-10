@@ -1,0 +1,21 @@
+{% extends 'layouts/page.njk' %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l" data-testid="payment-details-heading">{{ heading }}</h1>
+      <p class="govuk-body" data-testid="payment-details-body">{{ body }}</p>
+
+      {{ govukButton({
+        text: continueLink.text,
+        element: "a",
+        href: continueLink.href,
+        attributes: {
+          "data-testid": "payment-details-continue-button"
+        }
+      }) }}
+    </div>
+  </div>
+{% endblock %}

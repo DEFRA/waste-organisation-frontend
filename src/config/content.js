@@ -201,7 +201,12 @@ export const content = {
         cards: {
           reportWaste: { text: 'Report receipt of waste' },
           manageAccount: { text: 'Manage account' },
-          serviceCharge: { text: 'Service charge', tag: 'Due October 2026' }
+          serviceCharge: {
+            text: 'Service charge',
+            tag: 'Due October 2026',
+            paidTag: 'Paid',
+            nextPaymentDue: 'Next payment due October 2027'
+          }
         }
       }
     }),
@@ -240,6 +245,15 @@ export const content = {
         },
         continue: 'Continue',
         cancel: 'Cancel'
+      }
+    }),
+  paymentDetails: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Payment complete',
+        heading: 'Payment complete',
+        body: 'Your service charge payment has been received. You can now continue to report your waste movements.',
+        continue: 'Continue'
       }
     }),
   cookies: (request) =>

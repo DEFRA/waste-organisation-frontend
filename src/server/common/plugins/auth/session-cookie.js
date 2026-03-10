@@ -15,6 +15,7 @@ export const userSession = {
           name: 'userSession',
           path: '/',
           password: sessionConfig.cookie.password,
+          isSameSite: sessionConfig.cookie.sameSite,
           isSecure: sessionConfig.cookie.secure,
           ttl: sessionConfig.cookie.ttl
         },

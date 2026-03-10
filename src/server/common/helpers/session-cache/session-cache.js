@@ -20,6 +20,7 @@ export const sessionCache = {
     cookieOptions: {
       password: sessionConfig.cookie.password,
       ttl: sessionConfig.cookie.ttl,
+      isSameSite: sessionConfig.cookie.sameSite,
       isSecure: config.get('session.cookie.secure'),
       clearInvalid: true
     }
