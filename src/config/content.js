@@ -254,7 +254,8 @@ export const content = {
       en: {
         title: 'Signing out',
         heading: 'Signing out...',
-        fallbackLink: 'Continue signing out'
+        fallbackLink: 'Continue signing out',
+        navigationLink: 'Sign out'
       }
     }),
   signedOut: (request) =>
