@@ -366,6 +366,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_ACCOUNT_PAGE'
+    },
+    searchPage: {
+      doc: 'Enable the search page',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_SEARCH_PAGE'
     }
   },
   encryptionKey: {
