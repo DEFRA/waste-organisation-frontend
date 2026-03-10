@@ -1,6 +1,9 @@
 import { paths } from '../../config/paths.js'
 import { statusCodes } from '../common/constants/status-codes.js'
-import { initialiseServer, wreckPostMock } from '../../test-utils/initialise-server.js'
+import {
+  initialiseServer,
+  wreckPostMock
+} from '../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
 
 describe('#initiatePaymentController', () => {

@@ -72,7 +72,9 @@ describe('#paymentDetailsController', () => {
       }
     })
 
-    const sessionCookie = toCookieHeader(initiatePaymentResponse.headers['set-cookie'])
+    const sessionCookie = toCookieHeader(
+      initiatePaymentResponse.headers['set-cookie']
+    )
 
     const paymentDetailsResponse = await server.inject({
       method: 'GET',
@@ -87,7 +89,9 @@ describe('#paymentDetailsController', () => {
     })
 
     const { statusCode, headers } = paymentDetailsResponse
-    const accountCookie = toCookieHeader(paymentDetailsResponse.headers['set-cookie'])
+    const accountCookie = toCookieHeader(
+      paymentDetailsResponse.headers['set-cookie']
+    )
 
     expect(statusCode).toBe(statusCodes.found)
     expect(headers.location).toBe(paths.account)
@@ -104,9 +108,7 @@ describe('#paymentDetailsController', () => {
       }
     })
 
-    expect(accountResponse.payload).toEqual(
-      expect.stringContaining('Paid')
-    )
+    expect(accountResponse.payload).toEqual(expect.stringContaining('Paid'))
     expect(accountResponse.payload).toEqual(
       expect.stringContaining('Next payment due October 2027')
     )
