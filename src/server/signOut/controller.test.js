@@ -23,9 +23,14 @@ describe('#signOutController', () => {
     const cookie = await getSessionCookie(credentials.sessionId)
 
     const appBaseUrl = config.get('appBaseUrl')
-    const expectedLogoutUrl = `${credentials.logoutUrl}?post_logout_redirect_uri=${appBaseUrl}${paths.signedOut}`
+    const expectedUrl = new URL(credentials.logoutUrl)
+    expectedUrl.searchParams.set(
+      'post_logout_redirect_uri',
+      `${appBaseUrl}${paths.signedOut}`
+    )
+    const expectedLogoutUrl = expectedUrl.toString()
 
-    const { result, statusCode } = await server.inject({
+    const { result, statusCode, headers } = await server.inject({
       method: 'GET',
       url: paths.signOut,
       headers: {
@@ -38,6 +43,15 @@ describe('#signOutController', () => {
     expect(result).toEqual(
       expect.stringContaining(`data-logout-url="${expectedLogoutUrl}"`)
     )
+
+    const setCookie = headers['set-cookie']
+    expect(setCookie).toBeDefined()
+    expect(setCookie).toEqual(
+      expect.arrayContaining([expect.stringContaining('userSession=;')])
+    )
+
+    const cachedSession = await server.app.cache.get(credentials.sessionId)
+    expect(cachedSession).toBeNull()
   })
 
   test('Should return 401 when not authenticated', async () => {

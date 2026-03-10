@@ -10,9 +10,14 @@ export const signOutController = {
 
     const appBaseUrl = config.get('appBaseUrl')
     const postLogoutRedirectUri = `${appBaseUrl}${paths.signedOut}`
-    const logoutUrl = `${session.logoutUrl}?post_logout_redirect_uri=${postLogoutRedirectUri}`
+    const logoutUrlObj = new URL(session.logoutUrl)
+    logoutUrlObj.searchParams.set(
+      'post_logout_redirect_uri',
+      postLogoutRedirectUri
+    )
+    const logoutUrl = logoutUrlObj.toString()
 
-    removeUserSession(request)
+    await removeUserSession(request)
 
     await metricsCounter('signOut.success')
 

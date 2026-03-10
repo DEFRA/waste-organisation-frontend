@@ -7,6 +7,10 @@ function mockRequest(options) {
 }
 
 describe('#buildNavigation', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   test('Should return empty navigation when not authenticated', () => {
     expect(
       buildNavigation(mockRequest({ path: '/non-existent-path' }))
@@ -22,37 +26,29 @@ describe('#buildNavigation', () => {
   })
 
   test('Should include sign out link when authenticated and feature flag enabled', () => {
-    vi.spyOn(config, 'get').mockImplementation((key) => {
-      if (key === 'featureFlags.signOut') return true
-      return config.get(key)
-    })
+    vi.spyOn(config, 'get').mockReturnValue(true)
 
     const result = buildNavigation(
       mockRequest({ path: '/', auth: { isAuthenticated: true } })
     )
 
+    expect(config.get).toHaveBeenCalledWith('featureFlags.signOut')
     expect(result).toEqual([
       {
         text: 'Sign out',
         href: '/sign-out'
       }
     ])
-
-    config.get.mockRestore()
   })
 
   test('Should not include sign out link when feature flag disabled', () => {
-    vi.spyOn(config, 'get').mockImplementation((key) => {
-      if (key === 'featureFlags.signOut') return false
-      return config.get(key)
-    })
+    vi.spyOn(config, 'get').mockReturnValue(false)
 
     const result = buildNavigation(
       mockRequest({ path: '/', auth: { isAuthenticated: true } })
     )
 
+    expect(config.get).toHaveBeenCalledWith('featureFlags.signOut')
     expect(result).toEqual([])
-
-    config.get.mockRestore()
   })
 })
