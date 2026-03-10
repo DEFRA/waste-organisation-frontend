@@ -198,6 +198,7 @@ services:
       BACKEND_API_PRESHARED_KEY: test
       FEATURE_FLAG_UPDATE_SPREADSHEET: true
       FEATURE_FLAG_ACCOUNT_PAGE: true
+      FEATURE_FLAG_SIGN_OUT: true
     network_mode: 'service:cdp-defra-id-stub'
 
 volumes:
