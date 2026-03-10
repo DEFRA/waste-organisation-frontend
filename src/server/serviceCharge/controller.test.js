@@ -41,13 +41,19 @@ describe('#serviceChargeController', () => {
       expect.stringContaining(`${pageContent.title} |`)
     )
 
-    const heading = document.querySelector('[data-testid="service-charge-heading"]')
+    const heading = document.querySelector(
+      '[data-testid="service-charge-heading"]'
+    )
     const cost = document.querySelector('[data-testid="service-charge-cost"]')
     const requirementsIntro = document.querySelector(
       '[data-testid="service-charge-requirements-intro"]'
     )
-    const warning = document.querySelector('[data-testid="service-charge-warning"]')
-    const button = document.querySelector('[data-testid="pay-service-charge-button"]')
+    const warning = document.querySelector(
+      '[data-testid="service-charge-warning"]'
+    )
+    const button = document.querySelector(
+      '[data-testid="pay-service-charge-button"]'
+    )
     const cancelLink = document.querySelector(
       '[data-testid="service-charge-cancel-link"]'
     )
@@ -65,8 +71,12 @@ describe('#serviceChargeController', () => {
       expect.stringContaining(pageContent.requirementsIntro)
     )
 
-    expect(payload).toEqual(expect.stringContaining(pageContent.requirements[0]))
-    expect(payload).toEqual(expect.stringContaining(pageContent.requirements[1]))
+    expect(payload).toEqual(
+      expect.stringContaining(pageContent.requirements[0])
+    )
+    expect(payload).toEqual(
+      expect.stringContaining(pageContent.requirements[1])
+    )
 
     expect(warning).not.toBeNull()
     expect(warning.textContent).toEqual(

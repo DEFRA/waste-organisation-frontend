@@ -44,7 +44,9 @@ describe('#reviewPaymentController', () => {
       expect.stringContaining(`${pageContent.title} |`)
     )
 
-    const heading = document.querySelector('[data-testid="review-payment-heading"]')
+    const heading = document.querySelector(
+      '[data-testid="review-payment-heading"]'
+    )
     const intro = document.querySelector('[data-testid="review-payment-intro"]')
     const sectionHeading = document.querySelector(
       '[data-testid="review-payment-section-heading"]'
@@ -65,7 +67,9 @@ describe('#reviewPaymentController', () => {
     )
 
     expect(intro).not.toBeNull()
-    expect(intro.textContent).toEqual(expect.stringContaining(pageContent.intro))
+    expect(intro.textContent).toEqual(
+      expect.stringContaining(pageContent.intro)
+    )
     expect(intro.textContent).toEqual(
       expect.stringContaining(pageContent.accessUntil)
     )
@@ -83,7 +87,9 @@ describe('#reviewPaymentController', () => {
     expect(payload).toEqual(
       expect.stringContaining(pageContent.organisation.nameLabel)
     )
-    expect(payload).toEqual(expect.stringContaining(pageContent.organisation.name))
+    expect(payload).toEqual(
+      expect.stringContaining(pageContent.organisation.name)
+    )
     expect(payload).toEqual(
       expect.stringContaining(pageContent.organisation.totalCostLabel)
     )
