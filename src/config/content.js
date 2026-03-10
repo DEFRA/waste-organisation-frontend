@@ -249,6 +249,22 @@ export const content = {
         signInButton: 'Sign in'
       }
     }),
+  signOut: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Signing out',
+        heading: 'Signing out...',
+        fallbackLink: 'Continue signing out'
+      }
+    }),
+  signedOut: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'You have been signed out',
+        heading: 'You have been signed out',
+        signInButton: 'Sign in'
+      }
+    }),
   terms: (request) =>
     getContentForLanguage(request, {
       en: {
