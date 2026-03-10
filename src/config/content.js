@@ -242,47 +242,6 @@ export const content = {
         cancel: 'Cancel'
       }
     }),
-  paymentDetails: (request) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Enter card details',
-        heading: 'Enter card details',
-        summary: {
-          heading: 'Payment summary',
-          charge: 'Annual service charge',
-          totalLabel: 'Total amount',
-          totalAmount: '£26.00'
-        },
-        card: {
-          numberLabel: 'Card number',
-          acceptedCards: 'Accepted credit and debit card types',
-          expiryLabel: 'Expiry date',
-          expiryHint: 'For example, 10 26',
-          monthLabel: 'Month',
-          yearLabel: 'Year',
-          nameLabel: 'Name on card',
-          securityCodeLabel: 'Card security code',
-          securityCodeHint: 'The last 3 digits on the back of the card',
-          securityCodeHelpLink: 'Where to find this?'
-        },
-        billingAddress: {
-          heading: 'Billing address',
-          hint: 'This is the address associated with the card',
-          line1Label: 'Address line 1',
-          line2Label: 'Address line 2 (optional)',
-          townCityLabel: 'Town or city',
-          countryLabel: 'Country (optional)',
-          postcodeLabel: 'Postcode'
-        },
-        contactDetails: {
-          heading: 'Contact details',
-          hint: "We'll send your payment confirmation here",
-          emailLabel: 'Email'
-        },
-        continue: 'Continue',
-        cancel: 'Cancel payment'
-      }
-    }),
   cookies: (request) =>
     getContentForLanguage(request, {
       en: {
