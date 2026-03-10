@@ -54,6 +54,12 @@ describe('#paymentDetailsController', () => {
     const cardNumberInput = document.querySelector(
       '[data-testid="card-number-input"]'
     )
+    const cardTypeIcons = document.querySelector(
+      '[data-testid="card-type-icons"]'
+    )
+    const cardTypeIconsImage = document.querySelector(
+      '[data-testid="card-type-icons-image"]'
+    )
     const continueButton = document.querySelector(
       '[data-testid="payment-details-continue-button"]'
     )
@@ -89,6 +95,9 @@ describe('#paymentDetailsController', () => {
       expect.stringContaining(pageContent.card.securityCodeLabel)
     )
     expect(payload).toEqual(
+      expect.stringContaining('/public/images/credit-debit-cards.png')
+    )
+    expect(payload).toEqual(
       expect.stringContaining(pageContent.billingAddress.heading)
     )
     expect(payload).toEqual(
@@ -96,6 +105,11 @@ describe('#paymentDetailsController', () => {
     )
 
     expect(cardNumberInput).not.toBeNull()
+    expect(cardTypeIcons).not.toBeNull()
+    expect(cardTypeIconsImage).not.toBeNull()
+    expect(cardTypeIconsImage.getAttribute('src')).toBe(
+      '/public/images/credit-debit-cards.png'
+    )
 
     expect(continueButton).not.toBeNull()
     expect(continueButton.textContent).toEqual(

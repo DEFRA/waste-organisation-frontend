@@ -21,23 +21,32 @@
       </div>
 
       <form method="POST" action="#" novalidate>
-        {{ govukInput({
-          label: {
-            text: card.numberLabel,
-            classes: "govuk-label--m"
-          },
-          hint: {
-            text: card.acceptedCards
-          },
-          classes: "govuk-input--width-20",
-          id: "card-number",
-          name: "cardNumber",
-          attributes: {
-            "data-testid": "card-number-input",
-            "inputmode": "numeric",
-            "autocomplete": "cc-number"
-          }
-        }) }}
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--m" for="card-number">
+            {{ card.numberLabel }}
+          </label>
+          <div class="govuk-hint">{{ card.acceptedCards }}</div>
+
+          <div class="govuk-!-margin-bottom-3" data-testid="card-type-icons" aria-label="Accepted card types">
+            <img
+              src="/public/images/credit-debit-cards.png"
+              alt="Accepted cards: Visa, Visa Debit, Mastercard and Maestro"
+              width="216"
+              height="32"
+              data-testid="card-type-icons-image"
+            >
+          </div>
+
+          <input
+            class="govuk-input govuk-input--width-20"
+            id="card-number"
+            name="cardNumber"
+            type="text"
+            inputmode="numeric"
+            autocomplete="cc-number"
+            data-testid="card-number-input"
+          >
+        </div>
 
         <fieldset class="govuk-fieldset govuk-!-margin-bottom-6">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ card.expiryLabel }}</legend>
