@@ -1,21 +1,48 @@
 {% extends 'layouts/page.njk' %}
 
-{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set paymentSummaryRows = [
+  {
+    key: { text: paymentSummary.paymentForLabel },
+    value: { text: paymentSummary.paymentForValue }
+  },
+  {
+    key: { text: paymentSummary.organisationLabel },
+    value: { text: paymentSummary.organisationValue }
+  },
+  {
+    key: { text: paymentSummary.totalAmountLabel },
+    value: { text: paymentSummary.totalAmountValue }
+  }
+] %}
 
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l" data-testid="payment-details-heading">{{ heading }}</h1>
-      <p class="govuk-body" data-testid="payment-details-body">{{ body }}</p>
+      {{ govukPanel({
+        titleText: heading,
+        html: referenceLabel + '<br><strong data-testid="payment-reference">' + paymentReference + '</strong>',
+        classes: 'govuk-!-margin-bottom-8'
+      }) }}
 
-      {{ govukButton({
-        text: continueLink.text,
-        element: "a",
-        href: continueLink.href,
+      <h2 class="govuk-heading-m" data-testid="payment-summary-heading">{{ summaryHeading }}</h2>
+
+      {{ govukSummaryList({
+        rows: paymentSummaryRows,
         attributes: {
-          "data-testid": "payment-details-continue-button"
+          "data-testid": "payment-summary-list"
         }
       }) }}
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-8" data-testid="payment-next-steps-heading">{{ whatHappensNextHeading }}</h2>
+
+      {% for nextStep in whatHappensNext %}
+        <p class="govuk-body" data-testid="payment-next-step">{{ nextStep }}</p>
+      {% endfor %}
+
+      <a class="govuk-link" href="{{ returnLink.href }}" data-testid="payment-return-link">{{ returnLink.text }}</a>
     </div>
   </div>
 {% endblock %}

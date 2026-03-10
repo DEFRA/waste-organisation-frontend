@@ -31,7 +31,7 @@ describe('#paymentDetailsController', () => {
     wreckPostMock.mockReset()
   })
 
-  test('redirects to account and flashes success when payment status is success', async () => {
+  test('renders payment confirmation page and marks account paid on return', async () => {
     wreckPostMock.mockReturnValue({
       res: { statusCode: statusCodes.ok },
       payload: {
@@ -48,7 +48,11 @@ describe('#paymentDetailsController', () => {
       if (url.includes('/v1/payments/')) {
         return {
           res: { statusCode: statusCodes.ok },
-          payload: { state: { status: 'success' } }
+          payload: {
+            state: { status: 'success' },
+            amount: 2600,
+            reference: 'HDJ2123F'
+          }
         }
       }
 
@@ -76,7 +80,7 @@ describe('#paymentDetailsController', () => {
       initiatePaymentResponse.headers['set-cookie']
     )
 
-    const paymentDetailsResponse = await server.inject({
+    const { statusCode, payload, headers } = await server.inject({
       method: 'GET',
       url: paths.paymentDetails,
       headers: {
@@ -88,13 +92,15 @@ describe('#paymentDetailsController', () => {
       }
     })
 
-    const { statusCode, headers } = paymentDetailsResponse
-    const accountCookie = toCookieHeader(
-      paymentDetailsResponse.headers['set-cookie']
+    expect(statusCode).toBe(statusCodes.ok)
+    expect(payload).toEqual(expect.stringContaining('Payment confirmation'))
+    expect(payload).toEqual(expect.stringContaining('HDJ2123F'))
+    expect(payload).toEqual(expect.stringContaining('£26.00'))
+    expect(payload).toEqual(
+      expect.stringContaining('Report receipt of waste annual service charge')
     )
 
-    expect(statusCode).toBe(statusCodes.found)
-    expect(headers.location).toBe(paths.account)
+    const accountCookie = toCookieHeader(headers['set-cookie'])
 
     const accountResponse = await server.inject({
       method: 'GET',
@@ -135,5 +141,151 @@ describe('#paymentDetailsController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.unauthorized)
+  })
+
+  test('uses backend organisation name when auth organisation name is invalid', async () => {
+    credentials.currentOrganisationName = '1'
+    credentials.currentOrganisationId = 'org-2'
+
+    wreckPostMock.mockReturnValue({
+      res: { statusCode: statusCodes.ok },
+      payload: {
+        payment_id: 'pid_123',
+        _links: {
+          next_url: {
+            href: 'https://www.payments.service.gov.uk/secure/abc123'
+          }
+        }
+      }
+    })
+
+    wreckGetMock.mockImplementation((url) => {
+      if (url.includes('/v1/payments/')) {
+        return {
+          res: { statusCode: statusCodes.ok },
+          payload: {
+            state: { status: 'success' },
+            amount: 2600,
+            reference: 'HDJ2123F'
+          }
+        }
+      }
+
+      if (url.includes('/user/') && url.includes('/organisations')) {
+        return {
+          payload: {
+            organisations: [
+              { id: 'org-1', name: 'First Org' },
+              { id: 'org-2', name: 'Real Org Name' }
+            ]
+          }
+        }
+      }
+
+      return {
+        payload: {
+          issuer: 'http://localhost/path',
+          authorization_endpoint: 'http://localhost/path',
+          token_endpoint: 'http://localhost/path',
+          end_session_endpoint: 'http://localhost/path',
+          jwks_uri: 'http://localhost/path'
+        }
+      }
+    })
+
+    const initiatePaymentResponse = await server.inject({
+      method: 'GET',
+      url: paths.initiatePayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const sessionCookie = toCookieHeader(
+      initiatePaymentResponse.headers['set-cookie']
+    )
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.paymentDetails,
+      headers: {
+        cookie: sessionCookie
+      },
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(payload).toEqual(expect.stringContaining('Real Org Name'))
+  })
+
+  test('uses organisation name from relationships when auth organisation name is missing', async () => {
+    credentials.currentOrganisationName = undefined
+    credentials.currentRelationshipId = 1
+    credentials.relationships = '1:org-3:Org From Relationship:0:0:0:0'
+
+    wreckPostMock.mockReturnValue({
+      res: { statusCode: statusCodes.ok },
+      payload: {
+        payment_id: 'pid_123',
+        _links: {
+          next_url: {
+            href: 'https://www.payments.service.gov.uk/secure/abc123'
+          }
+        }
+      }
+    })
+
+    wreckGetMock.mockImplementation((url) => {
+      if (url.includes('/v1/payments/')) {
+        return {
+          res: { statusCode: statusCodes.ok },
+          payload: {
+            state: { status: 'success' },
+            amount: 2600,
+            reference: 'HDJ2123F'
+          }
+        }
+      }
+
+      return {
+        payload: {
+          issuer: 'http://localhost/path',
+          authorization_endpoint: 'http://localhost/path',
+          token_endpoint: 'http://localhost/path',
+          end_session_endpoint: 'http://localhost/path',
+          jwks_uri: 'http://localhost/path'
+        }
+      }
+    })
+
+    const initiatePaymentResponse = await server.inject({
+      method: 'GET',
+      url: paths.initiatePayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const sessionCookie = toCookieHeader(
+      initiatePaymentResponse.headers['set-cookie']
+    )
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.paymentDetails,
+      headers: {
+        cookie: sessionCookie
+      },
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(payload).toEqual(expect.stringContaining('Org From Relationship'))
   })
 })

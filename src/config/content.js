@@ -227,7 +227,7 @@ export const content = {
         cancel: 'Cancel'
       }
     }),
-  reviewPayment: (request) =>
+  reviewPayment: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
         title: 'Annual Report receipt of waste charge',
@@ -239,7 +239,9 @@ export const content = {
         organisation: {
           heading: 'Organisation',
           nameLabel: 'Name',
-          name: '[Waste receiving organisation or business name]',
+          name:
+            organisationName ||
+            '[Waste receiving organisation or business name]',
           totalCostLabel: 'Total cost',
           totalCost: '£26.00'
         },
@@ -250,10 +252,23 @@ export const content = {
   paymentDetails: (request) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Payment complete',
-        heading: 'Payment complete',
-        body: 'Your service charge payment has been received. You can now continue to report your waste movements.',
-        continue: 'Continue'
+        title: 'Payment confirmation',
+        heading: 'Payment confirmation',
+        referenceLabel: 'Your payment reference',
+        summaryHeading: 'Payment summary',
+        paymentForLabel: 'Payment for',
+        paymentForValue: 'Report receipt of waste annual service charge',
+        organisationLabel: 'Organisation',
+        organisationPlaceholder:
+          '[Waste receiving organisation or business name]',
+        totalAmountLabel: 'Total amount',
+        whatHappensNextHeading: 'What happens next',
+        whatHappensNext: [
+          'You will receive an email confirming your payment.',
+          'You can now use the service to report your waste movements.'
+        ],
+        returnToAccountPrefix: 'Return to',
+        returnToAccountSuffix: 'waste receiving account'
       }
     }),
   cookies: (request) =>

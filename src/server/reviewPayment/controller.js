@@ -3,7 +3,10 @@ import { paths } from '../../config/paths.js'
 
 export const reviewPaymentController = {
   handler(request, h) {
-    const pageContent = content.reviewPayment(request)
+    const organisationName =
+      request?.auth?.credentials?.currentOrganisationName?.trim()
+
+    const pageContent = content.reviewPayment(request, organisationName)
 
     return h.view('reviewPayment/index', {
       pageTitle: pageContent.title,

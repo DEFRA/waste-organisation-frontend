@@ -7,6 +7,9 @@ import { paths } from '../../../../config/paths.js'
 const SERVICE_CHARGE_DESCRIPTION =
   'Annual report receipt of waste service charge'
 
+const createPaymentReference = () =>
+  `WASTE-${randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}`
+
 const govPayRequestOptions = (apiKey) => ({
   json: true,
   headers: {
@@ -26,7 +29,7 @@ export const createGovPayPayment = async () => {
       payload: {
         amount: serviceChargeAmountPence,
         description: SERVICE_CHARGE_DESCRIPTION,
-        reference: `WASTE-SC-${randomUUID()}`,
+        reference: createPaymentReference(),
         return_url: `${appBaseUrl}${paths.paymentDetails}`
       }
     }
@@ -71,5 +74,9 @@ export const getGovPayPaymentStatus = async (paymentId) => {
     throw new Error(reason)
   }
 
-  return payload?.state?.status
+  return {
+    status: payload?.state?.status,
+    amount: payload?.amount,
+    reference: payload?.reference
+  }
 }

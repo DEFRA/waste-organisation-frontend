@@ -20,10 +20,14 @@ describe('#reviewPaymentController', () => {
 
   beforeEach(async () => {
     credentials = await setupAuthedUserSession(server)
+    credentials.currentOrganisationName = 'Test Waste Organisation'
   })
 
   test('returns 200 with expected static page content', async () => {
-    const pageContent = content.reviewPayment({})
+    const pageContent = content.reviewPayment(
+      {},
+      credentials.currentOrganisationName
+    )
 
     const { statusCode, payload } = await server.inject({
       method: 'GET',
