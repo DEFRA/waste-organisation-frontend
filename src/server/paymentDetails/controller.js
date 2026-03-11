@@ -66,7 +66,7 @@ export const paymentDetailsController = {
       whatHappensNext: pageContent.whatHappensNext,
       returnLink: {
         text: `${pageContent.returnToAccountPrefix} ${organisationName} ${pageContent.returnToAccountSuffix}`
-          .replace(/\s+/g, ' ')
+          .replaceAll(/\s+/g, ' ')
           .trim(),
         href: paths.account
       }
