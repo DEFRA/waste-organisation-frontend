@@ -48,7 +48,7 @@ describe('#paymentDetailsController', () => {
     })
 
     wreckGetMock.mockImplementation((url) => {
-      if (url.includes('/v1/payments/')) {
+      if (url.includes('/payments/')) {
         return {
           res: { statusCode: statusCodes.ok },
           payload: {
