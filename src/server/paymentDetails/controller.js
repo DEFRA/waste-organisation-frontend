@@ -3,7 +3,7 @@ import boom from '@hapi/boom'
 import { config } from '../../config/config.js'
 import { content } from '../../config/content.js'
 import { paths } from '../../config/paths.js'
-import { getGovPayPaymentStatus } from '../common/helpers/govpay/create-payment.js'
+import { getGovPayPaymentStatus } from '../common/helpers/govpay/get-payment-status.js'
 
 const paymentSuccessFlash = 'paymentStatus'
 const paymentSuccessState = 'success'

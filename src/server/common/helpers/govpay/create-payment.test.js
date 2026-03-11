@@ -2,15 +2,11 @@ import wreck from '@hapi/wreck'
 import { describe, expect, test, vi, beforeEach } from 'vitest'
 
 import { config } from '../../../../config/config.js'
-import {
-  createGovPayPayment,
-  getGovPayPaymentStatus
-} from './create-payment.js'
+import { createGovPayPayment } from './create-payment.js'
 
 vi.mock('@hapi/wreck', () => ({
   default: {
-    post: vi.fn(),
-    get: vi.fn()
+    post: vi.fn()
   }
 }))
 
@@ -109,53 +105,4 @@ describe('#createPayment', () => {
     )
   })
 
-  test('getGovPayPaymentStatus returns status, amount and reference', async () => {
-    wreck.get.mockResolvedValue({
-      res: { statusCode: 200 },
-      payload: {
-        state: { status: 'success' },
-        amount: 2600,
-        reference: 'REF1234'
-      }
-    })
-
-    const result = await getGovPayPaymentStatus('pid_123')
-
-    expect(result).toEqual({
-      status: 'success',
-      amount: 2600,
-      reference: 'REF1234'
-    })
-
-    expect(wreck.get).toHaveBeenCalledWith(
-      'https://pay.example.test/v1/payments/pid_123',
-      {
-        json: 'strict',
-        headers: {
-          Authorization: 'Bearer test-api-key',
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-  })
-
-  test.each([
-    {
-      payload: { description: 'description message' },
-      message: 'description message'
-    },
-    { payload: { message: 'message text' }, message: 'message text' },
-    { payload: { detail: 'detail text' }, message: 'detail text' },
-    { payload: {}, message: 'GovPay returned status 502' }
-  ])(
-    'getGovPayPaymentStatus throws useful reason for failed status: $message',
-    async ({ payload, message }) => {
-      wreck.get.mockResolvedValue({
-        res: { statusCode: 502 },
-        payload
-      })
-
-      await expect(getGovPayPaymentStatus('pid_123')).rejects.toThrow(message)
-    }
-  )
 })

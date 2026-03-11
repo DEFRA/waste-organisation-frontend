@@ -63,27 +63,3 @@ export const createGovPayPayment = async () => {
     nextUrl
   }
 }
-
-export const getGovPayPaymentStatus = async (paymentId) => {
-  const { apiUrl, apiKey } = config.get('govPay')
-  const { res, payload } = await wreck.get(
-    `${apiUrl.replace(/\/$/, '')}/payments/${paymentId}`,
-    govPayRequestOptions(apiKey)
-  )
-
-  if (res?.statusCode >= statusCodes.badRequest) {
-    const reason =
-      payload?.description ??
-      payload?.message ??
-      payload?.detail ??
-      `GovPay returned status ${res.statusCode}`
-
-    throw new Error(reason)
-  }
-
-  return {
-    status: payload?.state?.status,
-    amount: payload?.amount,
-    reference: payload?.reference
-  }
-}

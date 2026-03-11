@@ -6,7 +6,7 @@ import { paths } from '../../config/paths.js'
 
 const mockGetGovPayPaymentStatus = vi.fn()
 
-vi.mock('../common/helpers/govpay/create-payment.js', () => ({
+vi.mock('../common/helpers/govpay/get-payment-status.js', () => ({
   getGovPayPaymentStatus: (...args) => mockGetGovPayPaymentStatus(...args)
 }))
 
