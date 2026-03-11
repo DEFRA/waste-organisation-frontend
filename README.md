@@ -30,11 +30,9 @@ functionality, using the Gov.uk Design System and Defra ID for authentication.
 
 ## Prerequisites
 
-For latest minimum versions of Node.js and NPM, see the [package.json](./package.json) 'engines'
-property.
+For the minimum version of Node.js, see the [package.json](./package.json) 'engines' property.
 
 - [Node.js](http://nodejs.org/)
-- [npm](https://nodejs.org/)
 - [Docker](https://www.docker.com/)
 
 You may find it easier to manage Node.js versions using a version manager such
@@ -154,8 +152,6 @@ Please note: CatboxMemory (`memory`) is _not_ suitable for production use! The c
 shared between each instance of the service and it will not persist between restarts.
 
 ## Docker
-
-Ensure you have run `npm install` before running any Docker commands.
 
 > [!TIP]
 > For Apple Silicon users, you may need to add `--platform linux/amd64` to the `docker run` command
