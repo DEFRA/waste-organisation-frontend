@@ -11,14 +11,6 @@ const SERVICE_CHARGE_DESCRIPTION =
 const createPaymentReference = () =>
   `WASTE-${randomUUID().replaceAll('-', '').slice(0, 8).toUpperCase()}`
 
-const govPayRequestOptions = (apiKey) => ({
-  json: 'strict',
-  headers: {
-    Authorization: `Bearer ${apiKey}`,
-    'Content-Type': 'application/json'
-  }
-})
-
 export const createGovPayPayment = async () => {
   const { apiUrl, apiKey, serviceChargeAmountPence } = config.get('govPay')
   const appBaseUrl = config.get('appBaseUrl').replace(/\/$/, '')
@@ -26,7 +18,11 @@ export const createGovPayPayment = async () => {
   const { res, payload } = await wreck.post(
     `${apiUrl.replace(/\/$/, '')}/payments`,
     {
-      ...govPayRequestOptions(apiKey),
+      json: 'strict',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
       payload: {
         amount: serviceChargeAmountPence,
         description: SERVICE_CHARGE_DESCRIPTION,

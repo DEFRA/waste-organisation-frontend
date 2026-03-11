@@ -8,11 +8,11 @@ export const getGovPayPaymentStatus = async (paymentId) => {
   const { res, payload } = await wreck.get(
     `${apiUrl.replace(/\/$/, '')}/payments/${paymentId}`,
     {
-          json: 'strict',
-  headers: {
-    Authorization: `Bearer ${apiKey}`,
-    'Content-Type': 'application/json'
-  }
+      json: 'strict',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
     }
   )
 

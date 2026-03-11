@@ -104,5 +104,4 @@ describe('#createPayment', () => {
       'GovPay did not return a payment_id for payment journey'
     )
   })
-
 })

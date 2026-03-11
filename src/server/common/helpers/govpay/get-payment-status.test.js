@@ -55,12 +55,15 @@ describe('#getGovPayPaymentStatus', () => {
     { payload: { message: 'message text' }, message: 'message text' },
     { payload: { detail: 'detail text' }, message: 'detail text' },
     { payload: {}, message: 'GovPay returned status 502' }
-  ])('throws useful reason for failed status: $message', async ({ payload, message }) => {
-    wreck.get.mockResolvedValue({
-      res: { statusCode: 502 },
-      payload
-    })
+  ])(
+    'throws useful reason for failed status: $message',
+    async ({ payload, message }) => {
+      wreck.get.mockResolvedValue({
+        res: { statusCode: 502 },
+        payload
+      })
 
-    await expect(getGovPayPaymentStatus('pid_123')).rejects.toThrow(message)
-  })
+      await expect(getGovPayPaymentStatus('pid_123')).rejects.toThrow(message)
+    }
+  )
 })
