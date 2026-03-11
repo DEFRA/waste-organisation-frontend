@@ -372,6 +372,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_SEARCH_PAGE'
+    },
+    signOut: {
+      doc: 'Enable the sign out feature',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_SIGN_OUT'
     }
   },
   encryptionKey: {
