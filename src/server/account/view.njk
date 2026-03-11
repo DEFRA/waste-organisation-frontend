@@ -42,34 +42,36 @@
             </div>
           </div>
         </div>
-        <div class="govuk-grid-column-one-third">
-          <div class="govuk-card govuk-card--contained">
-            <div class="govuk-card__content">
-              <h2 class="govuk-heading-m govuk-!-margin-bottom-3">
-                <a href="{{ serviceChargeHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="service-charge-link">
-                  {{ cards.serviceCharge.text }}
-                </a>
-              </h2>
-            </div>
-            <div class="govuk-card__actions">
-              {% if isServiceChargePaid %}
-                {{ govukTag({
-                  text: cards.serviceCharge.paidTag,
-                  classes: "govuk-tag--green"
-                }) }}
+        {% if isServiceChargeEnabled %}
+          <div class="govuk-grid-column-one-third">
+            <div class="govuk-card govuk-card--contained">
+              <div class="govuk-card__content">
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-3">
+                  <a href="{{ serviceChargeHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="service-charge-link">
+                    {{ cards.serviceCharge.text }}
+                  </a>
+                </h2>
+              </div>
+              <div class="govuk-card__actions">
+                {% if isServiceChargePaid %}
+                  {{ govukTag({
+                    text: cards.serviceCharge.paidTag,
+                    classes: "govuk-tag--green"
+                  }) }}
 
-                <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-0" data-testid="service-charge-next-payment-due">
-                  {{ cards.serviceCharge.nextPaymentDue }}
-                </p>
-              {% else %}
-                {{ govukTag({
-                  text: cards.serviceCharge.tag,
-                  classes: "govuk-tag--yellow"
-                }) }}
-              {% endif %}
+                  <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-0" data-testid="service-charge-next-payment-due">
+                    {{ cards.serviceCharge.nextPaymentDue }}
+                  </p>
+                {% else %}
+                  {{ govukTag({
+                    text: cards.serviceCharge.tag,
+                    classes: "govuk-tag--yellow"
+                  }) }}
+                {% endif %}
+              </div>
             </div>
           </div>
-        </div>
+        {% endif %}
       </div>
     </div>
   </div>

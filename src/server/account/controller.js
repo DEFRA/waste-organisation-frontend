@@ -13,13 +13,19 @@ export const accountController = {
       return h.redirect(paths.nextAction)
     }
 
+    const isServiceChargeEnabled = config.get('featureFlags.serviceCharge')
+
     const organisationName = request?.auth?.credentials?.currentOrganisationName
     const organisationId = request?.auth?.credentials?.currentOrganisationId
 
     const pageContent = content.account(request, organisationName)
     const [paymentStatus] = request.yar.flash(paymentStatusFlash)
 
-    if (paymentStatus === paymentStatusSuccess && organisationId) {
+    if (
+      isServiceChargeEnabled &&
+      paymentStatus === paymentStatusSuccess &&
+      organisationId
+    ) {
       const existingStatusByOrg = request.yar.get(serviceChargeStatusKey) || {}
       existingStatusByOrg[organisationId] = serviceChargeStatusPaid
       request.yar.set(serviceChargeStatusKey, existingStatusByOrg)
@@ -28,6 +34,7 @@ export const accountController = {
     const serviceChargeStatusByOrg =
       request.yar.get(serviceChargeStatusKey) || {}
     const isServiceChargePaid =
+      isServiceChargeEnabled &&
       organisationId &&
       serviceChargeStatusByOrg[organisationId] === serviceChargeStatusPaid
 
@@ -36,6 +43,7 @@ export const accountController = {
       heading: pageContent.heading,
       switchOrganisation: pageContent.switchOrganisation,
       cards: pageContent.cards,
+      isServiceChargeEnabled,
       isServiceChargePaid,
       switchOrganisationHref: paths.signinDefraIdCallback,
       reportWasteHref: paths.nextAction,

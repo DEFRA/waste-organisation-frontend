@@ -408,6 +408,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_SIGN_OUT'
+    },
+    serviceCharge: {
+      doc: 'Enable the service charge flow',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_SERVICE_CHARGE'
     }
   },
   encryptionKey: {

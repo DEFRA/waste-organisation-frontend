@@ -1,3 +1,4 @@
+import { config } from '../../config/config.js'
 import { paths } from '../../config/paths.js'
 import { statusCodes } from '../common/constants/status-codes.js'
 import {
@@ -11,10 +12,12 @@ describe('#initiatePaymentController', () => {
   let credentials
 
   beforeAll(async () => {
+    config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
   })
 
   afterAll(async () => {
+    config.set('featureFlags.serviceCharge', false)
     await server.stop({ timeout: 0 })
   })
 
@@ -75,5 +78,21 @@ describe('#initiatePaymentController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.unauthorized)
+  })
+
+  test('returns not found when service charge feature flag is disabled', async () => {
+    config.set('featureFlags.serviceCharge', false)
+
+    const { statusCode } = await server.inject({
+      method: 'GET',
+      url: paths.initiatePayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.notFound)
+    config.set('featureFlags.serviceCharge', true)
   })
 })

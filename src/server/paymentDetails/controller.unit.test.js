@@ -1,5 +1,6 @@
 import { describe, expect, test, vi, beforeEach } from 'vitest'
 
+import { config } from '../../config/config.js'
 import { paymentDetailsController } from './controller.js'
 import { paths } from '../../config/paths.js'
 
@@ -44,6 +45,7 @@ const createH = () => ({
 describe('#paymentDetailsControllerUnit', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    config.set('featureFlags.serviceCharge', true)
   })
 
   test('redirects to account when payment id is missing', async () => {

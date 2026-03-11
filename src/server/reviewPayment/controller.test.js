@@ -1,5 +1,6 @@
 import { JSDOM } from 'jsdom'
 
+import { config } from '../../config/config.js'
 import { content } from '../../config/content.js'
 import { paths } from '../../config/paths.js'
 import { statusCodes } from '../common/constants/status-codes.js'
@@ -11,10 +12,12 @@ describe('#reviewPaymentController', () => {
   let credentials
 
   beforeAll(async () => {
+    config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
   })
 
   afterAll(async () => {
+    config.set('featureFlags.serviceCharge', false)
     await server.stop({ timeout: 0 })
   })
 
@@ -116,5 +119,21 @@ describe('#reviewPaymentController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.unauthorized)
+  })
+
+  test('returns not found when service charge feature flag is disabled', async () => {
+    config.set('featureFlags.serviceCharge', false)
+
+    const { statusCode } = await server.inject({
+      method: 'GET',
+      url: paths.reviewPayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.notFound)
+    config.set('featureFlags.serviceCharge', true)
   })
 })

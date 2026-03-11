@@ -17,11 +17,13 @@ describe('#paymentDetailsController', () => {
 
   beforeAll(async () => {
     config.set('featureFlags.accountPage', true)
+    config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
   })
 
   afterAll(async () => {
     config.set('featureFlags.accountPage', false)
+    config.set('featureFlags.serviceCharge', false)
     await server.stop({ timeout: 0 })
   })
 
@@ -142,5 +144,21 @@ describe('#paymentDetailsController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.unauthorized)
+  })
+
+  test('returns not found when service charge feature flag is disabled', async () => {
+    config.set('featureFlags.serviceCharge', false)
+
+    const { statusCode } = await server.inject({
+      method: 'GET',
+      url: paths.paymentDetails,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.notFound)
+    config.set('featureFlags.serviceCharge', true)
   })
 })

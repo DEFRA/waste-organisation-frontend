@@ -20,6 +20,7 @@ describe('#accountController', () => {
   describe('when feature flag is enabled', () => {
     beforeEach(async () => {
       config.set('featureFlags.accountPage', true)
+      config.set('featureFlags.serviceCharge', true)
       server = await initialiseServer()
       credentials = await setupAuthedUserSession(server)
       credentials.currentOrganisationName = organisationName
@@ -28,6 +29,7 @@ describe('#accountController', () => {
 
     afterEach(() => {
       config.set('featureFlags.accountPage', false)
+      config.set('featureFlags.serviceCharge', false)
     })
 
     test('returns 200 with correct page title and heading', async () => {
@@ -232,14 +234,52 @@ describe('#accountController', () => {
     })
   })
 
+  describe('when service charge feature flag is disabled', () => {
+    beforeEach(async () => {
+      config.set('featureFlags.accountPage', true)
+      config.set('featureFlags.serviceCharge', false)
+      server = await initialiseServer()
+      credentials = await setupAuthedUserSession(server)
+      credentials.currentOrganisationName = organisationName
+      credentials.currentOrganisationId = 'org-1'
+    })
+
+    afterEach(() => {
+      config.set('featureFlags.accountPage', false)
+      config.set('featureFlags.serviceCharge', false)
+    })
+
+    test('does not display the service charge card', async () => {
+      const { payload } = await server.inject({
+        method: 'GET',
+        url: paths.account,
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
+
+      const { document } = new JSDOM(payload).window
+
+      const serviceChargeLink = document.querySelector(
+        '[data-testid="service-charge-link"]'
+      )
+
+      expect(serviceChargeLink).toBeNull()
+      expect(payload).not.toEqual(expect.stringContaining('Due October 2026'))
+    })
+  })
+
   describe('when not authenticated', () => {
     beforeEach(async () => {
       config.set('featureFlags.accountPage', true)
+      config.set('featureFlags.serviceCharge', true)
       server = await initialiseServer()
     })
 
     afterEach(() => {
       config.set('featureFlags.accountPage', false)
+      config.set('featureFlags.serviceCharge', false)
     })
 
     test('returns unauthorized', async () => {
