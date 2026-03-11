@@ -176,11 +176,6 @@ export default {
           to: 'assets'
         },
         {
-          from: path.join(dirname, 'src/client/images'),
-          to: 'images',
-          noErrorOnMissing: true
-        },
-        {
           from: path.join(
             dirname,
             'src/server/downloadSpreadsheet/templates/receipt-of-waste-template.xlsx'
