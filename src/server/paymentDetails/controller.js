@@ -5,88 +5,6 @@ import { getGovPayPaymentStatus } from '../common/helpers/govpay/create-payment.
 const paymentSuccessFlash = 'paymentStatus'
 const paymentSuccessState = 'success'
 
-const isLikelyValidOrganisationName = (value) =>
-  typeof value === 'string' &&
-  value.trim().length > 1 &&
-  !/^\d+$/.test(value.trim())
-
-const resolveOrganisationNameFromRelationships = (credentials) => {
-  const currentRelationshipId = credentials?.currentRelationshipId
-  const relationships = Array.isArray(credentials?.relationships)
-    ? credentials.relationships
-    : [credentials?.relationships]
-
-  const matchedRelationship = relationships
-    .filter(Boolean)
-    .find((relationship) =>
-      relationship.startsWith(`${currentRelationshipId}:`)
-    )
-
-  if (!matchedRelationship) {
-    return null
-  }
-
-  const [, , currentOrganisationName] =
-    matchedRelationship.match(/[^:]*:([^:]*):(.*)[^:]*:[^:]*:[^:]*:[^:]*/) || [] // NOSONAR
-
-  if (isLikelyValidOrganisationName(currentOrganisationName)) {
-    return currentOrganisationName.trim()
-  }
-
-  return null
-}
-
-const resolveOrganisationName = async (request, fallbackName) => {
-  const credentials = request?.auth?.credentials
-  const currentOrganisationName = credentials?.currentOrganisationName
-
-  if (isLikelyValidOrganisationName(currentOrganisationName)) {
-    return currentOrganisationName.trim()
-  }
-
-  const organisationNameMissing =
-    typeof currentOrganisationName !== 'string' ||
-    currentOrganisationName.trim().length === 0
-
-  if (organisationNameMissing) {
-    const relationshipOrganisationName =
-      resolveOrganisationNameFromRelationships(credentials)
-
-    if (relationshipOrganisationName) {
-      return relationshipOrganisationName
-    }
-  }
-
-  const userId = credentials?.id
-  const currentOrganisationId = credentials?.currentOrganisationId?.toString()
-
-  if (!userId) {
-    return fallbackName
-  }
-
-  const organisations = await request.backendApi.getOrganisations(userId)
-
-  if (!Array.isArray(organisations) || organisations.length === 0) {
-    return fallbackName
-  }
-
-  if (currentOrganisationId) {
-    const matchedOrganisation = organisations.find(
-      (organisation) => organisation?.id?.toString() === currentOrganisationId
-    )
-
-    if (isLikelyValidOrganisationName(matchedOrganisation?.name)) {
-      return matchedOrganisation.name.trim()
-    }
-  }
-
-  if (isLikelyValidOrganisationName(organisations[0]?.name)) {
-    return organisations[0].name.trim()
-  }
-
-  return fallbackName
-}
-
 const formatPounds = (amountInPence) => {
   if (typeof amountInPence !== 'number') {
     return '£0.00'
@@ -106,11 +24,9 @@ export const paymentDetailsController = {
       return h.redirect(paths.account)
     }
 
+    const organisationName = request?.auth?.credentials?.currentOrganisationName
+
     const pageContent = content.paymentDetails(request)
-    const organisationName = await resolveOrganisationName(
-      request,
-      pageContent.organisationPlaceholder
-    )
 
     let paymentReference = ''
     let paymentAmount = 0

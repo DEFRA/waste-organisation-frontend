@@ -45,9 +45,7 @@ describe('#reviewPaymentController', () => {
       expect.stringContaining(`${pageContent.title} |`)
     )
 
-    const heading = document.querySelector(
-      '[data-testid="review-payment-heading"]'
-    )
+    const heading = document.querySelector('[data-testid="app-heading-title"]')
     const intro = document.querySelector('[data-testid="review-payment-intro"]')
     const sectionHeading = document.querySelector(
       '[data-testid="review-payment-section-heading"]'

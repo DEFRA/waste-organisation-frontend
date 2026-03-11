@@ -23,7 +23,7 @@
     <div class="govuk-grid-column-two-thirds">
       {{ govukPanel({
         titleText: heading,
-        html: referenceLabel + '<br><strong data-testid="payment-reference">' + paymentReference + '</strong>',
+        html: (referenceLabel | escape) + '<br><strong data-testid="payment-reference">' + (paymentReference | escape) + '</strong>',
         classes: 'govuk-!-margin-bottom-8'
       }) }}
 

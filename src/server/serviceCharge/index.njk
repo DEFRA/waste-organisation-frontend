@@ -6,7 +6,7 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l" data-testid="service-charge-heading">{{ heading }}</h1>
+      {{ appHeading(heading) }}
       <p class="govuk-body" data-testid="service-charge-cost">{{ cost }}</p>
       <p class="govuk-body" data-testid="service-charge-requirements-intro">{{ requirementsIntro }}</p>
 

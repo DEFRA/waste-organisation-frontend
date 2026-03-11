@@ -196,7 +196,6 @@ services:
       BACKEND_API: http://waste-organisation-backend:3001
       FILE_UPLOAD_SERVICE_URL: http://localhost:7337
       BACKEND_API_PRESHARED_KEY: test
-      GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       GOVPAY_API_URL: ${GOVPAY_API_URL:-https://publicapi.payments.service.gov.uk/v1}
       FEATURE_FLAG_UPDATE_SPREADSHEET: true
       FEATURE_FLAG_ACCOUNT_PAGE: true

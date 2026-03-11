@@ -1,8 +1,16 @@
+import { config } from './config.js'
+
 const heading = (text, caption, organisationName) => ({
   text,
   caption,
   organisationName
 })
+
+const formatPounds = (amountInPence) =>
+  new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP'
+  }).format(amountInPence / 100)
 
 const getContentForLanguage = (_request, data) => {
   return data['en']
@@ -215,7 +223,7 @@ export const content = {
       en: {
         title: 'Pay annual report receipt of waste service charge',
         heading: 'Pay the annual report receipt of waste service charge',
-        cost: 'The cost is £26 per organisation.',
+        cost: `The cost is ${formatPounds(config.get('govPay.serviceChargeAmountPence'))} per organisation.`,
         requirementsIntro: 'To pay for the service charge, you will need:',
         requirements: [
           'a credit or debit card',
@@ -234,7 +242,7 @@ export const content = {
         heading: 'Annual Report receipt of waste charge',
         intro:
           'Once you have paid the service charge, your organisation will have full access to report waste movements until',
-        accessUntil: '11:59pm on Wednesday 10 September 2026',
+        accessUntil: '11:59pm on Thursday 10 September 2026',
         sectionHeading: 'Review the payment amount',
         organisation: {
           heading: 'Organisation',
@@ -243,7 +251,7 @@ export const content = {
             organisationName ||
             '[Waste receiving organisation or business name]',
           totalCostLabel: 'Total cost',
-          totalCost: '£26.00'
+          totalCost: formatPounds(config.get('govPay.serviceChargeAmountPence'))
         },
         continue: 'Continue',
         cancel: 'Cancel'

@@ -7,7 +7,9 @@ export const serviceChargeController = {
 
     return h.view('serviceCharge/index', {
       pageTitle: pageContent.title,
-      heading: pageContent.heading,
+      heading: {
+        text: pageContent.heading
+      },
       cost: pageContent.cost,
       requirementsIntro: pageContent.requirementsIntro,
       requirements: pageContent.requirements,

@@ -46,7 +46,7 @@ describe('#createPayment', () => {
     expect(wreck.post).toHaveBeenCalledWith(
       'https://pay.example.test/v1/payments',
       expect.objectContaining({
-        json: true,
+        json: 'strict',
         headers: {
           Authorization: 'Bearer test-api-key',
           'Content-Type': 'application/json'
@@ -92,6 +92,23 @@ describe('#createPayment', () => {
     )
   })
 
+  test('createGovPayPayment throws when payment_id is missing', async () => {
+    wreck.post.mockResolvedValue({
+      res: { statusCode: 201 },
+      payload: {
+        _links: {
+          next_url: {
+            href: 'https://www.payments.service.gov.uk/secure/abc123'
+          }
+        }
+      }
+    })
+
+    await expect(createGovPayPayment()).rejects.toThrow(
+      'GovPay did not return a payment_id for payment journey'
+    )
+  })
+
   test('getGovPayPaymentStatus returns status, amount and reference', async () => {
     wreck.get.mockResolvedValue({
       res: { statusCode: 200 },
@@ -113,7 +130,7 @@ describe('#createPayment', () => {
     expect(wreck.get).toHaveBeenCalledWith(
       'https://pay.example.test/v1/payments/pid_123',
       {
-        json: true,
+        json: 'strict',
         headers: {
           Authorization: 'Bearer test-api-key',
           'Content-Type': 'application/json'

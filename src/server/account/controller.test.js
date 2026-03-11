@@ -23,6 +23,7 @@ describe('#accountController', () => {
       server = await initialiseServer()
       credentials = await setupAuthedUserSession(server)
       credentials.currentOrganisationName = organisationName
+      credentials.currentOrganisationId = 'org-1'
     })
 
     afterEach(() => {
@@ -185,6 +186,7 @@ describe('#accountController', () => {
 
       const stateCredentials = await setupAuthedUserSession(stateServer)
       stateCredentials.currentOrganisationName = organisationName
+      stateCredentials.currentOrganisationId = 'org-1'
 
       const { payload } = await stateServer.inject({
         method: 'GET',

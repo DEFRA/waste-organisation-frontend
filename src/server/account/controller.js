@@ -14,16 +14,22 @@ export const accountController = {
     }
 
     const organisationName = request?.auth?.credentials?.currentOrganisationName
+    const organisationId = request?.auth?.credentials?.currentOrganisationId
 
     const pageContent = content.account(request, organisationName)
     const [paymentStatus] = request.yar.flash(paymentStatusFlash)
 
-    if (paymentStatus === paymentStatusSuccess) {
-      request.yar.set(serviceChargeStatusKey, serviceChargeStatusPaid)
+    if (paymentStatus === paymentStatusSuccess && organisationId) {
+      const existingStatusByOrg = request.yar.get(serviceChargeStatusKey) || {}
+      existingStatusByOrg[organisationId] = serviceChargeStatusPaid
+      request.yar.set(serviceChargeStatusKey, existingStatusByOrg)
     }
 
+    const serviceChargeStatusByOrg =
+      request.yar.get(serviceChargeStatusKey) || {}
     const isServiceChargePaid =
-      request.yar.get(serviceChargeStatusKey) === serviceChargeStatusPaid
+      organisationId &&
+      serviceChargeStatusByOrg[organisationId] === serviceChargeStatusPaid
 
     return h.view('account/view', {
       pageTitle: pageContent.title,

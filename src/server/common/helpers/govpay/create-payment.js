@@ -11,7 +11,7 @@ const createPaymentReference = () =>
   `WASTE-${randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}`
 
 const govPayRequestOptions = (apiKey) => ({
-  json: true,
+  json: 'strict',
   headers: {
     Authorization: `Bearer ${apiKey}`,
     'Content-Type': 'application/json'
@@ -51,8 +51,14 @@ export const createGovPayPayment = async () => {
     throw new Error('GovPay did not return a next_url for payment journey')
   }
 
+  const paymentId = payload?.payment_id
+
+  if (!paymentId) {
+    throw new Error('GovPay did not return a payment_id for payment journey')
+  }
+
   return {
-    paymentId: payload.payment_id,
+    paymentId,
     nextUrl
   }
 }

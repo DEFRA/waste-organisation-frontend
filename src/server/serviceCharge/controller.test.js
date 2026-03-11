@@ -41,9 +41,7 @@ describe('#serviceChargeController', () => {
       expect.stringContaining(`${pageContent.title} |`)
     )
 
-    const heading = document.querySelector(
-      '[data-testid="service-charge-heading"]'
-    )
+    const heading = document.querySelector('[data-testid="app-heading-title"]')
     const cost = document.querySelector('[data-testid="service-charge-cost"]')
     const requirementsIntro = document.querySelector(
       '[data-testid="service-charge-requirements-intro"]'

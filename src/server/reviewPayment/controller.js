@@ -10,7 +10,9 @@ export const reviewPaymentController = {
 
     return h.view('reviewPayment/index', {
       pageTitle: pageContent.title,
-      heading: pageContent.heading,
+      heading: {
+        text: pageContent.heading
+      },
       intro: pageContent.intro,
       accessUntil: pageContent.accessUntil,
       sectionHeading: pageContent.sectionHeading,
