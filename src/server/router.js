@@ -21,6 +21,8 @@ import { serviceCharge } from './serviceCharge/index.js'
 import { reviewPayment } from './reviewPayment/index.js'
 import { initiatePayment } from './initiatePayment/index.js'
 import { paymentDetails } from './paymentDetails/index.js'
+import { signOut } from './signOut/index.js'
+import { signedOut } from './signedOut/index.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -59,6 +61,7 @@ export const router = {
         signIn:         signIn.routes,
         health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:     onboarding.openRoutes,
+        signedOut:      signedOut.openRoutes,
         // Routes that require auth
         search:         search.authedRoutes.map((a) => addAuth(a)),
         spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuth(a)).concat(spreadsheet.openRoutes),
@@ -71,6 +74,7 @@ export const router = {
         reviewPayment:  reviewPayment.authedRoutes.map((a) => addAuth(a)),
         initiatePayment: initiatePayment.authedRoutes.map((a) => addAuth(a)),
         paymentDetails: paymentDetails.authedRoutes.map((a) => addAuth(a)),
+        signOut:        signOut.authedRoutes.map((a) => addAuth(a)),
         downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuth(a)),
       }).reduce((p, entry) => createPlugin(p, entry), [])
 

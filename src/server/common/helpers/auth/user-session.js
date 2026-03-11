@@ -23,8 +23,8 @@ export async function setUserSession(request, sessionId) {
   )
 }
 
-export function removeUserSession(request) {
-  dropUserSession(request)
+export async function removeUserSession(request) {
+  await dropUserSession(request)
   request.cookieAuth.clear()
 }
 
@@ -93,7 +93,7 @@ export async function validateUserSession(server, request, session) {
       const response = await refreshAccessToken(request)
 
       if (!response.ok) {
-        removeUserSession(request)
+        await removeUserSession(request)
         return { isValid: false }
       }
 

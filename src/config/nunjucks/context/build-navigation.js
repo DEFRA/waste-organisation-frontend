@@ -1,14 +1,18 @@
+import { config } from '../../config.js'
+import { content } from '../../content.js'
+import { paths } from '../../paths.js'
+
 export function buildNavigation(request) {
-  return [
-    {
-      text: 'Home',
-      href: '/',
-      current: request?.path === '/'
-    },
-    {
-      text: 'About',
-      href: '/about',
-      current: request?.path === '/about'
-    }
-  ]
+  if (request?.auth?.isAuthenticated && config.get('featureFlags.signOut')) {
+    const pageContent = content.signOut(request)
+
+    return [
+      {
+        text: pageContent.navigationLink,
+        href: paths.signOut
+      }
+    ]
+  }
+
+  return []
 }

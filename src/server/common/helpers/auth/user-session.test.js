@@ -97,7 +97,7 @@ describe('#userSession', () => {
         }
       }
 
-      removeUserSession(request)
+      await removeUserSession(request)
 
       expect(mockCookieAuthClear).toHaveBeenCalledTimes(1)
     })

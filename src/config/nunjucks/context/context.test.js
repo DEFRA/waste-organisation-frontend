@@ -49,18 +49,7 @@ describe('context and cache', () => {
           assetPath: '/public/assets',
           breadcrumbs: [],
           getAssetPath: expect.any(Function),
-          navigation: [
-            {
-              current: true,
-              text: 'Home',
-              href: '/'
-            },
-            {
-              current: false,
-              text: 'About',
-              href: '/about'
-            }
-          ],
+          navigation: [],
           serviceName: 'Report receipt of waste',
           serviceUrl: config.get('links.startPage'),
           feedbackUrl: config.get('links.feedback')
@@ -139,18 +128,7 @@ describe('context and cache', () => {
           assetPath: '/public/assets',
           breadcrumbs: [],
           getAssetPath: expect.any(Function),
-          navigation: [
-            {
-              current: true,
-              text: 'Home',
-              href: '/'
-            },
-            {
-              current: false,
-              text: 'About',
-              href: '/about'
-            }
-          ],
+          navigation: [],
           serviceName: 'Report receipt of waste',
           serviceUrl: config.get('links.startPage'),
           feedbackUrl: config.get('links.feedback')
