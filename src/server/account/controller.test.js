@@ -149,7 +149,7 @@ describe('#accountController', () => {
       )
     })
 
-    test('displays the service charge card with link and tag', async () => {
+    test('shows payment due state when service charge is enabled and unpaid', async () => {
       const { payload } = await server.inject({
         method: 'GET',
         url: paths.account,
@@ -165,6 +165,14 @@ describe('#accountController', () => {
         '[data-testid="service-charge-link"]'
       )
 
+      const paymentDueTag = document.querySelector(
+        '[data-testid="service-charge-payment-due"]'
+      )
+
+      const nextPaymentDue = document.querySelector(
+        '[data-testid="service-charge-next-payment-due"]'
+      )
+
       const pageContent = content.account({}, organisationName)
 
       expect(serviceChargeLink).not.toBeNull()
@@ -174,8 +182,13 @@ describe('#accountController', () => {
       )
 
       expect(payload).toEqual(
-        expect.stringContaining(pageContent.cards.serviceCharge.tag)
+        expect.stringContaining(pageContent.cards.serviceCharge.paymentDueTag)
       )
+      expect(payload).not.toEqual(
+        expect.stringContaining(pageContent.cards.serviceCharge.paidTag)
+      )
+      expect(paymentDueTag).not.toBeNull()
+      expect(nextPaymentDue).toBeNull()
     })
 
     test('shows paid service charge state when payment success flash is present', async () => {
@@ -200,6 +213,11 @@ describe('#accountController', () => {
       })
 
       const pageContent = content.account({}, organisationName)
+      const { document } = new JSDOM(payload).window
+
+      const paymentDueTag = document.querySelector(
+        '[data-testid="service-charge-payment-due"]'
+      )
 
       expect(payload).toEqual(
         expect.stringContaining(pageContent.cards.serviceCharge.paidTag)
@@ -207,6 +225,10 @@ describe('#accountController', () => {
       expect(payload).toEqual(
         expect.stringContaining(pageContent.cards.serviceCharge.nextPaymentDue)
       )
+      expect(payload).not.toEqual(
+        expect.stringContaining(pageContent.cards.serviceCharge.paymentDueTag)
+      )
+      expect(paymentDueTag).toBeNull()
 
       await stateServer.stop({ timeout: 0 })
     })
@@ -249,7 +271,7 @@ describe('#accountController', () => {
       config.set('featureFlags.serviceCharge', false)
     })
 
-    test('does not display the service charge card', async () => {
+    test('displays the service charge card as text with due date', async () => {
       const { payload } = await server.inject({
         method: 'GET',
         url: paths.account,
@@ -265,8 +287,33 @@ describe('#accountController', () => {
         '[data-testid="service-charge-link"]'
       )
 
+      const serviceChargeText = document.querySelector(
+        '[data-testid="service-charge-text"]'
+      )
+
+      const serviceChargeDueDate = document.querySelector(
+        '[data-testid="service-charge-due-date"]'
+      )
+
+      const paymentDueTag = document.querySelector(
+        '[data-testid="service-charge-payment-due"]'
+      )
+
+      const nextPaymentDue = document.querySelector(
+        '[data-testid="service-charge-next-payment-due"]'
+      )
+
       expect(serviceChargeLink).toBeNull()
-      expect(payload).not.toEqual(expect.stringContaining('Due October 2026'))
+      expect(serviceChargeText).not.toBeNull()
+      expect(serviceChargeText.textContent).toEqual(
+        expect.stringContaining('Service charge')
+      )
+      expect(serviceChargeDueDate).not.toBeNull()
+      expect(serviceChargeDueDate.textContent).toEqual(
+        expect.stringContaining('Due October 2026')
+      )
+      expect(paymentDueTag).toBeNull()
+      expect(nextPaymentDue).toBeNull()
     })
   })
 

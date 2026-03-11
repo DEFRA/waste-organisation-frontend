@@ -212,6 +212,7 @@ export const content = {
           serviceCharge: {
             text: 'Service charge',
             tag: 'Due October 2026',
+            paymentDueTag: 'Payment due',
             paidTag: 'Paid',
             nextPaymentDue: 'Next payment due October 2027'
           }
