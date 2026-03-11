@@ -48,14 +48,16 @@ export const config = convict({
       doc: 'The base URL for the GovPay Public API.',
       format: String,
       nullable: false,
-      default: 'https://publicapi.payments.service.gov.uk/v1',
+      default: isProduction
+        ? 'https://publicapi.payments.service.gov.uk/v1'
+        : 'http://localhost:8080/govpay-stub',
       env: 'GOVPAY_API_URL'
     },
     apiKey: {
       doc: 'GovPay API key for creating payments.',
       format: String,
-      nullable: false,
-      default: 'test_api_key',
+      nullable: true,
+      default: null,
       env: 'GOVPAY_API_KEY',
       sensitive: true
     },
