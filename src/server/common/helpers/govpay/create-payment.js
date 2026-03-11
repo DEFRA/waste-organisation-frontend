@@ -3,12 +3,13 @@ import { randomUUID } from 'node:crypto'
 
 import { config } from '../../../../config/config.js'
 import { paths } from '../../../../config/paths.js'
+import { statusCodes } from '../../constants/status-codes.js'
 
 const SERVICE_CHARGE_DESCRIPTION =
   'Annual report receipt of waste service charge'
 
 const createPaymentReference = () =>
-  `WASTE-${randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}`
+  `WASTE-${randomUUID().replaceAll('-', '').slice(0, 8).toUpperCase()}`
 
 const govPayRequestOptions = (apiKey) => ({
   json: 'strict',
@@ -35,7 +36,7 @@ export const createGovPayPayment = async () => {
     }
   )
 
-  if (res?.statusCode >= 400) {
+  if (res?.statusCode >= statusCodes.badRequest) {
     const reason =
       payload?.description ??
       payload?.message ??
@@ -70,7 +71,7 @@ export const getGovPayPaymentStatus = async (paymentId) => {
     govPayRequestOptions(apiKey)
   )
 
-  if (res?.statusCode >= 400) {
+  if (res?.statusCode >= statusCodes.badRequest) {
     const reason =
       payload?.description ??
       payload?.message ??
