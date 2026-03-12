@@ -44,7 +44,9 @@ export const createGovPayPayment = async () => {
   const nextUrl = payload?._links?.next_url?.href
 
   if (!nextUrl) {
-    throw new Error('GovPay did not return a next_url for payment journey')
+    throw new Error(
+      `GovPay did not return a next_url for payment journey ${payload}`
+    )
   }
 
   const paymentId = payload?.payment_id
