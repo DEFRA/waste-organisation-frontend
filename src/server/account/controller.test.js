@@ -20,13 +20,16 @@ describe('#accountController', () => {
   describe('when feature flag is enabled', () => {
     beforeEach(async () => {
       config.set('featureFlags.accountPage', true)
+      config.set('featureFlags.serviceCharge', true)
       server = await initialiseServer()
       credentials = await setupAuthedUserSession(server)
       credentials.currentOrganisationName = organisationName
+      credentials.currentOrganisationId = 'org-1'
     })
 
     afterEach(() => {
       config.set('featureFlags.accountPage', false)
+      config.set('featureFlags.serviceCharge', false)
     })
 
     test('returns 200 with correct page title and heading', async () => {
@@ -146,7 +149,7 @@ describe('#accountController', () => {
       )
     })
 
-    test('displays the service charge card with tag', async () => {
+    test('shows payment due state when service charge is enabled and unpaid', async () => {
       const { payload } = await server.inject({
         method: 'GET',
         url: paths.account,
@@ -158,20 +161,76 @@ describe('#accountController', () => {
 
       const { document } = new JSDOM(payload).window
 
-      const serviceChargeText = document.querySelector(
-        '[data-testid="service-charge-text"]'
+      const serviceChargeLink = document.querySelector(
+        '[data-testid="service-charge-link"]'
+      )
+
+      const paymentDueTag = document.querySelector(
+        '[data-testid="service-charge-payment-due"]'
+      )
+
+      const nextPaymentDue = document.querySelector(
+        '[data-testid="service-charge-next-payment-due"]'
       )
 
       const pageContent = content.account({}, organisationName)
 
-      expect(serviceChargeText).not.toBeNull()
-      expect(serviceChargeText.textContent).toEqual(
+      expect(serviceChargeLink).not.toBeNull()
+      expect(serviceChargeLink.getAttribute('href')).toBe(paths.serviceCharge)
+      expect(serviceChargeLink.textContent).toEqual(
         expect.stringContaining(pageContent.cards.serviceCharge.text)
       )
 
       expect(payload).toEqual(
-        expect.stringContaining(pageContent.cards.serviceCharge.tag)
+        expect.stringContaining(pageContent.cards.serviceCharge.paymentDueTag)
       )
+      expect(payload).not.toEqual(
+        expect.stringContaining(pageContent.cards.serviceCharge.paidTag)
+      )
+      expect(paymentDueTag).not.toBeNull()
+      expect(nextPaymentDue).toBeNull()
+    })
+
+    test('shows paid service charge state when payment success flash is present', async () => {
+      const stateServer = await initialiseServer({
+        state: {
+          type: 'paymentStatus',
+          message: 'success'
+        }
+      })
+
+      const stateCredentials = await setupAuthedUserSession(stateServer)
+      stateCredentials.currentOrganisationName = organisationName
+      stateCredentials.currentOrganisationId = 'org-1'
+
+      const { payload } = await stateServer.inject({
+        method: 'GET',
+        url: paths.account,
+        auth: {
+          strategy: 'session',
+          credentials: stateCredentials
+        }
+      })
+
+      const pageContent = content.account({}, organisationName)
+      const { document } = new JSDOM(payload).window
+
+      const paymentDueTag = document.querySelector(
+        '[data-testid="service-charge-payment-due"]'
+      )
+
+      expect(payload).toEqual(
+        expect.stringContaining(pageContent.cards.serviceCharge.paidTag)
+      )
+      expect(payload).toEqual(
+        expect.stringContaining(pageContent.cards.serviceCharge.nextPaymentDue)
+      )
+      expect(payload).not.toEqual(
+        expect.stringContaining(pageContent.cards.serviceCharge.paymentDueTag)
+      )
+      expect(paymentDueTag).toBeNull()
+
+      await stateServer.stop({ timeout: 0 })
     })
   })
 
@@ -197,14 +256,77 @@ describe('#accountController', () => {
     })
   })
 
+  describe('when service charge feature flag is disabled', () => {
+    beforeEach(async () => {
+      config.set('featureFlags.accountPage', true)
+      config.set('featureFlags.serviceCharge', false)
+      server = await initialiseServer()
+      credentials = await setupAuthedUserSession(server)
+      credentials.currentOrganisationName = organisationName
+      credentials.currentOrganisationId = 'org-1'
+    })
+
+    afterEach(() => {
+      config.set('featureFlags.accountPage', false)
+      config.set('featureFlags.serviceCharge', false)
+    })
+
+    test('displays the service charge card as text with due date', async () => {
+      const { payload } = await server.inject({
+        method: 'GET',
+        url: paths.account,
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
+
+      const { document } = new JSDOM(payload).window
+
+      const serviceChargeLink = document.querySelector(
+        '[data-testid="service-charge-link"]'
+      )
+
+      const serviceChargeText = document.querySelector(
+        '[data-testid="service-charge-text"]'
+      )
+
+      const serviceChargeDueDate = document.querySelector(
+        '[data-testid="service-charge-due-date"]'
+      )
+
+      const paymentDueTag = document.querySelector(
+        '[data-testid="service-charge-payment-due"]'
+      )
+
+      const nextPaymentDue = document.querySelector(
+        '[data-testid="service-charge-next-payment-due"]'
+      )
+
+      expect(serviceChargeLink).toBeNull()
+      expect(serviceChargeText).not.toBeNull()
+      expect(serviceChargeText.textContent).toEqual(
+        expect.stringContaining('Service charge')
+      )
+      expect(serviceChargeDueDate).not.toBeNull()
+      expect(serviceChargeDueDate.textContent).toEqual(
+        expect.stringContaining('Due October 2026')
+      )
+      expect(paymentDueTag).toBeNull()
+      expect(nextPaymentDue).toBeNull()
+    })
+  })
+
   describe('when not authenticated', () => {
     beforeEach(async () => {
       config.set('featureFlags.accountPage', true)
+      config.set('featureFlags.serviceCharge', true)
       server = await initialiseServer()
     })
 
     afterEach(() => {
       config.set('featureFlags.accountPage', false)
+      config.set('featureFlags.serviceCharge', false)
     })
 
     test('returns unauthorized', async () => {

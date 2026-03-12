@@ -1,8 +1,16 @@
+import { config } from './config.js'
+
 const heading = (text, caption, organisationName) => ({
   text,
   caption,
   organisationName
 })
+
+const formatPounds = (amountInPence) =>
+  new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP'
+  }).format(amountInPence / 100)
 
 const getContentForLanguage = (_request, data) => {
   return data['en']
@@ -201,8 +209,75 @@ export const content = {
         cards: {
           reportWaste: { text: 'Report receipt of waste' },
           manageAccount: { text: 'Manage account' },
-          serviceCharge: { text: 'Service charge', tag: 'Due October 2026' }
+          serviceCharge: {
+            text: 'Service charge',
+            tag: 'Due October 2026',
+            paymentDueTag: 'Payment due',
+            paidTag: 'Paid',
+            nextPaymentDue: 'Next payment due October 2027'
+          }
         }
+      }
+    }),
+  serviceCharge: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Pay annual report receipt of waste service charge',
+        heading: 'Pay the annual report receipt of waste service charge',
+        cost: `The cost is ${formatPounds(config.get('govPay.serviceChargeAmountPence'))} per organisation.`,
+        requirementsIntro: 'To pay for the service charge, you will need:',
+        requirements: [
+          'a credit or debit card',
+          'an email address to receive the payment confirmation'
+        ],
+        warning:
+          'You will not be able to use this service to report your waste movements until you have paid the service charge.',
+        payServiceCharge: 'Pay service charge',
+        cancel: 'Cancel'
+      }
+    }),
+  reviewPayment: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Annual Report receipt of waste charge',
+        heading: 'Annual Report receipt of waste charge',
+        intro:
+          'Once you have paid the service charge, your organisation will have full access to report waste movements until',
+        accessUntil: '11:59pm on Thursday 10 September 2026',
+        sectionHeading: 'Review the payment amount',
+        organisation: {
+          heading: 'Organisation',
+          nameLabel: 'Name',
+          name:
+            organisationName ||
+            '[Waste receiving organisation or business name]',
+          totalCostLabel: 'Total cost',
+          totalCost: formatPounds(config.get('govPay.serviceChargeAmountPence'))
+        },
+        continue: 'Continue',
+        cancel: 'Cancel'
+      }
+    }),
+  paymentDetails: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Payment confirmation',
+        heading: 'Payment confirmation',
+        referenceLabel: 'Your payment reference',
+        summaryHeading: 'Payment summary',
+        paymentForLabel: 'Payment for',
+        paymentForValue: 'Report receipt of waste annual service charge',
+        organisationLabel: 'Organisation',
+        organisationPlaceholder:
+          '[Waste receiving organisation or business name]',
+        totalAmountLabel: 'Total amount',
+        whatHappensNextHeading: 'What happens next',
+        whatHappensNext: [
+          'You will receive an email confirming your payment.',
+          'You can now use the service to report your waste movements.'
+        ],
+        returnToAccountPrefix: 'Return to',
+        returnToAccountSuffix: 'waste receiving account'
       }
     }),
   cookies: (request) =>

@@ -45,15 +45,45 @@
         <div class="govuk-grid-column-one-third">
           <div class="govuk-card govuk-card--contained">
             <div class="govuk-card__content">
-              <h2 class="govuk-heading-m govuk-!-margin-bottom-3" data-testid="service-charge-text">
-                {{ cards.serviceCharge.text }}
+              <h2 class="govuk-heading-m govuk-!-margin-bottom-3">
+                {% if isServiceChargeEnabled %}
+                  <a href="{{ serviceChargeHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="service-charge-link">
+                    {{ cards.serviceCharge.text }}
+                  </a>
+                {% else %}
+                  <span data-testid="service-charge-text">{{ cards.serviceCharge.text }}</span>
+                {% endif %}
               </h2>
             </div>
             <div class="govuk-card__actions">
-              {{ govukTag({
-                text: cards.serviceCharge.tag,
-                classes: "govuk-tag--yellow"
-              }) }}
+              {% if isServiceChargeEnabled %}
+                {% if isServiceChargePaid %}
+                  {{ govukTag({
+                    text: cards.serviceCharge.paidTag,
+                    classes: "govuk-tag--green"
+                  }) }}
+
+                  <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-0" data-testid="service-charge-next-payment-due">
+                    {{ cards.serviceCharge.nextPaymentDue }}
+                  </p>
+                {% else %}
+                  {{ govukTag({
+                    text: cards.serviceCharge.paymentDueTag,
+                    classes: "govuk-tag--red",
+                    attributes: {
+                      "data-testid": "service-charge-payment-due"
+                    }
+                  }) }}
+                {% endif %}
+              {% else %}
+                {{ govukTag({
+                  text: cards.serviceCharge.tag,
+                  classes: "govuk-tag--yellow",
+                  attributes: {
+                    "data-testid": "service-charge-due-date"
+                  }
+                }) }}
+              {% endif %}
             </div>
           </div>
         </div>

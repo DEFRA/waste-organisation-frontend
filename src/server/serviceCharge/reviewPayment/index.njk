@@ -1,0 +1,56 @@
+{% extends 'layouts/page.njk' %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set organisationRows = [
+  {
+    key: { text: organisation.nameLabel },
+    value: { text: organisation.name }
+  },
+  {
+    key: { text: organisation.totalCostLabel },
+    value: { text: organisation.totalCost }
+  }
+] %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ appHeading(heading) }}
+
+      <p class="govuk-body" data-testid="review-payment-intro">
+        {{ intro }} <strong>{{ accessUntil }}</strong>.
+      </p>
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-8" data-testid="review-payment-section-heading">{{ sectionHeading }}</h2>
+
+      <div class="govuk-summary-card govuk-!-margin-bottom-8" data-testid="review-payment-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h3 class="govuk-summary-card__title" data-testid="review-payment-organisation-heading">{{ organisation.heading }}</h3>
+        </div>
+        <div class="govuk-summary-card__content">
+          {{ govukSummaryList({
+            rows: organisationRows,
+            classes: "govuk-!-margin-bottom-0",
+            attributes: {
+              "data-testid": "review-payment-summary-list"
+            }
+          }) }}
+        </div>
+      </div>
+
+      <div class="govuk-button-group">
+        {{ govukButton({
+          text: continueText,
+          element: "a",
+          href: continueHref,
+          attributes: {
+            "data-testid": "review-payment-continue-button"
+          }
+        }) }}
+        <a class="govuk-link" href="{{ cancelLink.href }}" data-testid="review-payment-cancel-link">{{ cancelLink.text }}</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

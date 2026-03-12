@@ -43,6 +43,30 @@ export const config = convict({
       env: 'BACKEND_API_PRESHARED_KEY'
     }
   },
+  govPay: {
+    apiUrl: {
+      doc: 'The base URL for the GovPay Public API.',
+      format: String,
+      nullable: false,
+      default: 'http://localhost:8080/govpay-stub',
+      env: 'GOVPAY_API_URL'
+    },
+    apiKey: {
+      doc: 'GovPay API key for creating payments.',
+      format: String,
+      nullable: false,
+      env: 'GOVPAY_API_KEY',
+      default: 'test123',
+      sensitive: true
+    },
+    serviceChargeAmountPence: {
+      doc: 'Service charge amount in pence.',
+      format: Number,
+      nullable: false,
+      default: 2600,
+      env: 'GOVPAY_SERVICE_CHARGE_AMOUNT_PENCE'
+    }
+  },
   fileUpload: {
     url: {
       doc: 'The url of the File Upload API service.',
@@ -224,6 +248,12 @@ export const config = convict({
         env: 'SESSION_COOKIE_PASSWORD',
         sensitive: true
       },
+      sameSite: {
+        doc: 'SameSite policy for session cookies',
+        format: ['Strict', 'Lax', 'None'],
+        default: 'Lax',
+        env: 'SESSION_COOKIE_SAME_SITE'
+      },
       secure: {
         doc: 'set secure flag on cookie',
         format: Boolean,
@@ -378,6 +408,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_SIGN_OUT'
+    },
+    serviceCharge: {
+      doc: 'Enable the service charge flow',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_SERVICE_CHARGE'
     }
   },
   encryptionKey: {
