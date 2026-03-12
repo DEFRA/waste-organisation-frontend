@@ -15,6 +15,7 @@ export const initiatePaymentController = {
       return h.redirect(nextUrl)
     } catch (error) {
       request.logger.error(
+        { err: error },
         `Failed to initiate GovPay payment: ${error?.message ?? 'unknown error'}`
       )
       throw boom.badGateway('Unable to initiate payment')
