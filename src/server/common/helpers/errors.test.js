@@ -83,7 +83,8 @@ describe('#catchAll', () => {
       reasonsIntro: 'This could be because:',
       reasons: ['you are not signed in', 'your session expired'],
       action: 'Try signing in again or contact the support team for more help.',
-      signInButton: 'Sign in'
+      signInButton: 'Sign in',
+      signInUrl: '/signin-oidc'
     })
     expect(mockToolkitCode).toHaveBeenCalledWith(statusCodes.unauthorized)
   })
