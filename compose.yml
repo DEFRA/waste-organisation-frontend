@@ -202,6 +202,7 @@ services:
       FEATURE_FLAG_ACCOUNT_PAGE: true
       FEATURE_FLAG_SIGN_OUT: true
       FEATURE_FLAG_SERVICE_CHARGE: true
+      FEATURE_FLAG_SEARCH_PAGE: true
     network_mode: 'service:cdp-defra-id-stub'
 
 volumes:
