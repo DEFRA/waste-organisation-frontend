@@ -18,6 +18,7 @@ export const createGovPayPayment = async () => {
   const { res, payload } = await wreck.post(
     `${apiUrl.replace(/\/$/, '')}/payments`,
     {
+      json: true,
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
