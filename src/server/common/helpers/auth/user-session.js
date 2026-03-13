@@ -77,8 +77,11 @@ export async function updateUserSession(request, refreshedSession) {
 
 export async function validateUserSession(server, request, session) {
   const authedUser = await getUserSession(request)
-
-  if (!authedUser) {
+  const { organisationId } = request?.params || {}
+  if (
+    !authedUser ||
+    (organisationId && organisationId !== authedUser.currentOrganisationId)
+  ) {
     return { isValid: false }
   }
 
