@@ -2,12 +2,16 @@ import boom from '@hapi/boom'
 
 import { config } from '../../config/config.js'
 
-const featureFlagEnvVars = {
-  updateSpreadsheet: 'FEATURE_FLAG_UPDATE_SPREADSHEET',
-  accountPage: 'FEATURE_FLAG_ACCOUNT_PAGE',
-  searchPage: 'FEATURE_FLAG_SEARCH_PAGE',
-  signOut: 'FEATURE_FLAG_SIGN_OUT',
-  serviceCharge: 'FEATURE_FLAG_SERVICE_CHARGE'
+function getFeatureFlagTableRows() {
+  const flags = config.get('featureFlags')
+  const schema = config.getSchema()._cvtProperties.featureFlags._cvtProperties
+
+  return Object.entries(flags).map(([name, enabled]) => {
+    const tagClass = enabled ? '' : ' govuk-tag--grey'
+    const statusHtml = `<strong class="govuk-tag${tagClass}">${enabled ? 'Enabled' : 'Disabled'}</strong>`
+
+    return [{ text: name }, { text: schema[name]?.env }, { html: statusHtml }]
+  })
 }
 
 export const searchController = {
@@ -16,12 +20,7 @@ export const searchController = {
       throw boom.notFound()
     }
 
-    const flags = config.get('featureFlags')
-    const featureFlags = Object.entries(flags).map(([name, enabled]) => ({
-      name,
-      envVar: featureFlagEnvVars[name],
-      enabled
-    }))
+    const featureFlagRows = getFeatureFlagTableRows()
 
     request.contentSecurityPolicy = {
       extraAuthOrigins: request.auth.credentials.providerEndpoints
@@ -30,7 +29,7 @@ export const searchController = {
       pageTitle: 'Search',
       heading: 'You are logged in',
       credentials: JSON.stringify(request.auth.credentials, null, 2),
-      featureFlags
+      featureFlagRows
     })
   }
 }

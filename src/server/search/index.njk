@@ -1,7 +1,6 @@
 {% extends 'layouts/page.njk' %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% block content %}
   {{
@@ -35,28 +34,13 @@
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-m">Feature flags</h2>
 
-      {% set tableRows = [] %}
-      {% for flag in featureFlags %}
-        {% set tagHtml %}
-          {{ govukTag({
-            text: "Enabled" if flag.enabled else "Disabled",
-            classes: "" if flag.enabled else "govuk-tag--grey"
-          }) }}
-        {% endset %}
-        {% set tableRows = (tableRows.push([
-          { text: flag.name },
-          { text: flag.envVar },
-          { html: tagHtml }
-        ]), tableRows) %}
-      {% endfor %}
-
       {{ govukTable({
         head: [
           { text: "Name" },
           { text: "Environment variable" },
           { text: "Status" }
         ],
-        rows: tableRows
+        rows: featureFlagRows
       }) }}
     </div>
   </div>
