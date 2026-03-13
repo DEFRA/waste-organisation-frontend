@@ -1,7 +1,8 @@
 import { expect, test } from 'vitest'
 import {
   initialiseServer,
-  wreckPutMock
+  wreckPutMock,
+  wreckGetMock
 } from '../../../test-utils/initialise-server'
 import { paths, pathTo } from '../../../config/paths'
 import { JSDOM } from 'jsdom'
@@ -33,6 +34,9 @@ describe('apiDisable', () => {
   describe('GET', () => {
     test('should render the correct content on the page', async () => {
       const apiCode = faker.string.uuid()
+      wreckGetMock.mockReturnValue({
+        payload: { apiCodes: [{ code: apiCode }] }
+      })
 
       const { payload } = await server.inject({
         method: 'GET',
@@ -66,21 +70,38 @@ describe('apiDisable', () => {
       )
     })
 
-    test('should show error message if there is an error', async () => {
-      const expectedErrorMessage = pageContent.error.message
+    test('should show 404 page if the api code is not found', async () => {
+      const apiCode = faker.string.uuid()
+      const differentApiCode = faker.string.uuid()
+      wreckGetMock.mockReturnValue({
+        payload: { apiCodes: [{ code: differentApiCode }] }
+      })
 
-      server = await initialiseServer({
-        state: {
-          type: 'disableError',
-          message: true
+      const response = await server.inject({
+        method: 'GET',
+        url: pathTo(paths.apiDisable, {
+          apiCode
+        }),
+        auth: {
+          strategy: 'session',
+          credentials
         }
       })
 
+      expect(response.statusCode).toEqual(404)
+    })
+
+    test('should show error message if there is an error', async () => {
+      const apiCode = faker.string.uuid()
+      wreckGetMock.mockReturnValue({
+        payload: { apiCodes: [{ code: apiCode }] }
+      })
+      const expectedErrorMessage = pageContent.error.message
+      server.injectYarState({ type: 'disableError', message: true })
+
       const { payload } = await server.inject({
         method: 'GET',
-        url: pathTo(paths.apiDisable, {
-          apiCode: faker.string.uuid()
-        }),
+        url: pathTo(paths.apiDisable, { apiCode }),
         auth: {
           strategy: 'session',
           credentials
@@ -101,11 +122,13 @@ describe('apiDisable', () => {
     test.each(Object.entries(pageContent.questions))(
       'Should show question',
       async (key, value) => {
+        const apiCode = faker.string.uuid()
+        wreckGetMock.mockReturnValue({
+          payload: { apiCodes: [{ code: apiCode }] }
+        })
         const { payload } = await server.inject({
           method: 'GET',
-          url: pathTo(paths.apiDisable, {
-            apiCode: faker.string.uuid()
-          }),
+          url: pathTo(paths.apiDisable, { apiCode }),
           auth: {
             strategy: 'session',
             credentials

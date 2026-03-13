@@ -1,6 +1,6 @@
 import * as mockOidc from './mock-oidc-config.js'
 
-export async function initialiseServer({ domain, mockedPlugins, state } = {}) {
+export async function initialiseServer({ domain, mockedPlugins } = {}) {
   mockOidc.mockOidcConfig(domain)
 
   const { createServer } = await import('../server/server.js')
@@ -8,14 +8,14 @@ export async function initialiseServer({ domain, mockedPlugins, state } = {}) {
 
   const server = await createServer({ ...plugins.default, ...mockedPlugins })
 
-  if (state) {
+  await server.initialize()
+
+  server.injectYarState = async (state) => {
     await server.ext('onPreAuth', (request, h) => {
       request.yar.flash(state.type, state.message)
       return h.continue
     })
   }
-
-  await server.initialize()
 
   return server
 }
