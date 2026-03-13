@@ -166,13 +166,7 @@ describe('#nextActionController', () => {
 
   test('should show error message if there is an error', async () => {
     const expectedErrorMessage = pageContent.error.message
-
-    server = await initialiseServer({
-      state: {
-        type: 'isNextActionError',
-        message: true
-      }
-    })
+    server.injectYarState({ type: 'isNextActionError', message: true })
 
     const { payload } = await server.inject({
       method: 'GET',

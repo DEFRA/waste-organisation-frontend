@@ -39,13 +39,7 @@ describe('ukPermit', () => {
 
     test('should show error message if there is an error', async () => {
       const expectedErrorMessage = pageContent.error.message
-
-      server = await initialiseServer({
-        state: {
-          type: 'isPermitError',
-          message: true
-        }
-      })
+      server.injectYarState({ type: 'isPermitError', message: true })
 
       const { payload } = await server.inject({
         method: 'GET',

@@ -192,12 +192,8 @@ describe('#accountController', () => {
     })
 
     test('shows paid service charge state when payment success flash is present', async () => {
-      const stateServer = await initialiseServer({
-        state: {
-          type: 'paymentStatus',
-          message: 'success'
-        }
-      })
+      const stateServer = await initialiseServer()
+      stateServer.injectYarState({ type: 'paymentStatus', message: 'success' })
 
       const stateCredentials = await setupAuthedUserSession(stateServer)
       stateCredentials.currentOrganisationName = organisationName
