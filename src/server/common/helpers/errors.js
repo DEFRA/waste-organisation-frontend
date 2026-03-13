@@ -1,4 +1,5 @@
 import { content } from '../../../config/content.js'
+import { paths } from '../../../config/paths.js'
 import { statusCodes } from '../constants/status-codes.js'
 
 function statusCodeMessage(statusCode) {
@@ -38,7 +39,8 @@ export function catchAll(request, h) {
         reasonsIntro: unauthorizedContent.reasonsIntro,
         reasons: unauthorizedContent.reasons,
         action: unauthorizedContent.action,
-        signInButton: unauthorizedContent.signInButton
+        signInButton: unauthorizedContent.signInButton,
+        signInHref: paths.signinDefraIdCallback
       })
       .code(statusCode)
   }
