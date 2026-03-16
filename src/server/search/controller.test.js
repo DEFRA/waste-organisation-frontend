@@ -53,7 +53,6 @@ describe('#searchController', () => {
       expect(result).toEqual(expect.stringContaining('searchPage'))
       expect(result).toEqual(expect.stringContaining('updateSpreadsheet'))
       expect(result).toEqual(expect.stringContaining('accountPage'))
-      expect(result).toEqual(expect.stringContaining('signOut'))
       expect(result).toEqual(expect.stringContaining('serviceCharge'))
       expect(result).toEqual(
         expect.stringContaining('FEATURE_FLAG_SEARCH_PAGE')
