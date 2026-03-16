@@ -356,7 +356,7 @@ export const content = {
         relatedContent: {
           heading: 'Related content',
           links: [
-            { text: 'Privacy', href: 'https://www.gov.uk/help/privacy-notice' },
+            { text: 'Privacy', href: '/privacy-notice' },
             { text: 'Cookies', href: '/cookies' },
             {
               text: 'Accessibility statement',

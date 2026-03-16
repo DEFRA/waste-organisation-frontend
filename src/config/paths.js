@@ -12,6 +12,7 @@ export const paths = {
   downloadSpreadsheet: '/download-spreadsheet',
   accessibility: '/accessibility-statement',
   terms: '/terms',
+  privacyNotice: '/privacy-notice',
   search: '/search',
 
   signOut: '/sign-out',
