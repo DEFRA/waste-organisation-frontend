@@ -341,6 +341,70 @@ export const content = {
         signInButton: 'Sign in'
       }
     }),
+  privacyNotice: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Privacy notice',
+        heading: 'Waste tracking receipt of waste beta phase privacy notice',
+        introParagraph:
+          'This privacy notice explains how the Waste Tracking service in the beta testing phase for the receipt of waste release will use and manage your personal data. If you have any queries about the content of this privacy notice, please email <a class="govuk-link" href="mailto:WasteTracking_Testing@defra.gov.uk">WasteTracking_Testing@defra.gov.uk</a>.',
+        sections: [
+          {
+            heading: 'Who collects your personal data',
+            body: '<p class="govuk-body"><a class="govuk-link" href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs">Department for Environment, Food and Rural Affairs</a> (Defra) is the controller for the personal data we collect.</p><p class="govuk-body">If you need further information about how Defra uses your personal data and your associated rights you can contact the Defra data protection manager at <a class="govuk-link" href="mailto:data.protection@defra.gov.uk">data.protection@defra.gov.uk</a>.</p><p class="govuk-body">The data protection officer for Defra is responsible for checking that Defra complies with legislation. You can contact them at <a class="govuk-link" href="mailto:DefraGroupDataProtectionOfficer@defra.gov.uk">DefraGroupDataProtectionOfficer@defra.gov.uk</a>.</p>'
+          },
+          {
+            heading: 'What personal data we collect and how it is used',
+            body: '<p class="govuk-body">We collect your:</p><ul class="govuk-list govuk-list--bullet"><li>Name</li><li>Contact details</li><li>Vehicle registration</li></ul><p class="govuk-body">This information is central to the digital Waste Tracking service so we understand the operators who have been responsible for transporting and treating or disposing of the waste that they have received.</p><p class="govuk-body">In this testing phase, we are collecting the information to understand the usability and performance of the digital service, to assess the quality of the information provided, gather feedback to inform any necessary service design updates, issue invites to user research and provide service updates.</p>'
+          },
+          {
+            heading:
+              'How your personal data has been obtained, if from a third party',
+            body: '<p class="govuk-body">We may have obtained your data from permitted waste receivers who are responsible for providing information on the waste carrier/broker/dealer organisation that has transported the waste to them or been responsible for arranging the waste movement.</p>'
+          },
+          {
+            heading: 'Lawful basis for processing your personal data',
+            body: '<p class="govuk-body">The lawful basis for processing your personal data is that it is necessary for the performance of a public task. The Environmental Protection Act 1990 is the relevant primary legislation relevant to the public task <a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/1990/43/contents">https://www.legislation.gov.uk/ukpga/1990/43/contents</a>. There is an amendment through the Environment Act of 2021 to add new powers under paragraph 34C for provisions on Waste Tracking <a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/1990/43/part/II/crossheading/electronic-waste-tracking">https://www.legislation.gov.uk/ukpga/1990/43/part/II/crossheading/electronic-waste-tracking</a>.</p>'
+          },
+          {
+            heading: 'Consent to process your personal data',
+            body: '<p class="govuk-body">The processing of your personal data is not based on consent. You cannot withdraw it.</p>'
+          },
+          {
+            heading: 'Who we share your personal data with',
+            body: '<p class="govuk-body">We may share the personal data collected under this privacy notice with:</p><p class="govuk-body">Our four nation government and agency partners in the Waste Tracking project for the purpose of data quality assurance and feedback on the service to inform any further development or iteration of the service.</p><ul class="govuk-list govuk-list--bullet"><li>Environment Agency (EA)</li><li>Scottish Environment Protection Agency (SEPA)</li><li>Natural Resources Wales (NRW)</li><li>Northern Ireland Environment Agency (NIEA)</li><li>Welsh Government</li><li>Scottish Government</li><li>Northern Ireland Government</li></ul><p class="govuk-body">We respect your personal privacy when responding to access to information requests. We only share information when necessary to meet the statutory requirements of the Environmental Information Regulations 2004 and the Freedom of Information Act 2000.</p>'
+          },
+          {
+            heading: 'How long we hold personal data',
+            body: '<p class="govuk-body">We will keep your personal data for the duration of the beta testing phase of the project and into the early stages for transition into when the service becomes mandated for use and more established. We do not expect this to extend beyond October 2027.</p>'
+          },
+          {
+            heading: 'What happens if you do not provide the personal data',
+            body: '<p class="govuk-body">If you do not provide the personal data, the project team will not be able to take into account your experience or opinions to inform further development of the service. It may also limit our ability to invite you to participate in any other user research or to provide project or service updates on the project.</p>'
+          },
+          {
+            heading: 'Use of automated decision-making or profiling',
+            body: '<p class="govuk-body">The personal data you provide is not used for:</p><ul class="govuk-list govuk-list--bullet"><li>automated decision making (making a decision by automated means without any human involvement)</li><li>profiling (automated processing of personal data to evaluate certain things about an individual)</li></ul>'
+          },
+          {
+            heading: 'Transfer of your personal data outside of the UK',
+            body: '<p class="govuk-body">We will only transfer your personal data to another country that is deemed adequate for data protection purposes.</p>'
+          },
+          {
+            heading: 'Your rights',
+            body: '<p class="govuk-body">Based on the lawful processing above, your individual rights are:</p><ul class="govuk-list govuk-list--bullet"><li>The right to be informed</li><li>The right of access</li><li>The right to rectification</li><li>The right to restrict processing</li><li>The right to object</li><li>Rights in relation to automated decision making and profiling</li></ul><p class="govuk-body">More information about your <a class="govuk-link" href="https://ico.org.uk/for-organisations/guide-to-data-protection/guide-to-the-general-data-protection-regulation-gdpr/individual-rights/">individual rights</a> under the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018 (DPA 2018).</p>'
+          },
+          {
+            heading: 'Complaints',
+            body: '<p class="govuk-body">You have the right to <a class="govuk-link" href="https://ico.org.uk/make-a-complaint/">make a complaint</a> to the Information Commissioner\'s Office at any time.</p>'
+          },
+          {
+            heading: 'Personal information charter',
+            body: '<p class="govuk-body">Our <a class="govuk-link" href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs/about/personal-information-charter">personal information charter</a> explains more about your rights over your personal data.</p>'
+          }
+        ]
+      }
+    }),
   terms: (request) =>
     getContentForLanguage(request, {
       en: {
@@ -356,7 +420,7 @@ export const content = {
         relatedContent: {
           heading: 'Related content',
           links: [
-            { text: 'Privacy', href: 'https://www.gov.uk/help/privacy-notice' },
+            { text: 'Privacy', href: '/privacy-notice' },
             { text: 'Cookies', href: '/cookies' },
             {
               text: 'Accessibility statement',
