@@ -8,6 +8,12 @@ const logConfig = config.get('log')
 const serviceName = config.get('serviceName')
 const serviceVersion = config.get('serviceVersion')
 
+const options = {}
+
+if (config.get('isDevelopment')) {
+  options.ignore = 'pid,res,req'
+}
+
 const formatters = {
   ecs: {
     ...ecsFormat({
@@ -15,7 +21,7 @@ const formatters = {
       serviceName
     })
   },
-  'pino-pretty': { transport: { target: 'pino-pretty' } }
+  'pino-pretty': { transport: { target: 'pino-pretty', options } }
 }
 
 export const loggerOptions = {

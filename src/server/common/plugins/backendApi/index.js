@@ -1,13 +1,20 @@
 import wreck from '@hapi/wreck'
 import { config } from '../../../../config/config.js'
 import { createLogger } from '../../helpers/logging/logger.js'
+import { withTraceId } from '@defra/hapi-tracing'
 
 const logger = createLogger()
 
 const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
   try {
-    const headers = { 'x-auth-token': preSharedKey }
-    const r = { json: 'strict', headers }
+    const tracingHeader = config.get('tracing.header')
+
+    const r = {
+      json: 'strict',
+      headers: withTraceId(tracingHeader, {
+        'x-auth-token': preSharedKey
+      })
+    }
     if (payload) {
       r.payload = payload
     }
