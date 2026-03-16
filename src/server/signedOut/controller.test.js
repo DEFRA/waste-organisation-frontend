@@ -22,6 +22,8 @@ describe('#signedOutController', () => {
     expect(statusCode).toBe(statusCodes.ok)
     expect(result).toEqual(expect.stringContaining('You have been signed out'))
     expect(result).toEqual(expect.stringContaining('Sign in'))
-    expect(result).toEqual(expect.stringContaining(`href="${paths.ukPermit}"`))
+    expect(result).toEqual(
+      expect.stringContaining(`href="${paths.signinDefraIdCallback}"`)
+    )
   })
 })
