@@ -335,8 +335,8 @@ export const content = {
   signOut: (request) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Signing out',
-        heading: 'Signing out...',
+        title: 'You are being signed out',
+        heading: 'You are being signed out',
         fallbackLink: 'Continue signing out',
         navigationLink: 'Sign out'
       }
