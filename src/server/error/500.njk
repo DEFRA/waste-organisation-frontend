@@ -1,0 +1,27 @@
+{% extends 'layouts/page.njk' %}
+
+{% block beforeContent %}
+  {% set phaseHtml %}
+    This is a new service. Help us improve it and <a class="govuk-link" href="{{feedbackUrl}}" target="_blank" rel="noopener noreferrer" data-testid="feedback-link">give your feedback (opens in new tab)</a>.
+  {% endset -%}
+
+  {{
+    govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: phaseHtml
+    })
+  }}
+{% endblock %}
+
+{% set mainClasses = "govuk-main-wrapper--l" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ heading }}</h1>
+      <p class="govuk-body">Try again later.</p>
+    </div>
+  </div>
+{% endblock %}

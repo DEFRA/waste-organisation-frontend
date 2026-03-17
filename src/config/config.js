@@ -408,6 +408,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_SERVICE_CHARGE'
+    },
+    testErrors: {
+      doc: 'Enable test error routes for verifying error pages',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_TEST_ERRORS'
     }
   },
   encryptionKey: {

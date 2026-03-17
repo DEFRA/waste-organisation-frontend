@@ -45,6 +45,16 @@ export function catchAll(request, h) {
       .code(statusCode)
   }
 
+  if (statusCode === statusCodes.internalServerError) {
+    const heading = 'Sorry, there is a problem with the service'
+    return h
+      .view('error/500', {
+        pageTitle: heading,
+        heading
+      })
+      .code(statusCode)
+  }
+
   const errorMessage = statusCodeMessage(statusCode)
 
   return h
