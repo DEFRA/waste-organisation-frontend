@@ -206,6 +206,14 @@ export const content = {
         title: 'Waste receiving account',
         heading: heading('Waste receiving account', null, organisationName),
         switchOrganisation: 'Switch organisation',
+        importantNotice: {
+          title: 'Important',
+          heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
+          bodyPrefix: 'You can still',
+          manageApiCode: 'manage your API code',
+          bodySuffix:
+            ', but you will not be able to use it to send data to the regulators.'
+        },
         cards: {
           reportWaste: { text: 'Report receipt of waste' },
           manageAccount: { text: 'Manage account' },
@@ -327,8 +335,8 @@ export const content = {
   signOut: (request) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Signing out',
-        heading: 'Signing out...',
+        title: 'You are being signed out',
+        heading: 'You are being signed out',
         fallbackLink: 'Continue signing out',
         navigationLink: 'Sign out'
       }
@@ -356,7 +364,7 @@ export const content = {
         relatedContent: {
           heading: 'Related content',
           links: [
-            { text: 'Privacy', href: 'https://www.gov.uk/help/privacy-notice' },
+            { text: 'Privacy', href: '/privacy-notice' },
             { text: 'Cookies', href: '/cookies' },
             {
               text: 'Accessibility statement',

@@ -37,6 +37,33 @@ describe('#searchController', () => {
       expect(statusCode).toBe(statusCodes.ok)
     })
 
+    test('Should display feature flags section', async () => {
+      const credentials = await setupAuthedUserSession(server)
+
+      const { result } = await server.inject({
+        method: 'GET',
+        url: paths.search,
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
+
+      expect(result).toEqual(expect.stringContaining('Feature flags'))
+      expect(result).toEqual(expect.stringContaining('searchPage'))
+      expect(result).toEqual(expect.stringContaining('updateSpreadsheet'))
+      expect(result).toEqual(expect.stringContaining('accountPage'))
+      expect(result).toEqual(expect.stringContaining('serviceCharge'))
+      expect(result).toEqual(
+        expect.stringContaining('FEATURE_FLAG_SEARCH_PAGE')
+      )
+      expect(result).toEqual(
+        expect.stringContaining('FEATURE_FLAG_UPDATE_SPREADSHEET')
+      )
+      expect(result).toEqual(expect.stringContaining('Enabled'))
+      expect(result).toEqual(expect.stringContaining('Disabled'))
+    })
+
     test('Should return unauthorized when not authenticated', async () => {
       const { statusCode } = await server.inject({
         method: 'GET',

@@ -6,9 +6,7 @@
       <h1 class="govuk-heading-xl">{{ heading }}</h1>
       <div id="sign-out-data" class="govuk-visually-hidden" data-logout-url="{{ logoutUrl }}"></div>
       <noscript>
-        <p class="govuk-body">
-          <a href="{{ logoutUrl }}" class="govuk-link" data-testid="sign-out-fallback-link">{{ fallbackLink }}</a>
-        </p>
+        <a href="{{ logoutUrl }}" role="button" draggable="false" class="govuk-button" data-module="govuk-button" data-testid="sign-out-fallback-link">{{ fallbackLink }}</a>
       </noscript>
     </div>
   </div>

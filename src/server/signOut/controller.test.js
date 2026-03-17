@@ -39,7 +39,7 @@ describe('#signOutController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.ok)
-    expect(result).toEqual(expect.stringContaining('Signing out'))
+    expect(result).toEqual(expect.stringContaining('You are being signed out'))
     expect(result).toEqual(
       expect.stringContaining(`data-logout-url="${expectedLogoutUrl}"`)
     )

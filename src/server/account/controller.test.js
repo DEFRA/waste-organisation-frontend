@@ -169,6 +169,14 @@ describe('#accountController', () => {
         '[data-testid="service-charge-payment-due"]'
       )
 
+      const importantNotice = document.querySelector(
+        '[data-testid="service-charge-important-notice"]'
+      )
+
+      const importantNoticeApiLink = document.querySelector(
+        '[data-testid="important-notice-api-link"]'
+      )
+
       const nextPaymentDue = document.querySelector(
         '[data-testid="service-charge-next-payment-due"]'
       )
@@ -189,15 +197,23 @@ describe('#accountController', () => {
       )
       expect(paymentDueTag).not.toBeNull()
       expect(nextPaymentDue).toBeNull()
+
+      expect(importantNotice).not.toBeNull()
+      expect(importantNoticeApiLink).not.toBeNull()
+      expect(importantNoticeApiLink.getAttribute('href')).toBe(paths.apiList)
+      expect(importantNoticeApiLink.textContent).toEqual(
+        expect.stringContaining('manage your API code')
+      )
+      expect(payload).toEqual(
+        expect.stringContaining(
+          `You need to pay your annual service charge for ${organisationName} before you can report your waste movements.`
+        )
+      )
     })
 
     test('shows paid service charge state when payment success flash is present', async () => {
-      const stateServer = await initialiseServer({
-        state: {
-          type: 'paymentStatus',
-          message: 'success'
-        }
-      })
+      const stateServer = await initialiseServer()
+      stateServer.injectYarState({ type: 'paymentStatus', message: 'success' })
 
       const stateCredentials = await setupAuthedUserSession(stateServer)
       stateCredentials.currentOrganisationName = organisationName
@@ -219,6 +235,10 @@ describe('#accountController', () => {
         '[data-testid="service-charge-payment-due"]'
       )
 
+      const importantNotice = document.querySelector(
+        '[data-testid="service-charge-important-notice"]'
+      )
+
       expect(payload).toEqual(
         expect.stringContaining(pageContent.cards.serviceCharge.paidTag)
       )
@@ -229,6 +249,7 @@ describe('#accountController', () => {
         expect.stringContaining(pageContent.cards.serviceCharge.paymentDueTag)
       )
       expect(paymentDueTag).toBeNull()
+      expect(importantNotice).toBeNull()
 
       await stateServer.stop({ timeout: 0 })
     })
@@ -299,6 +320,10 @@ describe('#accountController', () => {
         '[data-testid="service-charge-payment-due"]'
       )
 
+      const importantNotice = document.querySelector(
+        '[data-testid="service-charge-important-notice"]'
+      )
+
       const nextPaymentDue = document.querySelector(
         '[data-testid="service-charge-next-payment-due"]'
       )
@@ -314,6 +339,7 @@ describe('#accountController', () => {
       )
       expect(paymentDueTag).toBeNull()
       expect(nextPaymentDue).toBeNull()
+      expect(importantNotice).toBeNull()
     })
   })
 

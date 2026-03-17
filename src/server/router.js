@@ -5,6 +5,7 @@ import { home } from './home/index.js'
 import { about } from './about/index.js'
 import { cookies } from './cookies/index.js'
 import { terms } from './terms/index.js'
+import { privacy } from './privacy/index.js'
 import { health } from './health/index.js'
 import { serveStaticFiles } from './common/helpers/serve-static-files.js'
 import { search } from './search/index.js'
@@ -23,6 +24,7 @@ import { initiatePayment } from './serviceCharge/initiatePayment/index.js'
 import { paymentDetails } from './serviceCharge/paymentDetails/index.js'
 import { signOut } from './signOut/index.js'
 import { signedOut } from './signedOut/index.js'
+import { testError } from './testError/index.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -58,10 +60,12 @@ export const router = {
         about:          about.openRoutes,
         cookies:        cookies.openRoutes,
         terms:          terms.openRoutes,
+        privacy:        privacy.openRoutes,
         signIn:         signIn.routes,
         health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:     onboarding.openRoutes,
         signedOut:      signedOut.openRoutes,
+        testError:      testError.openRoutes,
         // Routes that require auth
         search:         search.authedRoutes.map((a) => addAuth(a)),
         spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuth(a)).concat(spreadsheet.openRoutes),

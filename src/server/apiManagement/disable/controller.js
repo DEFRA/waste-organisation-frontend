@@ -1,3 +1,4 @@
+import boom from '@hapi/boom'
 import joi from 'joi'
 import { paths, pathTo } from '../../../config/paths.js'
 import { content } from '../../../config/content.js'
@@ -7,12 +8,19 @@ const flashDisabledMessage = 'disabledSuccessful'
 
 export const apiDisableController = {
   get: {
-    handler(request, h) {
+    async handler(request, h) {
+      const existingApiCodes = await request.backendApi.getApiCodes(
+        request.auth.credentials.currentOrganisationId
+      )
+
       const organisationName =
         request?.auth?.credentials?.currentOrganisationName
       const pageContent = content.apiDisable(request, organisationName)
 
       const { apiCode } = request.params
+      if (!existingApiCodes.map((a) => a.code).includes(apiCode)) {
+        throw boom.notFound()
+      }
 
       const [error] = request.yar.flash(flashMessage)
       let errorContent

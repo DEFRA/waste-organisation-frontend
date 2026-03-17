@@ -83,7 +83,8 @@ describe('#catchAll', () => {
       reasonsIntro: 'This could be because:',
       reasons: ['you are not signed in', 'your session expired'],
       action: 'Try signing in again or contact the support team for more help.',
-      signInButton: 'Sign in'
+      signInButton: 'Sign in',
+      signInUrl: '/signin-oidc'
     })
     expect(mockToolkitCode).toHaveBeenCalledWith(statusCodes.unauthorized)
   })
@@ -112,14 +113,13 @@ describe('#catchAll', () => {
     expect(mockToolkitCode).toHaveBeenCalledWith(statusCodes.imATeapot)
   })
 
-  test('Should provide expected "Something went wrong" page and log error for internalServerError', () => {
+  test('Should provide expected "Problem with service" page and log error for internalServerError', () => {
     catchAll(mockRequest(statusCodes.internalServerError), mockToolkit)
 
     expect(mockErrorLogger).toHaveBeenCalledWith(mockStack)
-    expect(mockToolkitView).toHaveBeenCalledWith(errorPage, {
-      pageTitle: 'Something went wrong',
-      heading: statusCodes.internalServerError,
-      message: 'Something went wrong'
+    expect(mockToolkitView).toHaveBeenCalledWith('error/500', {
+      pageTitle: 'Sorry, there is a problem with the service',
+      heading: 'Sorry, there is a problem with the service'
     })
     expect(mockToolkitCode).toHaveBeenCalledWith(
       statusCodes.internalServerError

@@ -200,8 +200,9 @@ services:
       GOVPAY_API_URL: ${GOVPAY_API_URL:-https://publicapi.payments.service.gov.uk/v1}
       FEATURE_FLAG_UPDATE_SPREADSHEET: true
       FEATURE_FLAG_ACCOUNT_PAGE: true
-      FEATURE_FLAG_SIGN_OUT: true
       FEATURE_FLAG_SERVICE_CHARGE: true
+      FEATURE_FLAG_SEARCH_PAGE: true
+      FEATURE_FLAG_TEST_ERRORS: true
     network_mode: 'service:cdp-defra-id-stub'
 
 volumes:

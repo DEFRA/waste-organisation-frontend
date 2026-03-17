@@ -42,12 +42,14 @@ export const accountController = {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       switchOrganisation: pageContent.switchOrganisation,
+      importantNotice: pageContent.importantNotice,
       cards: pageContent.cards,
       isServiceChargeEnabled,
       isServiceChargePaid,
       switchOrganisationHref: paths.signinDefraIdCallback,
       reportWasteHref: paths.nextAction,
       serviceChargeHref: paths.serviceCharge,
+      apiListHref: paths.apiList,
       manageAccountHref: config.get('auth.defraId.accountManagementUrl')
     })
   }

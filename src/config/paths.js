@@ -12,6 +12,7 @@ export const paths = {
   downloadSpreadsheet: '/download-spreadsheet',
   accessibility: '/accessibility-statement',
   terms: '/terms',
+  privacyNotice: '/privacy-notice',
   search: '/search',
 
   signOut: '/sign-out',
@@ -44,7 +45,9 @@ export const paths = {
 
   apiList: '/api',
   apiDisable: '/api/disable/{apiCode}',
-  apiCreate: '/api/new'
+  apiCreate: '/api/new',
+
+  testError500: '/test-error/500'
 }
 /* v8 ignore stop */
 

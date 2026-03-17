@@ -9,7 +9,7 @@ export const signedOutController = {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       signInButton: pageContent.signInButton,
-      startPageUrl: paths.ukPermit
+      startPageUrl: paths.signinDefraIdCallback
     })
   }
 }

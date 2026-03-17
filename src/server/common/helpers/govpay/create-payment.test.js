@@ -42,7 +42,6 @@ describe('#createPayment', () => {
     expect(wreck.post).toHaveBeenCalledWith(
       'https://pay.example.test/v1/payments',
       expect.objectContaining({
-        json: 'strict',
         headers: {
           Authorization: 'Bearer test-api-key',
           'Content-Type': 'application/json'

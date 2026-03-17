@@ -403,17 +403,17 @@ export const config = convict({
       default: false,
       env: 'FEATURE_FLAG_SEARCH_PAGE'
     },
-    signOut: {
-      doc: 'Enable the sign out feature',
-      format: Boolean,
-      default: false,
-      env: 'FEATURE_FLAG_SIGN_OUT'
-    },
     serviceCharge: {
       doc: 'Enable the service charge flow',
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_SERVICE_CHARGE'
+    },
+    testErrors: {
+      doc: 'Enable test error routes for verifying error pages',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_TEST_ERRORS'
     }
   },
   encryptionKey: {
