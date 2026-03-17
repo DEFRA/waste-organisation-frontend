@@ -3,6 +3,8 @@ import { paths } from '../../config/paths.js'
 import { statusCodes } from '../common/constants/status-codes.js'
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 
+const originalFlag = config.get('featureFlags.testErrors')
+
 describe('#testError', () => {
   let server
 
@@ -12,7 +14,7 @@ describe('#testError', () => {
   })
 
   afterAll(async () => {
-    config.set('featureFlags.testErrors', false)
+    config.set('featureFlags.testErrors', originalFlag)
     await server.stop({ timeout: 0 })
   })
 
@@ -38,6 +40,7 @@ describe('#testError - disabled', () => {
   })
 
   afterAll(async () => {
+    config.set('featureFlags.testErrors', originalFlag)
     await server.stop({ timeout: 0 })
   })
 
