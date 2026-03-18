@@ -9,8 +9,9 @@ export function buildNavigation(request) {
 
     const isAccountPage = request.path === paths.account
     if (config.get('featureFlags.newAccountPage') && !isAccountPage) {
+      const manageAccountContent = content.manageAccount(request)
       navigation.push({
-        text: 'Manage account',
+        text: manageAccountContent.navigationLink,
         href: config.get('auth.defraId.accountManagementUrl')
       })
     }

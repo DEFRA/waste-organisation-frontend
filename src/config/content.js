@@ -371,6 +371,12 @@ export const content = {
         signInButton: 'Sign in'
       }
     }),
+  manageAccount: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        navigationLink: 'Manage account'
+      }
+    }),
   signOut: (request) =>
     getContentForLanguage(request, {
       en: {

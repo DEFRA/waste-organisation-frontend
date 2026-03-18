@@ -1,4 +1,4 @@
-import Boom from '@hapi/boom'
+import boom from '@hapi/boom'
 
 import { config } from '../../config/config.js'
 import { content } from '../../config/content.js'
@@ -12,7 +12,7 @@ const serviceChargeStatusPaid = 'paid'
 export const newAccountController = {
   handler(request, h) {
     if (!config.get('featureFlags.newAccountPage')) {
-      throw Boom.notFound()
+      throw boom.notFound()
     }
 
     const isServiceChargeEnabled = config.get('featureFlags.serviceCharge')
@@ -46,16 +46,24 @@ export const newAccountController = {
     const linkPaths = {
       connectYourSoftware: paths.apiList,
       downloadSpreadsheet: paths.downloadSpreadsheet,
-      uploadSpreadsheet: pathTo(paths.spreadsheetUpload, { organisationId }),
-      updateSpreadsheet: pathTo(paths.updateSpreadsheetUpload, {
-        organisationId
+      ...(organisationId && {
+        uploadSpreadsheet: pathTo(paths.spreadsheetUpload, { organisationId }),
+        updateSpreadsheet: pathTo(paths.updateSpreadsheetUpload, {
+          organisationId
+        })
       })
     }
+
+    const requiresOrganisation = new Set([
+      'uploadSpreadsheet',
+      'updateSpreadsheet'
+    ])
 
     const reportWasteLinks = Object.entries(pageContent.cards.reportWaste.links)
       .filter(
         ([key]) => key !== 'updateSpreadsheet' || isUpdateSpreadsheetEnabled
       )
+      .filter(([key]) => !requiresOrganisation.has(key) || organisationId)
       .map(([key, text]) => ({
         text,
         href: linkPaths[key],
