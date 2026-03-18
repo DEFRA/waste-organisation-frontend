@@ -37,6 +37,7 @@ export const paths = {
     '/organisation/{organisationId}/update-spreadsheet/upload-callback',
 
   account: '/account',
+  newAccount: '/new-account',
   serviceCharge: '/service-charge',
   reviewPayment: '/review-payment',
   initiatePayment: '/initiate-payment',

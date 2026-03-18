@@ -227,6 +227,45 @@ export const content = {
         }
       }
     }),
+  newAccount: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Waste receiving account',
+        heading: heading('Waste receiving account', null, organisationName),
+        switchOrganisation: 'Switch organisation',
+        importantNotice: {
+          title: 'Important',
+          heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
+          bodyPrefix: 'You can still',
+          manageApiCode: 'manage your API code',
+          bodySuffix:
+            ', but you will not be able to use it to send data to the regulators.'
+        },
+        cards: {
+          reportWaste: {
+            text: 'Report receipt of waste',
+            description:
+              'Upload a spreadsheet or connect your software to report your waste movements.',
+            links: {
+              connectYourSoftware: 'Manage my API code',
+              downloadSpreadsheet: 'Download spreadsheet template',
+              uploadSpreadsheet: 'Upload a spreadsheet',
+              updateSpreadsheet:
+                'Upload a spreadsheet that has Waste tracking IDs'
+            }
+          },
+          serviceCharge: {
+            text: 'Service charge',
+            description: 'Pay your annual service charge to use this service.',
+            tag: 'Due October 2026',
+            paymentDueTag: 'Payment due',
+            payServiceCharge: 'Pay service charge',
+            paidTag: 'Paid',
+            nextPaymentDue: 'Next payment due October 2027'
+          }
+        }
+      }
+    }),
   serviceCharge: (request) =>
     getContentForLanguage(request, {
       en: {
@@ -330,6 +369,12 @@ export const content = {
         action:
           'Try signing in again or contact the support team for more help.',
         signInButton: 'Sign in'
+      }
+    }),
+  manageAccount: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        navigationLink: 'Manage account'
       }
     }),
   signOut: (request) =>
