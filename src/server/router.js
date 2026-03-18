@@ -18,6 +18,7 @@ import { apiManagement } from './apiManagement/index.js'
 import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
 import { updateSpreadsheet } from './updateSpreadsheet/index.js'
 import { account } from './account/index.js'
+import { newAccount } from './newAccount/index.js'
 import { serviceCharge } from './serviceCharge/index.js'
 import { reviewPayment } from './serviceCharge/reviewPayment/index.js'
 import { initiatePayment } from './serviceCharge/initiatePayment/index.js'
@@ -74,6 +75,7 @@ export const router = {
         nextAction:     nextAction.authedRoutes.map((a) => addAuth(a)),
         apiManagement:  apiManagement.authedRoutes.map((a) => addAuth(a)),
         account:        account.authedRoutes.map((a) => addAuth(a)),
+        newAccount:     newAccount.authedRoutes.map((a) => addAuth(a)),
         serviceCharge:  serviceCharge.authedRoutes.map((a) => addAuth(a)),
         reviewPayment:  reviewPayment.authedRoutes.map((a) => addAuth(a)),
         initiatePayment: initiatePayment.authedRoutes.map((a) => addAuth(a)),

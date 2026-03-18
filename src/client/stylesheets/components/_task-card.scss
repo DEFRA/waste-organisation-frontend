@@ -1,0 +1,31 @@
+@use "govuk-frontend" as *;
+
+.app-task-cards {
+  display: flex;
+  flex-wrap: wrap;
+
+  > .govuk-grid-column-one-half {
+    display: flex;
+    float: none;
+  }
+
+  .govuk-summary-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .govuk-summary-card__title-wrapper {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
+
+  .govuk-summary-card__content {
+    flex-grow: 1;
+  }
+}
+
+.app-task-cards__status {
+  white-space: nowrap;
+  padding-left: govuk-spacing(3);
+}
