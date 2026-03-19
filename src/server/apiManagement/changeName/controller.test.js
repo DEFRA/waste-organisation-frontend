@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import {
   initialiseServer,
   wreckPutMock,
@@ -9,6 +9,7 @@ import { JSDOM } from 'jsdom'
 import { content } from '../../../config/content'
 import { faker } from '@faker-js/faker'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper'
+import { apiChangeNameController } from './controller'
 
 const organisationName = 'ORG NAME'
 const organisationId = 'ORG ID'
@@ -69,6 +70,24 @@ describe('apiChangeName', () => {
       )
     })
 
+    test('should return 500 if backend fails to load api codes', async () => {
+      const apiCode = faker.string.uuid()
+      wreckGetMock.mockReturnValue({
+        payload: {}
+      })
+
+      const response = await server.inject({
+        method: 'GET',
+        url: pathTo(paths.apiChangeName, { apiCode }),
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
+
+      expect(response.statusCode).toEqual(500)
+    })
+
     test('should show 404 page if the api code is not found', async () => {
       const apiCode = faker.string.uuid()
       const differentApiCode = faker.string.uuid()
@@ -94,7 +113,7 @@ describe('apiChangeName', () => {
         payload: { apiCodes: [{ code: apiCode, name: 'Test' }] }
       })
       const expectedErrorMessage = pageContent.error.message
-      server.injectYarState({ type: 'changeNameError', message: true })
+      server.injectYarState({ type: 'changeNameError', message: 'validation' })
 
       const { payload } = await server.inject({
         method: 'GET',
@@ -116,12 +135,46 @@ describe('apiChangeName', () => {
       )
     })
 
+    test('should show update error message when backend update fails', async () => {
+      const apiCode = faker.string.uuid()
+      let actualOptions
+
+      const request = {
+        auth: {
+          credentials: {
+            currentOrganisationId: organisationId,
+            currentOrganisationName: organisationName
+          }
+        },
+        params: { apiCode },
+        backendApi: {
+          getApiCodes: () => [{ code: apiCode, name: 'Test' }]
+        },
+        yar: {
+          flash: vi.fn().mockReturnValue(['update'])
+        }
+      }
+
+      const h = {
+        view: (_path, options) => {
+          actualOptions = options
+        }
+      }
+
+      await apiChangeNameController.get.handler(request, h)
+
+      expect(actualOptions.error.message).toBe(pageContent.updateError.message)
+      expect(actualOptions.pageTitle).toEqual(
+        expect.stringContaining(pageContent.errorPrefix)
+      )
+    })
+
     test('should prefix page title with Error when there is a validation error', async () => {
       const apiCode = faker.string.uuid()
       wreckGetMock.mockReturnValue({
         payload: { apiCodes: [{ code: apiCode, name: 'Test' }] }
       })
-      server.injectYarState({ type: 'changeNameError', message: true })
+      server.injectYarState({ type: 'changeNameError', message: 'validation' })
 
       const { payload } = await server.inject({
         method: 'GET',
@@ -157,6 +210,25 @@ describe('apiChangeName', () => {
 
       expect(headers.location).toBe(paths.apiList)
       expect(wreckPutMock).toHaveBeenCalled()
+    })
+
+    test('should redirect back with error when backend update fails', async () => {
+      const apiCode = faker.string.uuid()
+      wreckPutMock.mockReturnValue(null)
+
+      const { headers } = await server.inject({
+        method: 'POST',
+        url: pathTo(paths.apiChangeName, { apiCode }),
+        payload: {
+          name: 'New API Name'
+        },
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
+
+      expect(headers.location).toBe(pathTo(paths.apiChangeName, { apiCode }))
     })
 
     test.each([{}, { payload: {} }, { payload: { name: '' } }])(

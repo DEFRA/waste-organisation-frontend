@@ -111,6 +111,10 @@ export const content = {
           title: 'There is a problem',
           message: 'Enter a name for your API code'
         },
+        updateError: {
+          title: 'There is a problem',
+          message: 'The API code name could not be updated. Try again.'
+        },
         errorPrefix: 'Error',
         saveAction: 'Save and continue'
       }

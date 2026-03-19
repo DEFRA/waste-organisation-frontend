@@ -3,7 +3,9 @@ import joi from 'joi'
 import { paths, pathTo } from '../../../config/paths.js'
 import { content } from '../../../config/content.js'
 
-const flashMessage = 'changeNameError'
+const flashKey = 'changeNameError'
+const validationErrorType = 'validation'
+const updateErrorType = 'update'
 
 export const apiChangeNameController = {
   get: {
@@ -16,18 +18,25 @@ export const apiChangeNameController = {
         request?.auth?.credentials?.currentOrganisationName
       const pageContent = content.apiChangeName(request, organisationName)
 
+      if (!existingApiCodes) {
+        throw boom.badImplementation()
+      }
+
       const { apiCode } = request.params
-      const matchingCode = existingApiCodes?.find((a) => a.code === apiCode)
+      const matchingCode = existingApiCodes.find((a) => a.code === apiCode)
 
       if (!matchingCode) {
         throw boom.notFound()
       }
 
-      const [error] = request.yar.flash(flashMessage)
+      const [errorType] = request.yar.flash(flashKey)
       let errorContent
 
-      if (error) {
+      if (errorType === validationErrorType) {
         errorContent = pageContent.error
+        errorContent.href = '#name'
+      } else if (errorType === updateErrorType) {
+        errorContent = pageContent.updateError
         errorContent.href = '#name'
       }
 
@@ -56,7 +65,7 @@ export const apiChangeNameController = {
           name: joi.string().required().trim()
         }),
         failAction: (request, h) => {
-          request.yar.flash(flashMessage, true)
+          request.yar.flash(flashKey, validationErrorType)
           return h
             .redirect(
               pathTo(paths.apiChangeName, {
@@ -68,13 +77,22 @@ export const apiChangeNameController = {
       }
     },
     async handler(request, h) {
-      await request.backendApi.updateApiCodes(
+      const result = await request.backendApi.updateApiCodes(
         request.auth.credentials.currentOrganisationId,
         request.params.apiCode,
         {
           name: request.payload.name
         }
       )
+
+      if (!result) {
+        request.yar.flash(flashKey, updateErrorType)
+        return h.redirect(
+          pathTo(paths.apiChangeName, {
+            apiCode: request.params.apiCode
+          })
+        )
+      }
 
       return h.redirect(paths.apiList)
     }
