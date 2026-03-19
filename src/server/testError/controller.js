@@ -1,8 +1,7 @@
 import boom from '@hapi/boom'
 
 import { config } from '../../config/config.js'
-import { content } from '../../config/content.js'
-import { statusCodes } from '../common/constants/status-codes.js'
+import { renderOrganisationRequired } from '../common/helpers/auth/organisation-check.js'
 
 export const error500Controller = {
   handler() {
@@ -20,17 +19,6 @@ export const organisationRequiredController = {
       throw boom.notFound()
     }
 
-    const pageContent = content.organisationRequired(request)
-
-    return h
-      .view('error/organisation-required', {
-        pageTitle: pageContent.title,
-        heading: pageContent.heading,
-        body: pageContent.body,
-        contactMessage: pageContent.contactMessage,
-        signOutButton: pageContent.signOutButton,
-        signOutUrl: pageContent.signOutUrl
-      })
-      .code(statusCodes.forbidden)
+    return renderOrganisationRequired(request, h)
   }
 }

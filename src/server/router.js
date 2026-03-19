@@ -55,7 +55,7 @@ const addAuthWithOrg = (route) => {
     ...authedRoute,
     options: {
       ...authedRoute.options,
-      pre: [{ method: organisationCheck }]
+      pre: [{ method: organisationCheck }, ...(authedRoute.options.pre ?? [])]
     }
   }
 }
