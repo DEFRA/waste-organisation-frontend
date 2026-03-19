@@ -22,6 +22,12 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
 
     logger.debug(`request data: ${Object.keys(r.headers)}`)
 
+    if (r.headers[tracingHeader]) {
+      logger.debug(`request data - header: ${r.headers[tracingHeader]}`)
+    } else {
+      logger.debug(`request data - header: No tracingHeader set`)
+    }
+
     return response.payload
   } catch (e) {
     logger.error(`ERROR calling backend api ${e}, ${url}, ${payload}`)
