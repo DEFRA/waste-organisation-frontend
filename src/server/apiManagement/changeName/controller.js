@@ -30,13 +30,13 @@ export const apiChangeNameController = {
       }
 
       const [errorType] = request.yar.flash(flashKey)
-      let errorContent
+      const errorsByType = {
+        [validationErrorType]: pageContent.error,
+        [updateErrorType]: pageContent.updateError
+      }
+      const errorContent = errorsByType[errorType]
 
-      if (errorType === validationErrorType) {
-        errorContent = pageContent.error
-        errorContent.href = '#name'
-      } else if (errorType === updateErrorType) {
-        errorContent = pageContent.updateError
+      if (errorContent) {
         errorContent.href = '#name'
       }
 
