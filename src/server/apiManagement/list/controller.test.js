@@ -232,6 +232,15 @@ describe('apiList', () => {
         },
         value: {
           text: 'Joe Bloggs LTD_code_1'
+        },
+        actions: {
+          items: [
+            {
+              href: '/api/change-name/d05d0c78-c0c4-457c-8161-67a88c0f9ba4',
+              text: 'Change',
+              visuallyHiddenText: 'name for Joe Bloggs LTD_code_1'
+            }
+          ]
         }
       },
       {
@@ -262,6 +271,15 @@ describe('apiList', () => {
         },
         value: {
           text: 'Joe Bloggs LTD_code_2'
+        },
+        actions: {
+          items: [
+            {
+              href: '/api/change-name/d05d0c78-c0c4-457c-8161-67a88c0f9ba4',
+              text: 'Change',
+              visuallyHiddenText: 'name for Joe Bloggs LTD_code_2'
+            }
+          ]
         }
       }
     ])
