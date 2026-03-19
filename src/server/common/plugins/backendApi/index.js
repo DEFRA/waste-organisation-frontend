@@ -19,6 +19,9 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
       r.payload = payload
     }
     const response = await asyncFunc(url, r)
+
+    logger.debug(`request data: ${Object.keys(r.headers)}`)
+
     return response.payload
   } catch (e) {
     logger.error(`ERROR calling backend api ${e}, ${url}, ${payload}`)
