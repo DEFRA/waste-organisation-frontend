@@ -19,6 +19,7 @@
           })
         }}
       {% endif %}
+      {{ appHeading(heading) }}
       <form action="{{ action.url }}" method="POST">
         {{
           govukInput({
@@ -26,9 +27,8 @@
             name: "name",
             value: currentName,
             label: {
-              text: heading.text,
-              classes: "govuk-label--l",
-              isPageHeading: true
+              text: label,
+              classes: "govuk-label--s"
             },
             hint: {
               text: hint

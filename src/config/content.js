@@ -106,6 +106,7 @@ export const content = {
       en: {
         title: 'Change API code name',
         heading: heading('Change API code name', null, organisationName),
+        label: 'API code name',
         hint: 'You can change the name of the API by overwriting the existing one.',
         error: {
           title: 'There is a problem',

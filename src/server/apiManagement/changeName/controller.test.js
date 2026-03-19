@@ -56,9 +56,23 @@ describe('apiChangeName', () => {
         expect.stringContaining(`${pageContent.title} |`)
       )
 
+      const pageHeading = document.querySelector(
+        '[data-testid="app-heading-title"]'
+      )
+      expect(pageHeading.textContent).toEqual(
+        expect.stringContaining(pageContent.heading.text)
+      )
+
+      const orgName = document.querySelector(
+        '[data-testid="app-heading-organisation-name"]'
+      )
+      expect(orgName.textContent).toEqual(
+        expect.stringContaining(organisationName)
+      )
+
       const label = document.querySelector('label[for="name"]')
       expect(label.textContent).toEqual(
-        expect.stringContaining(pageContent.heading.text)
+        expect.stringContaining(pageContent.label)
       )
 
       const input = document.querySelector('#name')

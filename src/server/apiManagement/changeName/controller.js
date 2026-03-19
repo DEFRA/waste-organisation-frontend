@@ -47,6 +47,7 @@ export const apiChangeNameController = {
       return h.view('apiManagement/changeName/view', {
         pageTitle,
         heading: pageContent.heading,
+        label: pageContent.label,
         hint: pageContent.hint,
         currentName: matchingCode.name,
         action: {
@@ -62,7 +63,7 @@ export const apiChangeNameController = {
     options: {
       validate: {
         payload: joi.object({
-          name: joi.string().required().trim()
+          name: joi.string().trim().min(1).required()
         }),
         failAction: (request, h) => {
           request.yar.flash(flashKey, validationErrorType)
