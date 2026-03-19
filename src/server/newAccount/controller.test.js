@@ -195,10 +195,10 @@ describe('#newAccountController', () => {
       expect(uploadLink).not.toBeNull()
     })
 
-    test('omits upload and update links when organisationId is missing', async () => {
+    test('returns 403 when organisationId is missing', async () => {
       credentials.currentOrganisationId = undefined
 
-      const { payload, statusCode } = await server.inject({
+      const { statusCode } = await server.inject({
         method: 'GET',
         url: paths.newAccount,
         auth: {
@@ -207,29 +207,7 @@ describe('#newAccountController', () => {
         }
       })
 
-      const { document } = new JSDOM(payload).window
-
-      expect(statusCode).toBe(statusCodes.ok)
-
-      const apiLink = document.querySelector(
-        '[data-testid="report-waste-connectYourSoftware-link"]'
-      )
-      expect(apiLink).not.toBeNull()
-
-      const downloadLink = document.querySelector(
-        '[data-testid="report-waste-downloadSpreadsheet-link"]'
-      )
-      expect(downloadLink).not.toBeNull()
-
-      const uploadLink = document.querySelector(
-        '[data-testid="report-waste-uploadSpreadsheet-link"]'
-      )
-      expect(uploadLink).toBeNull()
-
-      const updateLink = document.querySelector(
-        '[data-testid="report-waste-updateSpreadsheet-link"]'
-      )
-      expect(updateLink).toBeNull()
+      expect(statusCode).toBe(statusCodes.forbidden)
 
       credentials.currentOrganisationId = organisationId
     })
