@@ -36,6 +36,14 @@ export const paths = {
   updateSpreadsheetUploadCallback:
     '/organisation/{organisationId}/update-spreadsheet/upload-callback',
 
+  manualEntry: '/organisation/{organisationId}/manual-entry',
+  manualEntryAdd: '/organisation/{organisationId}/manual-entry/add',
+  manualEntryEdit: '/organisation/{organisationId}/manual-entry/edit/{index}',
+  manualEntryDuplicate: '/organisation/{organisationId}/manual-entry/duplicate',
+  manualEntryRemove: '/organisation/{organisationId}/manual-entry/remove',
+  manualEntryConfirmation:
+    '/organisation/{organisationId}/manual-entry/confirmation',
+
   account: '/account',
   newAccount: '/new-account',
   serviceCharge: '/service-charge',

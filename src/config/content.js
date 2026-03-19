@@ -62,6 +62,7 @@ export const content = {
           connectYourSoftware: 'Manage my API code',
           downloadSpreadsheet: 'Download spreadsheet template',
           uploadSpreadsheet: 'Upload a spreadsheet',
+          manualEntry: 'Enter a waste movement manually',
           updateSpreadsheet: 'Upload a spreadsheet that has Waste tracking IDs',
           changeWasteReceiver: 'Choose another waste receiver in my account'
         },
@@ -179,6 +180,62 @@ export const content = {
           text: [
             'We have received your updated receipt of waste spreadsheet.',
             'We need to check for viruses and errors.',
+            'Once we complete the checks, we will send you a confirmation email.'
+          ]
+        },
+        returnLink: `Return to ${organisationName}`
+      }
+    }),
+  manualEntry: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Report waste movements',
+        heading: heading('Report waste movements', null, organisationName),
+        addAction: 'Add a waste movement',
+        submitAction: 'Submit all movements',
+        emptyMessage:
+          'You have not added any waste movements yet. Add a movement to get started.',
+        table: {
+          headings: [
+            '#',
+            'Receiver site',
+            'Date received',
+            'Waste description',
+            'Weight',
+            'Action'
+          ]
+        }
+      }
+    }),
+  manualEntryAdd: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Add a waste movement',
+        heading: heading('Add a waste movement', null, organisationName),
+        sections: {
+          receiver: 'Receiver details',
+          receipt: 'Receipt details',
+          consignment: 'Consignment details',
+          carrier: 'Carrier details',
+          broker: 'Broker or dealer details',
+          wasteItem: 'Waste item details'
+        },
+        error: {
+          title: 'There is a problem'
+        },
+        continueAction: 'Add movement'
+      }
+    }),
+  manualEntryConfirmation: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Waste movement reported',
+        heading: heading('Waste movement reported', null, null),
+        content: {
+          heading: 'What happens next',
+          text: [
+            'We have received your waste movement.',
+            'We need to check the details you provided.',
             'Once we complete the checks, we will send you a confirmation email.'
           ]
         },
