@@ -88,7 +88,7 @@ describe('manual entry controller', () => {
       expect(statusCode).toBe(statusCodes.ok)
       const { document } = new JSDOM(payload).window
       const panel = document.querySelector('.govuk-panel__title')
-      expect(panel.textContent).toContain('Waste movement reported')
+      expect(panel.textContent).toContain('waste movements submitted')
     })
 
     test('shows what happens next content', async () => {

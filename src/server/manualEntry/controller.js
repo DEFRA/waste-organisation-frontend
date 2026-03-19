@@ -593,6 +593,7 @@ export const submitController = {
       `Submitting ${movements.length} movements: ${JSON.stringify(movements)}`
     )
 
+    request.yar.flash('movementCount', movements.length)
     setMovements(request, [])
 
     return h.redirect(pathTo(paths.manualEntryConfirmation, { organisationId }))
@@ -746,9 +747,12 @@ export const confirmationController = {
       organisationName
     )
 
+    const [movementCount] = request.yar.flash('movementCount')
+
     return h.view('manualEntry/confirmation', {
       pageTitle: pageContent.title,
       content: pageContent.content,
+      movementCount: movementCount || 0,
       returnAction: {
         text: pageContent.returnLink,
         link: paths.nextAction

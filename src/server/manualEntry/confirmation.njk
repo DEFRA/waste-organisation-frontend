@@ -5,7 +5,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {{ govukPanel({
-        titleText: "Waste movement reported",
+        titleText: movementCount + (" waste movement" if movementCount == 1 else " waste movements") + " submitted",
         headingLevel: 1
       })}}
 
