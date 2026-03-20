@@ -1,0 +1,303 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if errorList.length %}
+        {{ govukErrorSummary({
+          titleText: errorTitle,
+          errorList: errorList
+        }) }}
+      {% endif %}
+
+      {{ appHeading(heading) }}
+
+      <form action="{{ action.url }}" method="POST" novalidate>
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-6">{{ sections.receiver }}</h2>
+
+        {{ govukInput({
+          id: "receiverSiteName",
+          name: "receiverSiteName",
+          value: values.receiverSiteName,
+          label: { text: "Receiver site name" },
+          errorMessage: errors.receiverSiteName
+        }) }}
+
+        {{ govukTextarea({
+          id: "receiptAddress",
+          name: "receiptAddress",
+          value: values.receiptAddress,
+          rows: 3,
+          label: { text: "Receipt address" },
+          errorMessage: errors.receiptAddress
+        }) }}
+
+        {{ govukInput({
+          id: "receiptPostcode",
+          name: "receiptPostcode",
+          value: values.receiptPostcode,
+          classes: "govuk-input--width-10",
+          label: { text: "Receipt postcode" },
+          errorMessage: errors.receiptPostcode
+        }) }}
+
+        {{ govukInput({
+          id: "receiverAuthorisationNumber",
+          name: "receiverAuthorisationNumber",
+          value: values.receiverAuthorisationNumber,
+          label: { text: "Receiver authorisation number (optional)" },
+          errorMessage: errors.receiverAuthorisationNumber
+        }) }}
+
+        {{ govukInput({
+          id: "receiverRegPositionStatements",
+          name: "receiverRegPositionStatements",
+          value: values.receiverRegPositionStatements,
+          label: { text: "Regulatory position statements (optional)" },
+          hint: { text: "Enter numbers separated by commas, for example: 1, 2, 3" },
+          errorMessage: errors.receiverRegPositionStatements
+        }) }}
+
+        {{ govukInput({
+          id: "receiverEmail",
+          name: "receiverEmail",
+          value: values.receiverEmail,
+          type: "email",
+          classes: "govuk-input--width-20",
+          label: { text: "Receiver email address" },
+          autocomplete: "email",
+          errorMessage: errors.receiverEmail
+        }) }}
+
+        {{ govukInput({
+          id: "receiverPhone",
+          name: "receiverPhone",
+          value: values.receiverPhone,
+          type: "tel",
+          classes: "govuk-input--width-20",
+          label: { text: "Receiver phone number" },
+          autocomplete: "tel",
+          errorMessage: errors.receiverPhone
+        }) }}
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ sections.receipt }}</h2>
+
+        {{ govukDateInput({
+          id: "dateReceived",
+          namePrefix: "dateReceived",
+          fieldset: {
+            legend: {
+              text: "Date received",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          hint: { text: "For example, 27 3 2026" },
+          errorMessage: errors["dateReceived-day"] or errors["dateReceived-month"] or errors["dateReceived-year"],
+          items: [
+            {
+              name: "day",
+              classes: "govuk-input--width-2" + (" govuk-input--error" if errors["dateReceived-day"] else ""),
+              value: values["dateReceived-day"]
+            },
+            {
+              name: "month",
+              classes: "govuk-input--width-2" + (" govuk-input--error" if errors["dateReceived-month"] else ""),
+              value: values["dateReceived-month"]
+            },
+            {
+              name: "year",
+              classes: "govuk-input--width-4" + (" govuk-input--error" if errors["dateReceived-year"] else ""),
+              value: values["dateReceived-year"]
+            }
+          ]
+        }) }}
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ sections.consignment }}</h2>
+
+        {{ govukInput({
+          id: "consignmentCode",
+          name: "consignmentCode",
+          value: values.consignmentCode,
+          label: { text: "Hazardous waste consignment code (optional)" },
+          errorMessage: errors.consignmentCode
+        }) }}
+
+        {{ govukInput({
+          id: "reasonForNoConsignmentCode",
+          name: "reasonForNoConsignmentCode",
+          value: values.reasonForNoConsignmentCode,
+          label: { text: "Reason for no consignment code (optional)" },
+          errorMessage: errors.reasonForNoConsignmentCode
+        }) }}
+
+        {{ govukTextarea({
+          id: "specialHandling",
+          name: "specialHandling",
+          value: values.specialHandling,
+          rows: 3,
+          label: { text: "Special handling requirements (optional)" },
+          errorMessage: errors.specialHandling
+        }) }}
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ sections.carrier }}</h2>
+
+        {{ govukInput({
+          id: "carrierOrgName",
+          name: "carrierOrgName",
+          value: values.carrierOrgName,
+          label: { text: "Carrier organisation name (optional)" },
+          errorMessage: errors.carrierOrgName
+        }) }}
+
+        {{ govukInput({
+          id: "carrierRegNumber",
+          name: "carrierRegNumber",
+          value: values.carrierRegNumber,
+          label: { text: "Carrier registration number (optional)" },
+          errorMessage: errors.carrierRegNumber
+        }) }}
+
+        {{ govukInput({
+          id: "carrierReasonForNoRegNumber",
+          name: "carrierReasonForNoRegNumber",
+          value: values.carrierReasonForNoRegNumber,
+          label: { text: "Reason for no registration number (optional)" },
+          errorMessage: errors.carrierReasonForNoRegNumber
+        }) }}
+
+        {{ govukTextarea({
+          id: "carrierAddress",
+          name: "carrierAddress",
+          value: values.carrierAddress,
+          rows: 3,
+          label: { text: "Carrier address (optional)" },
+          errorMessage: errors.carrierAddress
+        }) }}
+
+        {{ govukInput({
+          id: "carrierPostcode",
+          name: "carrierPostcode",
+          value: values.carrierPostcode,
+          classes: "govuk-input--width-10",
+          label: { text: "Carrier postcode (optional)" },
+          errorMessage: errors.carrierPostcode
+        }) }}
+
+        {{ govukInput({
+          id: "carrierEmail",
+          name: "carrierEmail",
+          value: values.carrierEmail,
+          type: "email",
+          classes: "govuk-input--width-20",
+          label: { text: "Carrier email address (optional)" },
+          errorMessage: errors.carrierEmail
+        }) }}
+
+        {{ govukInput({
+          id: "carrierPhone",
+          name: "carrierPhone",
+          value: values.carrierPhone,
+          type: "tel",
+          classes: "govuk-input--width-20",
+          label: { text: "Carrier phone number (optional)" },
+          errorMessage: errors.carrierPhone
+        }) }}
+
+        {{ govukSelect({
+          id: "carrierTransport",
+          name: "carrierTransport",
+          label: { text: "Means of transport (optional)" },
+          errorMessage: errors.carrierTransport,
+          items: [
+            { value: "", text: "Select", selected: not values.carrierTransport },
+            { value: "Road", text: "Road", selected: values.carrierTransport === "Road" },
+            { value: "Rail", text: "Rail", selected: values.carrierTransport === "Rail" },
+            { value: "Sea", text: "Sea", selected: values.carrierTransport === "Sea" },
+            { value: "Air", text: "Air", selected: values.carrierTransport === "Air" },
+            { value: "Inland Waterway", text: "Inland Waterway", selected: values.carrierTransport === "Inland Waterway" }
+          ]
+        }) }}
+
+        {{ govukInput({
+          id: "carrierVehicleReg",
+          name: "carrierVehicleReg",
+          value: values.carrierVehicleReg,
+          classes: "govuk-input--width-10",
+          label: { text: "Vehicle registration (optional)" },
+          errorMessage: errors.carrierVehicleReg
+        }) }}
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ sections.broker }}</h2>
+
+        {{ govukInput({
+          id: "brokerOrgName",
+          name: "brokerOrgName",
+          value: values.brokerOrgName,
+          label: { text: "Organisation name (optional)" },
+          errorMessage: errors.brokerOrgName
+        }) }}
+
+        {{ govukInput({
+          id: "brokerRegNumber",
+          name: "brokerRegNumber",
+          value: values.brokerRegNumber,
+          label: { text: "Registration number (optional)" },
+          errorMessage: errors.brokerRegNumber
+        }) }}
+
+        {{ govukTextarea({
+          id: "brokerAddress",
+          name: "brokerAddress",
+          value: values.brokerAddress,
+          rows: 3,
+          label: { text: "Address (optional)" },
+          errorMessage: errors.brokerAddress
+        }) }}
+
+        {{ govukInput({
+          id: "brokerPostcode",
+          name: "brokerPostcode",
+          value: values.brokerPostcode,
+          classes: "govuk-input--width-10",
+          label: { text: "Postcode (optional)" },
+          errorMessage: errors.brokerPostcode
+        }) }}
+
+        {{ govukInput({
+          id: "brokerEmail",
+          name: "brokerEmail",
+          value: values.brokerEmail,
+          type: "email",
+          classes: "govuk-input--width-20",
+          label: { text: "Email address (optional)" },
+          errorMessage: errors.brokerEmail
+        }) }}
+
+        {{ govukInput({
+          id: "brokerPhone",
+          name: "brokerPhone",
+          value: values.brokerPhone,
+          type: "tel",
+          classes: "govuk-input--width-20",
+          label: { text: "Phone number (optional)" },
+          errorMessage: errors.brokerPhone
+        }) }}
+
+        {{ govukButton({
+          text: action.text,
+          type: "submit",
+          attributes: {
+            "data-testid": "manual-entry-submit-button"
+          }
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

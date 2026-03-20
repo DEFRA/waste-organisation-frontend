@@ -1,0 +1,68 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {{ appHeading(heading) }}
+
+      {% if movements.length > 0 %}
+
+        {% for item in movementItems %}
+          <div class="app-movement-card">
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
+              Movement {{ item.number }} — {{ item.summary.receiverSiteName }}
+              <span class="govuk-caption-m">{{ item.dateFormatted }}</span>
+            </h2>
+
+            <div class="govuk-body govuk-!-margin-bottom-2">
+              <a class="govuk-link" href="{{ item.editUrl }}">Edit details</a> |
+              <a class="govuk-link" href="{{ item.addItemUrl }}">Add waste item</a> |
+              <form action="{{ item.duplicateUrl }}" method="POST" class="app-inline-form"><input type="hidden" name="index" value="{{ item.index }}"><button type="submit" class="govuk-link app-link-button">Duplicate</button></form> |
+              <form action="{{ item.removeUrl }}" method="POST" class="app-inline-form"><input type="hidden" name="index" value="{{ item.index }}"><button type="submit" class="govuk-link app-link-button">Remove</button></form>
+            </div>
+
+            {% if item.wasteItemRows.length > 0 %}
+              {{ govukTable({
+                head: item.wasteItemHead,
+                rows: item.wasteItemRows,
+                classes: "govuk-!-margin-bottom-4"
+              }) }}
+            {% else %}
+              <p class="govuk-body govuk-!-margin-bottom-4">No waste items —
+                <a class="govuk-link" href="{{ item.addItemUrl }}">add a waste item</a>
+              </p>
+            {% endif %}
+          </div>
+
+          {% if not loop.last %}
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+          {% endif %}
+        {% endfor %}
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <form action="{{ submitUrl }}" method="POST" class="govuk-button-group">
+          {{ govukButton({
+            text: submitAction,
+            type: "submit",
+            attributes: {
+              "data-testid": "submit-all-button"
+            }
+          }) }}
+          <a href="{{ addUrl }}" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="add-another-button">
+            Add another movement
+          </a>
+        </form>
+      {% else %}
+        <p class="govuk-body" data-testid="empty-message">{{ emptyMessage }}</p>
+
+        <a href="{{ addUrl }}" role="button" draggable="false" class="govuk-button" data-module="govuk-button" data-testid="add-movement-button">
+          {{ addAction }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

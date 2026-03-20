@@ -17,6 +17,7 @@ import { spreadsheet } from './spreadsheet/index.js'
 import { apiManagement } from './apiManagement/index.js'
 import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
 import { updateSpreadsheet } from './updateSpreadsheet/index.js'
+import { manualEntry } from './manualEntry/index.js'
 import { account } from './account/index.js'
 import { newAccount } from './newAccount/index.js'
 import { serviceCharge } from './serviceCharge/index.js'
@@ -71,6 +72,7 @@ export const router = {
         search:         search.authedRoutes.map((a) => addAuth(a)),
         spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuth(a)).concat(spreadsheet.openRoutes),
         updateSpreadsheet: updateSpreadsheet.authedRoutes.map((a) => addAuth(a)).concat(updateSpreadsheet.openRoutes),
+        manualEntry:    manualEntry.authedRoutes.map((a) => addAuth(a)),
         dashboard:      dashboard.authedRoutes.map((a) => addAuth(a)),
         nextAction:     nextAction.authedRoutes.map((a) => addAuth(a)),
         apiManagement:  apiManagement.authedRoutes.map((a) => addAuth(a)),

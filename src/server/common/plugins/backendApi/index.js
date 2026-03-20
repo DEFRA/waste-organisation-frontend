@@ -83,6 +83,15 @@ const remoteCall = (backendUrl, presharedKey) => {
       )
       return apiCode
     },
+    saveMovement: async (organisationId, movement) => {
+      const response = await apiCall(
+        (url, r) => wreck.post(url, r),
+        presharedKey,
+        `${backendUrl}/organisation/${organisationId}/movements`,
+        { movement }
+      )
+      return response
+    },
     updateApiCodes: async (organisationId, code, apiCodeData) => {
       const apiCode = await apiCall(
         (url, r) => wreck.put(url, r),

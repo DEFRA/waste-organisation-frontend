@@ -97,6 +97,10 @@ export const nextActionController = {
         return h.redirect(pathTo(paths.spreadsheetUpload, { organisationId }))
       }
 
+      if (nextAction === 'manualEntry') {
+        return h.redirect(pathTo(paths.manualEntry, { organisationId }))
+      }
+
       if (nextAction === 'updateSpreadsheet') {
         return h.redirect(
           pathTo(paths.updateSpreadsheetUpload, { organisationId })
