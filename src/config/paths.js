@@ -39,8 +39,18 @@ export const paths = {
   manualEntry: '/organisation/{organisationId}/manual-entry',
   manualEntryAdd: '/organisation/{organisationId}/manual-entry/add',
   manualEntryEdit: '/organisation/{organisationId}/manual-entry/edit/{index}',
+  manualEntryAddItem:
+    '/organisation/{organisationId}/manual-entry/{index}/add-item',
   manualEntryDuplicate: '/organisation/{organisationId}/manual-entry/duplicate',
   manualEntryRemove: '/organisation/{organisationId}/manual-entry/remove',
+  manualEntryWasteItems:
+    '/organisation/{organisationId}/manual-entry/waste-items',
+  manualEntryWasteItemAdd:
+    '/organisation/{organisationId}/manual-entry/waste-items/add',
+  manualEntryWasteItemEdit:
+    '/organisation/{organisationId}/manual-entry/waste-items/edit/{itemIndex}',
+  manualEntryWasteItemRemove:
+    '/organisation/{organisationId}/manual-entry/waste-items/remove',
   manualEntryConfirmation:
     '/organisation/{organisationId}/manual-entry/confirmation',
 

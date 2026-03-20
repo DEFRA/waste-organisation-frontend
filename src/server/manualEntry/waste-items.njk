@@ -1,0 +1,37 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {{ appHeading(heading) }}
+
+      {% if wasteItems.length > 0 %}
+        {{ govukTable({
+          head: tableHead,
+          rows: tableRows
+        }) }}
+
+        <form action="{{ saveUrl }}" method="POST" class="govuk-button-group">
+          {{ govukButton({
+            text: saveAction,
+            type: "submit",
+            attributes: {
+              "data-testid": "save-movement-button"
+            }
+          }) }}
+          <a href="{{ addUrl }}" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button" data-testid="add-another-item-button">
+            Add another waste item
+          </a>
+        </form>
+      {% else %}
+        <p class="govuk-body" data-testid="empty-message">{{ emptyMessage }}</p>
+
+        <a href="{{ addUrl }}" role="button" draggable="false" class="govuk-button" data-module="govuk-button" data-testid="add-item-button">
+          {{ addAction }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

@@ -200,8 +200,7 @@ export const content = {
             '#',
             'Receiver site',
             'Date received',
-            'Waste description',
-            'Weight',
+            'Waste items',
             'Action'
           ]
         }
@@ -224,6 +223,31 @@ export const content = {
           title: 'There is a problem'
         },
         continueAction: 'Add movement'
+      }
+    }),
+  manualEntryWasteItems: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Waste items',
+        heading: heading('Waste items', null, organisationName),
+        addAction: 'Add a waste item',
+        saveAction: 'Save movement',
+        emptyMessage:
+          'You have not added any waste items yet. Each movement must have at least one waste item.',
+        table: {
+          headings: ['#', 'EWC codes', 'Description', 'Weight', 'Action']
+        }
+      }
+    }),
+  manualEntryWasteItemAdd: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Add a waste item',
+        heading: heading('Add a waste item', null, organisationName),
+        error: {
+          title: 'There is a problem'
+        },
+        continueAction: 'Add waste item'
       }
     }),
   manualEntryConfirmation: (request, organisationName) =>

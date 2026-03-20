@@ -6,28 +6,32 @@ import { createLogger } from '../common/helpers/logging/logger.js'
 const logger = createLogger()
 
 const sessionKey = 'manualEntryMovements'
+const draftKey = 'manualEntryDraft'
 
-const getMovements = (request) => request.yar.get(sessionKey) || []
+const getMovements = (request) => {
+  const movements = request.yar.get(sessionKey) || []
+  return movements.filter((m) => m._movementFormValues)
+}
 
 const setMovements = (request, movements) =>
   request.yar.set(sessionKey, movements)
+
+const getDraft = (request) =>
+  request.yar.get(draftKey) || {
+    movementFormValues: null,
+    wasteItems: [],
+    editIndex: null
+  }
+
+const setDraft = (request, draft) => request.yar.set(draftKey, draft)
+
+const clearDraft = (request) => request.yar.clear(draftKey)
 
 const physicalForms = ['Gas', 'Liquid', 'Solid', 'Mixed', 'Sludge', 'Powder']
 
 const weightMetrics = ['Grams', 'Kilograms', 'Tonnes']
 
 const meansOfTransport = ['Road', 'Rail', 'Sea', 'Air', 'Inland Waterway']
-
-const containerTypes = [
-  { value: 'DRUM', text: 'Drum' },
-  { value: 'IBC', text: 'IBC (Intermediate Bulk Container)' },
-  { value: 'TANK', text: 'Tank' },
-  { value: 'SKIP', text: 'Skip' },
-  { value: 'BULK', text: 'Bulk' },
-  { value: 'BAG', text: 'Bag' },
-  { value: 'BOX', text: 'Box' },
-  { value: 'OTHER', text: 'Other' }
-]
 
 const requiredString = (label) =>
   joi
@@ -41,7 +45,7 @@ const requiredString = (label) =>
 
 const optionalString = () => joi.string().trim().allow('').optional()
 
-const schema = joi.object({
+const movementSchema = joi.object({
   receiverSiteName: requiredString('the receiver site name'),
   receiptAddress: requiredString('the receipt address'),
   receiptPostcode: requiredString('the receipt postcode'),
@@ -110,7 +114,10 @@ const schema = joi.object({
     .email({ tlds: false })
     .messages({ 'string.email': 'Enter a valid broker email address' }),
   brokerPhone: optionalString(),
-  brokerRegNumber: optionalString(),
+  brokerRegNumber: optionalString()
+})
+
+const wasteItemSchema = joi.object({
   ewcCodes: requiredString('at least one EWC code'),
   wasteDescription: requiredString('a waste description'),
   physicalForm: joi
@@ -252,71 +259,55 @@ const formatValidationErrors = (error) => {
   return { errors, errorList }
 }
 
-const buildMovement = (payload, organisationId) => {
-  const parseEwcCodes = (raw) =>
-    raw
-      .split(/[,;]/)
-      .map((c) => c.replace(/[^0-9]/g, ''))
-      .filter(Boolean)
+const parseEwcCodes = (raw) =>
+  raw
+    .split(/[,;]/)
+    .map((c) => c.replace(/[^0-9]/g, ''))
+    .filter(Boolean)
 
-  const parseRegStatements = (raw) => {
-    if (!raw) return []
-    return raw
-      .split(/[,;]/)
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .map(Number)
-      .filter((n) => !Number.isNaN(n))
-  }
+const parseRegStatements = (raw) => {
+  if (!raw) return []
+  return raw
+    .split(/[,;]/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map(Number)
+    .filter((n) => !Number.isNaN(n))
+}
 
-  const parseComponentCodes = (raw) => {
-    if (!raw) return []
-    return raw
-      .split(';')
-      .map((entry) => entry.trim())
-      .filter(Boolean)
-      .map((entry) => {
-        const [code, concentration] = entry.split('=').map((s) => s.trim())
-        return {
-          code,
-          concentration: concentration?.match(/^[0-9.]+$/)
-            ? Number(concentration)
-            : concentration
-        }
-      })
-  }
+const parseComponentCodes = (raw) => {
+  if (!raw) return []
+  return raw
+    .split(';')
+    .map((e) => e.trim())
+    .filter(Boolean)
+    .map((e) => {
+      const [code, c] = e.split('=').map((s) => s.trim())
+      return { code, concentration: c?.match(/^[0-9.]+$/) ? Number(c) : c }
+    })
+}
 
-  const parseComponentNames = (raw) => {
-    if (!raw) return []
-    return raw
-      .split(';')
-      .map((entry) => entry.trim())
-      .filter(Boolean)
-      .map((entry) => {
-        const [name, concentration] = entry.split('=').map((s) => s.trim())
-        return {
-          name,
-          concentration: concentration?.match(/^[0-9.]+$/)
-            ? Number(concentration)
-            : concentration
-        }
-      })
-  }
+const parseComponentNames = (raw) => {
+  if (!raw) return []
+  return raw
+    .split(';')
+    .map((e) => e.trim())
+    .filter(Boolean)
+    .map((e) => {
+      const [name, c] = e.split('=').map((s) => s.trim())
+      return { name, concentration: c?.match(/^[0-9.]+$/) ? Number(c) : c }
+    })
+}
 
-  const parseHazCodes = (raw) => {
-    if (!raw) return []
-    return raw
-      .split(/[,;]/)
-      .map((c) => c.trim().replace(/^HP([0_ ]*)([1-9][0-9]*)$/, 'HP_$2'))
-  }
+const parseHazCodes = (raw) => {
+  if (!raw) return []
+  return raw
+    .split(/[,;]/)
+    .map((c) => c.trim().replace(/^HP([0_ ]*)([1-9][0-9]*)$/, 'HP_$2'))
+}
 
-  const dateReceived = new Date(
-    payload['dateReceived-year'],
-    payload['dateReceived-month'] - 1,
-    payload['dateReceived-day']
-  )
-
-  const wasteItem = {
+const buildWasteItemData = (payload) => {
+  const item = {
     ewcCodes: parseEwcCodes(payload.ewcCodes),
     wasteDescription: payload.wasteDescription,
     physicalForm: payload.physicalForm,
@@ -342,19 +333,33 @@ const buildMovement = (payload, organisationId) => {
   }
 
   if (payload.containsPops === 'yes') {
-    wasteItem.pops = {
+    item.pops = {
       components: parseComponentCodes(payload.popsComponents),
       sourceOfComponents: payload.popsSource
     }
   }
 
   if (payload.containsHazardous === 'yes') {
-    wasteItem.hazardous = {
+    item.hazardous = {
       hazCodes: parseHazCodes(payload.hazCodes),
       components: parseComponentNames(payload.hazComponents),
       sourceOfComponents: payload.hazSource
     }
   }
+
+  return item
+}
+
+const buildMovement = (movementFormValues, wasteItemForms, organisationId) => {
+  const payload = movementFormValues
+
+  const dateReceived = new Date(
+    payload['dateReceived-year'],
+    payload['dateReceived-month'] - 1,
+    payload['dateReceived-day']
+  )
+
+  const wasteItems = wasteItemForms.map(buildWasteItemData)
 
   const movement = {
     receiver: {
@@ -372,7 +377,7 @@ const buildMovement = (payload, organisationId) => {
     submittingOrganisation: {
       defraCustomerOrganisationId: organisationId
     },
-    wasteItems: [wasteItem]
+    wasteItems
   }
 
   if (payload.receiverAuthorisationNumber) {
@@ -435,14 +440,17 @@ const buildMovement = (payload, organisationId) => {
     }
   }
 
+  const firstItem = wasteItemForms[0] || {}
   movement._summary = {
     receiverSiteName: payload.receiverSiteName,
     dateReceived: `${payload['dateReceived-day']}/${payload['dateReceived-month']}/${payload['dateReceived-year']}`,
-    wasteDescription: payload.wasteDescription,
-    weight: `${payload.weightAmount} ${payload.weightMetric}`
+    wasteDescription: firstItem.wasteDescription || '',
+    weight: `${firstItem.weightAmount || ''} ${firstItem.weightMetric || ''}`,
+    wasteItemCount: wasteItemForms.length
   }
 
-  movement._formValues = { ...payload }
+  movement._movementFormValues = { ...payload }
+  movement._wasteItemForms = wasteItemForms.map((f) => ({ ...f }))
 
   return movement
 }
@@ -452,19 +460,63 @@ const formatDate = (dateStr) => {
   return `${day}/${month.padStart(2, '0')}/${year}`
 }
 
-const buildTableRows = (movements, editUrlBase, removeUrl, duplicateUrl) =>
-  movements.map((m, index) => [
+const buildMovementViewItems = (movements, organisationId) =>
+  movements.map((m, index) => {
+    const editUrl = pathTo(paths.manualEntryEdit, {
+      organisationId,
+      index: `${index || '_'}`
+    }).replace('/_', '/0')
+    const addItemUrl = pathTo(paths.manualEntryAddItem, {
+      organisationId,
+      index: `${index || '_'}`
+    }).replace('/_', '/0')
+    const duplicateUrl = pathTo(paths.manualEntryDuplicate, { organisationId })
+    const removeUrl = pathTo(paths.manualEntryRemove, { organisationId })
+
+    const wasteItemRows = (m._wasteItemForms || []).map((item, itemIdx) => [
+      { text: `${itemIdx + 1}` },
+      { text: item.ewcCodes },
+      { text: item.wasteDescription },
+      { text: `${item.weightAmount} ${item.weightMetric}` }
+    ])
+
+    return {
+      number: index + 1,
+      summary: m._summary,
+      dateFormatted: formatDate(m._summary.dateReceived),
+      editUrl,
+      addItemUrl,
+      duplicateUrl,
+      removeUrl,
+      index,
+      wasteItemRows,
+      wasteItemHead: [
+        { text: '#' },
+        { text: 'EWC codes' },
+        { text: 'Description' },
+        { text: 'Weight' }
+      ]
+    }
+  })
+
+const buildWasteItemTableRows = (wasteItems, editUrlBase, removeUrl) =>
+  wasteItems.map((item, index) => [
     { text: `${index + 1}` },
-    { text: m._summary.receiverSiteName },
-    { text: formatDate(m._summary.dateReceived) },
-    { text: m._summary.wasteDescription },
-    { text: m._summary.weight },
+    { text: item.ewcCodes },
+    { text: item.wasteDescription },
+    { text: `${item.weightAmount} ${item.weightMetric}` },
     {
-      html: `<a class="govuk-link" href="${editUrlBase}/${index}">Edit</a> | <form action="${duplicateUrl}" method="POST" class="app-inline-form"><input type="hidden" name="index" value="${index}"><button type="submit" class="govuk-link app-link-button">Duplicate</button></form> | <form action="${removeUrl}" method="POST" class="app-inline-form"><input type="hidden" name="index" value="${index}"><button type="submit" class="govuk-link app-link-button">Remove</button></form>`
+      html: `<a class="govuk-link" href="${editUrlBase}/${index}">Edit</a> | <form action="${removeUrl}" method="POST" class="app-inline-form"><input type="hidden" name="itemIndex" value="${index}"><button type="submit" class="govuk-link app-link-button">Remove</button></form>`
     }
   ])
 
-const buildFormViewModel = (request, values, errors, errorList, editIndex) => {
+const buildMovementFormViewModel = (
+  request,
+  values,
+  errors,
+  errorList,
+  editIndex
+) => {
   const organisationName = request?.auth?.credentials?.currentOrganisationName
   const organisationId = request.auth.credentials.currentOrganisationId
   const isEditing = editIndex !== undefined
@@ -474,17 +526,16 @@ const buildFormViewModel = (request, values, errors, errorList, editIndex) => {
     ? pathTo(paths.manualEntryEdit, { organisationId, index: `${editIndex}` })
     : pathTo(paths.manualEntryAdd, { organisationId })
 
-  const buttonText = isEditing ? 'Save movement' : pageContent.continueAction
-  const title = isEditing ? 'Edit waste movement' : pageContent.title
+  const buttonText = isEditing
+    ? 'Save and continue'
+    : pageContent.continueAction
+  const title = isEditing ? 'Edit movement details' : pageContent.title
 
   return {
     pageTitle: errorList?.length ? `Error: ${title}` : title,
     heading: { ...pageContent.heading, text: title },
     sections: pageContent.sections,
-    action: {
-      url: actionUrl,
-      text: buttonText
-    },
+    action: { url: actionUrl, text: buttonText },
     backLink: pathTo(paths.manualEntry, { organisationId }),
     values: values ?? {},
     errors: errors ?? {},
@@ -492,12 +543,47 @@ const buildFormViewModel = (request, values, errors, errorList, editIndex) => {
     errorTitle: pageContent.error.title,
     physicalForms,
     weightMetrics,
-    meansOfTransport,
-    containerTypes
+    meansOfTransport
   }
 }
 
-const testValues = {
+const buildWasteItemFormViewModel = (
+  request,
+  values,
+  errors,
+  errorList,
+  editItemIndex
+) => {
+  const organisationName = request?.auth?.credentials?.currentOrganisationName
+  const organisationId = request.auth.credentials.currentOrganisationId
+  const isEditing = editItemIndex !== undefined
+  const pageContent = content.manualEntryWasteItemAdd(request, organisationName)
+
+  const actionUrl = isEditing
+    ? pathTo(paths.manualEntryWasteItemEdit, {
+        organisationId,
+        itemIndex: `${editItemIndex}`
+      })
+    : pathTo(paths.manualEntryWasteItemAdd, { organisationId })
+
+  const buttonText = isEditing ? 'Save waste item' : pageContent.continueAction
+  const title = isEditing ? 'Edit waste item' : pageContent.title
+
+  return {
+    pageTitle: errorList?.length ? `Error: ${title}` : title,
+    heading: { ...pageContent.heading, text: title },
+    action: { url: actionUrl, text: buttonText },
+    backLink: pathTo(paths.manualEntryWasteItems, { organisationId }),
+    values: values ?? {},
+    errors: errors ?? {},
+    errorList: errorList ?? [],
+    errorTitle: pageContent.error.title,
+    physicalForms,
+    weightMetrics
+  }
+}
+
+const movementTestValues = {
   receiverSiteName: 'Greenfield Waste Recycling Centre',
   receiptAddress: '14 Industrial Park Road\nBirmingham\nWest Midlands',
   receiptPostcode: 'B12 0QR',
@@ -525,7 +611,10 @@ const testValues = {
   brokerAddress: '',
   brokerPostcode: '',
   brokerEmail: '',
-  brokerPhone: '',
+  brokerPhone: ''
+}
+
+const wasteItemTestValues = {
   ewcCodes: '170405, 200301',
   wasteDescription: 'Mixed ferrous metals and municipal solid waste',
   physicalForm: 'Solid',
@@ -554,26 +643,13 @@ export const listController = {
     const pageContent = content.manualEntry(request, organisationName)
     const movements = getMovements(request)
 
-    const editUrlBase = pathTo(paths.manualEntryEdit, {
-      organisationId,
-      index: '_'
-    }).replace('/_', '')
-    const removeUrl = pathTo(paths.manualEntryRemove, { organisationId })
-    const duplicateUrl = pathTo(paths.manualEntryDuplicate, { organisationId })
-    const tableHead = pageContent.table.headings.map((text) => ({ text }))
-    const tableRows = buildTableRows(
-      movements,
-      editUrlBase,
-      removeUrl,
-      duplicateUrl
-    )
+    const movementItems = buildMovementViewItems(movements, organisationId)
 
     return h.view('manualEntry/index', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       movements,
-      tableHead,
-      tableRows,
+      movementItems,
       addUrl: pathTo(paths.manualEntryAdd, { organisationId }),
       submitUrl: pathTo(paths.manualEntry, { organisationId }),
       addAction: pageContent.addAction,
@@ -603,20 +679,33 @@ export const submitController = {
 export const addController = {
   get: {
     handler(request, h) {
-      return h.view('manualEntry/add', buildFormViewModel(request, testValues))
+      setDraft(request, {
+        movementFormValues: null,
+        wasteItems: [],
+        editIndex: null
+      })
+      return h.view(
+        'manualEntry/add',
+        buildMovementFormViewModel(request, movementTestValues)
+      )
     }
   },
   post: {
     options: {
       validate: {
-        payload: schema,
+        payload: movementSchema,
         options: { abortEarly: false, stripUnknown: true },
         failAction(request, h, error) {
           const { errors, errorList } = formatValidationErrors(error)
           return h
             .view(
               'manualEntry/add',
-              buildFormViewModel(request, request.payload, errors, errorList)
+              buildMovementFormViewModel(
+                request,
+                request.payload,
+                errors,
+                errorList
+              )
             )
             .takeover()
         }
@@ -624,13 +713,11 @@ export const addController = {
     },
     handler(request, h) {
       const organisationId = request.auth.credentials.currentOrganisationId
-      const movement = buildMovement(request.payload, organisationId)
-      const movements = getMovements(request)
+      const draft = getDraft(request)
+      draft.movementFormValues = { ...request.payload }
+      setDraft(request, draft)
 
-      movements.push(movement)
-      setMovements(request, movements)
-
-      return h.redirect(pathTo(paths.manualEntry, { organisationId }))
+      return h.redirect(pathTo(paths.manualEntryWasteItems, { organisationId }))
     }
   }
 }
@@ -646,17 +733,29 @@ export const editController = {
         return h.redirect(pathTo(paths.manualEntry, { organisationId }))
       }
 
-      const formValues = movements[index]._formValues
+      const movement = movements[index]
+      setDraft(request, {
+        movementFormValues: movement._movementFormValues,
+        wasteItems: movement._wasteItemForms || [],
+        editIndex: index
+      })
+
       return h.view(
         'manualEntry/add',
-        buildFormViewModel(request, formValues, undefined, undefined, index)
+        buildMovementFormViewModel(
+          request,
+          movement._movementFormValues,
+          undefined,
+          undefined,
+          index
+        )
       )
     }
   },
   post: {
     options: {
       validate: {
-        payload: schema,
+        payload: movementSchema,
         options: { abortEarly: false, stripUnknown: true },
         failAction(request, h, error) {
           const { errors, errorList } = formatValidationErrors(error)
@@ -664,7 +763,7 @@ export const editController = {
           return h
             .view(
               'manualEntry/add',
-              buildFormViewModel(
+              buildMovementFormViewModel(
                 request,
                 request.payload,
                 errors,
@@ -678,17 +777,233 @@ export const editController = {
     },
     handler(request, h) {
       const organisationId = request.auth.credentials.currentOrganisationId
-      const index = Number(request.params.index)
-      const movement = buildMovement(request.payload, organisationId)
+      const draft = getDraft(request)
+      draft.movementFormValues = { ...request.payload }
+      setDraft(request, draft)
+
+      return h.redirect(pathTo(paths.manualEntryWasteItems, { organisationId }))
+    }
+  }
+}
+
+export const wasteItemsController = {
+  get: {
+    handler(request, h) {
+      const organisationName =
+        request?.auth?.credentials?.currentOrganisationName
+      const organisationId = request.auth.credentials.currentOrganisationId
+      const pageContent = content.manualEntryWasteItems(
+        request,
+        organisationName
+      )
+      const draft = getDraft(request)
+
+      const editUrlBase = pathTo(paths.manualEntryWasteItemEdit, {
+        organisationId,
+        itemIndex: '_'
+      }).replace('/_', '')
+      const removeUrl = pathTo(paths.manualEntryWasteItemRemove, {
+        organisationId
+      })
+      const tableHead = pageContent.table.headings.map((text) => ({ text }))
+      const tableRows = buildWasteItemTableRows(
+        draft.wasteItems,
+        editUrlBase,
+        removeUrl
+      )
+
+      return h.view('manualEntry/waste-items', {
+        pageTitle: pageContent.title,
+        heading: pageContent.heading,
+        wasteItems: draft.wasteItems,
+        tableHead,
+        tableRows,
+        addUrl: pathTo(paths.manualEntryWasteItemAdd, { organisationId }),
+        saveUrl: pathTo(paths.manualEntryWasteItems, { organisationId }),
+        addAction: pageContent.addAction,
+        saveAction: pageContent.saveAction,
+        emptyMessage: pageContent.emptyMessage,
+        backLink: pathTo(paths.manualEntryAdd, { organisationId })
+      })
+    }
+  },
+  post: {
+    handler(request, h) {
+      const organisationId = request.auth.credentials.currentOrganisationId
+      const draft = getDraft(request)
+
+      if (draft.wasteItems.length === 0) {
+        return h.redirect(
+          pathTo(paths.manualEntryWasteItems, { organisationId })
+        )
+      }
+
+      const movement = buildMovement(
+        draft.movementFormValues,
+        draft.wasteItems,
+        organisationId
+      )
       const movements = getMovements(request)
 
-      if (index >= 0 && index < movements.length) {
-        movements[index] = movement
-        setMovements(request, movements)
+      if (draft.editIndex !== null && draft.editIndex < movements.length) {
+        movements[draft.editIndex] = movement
+      } else {
+        movements.push(movement)
       }
+
+      setMovements(request, movements)
+      clearDraft(request)
 
       return h.redirect(pathTo(paths.manualEntry, { organisationId }))
     }
+  }
+}
+
+export const wasteItemAddController = {
+  get: {
+    handler(request, h) {
+      return h.view(
+        'manualEntry/add-waste-item',
+        buildWasteItemFormViewModel(request, wasteItemTestValues)
+      )
+    }
+  },
+  post: {
+    options: {
+      validate: {
+        payload: wasteItemSchema,
+        options: { abortEarly: false, stripUnknown: true },
+        failAction(request, h, error) {
+          const { errors, errorList } = formatValidationErrors(error)
+          return h
+            .view(
+              'manualEntry/add-waste-item',
+              buildWasteItemFormViewModel(
+                request,
+                request.payload,
+                errors,
+                errorList
+              )
+            )
+            .takeover()
+        }
+      }
+    },
+    handler(request, h) {
+      const organisationId = request.auth.credentials.currentOrganisationId
+      const draft = getDraft(request)
+      draft.wasteItems.push({ ...request.payload })
+      setDraft(request, draft)
+
+      return h.redirect(pathTo(paths.manualEntryWasteItems, { organisationId }))
+    }
+  }
+}
+
+export const wasteItemEditController = {
+  get: {
+    handler(request, h) {
+      const itemIndex = Number(request.params.itemIndex)
+      const draft = getDraft(request)
+
+      if (itemIndex < 0 || itemIndex >= draft.wasteItems.length) {
+        const organisationId = request.auth.credentials.currentOrganisationId
+        return h.redirect(
+          pathTo(paths.manualEntryWasteItems, { organisationId })
+        )
+      }
+
+      return h.view(
+        'manualEntry/add-waste-item',
+        buildWasteItemFormViewModel(
+          request,
+          draft.wasteItems[itemIndex],
+          undefined,
+          undefined,
+          itemIndex
+        )
+      )
+    }
+  },
+  post: {
+    options: {
+      validate: {
+        payload: wasteItemSchema,
+        options: { abortEarly: false, stripUnknown: true },
+        failAction(request, h, error) {
+          const { errors, errorList } = formatValidationErrors(error)
+          const itemIndex = Number(request.params.itemIndex)
+          return h
+            .view(
+              'manualEntry/add-waste-item',
+              buildWasteItemFormViewModel(
+                request,
+                request.payload,
+                errors,
+                errorList,
+                itemIndex
+              )
+            )
+            .takeover()
+        }
+      }
+    },
+    handler(request, h) {
+      const organisationId = request.auth.credentials.currentOrganisationId
+      const itemIndex = Number(request.params.itemIndex)
+      const draft = getDraft(request)
+
+      if (itemIndex >= 0 && itemIndex < draft.wasteItems.length) {
+        draft.wasteItems[itemIndex] = { ...request.payload }
+        setDraft(request, draft)
+      }
+
+      return h.redirect(pathTo(paths.manualEntryWasteItems, { organisationId }))
+    }
+  }
+}
+
+export const wasteItemRemoveController = {
+  options: {
+    validate: {
+      payload: joi.object({
+        itemIndex: joi.number().integer().min(0).required()
+      }),
+      options: { stripUnknown: true }
+    }
+  },
+  handler(request, h) {
+    const organisationId = request.auth.credentials.currentOrganisationId
+    const draft = getDraft(request)
+    const itemIndex = request.payload.itemIndex
+
+    if (itemIndex >= 0 && itemIndex < draft.wasteItems.length) {
+      draft.wasteItems.splice(itemIndex, 1)
+      setDraft(request, draft)
+    }
+
+    return h.redirect(pathTo(paths.manualEntryWasteItems, { organisationId }))
+  }
+}
+
+export const addItemController = {
+  handler(request, h) {
+    const organisationId = request.auth.credentials.currentOrganisationId
+    const index = Number(request.params.index)
+    const movements = getMovements(request)
+
+    if (index < 0 || index >= movements.length) {
+      return h.redirect(pathTo(paths.manualEntry, { organisationId }))
+    }
+
+    const movement = movements[index]
+    setDraft(request, {
+      movementFormValues: movement._movementFormValues,
+      wasteItems: movement._wasteItemForms || [],
+      editIndex: index
+    })
+
+    return h.redirect(pathTo(paths.manualEntryWasteItemAdd, { organisationId }))
   }
 }
 
