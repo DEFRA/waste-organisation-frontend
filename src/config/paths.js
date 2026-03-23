@@ -49,7 +49,8 @@ export const paths = {
   apiChangeName: '/api/change-name/{apiCode}',
   apiCreate: '/api/new',
 
-  testError500: '/test-error/500'
+  testError500: '/test-error/500',
+  testErrorOrganisationRequired: '/test-error/organisation-required'
 }
 /* v8 ignore stop */
 

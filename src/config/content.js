@@ -1,4 +1,5 @@
 import { config } from './config.js'
+import { paths } from './paths.js'
 
 const heading = (text, caption, organisationName) => ({
   text,
@@ -415,6 +416,18 @@ export const content = {
         title: 'You have been signed out',
         heading: 'You have been signed out',
         signInButton: 'Sign in'
+      }
+    }),
+  organisationRequired: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'You cannot use this service',
+        heading: 'You cannot use this service',
+        body: 'This service is for organisations that receive waste. You need to be linked to an organisation to use it.',
+        contactMessage:
+          'If you think this is wrong, contact your organisation administrator.',
+        signOutButton: 'Sign out',
+        signOutUrl: paths.signOut
       }
     }),
   terms: (request) =>
