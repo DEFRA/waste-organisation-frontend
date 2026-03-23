@@ -4,10 +4,14 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">{{ heading }}</h1>
-      <div id="sign-out-data" class="govuk-visually-hidden" data-logout-url="{{ logoutUrl }}"></div>
-      <noscript>
-        <a href="{{ logoutUrl }}" role="button" draggable="false" class="govuk-button" data-module="govuk-button" data-testid="sign-out-fallback-link">{{ fallbackLink }}</a>
-      </noscript>
+      <form id="sign-out-form" action="{{ logoutUrl }}" method="{{ logoutMethod }}" data-logout-method="{{ logoutMethod }}">
+        <input type="hidden" name="id_token_hint" value="{{ idTokenHint }}" />
+        <input type="hidden" name="post_logout_redirect_uri" value="{{ postLogoutRedirectUri }}" />
+        <noscript>
+          <p class="govuk-body">{{ fallbackLink }}</p>
+          <button type="submit" class="govuk-button" data-module="govuk-button" data-testid="sign-out-fallback-button">Continue</button>
+        </noscript>
+      </form>
     </div>
   </div>
 {% endblock %}
@@ -16,3 +20,4 @@
   {{ super() }}
   <script type="module" src="{{ getAssetPath('sign-out.js') }}"></script>
 {% endblock %}
+

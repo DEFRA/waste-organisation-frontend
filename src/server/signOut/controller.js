@@ -10,12 +10,11 @@ export const signOutController = {
 
     const appBaseUrl = config.get('appBaseUrl')
     const postLogoutRedirectUri = `${appBaseUrl}${paths.signedOut}`
-    const logoutUrlObj = new URL(session.logoutUrl)
-    logoutUrlObj.searchParams.set(
-      'post_logout_redirect_uri',
-      postLogoutRedirectUri
-    )
-    const logoutUrl = logoutUrlObj.toString()
+    const logoutUrl = session.logoutUrl
+    const idTokenHint = session.idToken
+    const oidcConfigUrl = config.get('auth.defraId.oidcConfigurationUrl')
+    const isStub = oidcConfigUrl.includes('cdp-defra-id-stub')
+    const logoutMethod = isStub ? 'get' : 'post'
 
     await removeUserSession(request)
 
@@ -27,7 +26,10 @@ export const signOutController = {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       fallbackLink: pageContent.fallbackLink,
-      logoutUrl
+      logoutUrl,
+      idTokenHint,
+      postLogoutRedirectUri,
+      logoutMethod
     })
   }
 }

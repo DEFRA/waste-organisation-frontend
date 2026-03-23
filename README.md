@@ -137,6 +137,20 @@ caching.
 To use real Defra ID authentication, override the `AUTH_DEFRA_ID_*` environment variables
 in [config.js](./src/config/config.js) with your Defra ID tenant credentials.
 
+#### Differences between the stub and real Defra ID
+
+The stub does not fully replicate the real Defra ID behaviour. The service detects which provider is in use by checking whether the `AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL` contains `cdp-defra-id-stub` and adapts accordingly.
+
+| Behaviour            | cdp-defra-id-stub                                                                                        | Real Defra ID                                            |
+| -------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Sign-out HTTP method | GET (query parameters)                                                                                   | POST (form body)                                         |
+| Sign-out redirect    | Client-side `window.location.href` redirect to avoid CSP `form-action` restrictions with the stub origin | Hidden form submitted directly by client-side JavaScript |
+| CSP `form-action`    | Stub origin not in the allow list; GET redirect bypasses this                                            | Provider origins included via `AUTH_ORIGINS` env var     |
+
+#### Sign out
+
+Sign out renders a hidden HTML form targeting the Defra ID `end_session_endpoint` with `id_token_hint` and `post_logout_redirect_uri` fields. Client-side JavaScript auto-submits the form on page load. A `<noscript>` fallback provides a submit button for users without JavaScript.
+
 ### Environment variables
 
 For most local development, you shouldn't need to override any of the env var defaults that are
