@@ -26,10 +26,14 @@ export const beginUpload = {
       },
       {
         callbackPath: paths.spreadsheetUploadCallback,
-        redirectPath: paths.spreadsheetUploaded,
+        redirectPath: paths.uploadAndWait,
         uploadType: 'create'
       }
     )
+
+    request.yar.set('upload', { uploadId, uploadUrl })
+    await request.yar.commit(h)
+
     logger.info(`uploaded requested - ${uploadId} ${uploadUrl}`)
     const { origin } = new URL(
       uploadUrl?.startsWith('h') ? uploadUrl : config.get('fileUpload.url')

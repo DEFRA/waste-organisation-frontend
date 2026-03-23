@@ -26,6 +26,7 @@ import { paymentDetails } from './serviceCharge/paymentDetails/index.js'
 import { signOut } from './signOut/index.js'
 import { signedOut } from './signedOut/index.js'
 import { testError } from './testError/index.js'
+import { uploadAndWait } from './uploadAndWait/index.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -70,6 +71,7 @@ export const router = {
         // Routes that require auth
         search:         search.authedRoutes.map((a) => addAuth(a)),
         spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuth(a)).concat(spreadsheet.openRoutes),
+        uploadAndWait:  uploadAndWait.authedRoutes.map((a) => addAuth(a)),
         updateSpreadsheet: updateSpreadsheet.authedRoutes.map((a) => addAuth(a)).concat(updateSpreadsheet.openRoutes),
         dashboard:      dashboard.authedRoutes.map((a) => addAuth(a)),
         nextAction:     nextAction.authedRoutes.map((a) => addAuth(a)),

@@ -1,0 +1,31 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% block head %}
+  {{ super() }}
+  {% if isProcessing %}
+    {# This meta-refresh of 2 should be kept the same as the app-loading-spinner animation time so they are kept in visual sync #}
+    {# <meta http-equiv="refresh" content="{{ pageRefreshTimeInSeconds }}"> #}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukPanel({
+        titleText: "Spreadsheet upload successful",
+        headingLevel: 1
+      })}}
+
+      <div class="govuk-!-text-align-centre">
+        <div class="app-loading-spinner" role="status">
+          <span class="app-loading-spinner__text">Checking your file</span>
+        </div>
+        <h1 class="govuk-heading-l govuk-!-padding-top-6">Hold on</h1>
+        <p class="govuk-body">This may take a few seconds.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
