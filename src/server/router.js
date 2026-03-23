@@ -78,6 +78,7 @@ export const router = {
         health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:     onboarding.openRoutes,
         signedOut:      signedOut.openRoutes,
+        signOut:        signOut.authedRoutes,
         testError:      testError.openRoutes,
         // Routes that require auth
         search:         search.authedRoutes.map((a) => addAuthWithOrg(a)),
@@ -92,7 +93,6 @@ export const router = {
         reviewPayment:  reviewPayment.authedRoutes.map((a) => addAuthWithOrg(a)),
         initiatePayment: initiatePayment.authedRoutes.map((a) => addAuthWithOrg(a)),
         paymentDetails: paymentDetails.authedRoutes.map((a) => addAuthWithOrg(a)),
-        signOut:        signOut.authedRoutes.map((a) => addAuth(a)),
         downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)),
       }).reduce((p, entry) => createPlugin(p, entry), [])
 

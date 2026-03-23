@@ -53,13 +53,4 @@ describe('#signOutController', () => {
     const cachedSession = await server.app.cache.get(credentials.sessionId)
     expect(cachedSession).toBeNull()
   })
-
-  test('Should return 401 when not authenticated', async () => {
-    const { statusCode } = await server.inject({
-      method: 'GET',
-      url: paths.signOut
-    })
-
-    expect(statusCode).toBe(statusCodes.unauthorized)
-  })
 })
