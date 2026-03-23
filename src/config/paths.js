@@ -46,6 +46,7 @@ export const paths = {
 
   apiList: '/api',
   apiDisable: '/api/disable/{apiCode}',
+  apiChangeName: '/api/change-name/{apiCode}',
   apiCreate: '/api/new',
 
   testError500: '/test-error/500',

@@ -95,7 +95,30 @@ export const content = {
             post: 'cannot be used to send any new waste movements.'
           }
         }),
-        returnAction: `Return to ${organisationName}`
+        returnAction: `Return to ${organisationName}`,
+        changeName: {
+          action: 'Change',
+          hiddenText: 'name for'
+        }
+      }
+    }),
+  apiChangeName: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Change API code name',
+        heading: heading('Change API code name', null, organisationName),
+        label: 'API code name',
+        hint: 'You can change the name of the API by overwriting the existing one.',
+        error: {
+          title: 'There is a problem',
+          message: 'Enter a name for your API code'
+        },
+        updateError: {
+          title: 'There is a problem',
+          message: 'The API code name could not be updated. Try again.'
+        },
+        errorPrefix: 'Error',
+        saveAction: 'Save and continue'
       }
     }),
   apiDisable: (request, organisationName) =>
