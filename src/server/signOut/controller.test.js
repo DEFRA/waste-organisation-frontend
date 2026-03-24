@@ -18,17 +18,12 @@ describe('#signOutController', () => {
     await server.stop({ timeout: 0 })
   })
 
-  test('Should clear session and render signing out page with logout URL', async () => {
+  test('Should clear session and render sign-out form', async () => {
     const credentials = await setupAuthedUserSession(server)
     const cookie = await getSessionCookie(credentials.sessionId)
 
     const appBaseUrl = config.get('appBaseUrl')
-    const expectedUrl = new URL(credentials.logoutUrl)
-    expectedUrl.searchParams.set(
-      'post_logout_redirect_uri',
-      `${appBaseUrl}${paths.signedOut}`
-    )
-    const expectedLogoutUrl = expectedUrl.toString()
+    const expectedPostLogoutRedirectUri = `${appBaseUrl}${paths.signedOut}`
 
     const { result, statusCode, headers } = await server.inject({
       method: 'GET',
@@ -41,8 +36,15 @@ describe('#signOutController', () => {
     expect(statusCode).toBe(statusCodes.ok)
     expect(result).toEqual(expect.stringContaining('You are being signed out'))
     expect(result).toEqual(
-      expect.stringContaining(`data-logout-url="${expectedLogoutUrl}"`)
+      expect.stringContaining(`action="${credentials.logoutUrl}"`)
     )
+    expect(result).toEqual(
+      expect.stringContaining(
+        `name="post_logout_redirect_uri" value="${expectedPostLogoutRedirectUri}"`
+      )
+    )
+    expect(result).toEqual(expect.stringContaining('name="id_token_hint"'))
+    expect(headers['cache-control']).toBe('no-store')
 
     const setCookie = headers['set-cookie']
     expect(setCookie).toBeDefined()
@@ -54,12 +56,123 @@ describe('#signOutController', () => {
     expect(cachedSession).toBeNull()
   })
 
-  test('Should return 401 when not authenticated', async () => {
-    const { statusCode } = await server.inject({
+  test('Should use GET method when using the Defra ID stub', async () => {
+    const credentials = await setupAuthedUserSession(server)
+    const cookie = await getSessionCookie(credentials.sessionId)
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: paths.signOut,
+      headers: {
+        cookie
+      }
+    })
+
+    expect(result).toEqual(expect.stringContaining('method="get"'))
+    expect(result).toEqual(expect.stringContaining('data-logout-method="get"'))
+  })
+
+  test('Should use POST method when using real Defra ID', async () => {
+    const originalGet = config.get.bind(config)
+    vi.spyOn(config, 'get').mockImplementation((key) => {
+      if (key === 'auth.defraId.oidcConfigurationUrl') {
+        return 'https://real-defra-id.gov.uk/.well-known/openid-configuration'
+      }
+      return originalGet(key)
+    })
+
+    const credentials = await setupAuthedUserSession(server)
+    const cookie = await getSessionCookie(credentials.sessionId)
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: paths.signOut,
+      headers: {
+        cookie
+      }
+    })
+
+    expect(result).toEqual(expect.stringContaining('method="post"'))
+    expect(result).toEqual(expect.stringContaining('data-logout-method="post"'))
+
+    vi.restoreAllMocks()
+  })
+
+  test('Should include the id token hint from the session', async () => {
+    const credentials = await setupAuthedUserSession(server)
+    const cookie = await getSessionCookie(credentials.sessionId)
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: paths.signOut,
+      headers: {
+        cookie
+      }
+    })
+
+    expect(result).toEqual(
+      expect.stringContaining(
+        `name="id_token_hint" value="${credentials.idToken}"`
+      )
+    )
+  })
+
+  test('Should redirect to signed-out page when no session exists', async () => {
+    const { statusCode, headers } = await server.inject({
       method: 'GET',
       url: paths.signOut
     })
 
-    expect(statusCode).toBe(statusCodes.unauthorized)
+    expect(statusCode).toBe(statusCodes.found)
+    expect(headers.location).toBe(paths.signedOut)
+  })
+
+  test('Should render a link fallback for noscript when using the stub', async () => {
+    const credentials = await setupAuthedUserSession(server)
+    const cookie = await getSessionCookie(credentials.sessionId)
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: paths.signOut,
+      headers: {
+        cookie
+      }
+    })
+
+    expect(result).toEqual(
+      expect.stringContaining('data-testid="sign-out-fallback-button"')
+    )
+    expect(result).toEqual(
+      expect.stringContaining(`href="${credentials.logoutUrl}?id_token_hint=`)
+    )
+    expect(result).not.toEqual(expect.stringContaining('type="submit"'))
+  })
+
+  test('Should render a submit button fallback for noscript when using real Defra ID', async () => {
+    const originalGet = config.get.bind(config)
+    vi.spyOn(config, 'get').mockImplementation((key) => {
+      if (key === 'auth.defraId.oidcConfigurationUrl') {
+        return 'https://real-defra-id.gov.uk/.well-known/openid-configuration'
+      }
+      return originalGet(key)
+    })
+
+    const credentials = await setupAuthedUserSession(server)
+    const cookie = await getSessionCookie(credentials.sessionId)
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: paths.signOut,
+      headers: {
+        cookie
+      }
+    })
+
+    expect(result).toEqual(
+      expect.stringContaining('data-testid="sign-out-fallback-button"')
+    )
+    expect(result).toEqual(expect.stringContaining('type="submit"'))
+
+    vi.restoreAllMocks()
   })
 })
