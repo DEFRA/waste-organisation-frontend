@@ -38,7 +38,7 @@ describe('#testError', () => {
 
     expect(statusCode).toBe(statusCodes.forbidden)
     expect(result).toEqual(
-      expect.stringContaining('You cannot use this service')
+      expect.stringContaining('You cannot continue on this service')
     )
   })
 })

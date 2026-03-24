@@ -1,5 +1,4 @@
 import { config } from './config.js'
-import { paths } from './paths.js'
 
 const heading = (text, caption, organisationName) => ({
   text,
@@ -421,13 +420,13 @@ export const content = {
   organisationRequired: (request) =>
     getContentForLanguage(request, {
       en: {
-        title: 'You cannot use this service',
-        heading: 'You cannot use this service',
-        body: 'This service is for organisations that receive waste. You need to be linked to an organisation to use it.',
+        title: 'You cannot continue on this service',
+        heading: 'You cannot continue on this service',
+        body: 'You will not be able to use this service because you have registered as an individual for personal use.',
         contactMessage:
-          'If you think this is wrong, contact your organisation administrator.',
-        signOutButton: 'Sign out',
-        signOutUrl: paths.signOut
+          'If you want to continue, you will need to start again and register as a business or organisation.',
+        startPageLinkText: 'Start again',
+        startPageUrl: config.get('links.startPage')
       }
     }),
   terms: (request) =>

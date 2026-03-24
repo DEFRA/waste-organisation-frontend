@@ -10,8 +10,8 @@ export function renderOrganisationRequired(request, h) {
       heading: pageContent.heading,
       body: pageContent.body,
       contactMessage: pageContent.contactMessage,
-      signOutButton: pageContent.signOutButton,
-      signOutUrl: pageContent.signOutUrl
+      startPageLinkText: pageContent.startPageLinkText,
+      startPageUrl: pageContent.startPageUrl
     })
     .code(statusCodes.forbidden)
 }
