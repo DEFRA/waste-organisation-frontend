@@ -44,6 +44,7 @@ describe('#signOutController', () => {
       )
     )
     expect(result).toEqual(expect.stringContaining('name="id_token_hint"'))
+    expect(headers['cache-control']).toBe('no-store')
 
     const setCookie = headers['set-cookie']
     expect(setCookie).toBeDefined()
