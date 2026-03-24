@@ -6,7 +6,7 @@ import {
   initiateUpload,
   createCallbackHandler
 } from '../common/helpers/cdp-upload.js'
-
+const uploadSessionName = 'upload'
 const logger = createLogger()
 
 export const beginUpload = {
@@ -33,6 +33,8 @@ export const beginUpload = {
         uploadType: 'update'
       }
     )
+    request.yar.set(uploadSessionName, { uploadId })
+    await request.yar.commit(h)
     logger.info(`uploaded requested - ${uploadId} ${uploadUrl}`)
     const { origin } = new URL(
       uploadUrl?.startsWith('h') ? uploadUrl : config.get('fileUpload.url')
@@ -55,7 +57,7 @@ export const fileUploaded = {
   /* v8 ignore stop */
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
-
+    const uploadData = request.yar.get(uploadSessionName)
     const pageContent = content.updateSpreadsheetUploaded(
       request,
       organisationName
@@ -64,6 +66,7 @@ export const fileUploaded = {
     return h.view('updateSpreadsheet/file-uploaded', {
       pageTitle: pageContent.heading.text,
       content: pageContent.content,
+      uploadData,
       returnAction: {
         text: pageContent.returnLink,
         link: paths.nextAction
