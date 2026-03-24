@@ -78,7 +78,7 @@ export const router = {
         health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:     onboarding.openRoutes,
         signedOut:      signedOut.openRoutes,
-        signOut:        signOut.authedRoutes,
+        signOut:        signOut.openRoutes,
         testError:      testError.openRoutes,
         // Routes that require auth
         search:         search.authedRoutes.map((a) => addAuthWithOrg(a)),

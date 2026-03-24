@@ -8,6 +8,11 @@ export const signOutController = {
   async handler(request, h) {
     const session = request.auth.credentials
 
+    if (!session) {
+      await metricsCounter('signOut.success')
+      return h.redirect(paths.signedOut)
+    }
+
     const appBaseUrl = config.get('appBaseUrl')
     const postLogoutRedirectUri = `${appBaseUrl}${paths.signedOut}`
     const logoutUrl = session.logoutUrl
