@@ -13,6 +13,10 @@ export const signOutController = {
       return h.redirect(paths.signedOut)
     }
 
+    request.contentSecurityPolicy = {
+      extraAuthOrigins: request.authProviderEndpoints
+    }
+
     const appBaseUrl = config.get('appBaseUrl')
     const postLogoutRedirectUri = `${appBaseUrl}${paths.signedOut}`
     const logoutUrl = session.logoutUrl
