@@ -1,21 +1,15 @@
-const signOutForm = document.getElementById('sign-out-form')
+const signOutData = document.getElementById('sign-out-data')
 
-if (signOutForm) {
+if (signOutData) {
   try {
     window.localStorage.clear()
   } catch (_error) {
     // localStorage may be unavailable
   }
 
-  const logoutMethod = signOutForm.dataset.logoutMethod
+  const logoutUrl = signOutData.dataset.logoutUrl
 
-  if (logoutMethod === 'post') {
-    signOutForm.submit()
-  } else {
-    const logoutUrl = new URL(signOutForm.action)
-    new FormData(signOutForm).forEach((value, key) => {
-      logoutUrl.searchParams.set(key, value)
-    })
-    window.location.href = logoutUrl.toString()
+  if (logoutUrl) {
+    window.location.href = logoutUrl
   }
 }
