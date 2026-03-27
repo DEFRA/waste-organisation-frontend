@@ -1,5 +1,4 @@
 import { config } from './config.js'
-import { paths } from './paths.js'
 
 const heading = (text, caption, organisationName) => ({
   text,
@@ -49,7 +48,7 @@ export const content = {
           null
         ),
         link: {
-          href: paths.startPage,
+          href: config.get('links.startPage'),
           text: 'Find out more about Digital waste tracking'
         }
       }
