@@ -7,6 +7,10 @@ const flashMessage = 'isPermitError'
 export const ukPermitController = {
   get: {
     handler(request, h) {
+      if (request.auth.isAuthenticated) {
+        return h.redirect(paths.account)
+      }
+
       const pageContent = content.ukPermit(request)
 
       request.contentSecurityPolicy = {

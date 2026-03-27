@@ -29,6 +29,18 @@ describe('#testError', () => {
       expect.stringContaining('Sorry, there is a problem with the service')
     )
   })
+
+  test('GET /test-error/organisation-required returns 403 organisation-required page', async () => {
+    const { statusCode, result } = await server.inject({
+      method: 'GET',
+      url: paths.testErrorOrganisationRequired
+    })
+
+    expect(statusCode).toBe(statusCodes.forbidden)
+    expect(result).toEqual(
+      expect.stringContaining('You cannot continue on this service')
+    )
+  })
 })
 
 describe('#testError - disabled', () => {
@@ -48,6 +60,15 @@ describe('#testError - disabled', () => {
     const { statusCode } = await server.inject({
       method: 'GET',
       url: paths.testError500
+    })
+
+    expect(statusCode).toBe(statusCodes.notFound)
+  })
+
+  test('GET /test-error/organisation-required returns 404 when feature flag is off', async () => {
+    const { statusCode } = await server.inject({
+      method: 'GET',
+      url: paths.testErrorOrganisationRequired
     })
 
     expect(statusCode).toBe(statusCodes.notFound)

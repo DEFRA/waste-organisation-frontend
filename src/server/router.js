@@ -18,6 +18,7 @@ import { apiManagement } from './apiManagement/index.js'
 import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
 import { updateSpreadsheet } from './updateSpreadsheet/index.js'
 import { account } from './account/index.js'
+import { newAccount } from './newAccount/index.js'
 import { serviceCharge } from './serviceCharge/index.js'
 import { reviewPayment } from './serviceCharge/reviewPayment/index.js'
 import { initiatePayment } from './serviceCharge/initiatePayment/index.js'
@@ -25,6 +26,7 @@ import { paymentDetails } from './serviceCharge/paymentDetails/index.js'
 import { signOut } from './signOut/index.js'
 import { signedOut } from './signedOut/index.js'
 import { testError } from './testError/index.js'
+import { organisationCheck } from './common/helpers/auth/organisation-check.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -38,13 +40,24 @@ const createPlugin = (plugins, [item, routes]) => {
   return plugins
 }
 
-const addAuth = (route) => {
-  if (route.options == null) {
-    route.options = {}
+const addAuth = (route) => ({
+  ...route,
+  options: {
+    ...route.options,
+    auth: 'session',
+    cache: cacheControlNoStore
   }
-  route.options.auth = 'session'
-  route.options.cache = cacheControlNoStore
-  return route
+})
+
+const addAuthWithOrg = (route) => {
+  const authedRoute = addAuth(route)
+  return {
+    ...authedRoute,
+    options: {
+      ...authedRoute.options,
+      pre: [{ method: organisationCheck }, ...(authedRoute.options.pre ?? [])]
+    }
+  }
 }
 
 export const router = {
@@ -65,21 +78,22 @@ export const router = {
         health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:     onboarding.openRoutes,
         signedOut:      signedOut.openRoutes,
+        signOut:        signOut.openRoutes,
         testError:      testError.openRoutes,
         // Routes that require auth
-        search:         search.authedRoutes.map((a) => addAuth(a)),
-        spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuth(a)).concat(spreadsheet.openRoutes),
-        updateSpreadsheet: updateSpreadsheet.authedRoutes.map((a) => addAuth(a)).concat(updateSpreadsheet.openRoutes),
-        dashboard:      dashboard.authedRoutes.map((a) => addAuth(a)),
-        nextAction:     nextAction.authedRoutes.map((a) => addAuth(a)),
-        apiManagement:  apiManagement.authedRoutes.map((a) => addAuth(a)),
-        account:        account.authedRoutes.map((a) => addAuth(a)),
-        serviceCharge:  serviceCharge.authedRoutes.map((a) => addAuth(a)),
-        reviewPayment:  reviewPayment.authedRoutes.map((a) => addAuth(a)),
-        initiatePayment: initiatePayment.authedRoutes.map((a) => addAuth(a)),
-        paymentDetails: paymentDetails.authedRoutes.map((a) => addAuth(a)),
-        signOut:        signOut.authedRoutes.map((a) => addAuth(a)),
-        downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuth(a)),
+        search:         search.authedRoutes.map((a) => addAuthWithOrg(a)),
+        spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(spreadsheet.openRoutes),
+        updateSpreadsheet: updateSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(updateSpreadsheet.openRoutes),
+        dashboard:      dashboard.authedRoutes.map((a) => addAuthWithOrg(a)),
+        nextAction:     nextAction.authedRoutes.map((a) => addAuthWithOrg(a)),
+        apiManagement:  apiManagement.authedRoutes.map((a) => addAuthWithOrg(a)),
+        account:        account.authedRoutes.map((a) => addAuthWithOrg(a)),
+        newAccount:     newAccount.authedRoutes.map((a) => addAuthWithOrg(a)),
+        serviceCharge:  serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a)),
+        reviewPayment:  reviewPayment.authedRoutes.map((a) => addAuthWithOrg(a)),
+        initiatePayment: initiatePayment.authedRoutes.map((a) => addAuthWithOrg(a)),
+        paymentDetails: paymentDetails.authedRoutes.map((a) => addAuthWithOrg(a)),
+        downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)),
       }).reduce((p, entry) => createPlugin(p, entry), [])
 
       // Application specific routes, add your own routes here

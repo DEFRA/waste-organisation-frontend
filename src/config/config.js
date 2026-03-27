@@ -421,6 +421,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_TEST_ERRORS'
+    },
+    newAccountPage: {
+      doc: 'Enable the new account page layout',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_NEW_ACCOUNT_PAGE'
     }
   },
   encryptionKey: {

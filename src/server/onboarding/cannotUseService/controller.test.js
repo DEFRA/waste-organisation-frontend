@@ -41,5 +41,11 @@ describe('#cannotUseServiceController', () => {
     expect(pageDescription).toEqual(
       expect.stringContaining(pageContent.heading.caption)
     )
+
+    const link = document.querySelector(
+      '[data-testid="app-heading"] .govuk-body .govuk-link'
+    )
+    expect(link.getAttribute('href')).toBe(pageContent.link.href)
+    expect(link.textContent).toBe(pageContent.link.text)
   })
 })
