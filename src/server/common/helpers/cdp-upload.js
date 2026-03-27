@@ -15,10 +15,11 @@ export const initiateUpload = async (
   { callbackPath, redirectPath, uploadType }
 ) => {
   try {
-    const { url, bucketName, preSharedKey } = config.get('fileUpload')
+    const { baseUrl, url, bucketName, preSharedKey } = config.get('fileUpload')
     const initiateUrl = `${url}/initiate`
     const callbackUrl =
-      config.get('appBaseUrl') + pathTo(callbackPath, { organisationId: orgId })
+      baseUrl.replace(/\/$/, '') +
+      pathTo(callbackPath, { organisationId: orgId })
     const redirectUrl = pathTo(redirectPath, { organisationId: orgId })
     logger.info(
       `Info initiating upload: ${initiateUrl} callback: ${callbackUrl} redirect: ${redirectUrl} bucketName: ${bucketName}`

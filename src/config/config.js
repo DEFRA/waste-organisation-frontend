@@ -88,6 +88,13 @@ export const config = convict({
       nullable: false,
       default: 'abc123',
       env: 'FILE_UPLOAD_PRESHARED_KEY'
+    },
+    baseUrl: {
+      doc: 'The base url used in the callback from CDP Uploader.',
+      format: String,
+      nullable: false,
+      default: 'http://localhost:3000',
+      env: 'FILE_UPLOAD_BASE_URL'
     }
   },
   links: {
