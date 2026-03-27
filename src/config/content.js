@@ -48,7 +48,7 @@ export const content = {
           null
         ),
         link: {
-          href: '/',
+          href: config.get('links.startPage'),
           text: 'Find out more about Digital waste tracking'
         }
       }
