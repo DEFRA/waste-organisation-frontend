@@ -1,6 +1,8 @@
 import { expect, test } from 'vitest'
 import { initialiseServer } from '../../../test-utils/initialise-server'
+import { setupAuthedUserSession } from '../../../test-utils/session-helper'
 import { paths } from '../../../config/paths'
+import { statusCodes } from '../../common/constants/status-codes'
 import { JSDOM } from 'jsdom'
 import { content } from '../../../config/content'
 
@@ -17,6 +19,18 @@ describe('ukPermit', () => {
   })
 
   describe('GET', () => {
+    test('should redirect to account if user is signed in', async () => {
+      const credentials = await setupAuthedUserSession(server)
+      const { statusCode, headers } = await server.inject({
+        method: 'GET',
+        url: paths.ukPermit,
+        auth: { strategy: 'session', credentials }
+      })
+
+      expect(statusCode).toBe(statusCodes.found)
+      expect(headers.location).toBe(paths.account)
+    })
+
     test('should render the correct content on the page', async () => {
       const { payload } = await server.inject({
         method: 'GET',
