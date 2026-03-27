@@ -67,7 +67,7 @@ export const content = {
         },
         error: {
           title: 'There is a problem',
-          message: '[REAL TEXT GOES HERE]'
+          message: 'You must select an option'
         },
         continueAction: 'Continue'
       }
