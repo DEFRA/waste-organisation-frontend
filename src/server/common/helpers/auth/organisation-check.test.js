@@ -41,7 +41,10 @@ describe('#organisationCheck', () => {
       expect.stringContaining(organisationRequiredContent.body)
     )
     expect(payload).toEqual(
-      expect.stringContaining(organisationRequiredContent.contactMessage)
+      expect.stringContaining(organisationRequiredContent.signOutInstruction)
+    )
+    expect(payload).toEqual(
+      expect.stringContaining(organisationRequiredContent.registerInstruction)
     )
     expect(document.querySelector(`a[href="${paths.signOut}"]`)).not.toBeNull()
   })
