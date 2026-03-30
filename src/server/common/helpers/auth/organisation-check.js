@@ -9,9 +9,10 @@ export function renderOrganisationRequired(request, h) {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       body: pageContent.body,
-      contactMessage: pageContent.contactMessage,
-      startPageLinkText: pageContent.startPageLinkText,
-      startPageUrl: pageContent.startPageUrl
+      signOutInstruction: pageContent.signOutInstruction,
+      registerInstruction: pageContent.registerInstruction,
+      signOutLinkText: pageContent.signOutLinkText,
+      signOutUrl: pageContent.signOutUrl
     })
     .code(statusCodes.forbidden)
 }

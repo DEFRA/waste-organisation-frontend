@@ -1,4 +1,5 @@
 import { config } from './config.js'
+import { paths } from './paths.js'
 
 const heading = (text, caption, organisationName) => ({
   text,
@@ -423,10 +424,12 @@ export const content = {
         title: 'You cannot continue on this service',
         heading: 'You cannot continue on this service',
         body: 'You will not be able to use this service because you have registered as an individual for personal use.',
-        contactMessage:
-          'If you want to continue, you will need to start again and register as a business or organisation.',
-        startPageLinkText: 'Start again',
-        startPageUrl: config.get('links.startPage')
+        signOutInstruction:
+          'If you want to continue, you will need to sign out, select the Receipt of waste service then register as a new user with a different email address.',
+        registerInstruction:
+          'Once you have created a new account, you can then register as a business or organisation.',
+        signOutLinkText: 'Sign out',
+        signOutUrl: paths.signOut
       }
     }),
   terms: (request) =>
