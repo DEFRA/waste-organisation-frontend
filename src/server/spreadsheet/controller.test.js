@@ -177,6 +177,26 @@ describe('spreadsheet upload controller', () => {
     expect(putPayload.spreadsheet.uploadType).toBe('create')
   })
 
+  test('callback passes referenceNumber metadata to backend', async () => {
+    wreckPutMock.mockReturnValue({
+      payload: { message: 'success', spreadsheet: {} }
+    })
+
+    await server.inject({
+      method: 'POST',
+      url: pathTo(paths.spreadsheetUploadCallback, {
+        organisationId: 'abc-321'
+      }),
+      payload: {
+        metadata: { preSharedKey, referenceNumber: 'ref-123' },
+        form: { thing: { fileId: '123' } }
+      }
+    })
+
+    const putPayload = wreckPutMock.mock.calls[0][1].payload
+    expect(putPayload.spreadsheet.referenceNumber).toBe('ref-123')
+  })
+
   test('callback ignores missing spreadsheets', async () => {
     wreckPutMock.mockReturnValue({
       payload: { message: 'success', spreadsheet: {} }
