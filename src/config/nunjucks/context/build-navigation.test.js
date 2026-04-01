@@ -49,7 +49,7 @@ describe('#buildNavigation', () => {
 
       expect(result).toEqual([
         {
-          text: 'Manage account',
+          text: 'Manage Defra account',
           href: config.get('auth.defraId.accountManagementUrl')
         },
         {

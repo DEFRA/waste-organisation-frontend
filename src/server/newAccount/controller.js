@@ -79,6 +79,7 @@ export const newAccountController = {
       isServiceChargeEnabled,
       isServiceChargePaid,
       switchOrganisationHref: paths.signinDefraIdCallback,
+      addOrganisationHref: paths.signinDefraIdCallback,
       serviceChargeHref: paths.serviceCharge,
       apiListHref: paths.apiList,
       reportWasteLinks

@@ -256,7 +256,15 @@ export const content = {
       en: {
         title: 'Waste receiving account',
         heading: heading('Waste receiving account', null, organisationName),
-        switchOrganisation: 'Switch organisation',
+        switchOrganisation: {
+          heading: 'Switch or add an organisation',
+          description:
+            'You can have more than one waste receiving organisation on your account.',
+          switchLinkText: 'Switch organisation',
+          switchLinkSuffix: 'to change account or',
+          addLinkText: 'add an organisation',
+          addLinkSuffix: 'if you want to register a new one.'
+        },
         importantNotice: {
           title: 'Important',
           heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
@@ -398,7 +406,7 @@ export const content = {
   manageAccount: (request) =>
     getContentForLanguage(request, {
       en: {
-        navigationLink: 'Manage account'
+        navigationLink: 'Manage Defra account'
       }
     }),
   signOut: (request) =>
