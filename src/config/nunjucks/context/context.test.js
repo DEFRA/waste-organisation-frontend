@@ -51,7 +51,7 @@ describe('context and cache', () => {
           getAssetPath: expect.any(Function),
           navigation: [],
           serviceName: 'Report receipt of waste',
-          serviceUrl: config.get('links.startPage'),
+          serviceUrl: config.get('links.account'),
           feedbackUrl: config.get('links.feedback')
         })
       })
@@ -130,7 +130,7 @@ describe('context and cache', () => {
           getAssetPath: expect.any(Function),
           navigation: [],
           serviceName: 'Report receipt of waste',
-          serviceUrl: config.get('links.startPage'),
+          serviceUrl: config.get('links.account'),
           feedbackUrl: config.get('links.feedback')
         })
       })
