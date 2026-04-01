@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="govuk-summary-card__content">
-            <ul class="govuk-list" data-testid="report-waste-links">
+            <ul class="govuk-list govuk-list--spaced" data-testid="report-waste-links">
               {% for link in reportWasteLinks %}
                 <li>
                   <a href="{{ link.href }}" class="govuk-link" data-testid="{{ link.testId }}">
