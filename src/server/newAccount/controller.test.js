@@ -82,7 +82,9 @@ describe('#newAccountController', () => {
       expect(orgName).toEqual(expect.stringContaining(organisationName))
     })
 
-    test('displays the switch organisation button', async () => {
+    test('displays the switch or add an organisation section', async () => {
+      const pageContent = content.newAccount({}, organisationName)
+
       const { payload } = await server.inject({
         method: 'GET',
         url: paths.newAccount,
@@ -94,13 +96,29 @@ describe('#newAccountController', () => {
 
       const { document } = new JSDOM(payload).window
 
-      const switchButton = document.querySelector(
-        '[data-testid="switch-organisation-button"]'
+      expect(payload).toEqual(
+        expect.stringContaining(pageContent.switchOrganisation.heading)
+      )
+      expect(payload).toEqual(
+        expect.stringContaining(pageContent.switchOrganisation.description)
       )
 
-      expect(switchButton).not.toBeNull()
-      expect(switchButton.getAttribute('href')).toBe(
-        paths.signinDefraIdCallback
+      const switchLink = document.querySelector(
+        '[data-testid="switch-organisation-link"]'
+      )
+      expect(switchLink).not.toBeNull()
+      expect(switchLink.getAttribute('href')).toBe(paths.signinDefraIdCallback)
+      expect(switchLink.textContent).toEqual(
+        expect.stringContaining(pageContent.switchOrganisation.switchLinkText)
+      )
+
+      const addLink = document.querySelector(
+        '[data-testid="add-organisation-link"]'
+      )
+      expect(addLink).not.toBeNull()
+      expect(addLink.getAttribute('href')).toBe(paths.signinDefraIdCallback)
+      expect(addLink.textContent).toEqual(
+        expect.stringContaining(pageContent.switchOrganisation.addLinkText)
       )
     })
 

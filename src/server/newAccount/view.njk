@@ -32,15 +32,6 @@
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        {{ govukButton({
-          text: switchOrganisation,
-          classes: "govuk-button--secondary",
-          href: switchOrganisationHref,
-          attributes: {
-            "data-testid": "switch-organisation-button"
-          }
-        }) }}
-
         {{ appHeading(heading) }}
       </div>
     </div>
@@ -125,6 +116,16 @@
             {% endif %}
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="govuk-grid-row govuk-!-margin-top-8">
+      <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-m">{{ switchOrganisation.heading }}</h2>
+        <p class="govuk-body">{{ switchOrganisation.description }}</p>
+        <p class="govuk-body">
+          <a href="{{ switchOrganisationHref }}" class="govuk-link" data-testid="switch-organisation-link">{{ switchOrganisation.switchLinkText }}</a> {{ switchOrganisation.switchLinkSuffix }} <a href="{{ addOrganisationHref }}" class="govuk-link" data-testid="add-organisation-link">{{ switchOrganisation.addLinkText }}</a> {{ switchOrganisation.addLinkSuffix }}
+        </p>
       </div>
     </div>
   </div>
