@@ -104,6 +104,12 @@ export const config = convict({
       default: '/start-page',
       env: 'LINK_GUIDANCE_START_PAGE'
     },
+    account: {
+      doc: 'Link to account page',
+      format: String,
+      default: '/account',
+      env: 'LINK_ACCOUNT_PAGE'
+    },
     feedback: {
       doc: 'Link to feedback page',
       format: String,
