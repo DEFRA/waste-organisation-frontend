@@ -398,7 +398,7 @@ export const content = {
   manageAccount: (request) =>
     getContentForLanguage(request, {
       en: {
-        navigationLink: 'Manage account'
+        navigationLink: 'Manage Defra account'
       }
     }),
   signOut: (request) =>
