@@ -76,6 +76,8 @@ function createUserProfile(strategy) {
     enrolmentCount: 1,
     enrolmentRequestCount: 1,
     currentRelationshipId: 1,
+    currentOrganisationId: crypto.randomUUID(),
+    currentOrganisationName: 'Test Organisation',
     relationships: '1:1:Defra:0:undefined:0',
     roles: '',
     isAuthenticated: true,

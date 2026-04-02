@@ -1,0 +1,131 @@
+{% extends 'layouts/page.njk' %}
+
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% block content %}
+  <div class="govuk-!-margin-bottom-6">
+    {% if isServiceChargeEnabled and not isServiceChargePaid %}
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-4">
+          {% set importantNoticeHtml %}
+            <p class="govuk-notification-banner__heading">{{ importantNotice.heading }}</p>
+            <p class="govuk-body">
+              {{ importantNotice.bodyPrefix }}
+              <a href="{{ apiListHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="important-notice-api-link">
+                {{ importantNotice.manageApiCode }}
+              </a>{{ importantNotice.bodySuffix }}
+            </p>
+          {% endset %}
+
+          {{ govukNotificationBanner({
+            titleText: importantNotice.title,
+            html: importantNoticeHtml,
+            attributes: {
+              "data-testid": "service-charge-important-notice"
+            }
+          }) }}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {{ appHeading(heading) }}
+      </div>
+    </div>
+
+    <div class="govuk-grid-row app-task-cards govuk-!-margin-top-8" data-testid="account-cards">
+      <div class="govuk-grid-column-one-half">
+        <div class="govuk-summary-card govuk-!-margin-bottom-4">
+          <div class="govuk-summary-card__title-wrapper">
+            <div>
+              <h2 class="govuk-summary-card__title" data-testid="report-waste-heading">
+                {{ cards.reportWaste.text }}
+              </h2>
+              <p class="govuk-body-s govuk-!-margin-bottom-0" data-testid="report-waste-description">
+                {{ cards.reportWaste.description }}
+              </p>
+            </div>
+          </div>
+          <div class="govuk-summary-card__content">
+            <ul class="govuk-list govuk-list--spaced" data-testid="report-waste-links">
+              {% for link in reportWasteLinks %}
+                <li>
+                  <a href="{{ link.href }}" class="govuk-link" data-testid="{{ link.testId }}">
+                    {{ link.text }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-grid-column-one-half">
+        <div class="govuk-summary-card govuk-!-margin-bottom-4">
+          <div class="govuk-summary-card__title-wrapper">
+            <div>
+              <h2 class="govuk-summary-card__title govuk-!-margin-bottom-3" data-testid="service-charge-heading">
+                {{ cards.serviceCharge.text }}
+              </h2>
+              <p class="govuk-body-s govuk-!-margin-bottom-0" data-testid="service-charge-description">
+                {{ cards.serviceCharge.description }}
+              </p>
+            </div>
+            <div class="app-task-cards__status">
+              {% if isServiceChargeEnabled %}
+                {% if isServiceChargePaid %}
+                  {{ govukTag({
+                    text: cards.serviceCharge.paidTag,
+                    classes: "govuk-tag--green"
+                  }) }}
+                {% else %}
+                  {{ govukTag({
+                    text: cards.serviceCharge.paymentDueTag,
+                    classes: "govuk-tag--red",
+                    attributes: {
+                      "data-testid": "service-charge-payment-due"
+                    }
+                  }) }}
+                {% endif %}
+              {% else %}
+                {{ govukTag({
+                  text: cards.serviceCharge.tag,
+                  classes: "govuk-tag--yellow",
+                  attributes: {
+                    "data-testid": "service-charge-due-date"
+                  }
+                }) }}
+              {% endif %}
+            </div>
+          </div>
+          <div class="govuk-summary-card__content">
+            {% if isServiceChargeEnabled %}
+              {% if isServiceChargePaid %}
+                <p class="govuk-body govuk-!-margin-bottom-0" data-testid="service-charge-next-payment-due">
+                  {{ cards.serviceCharge.nextPaymentDue }}
+                </p>
+              {% else %}
+                <p class="govuk-body">
+                  <a href="{{ serviceChargeHref }}" class="govuk-link" data-testid="service-charge-link">
+                    {{ cards.serviceCharge.payServiceCharge }}
+                  </a>
+                </p>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="govuk-grid-row govuk-!-margin-top-8">
+      <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-m">{{ switchOrganisation.heading }}</h2>
+        <p class="govuk-body">{{ switchOrganisation.description }}</p>
+        <p class="govuk-body">
+          <a href="{{ switchOrganisationHref }}" class="govuk-link" data-testid="switch-organisation-link">{{ switchOrganisation.switchLinkText }}</a> {{ switchOrganisation.switchLinkSuffix }} <a href="{{ addOrganisationHref }}" class="govuk-link" data-testid="add-organisation-link">{{ switchOrganisation.addLinkText }}</a> {{ switchOrganisation.addLinkSuffix }}
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

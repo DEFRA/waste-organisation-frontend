@@ -104,6 +104,12 @@ export const config = convict({
       default: '/start-page',
       env: 'LINK_GUIDANCE_START_PAGE'
     },
+    account: {
+      doc: 'Link to account page',
+      format: String,
+      default: '/account',
+      env: 'LINK_ACCOUNT_PAGE'
+    },
     feedback: {
       doc: 'Link to feedback page',
       format: String,
@@ -439,6 +445,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_TEST_ERRORS'
+    },
+    newAccountPage: {
+      doc: 'Enable the new account page layout',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_NEW_ACCOUNT_PAGE'
     }
   },
   encryptionKey: {
