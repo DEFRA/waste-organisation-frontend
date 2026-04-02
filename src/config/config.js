@@ -384,6 +384,24 @@ export const config = convict({
         default: 'code'
       }
     },
+    basic: {
+      username: {
+        doc: 'HTTP Basic auth username for environment access',
+        format: String,
+        nullable: true,
+        default: null,
+        env: 'BASIC_AUTH_USERNAME',
+        sensitive: true
+      },
+      password: {
+        doc: 'HTTP Basic auth password for environment access',
+        format: String,
+        nullable: true,
+        default: null,
+        env: 'BASIC_AUTH_PASSWORD',
+        sensitive: true
+      }
+    },
     origins: {
       doc: 'Auth provider origins for CSP header seperated by space',
       format: 'space-separated-string',
