@@ -56,7 +56,10 @@ describe('#basicAuth', () => {
       await server.stop({ timeout: 0 })
     })
 
-    test('requests to cdp uploader callback do not get 401', async () => {
+    test.each([
+      '/organisation/organisationId-123/update-spreadsheet/upload-callback',
+      '/organisation/organisationId-123/spreadsheet/upload-callback'
+    ])('requests to cdp uploader callback do not get 401', async (url) => {
       const preSharedKey = 'abc123'
       config.set('fileUpload.preSharedKey', preSharedKey)
 
@@ -64,7 +67,7 @@ describe('#basicAuth', () => {
 
       const r1 = await server.inject({
         method: 'POST',
-        url: '/organisation/organisationId-123/update-spreadsheet/upload-callback',
+        url,
         payload: { metadata: { preSharedKey } }
       })
 
@@ -72,7 +75,7 @@ describe('#basicAuth', () => {
 
       const { statusCode } = await server.inject({
         method: 'POST',
-        url: '/organisation/organisationId-123/update-spreadsheet/upload-callback',
+        url,
         payload: { metadata: { preSharedKey: 'bork' } }
       })
 

@@ -48,7 +48,7 @@ export const basicAuth = {
       }
 
       const callbackRe = new RegExp(
-        paths.updateSpreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')
+        `${paths.updateSpreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.spreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}`
       )
 
       server.ext('onRequest', (request, h) => {
