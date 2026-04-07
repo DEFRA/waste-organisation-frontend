@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto'
 import { Buffer } from 'node:buffer'
-
+import { paths } from '../../../../config/paths.js'
 import { config } from '../../../../config/config.js'
 
 function safeEqual(a, b) {
@@ -47,9 +47,18 @@ export const basicAuth = {
         return
       }
 
+      const callbackRe = new RegExp(
+        paths.updateSpreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')
+      )
+
       server.ext('onRequest', (request, h) => {
         if (
-          isValidCredentials(request.headers.authorization, username, password)
+          isValidCredentials(
+            request.headers.authorization,
+            username,
+            password
+          ) ||
+          request?.path?.match(callbackRe)
         ) {
           return h.continue
         }
