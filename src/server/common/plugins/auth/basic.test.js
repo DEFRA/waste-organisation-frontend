@@ -1,6 +1,4 @@
-import hapi from '@hapi/hapi'
 import { statusCodes } from '../../constants/status-codes.js'
-import { basicAuth } from './basic.js'
 import { config } from '../../../../config/config.js'
 import { initialiseServer } from '../../../../test-utils/initialise-server.js'
 
