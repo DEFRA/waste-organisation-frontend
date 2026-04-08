@@ -145,25 +145,6 @@ describe('#nextActionController', () => {
     expect(changeWasteReceiverRadio).toBeNull()
   })
 
-  test('should hide updateSpreadsheet option when feature flag is off', async () => {
-    const { payload } = await server.inject({
-      method: 'GET',
-      url: paths.nextAction,
-      auth: {
-        strategy: 'session',
-        credentials
-      }
-    })
-
-    const { document } = new JSDOM(payload).window
-
-    const updateSpreadsheetRadio = document.querySelector(
-      '[data-testid="updateSpreadsheet-radio"]'
-    )
-
-    expect(updateSpreadsheetRadio).toBeNull()
-  })
-
   test('should show error message if there is an error', async () => {
     const expectedErrorMessage = pageContent.error.message
     server.injectYarState({ type: 'isNextActionError', message: true })

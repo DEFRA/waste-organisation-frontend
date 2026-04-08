@@ -23,15 +23,9 @@ export const nextActionController = {
         errorContent = pageContent.error
       }
 
-      const isUpdateSpreadsheetEnabled = config.get(
-        'featureFlags.updateSpreadsheet'
-      )
       const isAccountPageEnabled = config.get('featureFlags.accountPage')
 
       const questions = Object.entries(pageContent.questions)
-        .filter(
-          ([key]) => key !== 'updateSpreadsheet' || isUpdateSpreadsheetEnabled
-        )
         .filter(
           ([key]) => key !== 'changeWasteReceiver' || !isAccountPageEnabled
         )

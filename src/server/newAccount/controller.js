@@ -16,13 +16,8 @@ export const newAccountController = {
     }
 
     const isServiceChargeEnabled = config.get('featureFlags.serviceCharge')
-    const isUpdateSpreadsheetEnabled = config.get(
-      'featureFlags.updateSpreadsheet'
-    )
-
     const organisationName = request?.auth?.credentials?.currentOrganisationName
     const organisationId = request?.auth?.credentials?.currentOrganisationId
-
     const pageContent = content.newAccount(request, organisationName)
     const [paymentStatus] = request.yar.flash(paymentStatusFlash)
 
@@ -60,9 +55,6 @@ export const newAccountController = {
     ])
 
     const reportWasteLinks = Object.entries(pageContent.cards.reportWaste.links)
-      .filter(
-        ([key]) => key !== 'updateSpreadsheet' || isUpdateSpreadsheetEnabled
-      )
       .filter(([key]) => !requiresOrganisation.has(key) || organisationId)
       .map(([key, text]) => ({
         text,
