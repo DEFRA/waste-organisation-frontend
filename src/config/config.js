@@ -416,12 +416,6 @@ export const config = convict({
     }
   },
   featureFlags: {
-    updateSpreadsheet: {
-      doc: 'Enable the update spreadsheet feature',
-      format: Boolean,
-      default: false,
-      env: 'FEATURE_FLAG_UPDATE_SPREADSHEET'
-    },
     accountPage: {
       doc: 'Enable the account page as post-login landing page',
       format: Boolean,
