@@ -4,7 +4,6 @@ import { config } from '../../../../config/config.js'
 import { validateUserSession } from '../../helpers/auth/user-session.js'
 
 const sessionConfig = config.get('session')
-const isServiceChargeEnabled = config.get('featureFlags.serviceCharge')
 
 export const userSession = {
   plugin: {
@@ -16,9 +15,7 @@ export const userSession = {
           name: 'userSession',
           path: '/',
           password: sessionConfig.cookie.password,
-          ...(isServiceChargeEnabled && {
-            isSameSite: sessionConfig.cookie.sameSite
-          }),
+          isSameSite: sessionConfig.cookie.sameSite,
           isSecure: sessionConfig.cookie.secure,
           ttl: sessionConfig.cookie.ttl
         },

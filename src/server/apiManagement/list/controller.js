@@ -47,7 +47,7 @@ export const apiManagementController = {
         heading: pageContent.heading,
         backLink: paths.nextAction,
         noEnabledApiCodes: pageContent.noEnabledApiCodes,
-        apiCodeRows: convertToListRows(enabledApiCodes),
+        apiCodeRows: convertToListRows(enabledApiCodes, pageContent.changeName),
         disabledApiCodeRows: disabledApiCodes,
         additionalCode: pageContent.additionalCode,
         returnAction: pageContent.returnAction,
@@ -68,7 +68,7 @@ export const apiManagementController = {
   }
 }
 
-const convertToListRows = (apiCodes) => {
+const convertToListRows = (apiCodes, changeNameContent) => {
   const rows = []
 
   for (const [index, apiCode] of apiCodes.entries()) {
@@ -101,6 +101,15 @@ const convertToListRows = (apiCodes) => {
       },
       value: {
         text: apiCode.name
+      },
+      actions: {
+        items: [
+          {
+            href: pathTo(paths.apiChangeName, { apiCode: apiCode.code }),
+            text: changeNameContent.action,
+            visuallyHiddenText: `${changeNameContent.hiddenText} ${apiCode.name}`
+          }
+        ]
       }
     }
 

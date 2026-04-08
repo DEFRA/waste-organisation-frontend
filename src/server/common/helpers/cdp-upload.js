@@ -1,4 +1,5 @@
 /* v8 ignore start - covered by integration tests but v8 coverage merge across test files misattributes */
+import { randomUUID } from 'node:crypto'
 import wreck from '@hapi/wreck'
 import boom from '@hapi/boom'
 import { config } from '../../../config/config.js'
@@ -25,6 +26,7 @@ export const initiateUpload = async (
       `Info initiating upload: ${initiateUrl} callback: ${callbackUrl} redirect: ${redirectUrl} bucketName: ${bucketName}`
     )
 
+    const referenceNumber = randomUUID()
     const encryptedEmail = encrypt(email, config.get('encryptionKey'))
     const encryptedName = encrypt(
       JSON.stringify(name),
@@ -41,7 +43,8 @@ export const initiateUpload = async (
           preSharedKey,
           encryptedEmail,
           encryptedName,
-          uploadType
+          uploadType,
+          referenceNumber
         },
         mimeTypes: [
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -49,7 +52,7 @@ export const initiateUpload = async (
         maxFileSize: 2 * 1000 * 1000 //2MB
       }
     })
-    return payload
+    return { ...payload, referenceNumber }
   } catch (e) {
     logger.error(`Error initiating upload - ${e}`)
     logger.error(`Error payload - ${e.payload}`)
@@ -90,8 +93,8 @@ export const createCallbackHandler = () => ({
     for (const spreadsheet of Object.values(spreadsheets)) {
       spreadsheet.encryptedEmail = request.payload?.metadata?.encryptedEmail
       spreadsheet.encryptedName = request.payload?.metadata?.encryptedName
-
       spreadsheet.uploadType = request.payload?.metadata?.uploadType
+      spreadsheet.referenceNumber = request.payload?.metadata?.referenceNumber
       const s = await saveSpreadsheet(
         request.backendApi,
         request.params.organisationId,

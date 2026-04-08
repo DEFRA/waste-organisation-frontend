@@ -1,4 +1,5 @@
 import { config } from './config.js'
+import { paths } from './paths.js'
 
 const heading = (text, caption, organisationName) => ({
   text,
@@ -48,7 +49,7 @@ export const content = {
           null
         ),
         link: {
-          href: '/',
+          href: config.get('links.startPage'),
           text: 'Find out more about Digital waste tracking'
         }
       }
@@ -67,7 +68,7 @@ export const content = {
         },
         error: {
           title: 'There is a problem',
-          message: '[REAL TEXT GOES HERE]'
+          message: 'You must select an option'
         },
         continueAction: 'Continue'
       }
@@ -94,7 +95,30 @@ export const content = {
             post: 'cannot be used to send any new waste movements.'
           }
         }),
-        returnAction: `Return to ${organisationName}`
+        returnAction: `Return to ${organisationName}`,
+        changeName: {
+          action: 'Change',
+          hiddenText: 'name for'
+        }
+      }
+    }),
+  apiChangeName: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Change API code name',
+        heading: heading('Change API code name', null, organisationName),
+        label: 'API code name',
+        hint: 'You can change the name of the API by overwriting the existing one.',
+        error: {
+          title: 'There is a problem',
+          message: 'Enter a name for your API code'
+        },
+        updateError: {
+          title: 'There is a problem',
+          message: 'The API code name could not be updated. Try again.'
+        },
+        errorPrefix: 'Error',
+        saveAction: 'Save and continue'
       }
     }),
   apiDisable: (request, organisationName) =>
@@ -227,6 +251,53 @@ export const content = {
         }
       }
     }),
+  newAccount: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Waste receiving account',
+        heading: heading('Waste receiving account', null, organisationName),
+        switchOrganisation: {
+          heading: 'Switch or add an organisation',
+          description:
+            'You can have more than one waste receiving organisation on your account.',
+          switchLinkText: 'Switch organisation',
+          switchLinkSuffix: 'to change account or',
+          addLinkText: 'add an organisation',
+          addLinkSuffix: 'if you want to register a new one.'
+        },
+        importantNotice: {
+          title: 'Important',
+          heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
+          bodyPrefix: 'You can still',
+          manageApiCode: 'manage your API code',
+          bodySuffix:
+            ', but you will not be able to use it to send data to the regulators.'
+        },
+        cards: {
+          reportWaste: {
+            text: 'Report receipt of waste',
+            description:
+              'Upload a spreadsheet or connect your software to report your waste movements.',
+            links: {
+              connectYourSoftware: 'Manage my API code',
+              downloadSpreadsheet: 'Download spreadsheet template',
+              uploadSpreadsheet: 'Upload a spreadsheet',
+              updateSpreadsheet:
+                'Upload a spreadsheet that has Waste tracking IDs'
+            }
+          },
+          serviceCharge: {
+            text: 'Service charge',
+            description: 'Pay your annual service charge to use this service.',
+            tag: 'Due October 2026',
+            paymentDueTag: 'Payment due',
+            payServiceCharge: 'Pay service charge',
+            paidTag: 'Paid',
+            nextPaymentDue: 'Next payment due October 2027'
+          }
+        }
+      }
+    }),
   serviceCharge: (request) =>
     getContentForLanguage(request, {
       en: {
@@ -332,6 +403,12 @@ export const content = {
         signInButton: 'Sign in'
       }
     }),
+  manageAccount: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        navigationLink: 'Manage Defra account'
+      }
+    }),
   signOut: (request) =>
     getContentForLanguage(request, {
       en: {
@@ -347,6 +424,20 @@ export const content = {
         title: 'You have been signed out',
         heading: 'You have been signed out',
         signInButton: 'Sign in'
+      }
+    }),
+  organisationRequired: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'You cannot continue on this service',
+        heading: 'You cannot continue on this service',
+        body: 'You will not be able to use this service because you have registered as an individual for personal use.',
+        signOutInstruction:
+          'If you want to continue, you will need to sign out, select the Receipt of waste service then register as a new user with a different email address.',
+        registerInstruction:
+          'Once you have created a new account, you can then register as a business or organisation.',
+        signOutLinkText: 'Sign out',
+        signOutUrl: paths.signOut
       }
     }),
   terms: (request) =>

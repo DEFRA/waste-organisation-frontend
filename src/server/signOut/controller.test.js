@@ -54,12 +54,13 @@ describe('#signOutController', () => {
     expect(cachedSession).toBeNull()
   })
 
-  test('Should return 401 when not authenticated', async () => {
-    const { statusCode } = await server.inject({
+  test('Should redirect to signed-out page when no session exists', async () => {
+    const { statusCode, headers } = await server.inject({
       method: 'GET',
       url: paths.signOut
     })
 
-    expect(statusCode).toBe(statusCodes.unauthorized)
+    expect(statusCode).toBe(statusCodes.found)
+    expect(headers.location).toBe(paths.signedOut)
   })
 })
