@@ -428,12 +428,6 @@ export const config = convict({
       default: false,
       env: 'FEATURE_FLAG_SERVICE_CHARGE'
     },
-    testErrors: {
-      doc: 'Enable test error routes for verifying error pages',
-      format: Boolean,
-      default: false,
-      env: 'FEATURE_FLAG_TEST_ERRORS'
-    },
     newAccountPage: {
       doc: 'Enable the new account page layout',
       format: Boolean,

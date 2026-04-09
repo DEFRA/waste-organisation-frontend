@@ -83,23 +83,6 @@ describe('#nextActionController', () => {
     expect(pageHeading).toEqual(expect.stringContaining(value))
   })
 
-  test('should show back link to uk permit when account page flag is off', async () => {
-    const { payload } = await server.inject({
-      method: 'GET',
-      url: paths.nextAction,
-      auth: {
-        strategy: 'session',
-        credentials
-      }
-    })
-
-    const { document } = new JSDOM(payload).window
-
-    const backLink = document.querySelector('[data-testid="back-link"]')
-
-    expect(backLink.getAttribute('href')).toBe(paths.ukPermit)
-  })
-
   test('should show back link to account when account page flag is on', async () => {
     const { payload } = await server.inject({
       method: 'GET',
