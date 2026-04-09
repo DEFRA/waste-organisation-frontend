@@ -1,4 +1,3 @@
-import { config } from '../../config/config.js'
 import { content } from '../../config/content.js'
 import { paths, pathTo } from '../../config/paths.js'
 import joi from 'joi'
@@ -23,13 +22,8 @@ export const nextActionController = {
         errorContent = pageContent.error
       }
 
-      const isAccountPageEnabled = config.get('featureFlags.accountPage')
-
-      const questions = Object.entries(pageContent.questions)
-        .filter(
-          ([key]) => key !== 'changeWasteReceiver' || !isAccountPageEnabled
-        )
-        .map((question) => {
+      const questions = Object.entries(pageContent.questions).map(
+        (question) => {
           const [key, value] = question
           return {
             value: key,
@@ -44,7 +38,8 @@ export const nextActionController = {
               }
             }
           }
-        })
+        }
+      )
 
       return h.view('nextAction/view', {
         pageTitle: pageContent.title,
@@ -57,9 +52,7 @@ export const nextActionController = {
         },
         questions,
         error: errorContent,
-        backLink: config.get('featureFlags.accountPage')
-          ? paths.account
-          : paths.ukPermit
+        backLink: paths.account
       })
     }
   },

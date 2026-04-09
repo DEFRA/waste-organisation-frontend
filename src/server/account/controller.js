@@ -9,10 +9,6 @@ const serviceChargeStatusPaid = 'paid'
 
 export const accountController = {
   handler(request, h) {
-    if (!config.get('featureFlags.accountPage')) {
-      return h.redirect(paths.nextAction)
-    }
-
     const isServiceChargeEnabled = config.get('featureFlags.serviceCharge')
 
     const organisationName = request?.auth?.credentials?.currentOrganisationName

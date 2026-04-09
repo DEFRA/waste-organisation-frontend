@@ -416,12 +416,6 @@ export const config = convict({
     }
   },
   featureFlags: {
-    accountPage: {
-      doc: 'Enable the account page as post-login landing page',
-      format: Boolean,
-      default: false,
-      env: 'FEATURE_FLAG_ACCOUNT_PAGE'
-    },
     searchPage: {
       doc: 'Enable the search page',
       format: Boolean,

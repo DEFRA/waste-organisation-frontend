@@ -63,8 +63,7 @@ export const content = {
           connectYourSoftware: 'Manage my API code',
           downloadSpreadsheet: 'Download spreadsheet template',
           uploadSpreadsheet: 'Upload a spreadsheet',
-          updateSpreadsheet: 'Upload a spreadsheet that has Waste tracking IDs',
-          changeWasteReceiver: 'Choose another waste receiver in my account'
+          updateSpreadsheet: 'Upload a spreadsheet that has Waste tracking IDs'
         },
         error: {
           title: 'There is a problem',
