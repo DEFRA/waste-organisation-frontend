@@ -22,7 +22,6 @@ describe('#newAccountController', () => {
     beforeEach(async () => {
       config.set('featureFlags.newAccountPage', true)
       config.set('featureFlags.serviceCharge', true)
-      config.set('featureFlags.updateSpreadsheet', true)
       server = await initialiseServer()
       credentials = await setupAuthedUserSession(server)
       credentials.currentOrganisationName = organisationName
@@ -32,7 +31,6 @@ describe('#newAccountController', () => {
     afterEach(() => {
       config.set('featureFlags.newAccountPage', false)
       config.set('featureFlags.serviceCharge', false)
-      config.set('featureFlags.updateSpreadsheet', false)
     })
 
     test('returns 200 with correct page title and heading', async () => {
@@ -186,31 +184,6 @@ describe('#newAccountController', () => {
       expect(updateLink.getAttribute('href')).toBe(
         pathTo(paths.updateSpreadsheetUpload, { organisationId })
       )
-    })
-
-    test('hides update spreadsheet link when its feature flag is disabled', async () => {
-      config.set('featureFlags.updateSpreadsheet', false)
-
-      const { payload } = await server.inject({
-        method: 'GET',
-        url: paths.newAccount,
-        auth: {
-          strategy: 'session',
-          credentials
-        }
-      })
-
-      const { document } = new JSDOM(payload).window
-
-      const updateLink = document.querySelector(
-        '[data-testid="report-waste-updateSpreadsheet-link"]'
-      )
-      expect(updateLink).toBeNull()
-
-      const uploadLink = document.querySelector(
-        '[data-testid="report-waste-uploadSpreadsheet-link"]'
-      )
-      expect(uploadLink).not.toBeNull()
     })
 
     test('returns 403 when organisationId is missing', async () => {

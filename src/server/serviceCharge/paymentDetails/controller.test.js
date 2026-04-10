@@ -16,13 +16,11 @@ describe('#paymentDetailsController', () => {
   let credentials
 
   beforeAll(async () => {
-    config.set('featureFlags.accountPage', true)
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
   })
 
   afterAll(async () => {
-    config.set('featureFlags.accountPage', false)
     config.set('featureFlags.serviceCharge', false)
     await server.stop({ timeout: 0 })
   })

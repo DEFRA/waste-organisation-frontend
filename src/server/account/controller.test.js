@@ -19,7 +19,6 @@ describe('#accountController', () => {
 
   describe('when feature flag is enabled', () => {
     beforeEach(async () => {
-      config.set('featureFlags.accountPage', true)
       config.set('featureFlags.serviceCharge', true)
       server = await initialiseServer()
       credentials = await setupAuthedUserSession(server)
@@ -28,7 +27,6 @@ describe('#accountController', () => {
     })
 
     afterEach(() => {
-      config.set('featureFlags.accountPage', false)
       config.set('featureFlags.serviceCharge', false)
     })
 
@@ -255,31 +253,8 @@ describe('#accountController', () => {
     })
   })
 
-  describe('when feature flag is disabled', () => {
-    beforeEach(async () => {
-      config.set('featureFlags.accountPage', false)
-      server = await initialiseServer()
-      credentials = await setupAuthedUserSession(server)
-    })
-
-    test('redirects to next action page', async () => {
-      const { statusCode, headers } = await server.inject({
-        method: 'GET',
-        url: paths.account,
-        auth: {
-          strategy: 'session',
-          credentials
-        }
-      })
-
-      expect(statusCode).toBe(statusCodes.found)
-      expect(headers.location).toBe(paths.nextAction)
-    })
-  })
-
   describe('when service charge feature flag is disabled', () => {
     beforeEach(async () => {
-      config.set('featureFlags.accountPage', true)
       config.set('featureFlags.serviceCharge', false)
       server = await initialiseServer()
       credentials = await setupAuthedUserSession(server)
@@ -288,7 +263,6 @@ describe('#accountController', () => {
     })
 
     afterEach(() => {
-      config.set('featureFlags.accountPage', false)
       config.set('featureFlags.serviceCharge', false)
     })
 
@@ -345,13 +319,11 @@ describe('#accountController', () => {
 
   describe('when not authenticated', () => {
     beforeEach(async () => {
-      config.set('featureFlags.accountPage', true)
       config.set('featureFlags.serviceCharge', true)
       server = await initialiseServer()
     })
 
     afterEach(() => {
-      config.set('featureFlags.accountPage', false)
       config.set('featureFlags.serviceCharge', false)
     })
 

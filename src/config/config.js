@@ -416,18 +416,6 @@ export const config = convict({
     }
   },
   featureFlags: {
-    updateSpreadsheet: {
-      doc: 'Enable the update spreadsheet feature',
-      format: Boolean,
-      default: false,
-      env: 'FEATURE_FLAG_UPDATE_SPREADSHEET'
-    },
-    accountPage: {
-      doc: 'Enable the account page as post-login landing page',
-      format: Boolean,
-      default: false,
-      env: 'FEATURE_FLAG_ACCOUNT_PAGE'
-    },
     searchPage: {
       doc: 'Enable the search page',
       format: Boolean,
@@ -439,12 +427,6 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_SERVICE_CHARGE'
-    },
-    testErrors: {
-      doc: 'Enable test error routes for verifying error pages',
-      format: Boolean,
-      default: false,
-      env: 'FEATURE_FLAG_TEST_ERRORS'
     },
     newAccountPage: {
       doc: 'Enable the new account page layout',

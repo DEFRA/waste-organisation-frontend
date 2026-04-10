@@ -51,14 +51,9 @@ describe('#searchController', () => {
 
       expect(result).toEqual(expect.stringContaining('Feature flags'))
       expect(result).toEqual(expect.stringContaining('searchPage'))
-      expect(result).toEqual(expect.stringContaining('updateSpreadsheet'))
-      expect(result).toEqual(expect.stringContaining('accountPage'))
       expect(result).toEqual(expect.stringContaining('serviceCharge'))
       expect(result).toEqual(
         expect.stringContaining('FEATURE_FLAG_SEARCH_PAGE')
-      )
-      expect(result).toEqual(
-        expect.stringContaining('FEATURE_FLAG_UPDATE_SPREADSHEET')
       )
       expect(result).toEqual(expect.stringContaining('Enabled'))
       expect(result).toEqual(expect.stringContaining('Disabled'))

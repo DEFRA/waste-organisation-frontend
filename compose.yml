@@ -198,7 +198,6 @@ services:
       BACKEND_API_PRESHARED_KEY: test
       GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       GOVPAY_API_URL: ${GOVPAY_API_URL:-https://publicapi.payments.service.gov.uk/v1}
-      FEATURE_FLAG_UPDATE_SPREADSHEET: true
       FEATURE_FLAG_ACCOUNT_PAGE: true
       FEATURE_FLAG_SERVICE_CHARGE: true
       FEATURE_FLAG_SEARCH_PAGE: true

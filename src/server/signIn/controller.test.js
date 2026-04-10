@@ -14,7 +14,6 @@ describe('signIn', () => {
   })
 
   afterEach(async () => {
-    config.set('featureFlags.accountPage', false)
     await server.stop()
   })
 
@@ -45,29 +44,8 @@ describe('signIn', () => {
   )
 
   test.each([{ url: paths.signinDefraIdCallback, strategy: 'defraId' }])(
-    'user redirected to next action when logged in and account page flag is off',
+    'user redirected to account page when logged in',
     async ({ url, strategy }) => {
-      const credentials = await setupAuthedUserSession(server)
-
-      const { headers, statusCode } = await server.inject({
-        method: 'get',
-        url,
-        auth: {
-          strategy,
-          credentials
-        }
-      })
-
-      expect(statusCode).toBe(302)
-      expect(headers.location).toBe(paths.nextAction)
-    }
-  )
-
-  test.each([{ url: paths.signinDefraIdCallback, strategy: 'defraId' }])(
-    'user redirected to account when logged in and account page flag is on',
-    async ({ url, strategy }) => {
-      config.set('featureFlags.accountPage', true)
-
       const credentials = await setupAuthedUserSession(server)
 
       const { headers, statusCode } = await server.inject({

@@ -25,7 +25,6 @@ import { initiatePayment } from './serviceCharge/initiatePayment/index.js'
 import { paymentDetails } from './serviceCharge/paymentDetails/index.js'
 import { signOut } from './signOut/index.js'
 import { signedOut } from './signedOut/index.js'
-import { testError } from './testError/index.js'
 import { organisationCheck } from './common/helpers/auth/organisation-check.js'
 
 const createPlugin = (plugins, [item, routes]) => {
@@ -79,7 +78,6 @@ export const router = {
         onboarding:     onboarding.openRoutes,
         signedOut:      signedOut.openRoutes,
         signOut:        signOut.openRoutes,
-        testError:      testError.openRoutes,
         // Routes that require auth
         search:         search.authedRoutes.map((a) => addAuthWithOrg(a)),
         spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(spreadsheet.openRoutes),
