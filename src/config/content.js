@@ -192,22 +192,6 @@ export const content = {
         continueAction: 'Continue'
       }
     }),
-  updateSpreadsheetUploaded: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Update spreadsheet',
-        heading: heading('Spreadsheet update successful', null, null),
-        content: {
-          heading: 'What happens next',
-          text: [
-            'We have received your updated receipt of waste spreadsheet.',
-            'We need to check for viruses and errors.',
-            'Once we complete the checks, we will send you a confirmation email.'
-          ]
-        },
-        returnLink: `Return to ${organisationName}`
-      }
-    }),
   downloadSpreadsheet: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
