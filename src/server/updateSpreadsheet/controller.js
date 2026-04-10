@@ -58,10 +58,7 @@ export const fileUploaded = {
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
     const uploadData = request.yar.get(uploadSessionName)
-    const pageContent = content.updateSpreadsheetUploaded(
-      request,
-      organisationName
-    )
+    const pageContent = content.spreadsheetUploaded(request, organisationName)
 
     return h.view('updateSpreadsheet/file-uploaded', {
       pageTitle: pageContent.heading.text,

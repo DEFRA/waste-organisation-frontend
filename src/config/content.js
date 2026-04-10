@@ -166,14 +166,14 @@ export const content = {
     getContentForLanguage(request, {
       en: {
         title: 'Upload spreadsheet',
-        heading: heading('Spreadsheet upload successful', null, null),
+        heading: heading('Spreadsheet uploaded', null, null),
         content: {
           heading: 'What happens next',
           text: [
-            'We have received your receipt of waste spreadsheet.',
-            'We need to check for viruses and errors.',
-            'Once we complete the checks, we will send you a confirmation email.'
-          ]
+            'We will check your spreadsheet for viruses and errors.',
+            'You will then receive an email confirming whether the spreadsheet has been accepted or rejected.'
+          ],
+          referenceText: 'Spreadsheet reference:'
         },
         returnLink: `Return to ${organisationName}`
       }
