@@ -119,7 +119,7 @@ describe('update spreadsheet upload controller', () => {
     const credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationId = 'abc-123'
 
-    const pageContent = content.updateSpreadsheetUploaded({}, 'Joe Bloggs Ltd')
+    const pageContent = content.spreadsheetUploaded({}, 'Joe Bloggs Ltd')
 
     const { statusCode, payload } = await server.inject({
       method: 'GET',
