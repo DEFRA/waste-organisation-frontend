@@ -87,7 +87,9 @@ const convertToListRows = (apiCodes, changeNameContent) => {
             text: 'Disable',
             classes: 'govuk-button govuk-button--secondary',
             attributes: {
-              'data-copyText': apiCode.code
+              'data-copyText': apiCode.code,
+              'data-codeName': apiCode.name,
+              'aria-label': `Disable ${apiCode.name} code`
             }
           }
         ]

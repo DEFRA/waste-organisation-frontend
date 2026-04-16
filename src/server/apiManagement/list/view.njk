@@ -4,14 +4,6 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
-{% macro actionButtons(code) %}
-  <span data-copyText="{{code}}"></span>
-  {{govukButton({
-    text: "Disable",
-    classes: "govuk-button--secondary"
-  })}}
-{% endmacro %}
-
 {% block content %}
   <div class="govuk-grid-row">
     {% if disabledSuccessMessage %}
@@ -92,19 +84,25 @@
 {% endblock %}
 {% block bodyEnd %}
   <script nonce="{{ scriptNonce }}">
-
+    const codeName = document.querySelectorAll('[data-codeName]')
     const copyText = "Copy";
     const copiedText = "Copied";
-
-    const buttonHTML = `{{govukButton({
-                        text: "${copyText}",
-                        classes: "govuk-!-margin-right-1"
-                      })}}`;
-
     const actionButtons = document.querySelectorAll('[data-copyText]')
 
     for (const actionButton of actionButtons) {
       const code = actionButton.getAttribute('data-copyText');
+      const codeName = actionButton.getAttribute('data-codeName')
+      const copyAriaLabel = `Copy ${codeName} code`;
+      const copiedAriaLabel = `Copied ${codeName} code`;
+
+      const buttonHTML = `{{govukButton({
+                            text: "${copyText}",
+                            classes: "govuk-!-margin-right-1",
+                            attributes: {
+                              "aria-label": "${copyAriaLabel}"
+                            }
+                          })}}`;
+
       const parentElement = actionButton.parentNode;
 
       parentElement.innerHTML = buttonHTML + parentElement.innerHTML;
@@ -118,9 +116,11 @@
           .writeText(code);
 
         copyButton.innerHTML = copiedText;
+        copyButton.ariaLabel = copiedAriaLabel;
 
         setTimeout(() => {
           copyButton.innerHTML = copyText;
+          copyButton.ariaLabel = copyAriaLabel;
         }, 3000);
 
       })
