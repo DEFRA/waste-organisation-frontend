@@ -219,6 +219,8 @@ describe('apiList', () => {
               text: 'Disable',
               classes: 'govuk-button govuk-button--secondary',
               attributes: {
+                'aria-label': 'Disable Joe Bloggs LTD_code_1 code',
+                'data-codeName': 'Joe Bloggs LTD_code_1',
                 'data-copyText': 'd05d0c78-c0c4-457c-8161-67a88c0f9ba4'
               }
             }
@@ -258,6 +260,8 @@ describe('apiList', () => {
               text: 'Disable',
               classes: 'govuk-button govuk-button--secondary',
               attributes: {
+                'aria-label': 'Disable Joe Bloggs LTD_code_2 code',
+                'data-codeName': 'Joe Bloggs LTD_code_2',
                 'data-copyText': 'd05d0c78-c0c4-457c-8161-67a88c0f9ba4'
               }
             }
