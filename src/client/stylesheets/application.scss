@@ -1,4 +1,8 @@
-@use 'govuk-frontend';
+@forward 'pkg:govuk-frontend' with (
+  $govuk-assets-path: '/public/assets/',
+  $govuk-new-organisation-colours: true,
+  $govuk-global-styles: true
+);
 
 @use 'variables';
 @use 'helpers';

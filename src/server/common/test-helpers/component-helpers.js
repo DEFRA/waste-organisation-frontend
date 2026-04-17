@@ -7,7 +7,6 @@ import { load } from 'cheerio'
 import { camelCase } from 'lodash'
 
 import * as filters from '../../../config/nunjucks/filters/filters.js'
-import * as globals from '../../../config/nunjucks/globals/globals.js'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const nunjucksTestEnv = nunjucks.configure(
@@ -22,9 +21,7 @@ const nunjucksTestEnv = nunjucks.configure(
   }
 )
 
-Object.entries(globals).forEach(([name, global]) => {
-  nunjucksTestEnv.addGlobal(name, global)
-})
+nunjucksTestEnv.addGlobal('govukRebrand', true)
 
 Object.entries(filters).forEach(([name, filter]) => {
   nunjucksTestEnv.addFilter(name, filter)

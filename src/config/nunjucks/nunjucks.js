@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 import { config } from '../config.js'
 import { context } from './context/context.js'
 import * as filters from './filters/filters.js'
-import * as globals from './globals/globals.js'
+// import * as globals from './globals/globals.js'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const nunjucksEnvironment = nunjucks.configure(
@@ -46,9 +46,10 @@ export const nunjucksConfig = {
   }
 }
 
-Object.entries(globals).forEach(([name, global]) => {
-  nunjucksEnvironment.addGlobal(name, global)
-})
+nunjucksEnvironment.addGlobal(
+  'govukRebrand',
+  config.get('featureFlags.rebrand')
+)
 
 Object.entries(filters).forEach(([name, filter]) => {
   nunjucksEnvironment.addFilter(name, filter)

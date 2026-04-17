@@ -11,15 +11,37 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block head %}
-  <link
-    href="{{ getAssetPath('stylesheets/application.scss') }}"
+  {% if govukRebrand == false %}
+    <link
+    href="{{ getAssetPath('stylesheets/application-black.scss')}}"
     rel="stylesheet"
 />
+    <link rel="icon" href="{{ getAssetPath('assets/images/favicon.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ getAssetPath('assets/images/favicon.png') }}">
+  {% else %}
+    <link
+    href="{{ getAssetPath('stylesheets/application.scss')}}"
+    rel="stylesheet"
+/>
+  {% endif %}
+
 {% endblock %}
 
 {% block header %}
   {# serviceName being used in govukHeader will be @deprecated in v6. It has moved to govukServiceNavigation - https://github.com/alphagov/govuk-frontend/blob/main/CHANGELOG.md#move-service-name-and-navigation-links-from-the-govuk-header-to-service-navigation-component #}
-  {{
+
+  {% if govukRebrand == false %}
+    <div class="govuk-header">
+      <div class="govuk-header__container govuk-width-container">
+        <div class="govuk-header__logo">
+          <a href="{{serviceUrl}}" class="govuk-header__homepage-link">
+            Department for Environment, Food and Rural Affairs
+          </a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    {{
     govukHeader({
       homepageUrl: "https://www.gov.uk/",
       classes: "app-header",
@@ -27,6 +49,7 @@
       useTudorCrown: true
     })
   }}
+  {% endif %}
 
   {{
     govukServiceNavigation({

@@ -3,7 +3,6 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import convictFormatWithValidator from 'convict-format-with-validator'
-
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const twentyHoursMs = 72000000
@@ -433,6 +432,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_NEW_ACCOUNT_PAGE'
+    },
+    rebrand: {
+      doc: 'If the application should be using the new blue branding or the black branding',
+      format: Boolean,
+      default: true,
+      env: 'FEATURE_FLAG_REBRAND'
     }
   },
   encryptionKey: {
