@@ -1,0 +1,35 @@
+@forward 'pkg:govuk-frontend' with (
+  $govuk-assets-path: '/public/assets/',
+  $govuk-new-organisation-colours: false,
+  $govuk-global-styles: true,
+  $govuk-include-default-font-face: false,
+  $govuk-font-family: (
+    'Arial',
+    sans-serif
+  )
+);
+
+@use 'variables';
+@use 'helpers';
+@use 'core';
+@use 'components';
+@use 'partials';
+
+.govuk-header {
+  border-bottom: 10px solid #f3f2f1;
+
+  .govuk-header__container {
+    padding: 20px 0;
+
+    .govuk-header__logo {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    color: $body-background;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 24px;
+  }
+}

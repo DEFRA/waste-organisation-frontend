@@ -21,7 +21,11 @@ export default {
   context: path.resolve(dirname, 'src/client'),
   entry: {
     application: {
-      import: ['./javascripts/application.js', './stylesheets/application.scss']
+      import: [
+        './javascripts/application.js',
+        './stylesheets/application.scss',
+        './stylesheets/application-black.scss'
+      ]
     },
     'sign-out': {
       import: ['./javascripts/sign-out.js']
