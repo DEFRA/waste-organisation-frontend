@@ -1,7 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 import { paths } from '../../config/paths.js'
-import { initialiseServer } from '../../test-utils/initialise-server.js'
-import { wreckGetMock } from '../../test-utils/mock-oidc-config.js'
+import {
+  initialiseServer,
+  wreckGetMock,
+  wreckPutMock
+} from '../../test-utils/initialise-server.js'
 import { config } from '../../config/config.js'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
 
@@ -59,6 +62,20 @@ describe('signIn', () => {
 
       expect(statusCode).toBe(302)
       expect(headers.location).toBe(paths.account)
+      expect(wreckPutMock).toBeCalledWith(
+        `http://localhost/TODO/user/${credentials.id}/organisation/${credentials.currentOrganisationId}`,
+        {
+          headers: {
+            'x-auth-token': 'abc123'
+          },
+          json: 'strict',
+          payload: {
+            organisation: {
+              name: credentials.currentOrganisationName
+            }
+          }
+        }
+      )
     }
   )
 })
