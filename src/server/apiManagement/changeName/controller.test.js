@@ -179,7 +179,7 @@ describe('apiChangeName', () => {
 
       expect(actualOptions.error.message).toBe(pageContent.updateError.message)
       expect(actualOptions.pageTitle).toEqual(
-        expect.stringContaining(pageContent.errorPrefix)
+        expect.stringContaining(pageContent.error.pageTitle)
       )
     })
 

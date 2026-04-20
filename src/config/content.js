@@ -21,7 +21,8 @@ export const content = {
   ukPermit: (request) =>
     getContentForLanguage(request, {
       en: {
-        title: 'ukPermit',
+        title:
+          'Do you operate one or more licensed or permitted waste receiving sites?',
         heading: heading(
           'Do you operate one or more licensed or permitted waste receiving sites?',
           null,
@@ -32,6 +33,8 @@ export const content = {
           no: 'No'
         },
         error: {
+          pageTitle:
+            'Error: Do you operate one or more licensed or permitted waste receiving sites?',
           title: 'There is a problem',
           message:
             'Select Yes if you operate one or more licensed or permitted waste receiving sites.'
@@ -57,7 +60,7 @@ export const content = {
   nextAction: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Next Action',
+        title: 'Report receipt of waste',
         heading: heading('Report receipt of waste', null, organisationName),
         questions: {
           connectYourSoftware: 'Manage my API code',
@@ -66,6 +69,7 @@ export const content = {
           updateSpreadsheet: 'Upload a spreadsheet that has Waste tracking IDs'
         },
         error: {
+          pageTitle: 'Error: Report receipt of waste',
           title: 'There is a problem',
           message: 'You must select an option'
         },
@@ -75,7 +79,7 @@ export const content = {
   apiList: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'API Code',
+        title: 'Your API code',
         heading: heading('Your API code', null, organisationName),
         noEnabledApiCodes: 'You have no API codes',
         additionalCode: {
@@ -109,6 +113,7 @@ export const content = {
         label: 'API code name',
         hint: 'You can change the name of the API by overwriting the existing one.',
         error: {
+          pageTitle: 'Error: Change API code name',
           title: 'There is a problem',
           message: 'Enter a name for your API code'
         },
@@ -116,14 +121,13 @@ export const content = {
           title: 'There is a problem',
           message: 'The API code name could not be updated. Try again.'
         },
-        errorPrefix: 'Error',
         saveAction: 'Save and continue'
       }
     }),
   apiDisable: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Disable API',
+        title: 'Do you want to disable this API code?',
         heading: heading(
           'Do you want to disable this API code?',
           null,
@@ -140,6 +144,7 @@ export const content = {
           no: 'No'
         },
         error: {
+          pageTitle: 'Error: Do you want to disable this API code?',
           title: 'There is a problem',
           message: 'Select Yes if want to disable this API code.'
         },
@@ -149,23 +154,19 @@ export const content = {
   spreadsheetUpload: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Upload spreadsheet',
+        title: 'Upload a receipt of waste movement spreadsheet',
         heading: heading(
           'Upload a receipt of waste movement spreadsheet',
           null,
           organisationName
         ),
-        error: {
-          title: 'There is a problem',
-          message: '[REAL TEXT GOES HERE]'
-        },
         continueAction: 'Upload'
       }
     }),
   spreadsheetUploaded: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Upload spreadsheet',
+        title: 'Spreadsheet uploaded',
         heading: heading('Spreadsheet uploaded', null, null),
         content: {
           heading: 'What happens next',
@@ -195,7 +196,7 @@ export const content = {
   downloadSpreadsheet: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Download spreadsheet',
+        title: 'Download Receipt of waste spreadsheet',
         heading: heading(
           'Download Receipt of waste spreadsheet',
           null,

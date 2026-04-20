@@ -40,12 +40,10 @@ export const apiChangeNameController = {
         errorContent.href = '#name'
       }
 
-      const pageTitle = errorContent
-        ? `${pageContent.errorPrefix}: ${pageContent.title}`
-        : pageContent.title
-
       return h.view('apiManagement/changeName/view', {
-        pageTitle,
+        pageTitle: errorContent
+          ? pageContent.error.pageTitle
+          : pageContent.title,
         heading: pageContent.heading,
         label: pageContent.label,
         hint: pageContent.hint,
