@@ -9,6 +9,12 @@ export const signInController = (metricName) => ({
     await setUserSession(request, sessionId)
     request.cookieAuth.set({ sessionId })
     metricsCounter(metricName)
+    const { id, currentOrganisationId, currentOrganisationName } =
+      request.auth.credentials
+    await request.backendApi.saveOrganisation(id, currentOrganisationId, {
+      name: currentOrganisationName
+    })
+
     const redirectPath = paths.account
     return h.redirect(redirectPath)
   }
