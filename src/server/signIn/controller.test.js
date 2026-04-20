@@ -50,6 +50,19 @@ describe('signIn', () => {
     'user redirected to account page when logged in',
     async ({ url, strategy }) => {
       const credentials = await setupAuthedUserSession(server)
+      credentials.profile = [
+        'id',
+        'currentOrganisationId',
+        'currentOrganisationName'
+      ].reduce((acc, k) => {
+        if (k in credentials) {
+          acc[k] = credentials[k]
+        }
+        return acc
+      }, {})
+      delete credentials['id']
+      delete credentials['currentOrganisationId']
+      delete credentials['currentOrganisationName']
 
       const { headers, statusCode } = await server.inject({
         method: 'get',
@@ -63,7 +76,7 @@ describe('signIn', () => {
       expect(statusCode).toBe(302)
       expect(headers.location).toBe(paths.account)
       expect(wreckPutMock).toBeCalledWith(
-        `http://localhost/TODO/user/${credentials.id}/organisation/${credentials.currentOrganisationId}`,
+        `http://localhost/TODO/user/${credentials.profile.id}/organisation/${credentials.profile.currentOrganisationId}`,
         {
           headers: {
             'x-auth-token': 'abc123'
@@ -71,7 +84,7 @@ describe('signIn', () => {
           json: 'strict',
           payload: {
             organisation: {
-              name: credentials.currentOrganisationName
+              name: credentials.profile.currentOrganisationName
             }
           }
         }

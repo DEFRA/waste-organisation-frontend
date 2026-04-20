@@ -10,7 +10,7 @@ export const signInController = (metricName) => ({
     request.cookieAuth.set({ sessionId })
     metricsCounter(metricName)
     const { id, currentOrganisationId, currentOrganisationName } =
-      request.auth.credentials
+      request.auth.credentials.profile
     await request.backendApi.saveOrganisation(id, currentOrganisationId, {
       name: currentOrganisationName
     })
