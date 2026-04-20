@@ -9,3 +9,8 @@
 @use 'core';
 @use 'components';
 @use 'partials';
+
+.govuk-tag--yellow {
+  color: #7a3c1c;
+  background-color: #ffee80;
+}
