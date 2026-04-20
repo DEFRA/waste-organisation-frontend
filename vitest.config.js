@@ -18,7 +18,13 @@ export default defineConfig({
         '.public',
         'coverage',
         'postcss.config.js',
-        'stylelint.config.js'
+        'stylelint.config.js',
+        '**.njk',
+        '**.md',
+        '**.xls',
+        '**.css',
+        '**.scss',
+        '**/.git*'
       ]
     }
   }
