@@ -42,7 +42,7 @@ export const nextActionController = {
       )
 
       return h.view('nextAction/view', {
-        pageTitle: pageContent.title,
+        pageTitle: error ? pageContent.error.pageTitle : pageContent.title,
         heading: pageContent.heading,
         description: pageContent.description,
         link: pageContent.link,

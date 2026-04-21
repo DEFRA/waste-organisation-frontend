@@ -66,6 +66,10 @@ describe('ukPermit', () => {
         '.govuk-error-summary__body ul li'
       )[0].textContent
 
+      expect(document.title).toEqual(
+        expect.stringContaining(`${pageContent.error.pageTitle} |`)
+      )
+
       expect(errorMessage).toEqual(
         expect.stringContaining(expectedErrorMessage)
       )

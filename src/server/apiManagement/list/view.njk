@@ -39,7 +39,7 @@
       {% endif %}
 
       {% if apiCodeRows.length > 0 %}
-        <h3 class="govuk-!-padding-top-4 govuk-heading-m">{{additionalCode.title}}</h3>
+        <h2 class="govuk-!-padding-top-4 govuk-heading-m">{{additionalCode.title}}</h2>
         <p class="govuk-body">{{additionalCode.content}}</p>
         <form method="POST" action="{{ createAction }}">
           {{ govukButton({

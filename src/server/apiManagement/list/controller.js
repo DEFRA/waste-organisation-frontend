@@ -109,7 +109,10 @@ const convertToListRows = (apiCodes, changeNameContent) => {
           {
             href: pathTo(paths.apiChangeName, { apiCode: apiCode.code }),
             text: changeNameContent.action,
-            visuallyHiddenText: `${changeNameContent.hiddenText} ${apiCode.name}`
+            visuallyHiddenText: `${changeNameContent.hiddenText} ${apiCode.name}`,
+            attributes: {
+              'aria-label': `Change ${apiCode.name} code name`
+            }
           }
         ]
       }

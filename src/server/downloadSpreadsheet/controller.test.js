@@ -96,7 +96,7 @@ describe('#downloadSpreadsheetController', () => {
 
     const fileMetadata = document.querySelector('[data-testid="file-metadata"]')
     expect(fileMetadata.textContent).toEqual(
-      expect.stringContaining('XLSX, 1.1MB')
+      expect.stringContaining('XLSX, 431KB')
     )
   })
 
