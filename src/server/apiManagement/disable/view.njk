@@ -47,7 +47,7 @@
                 classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-0"
               }
             },
-            errorMessage: error,
+            errorMessage: { text: error.message } if error,
             items: questions
           })
         }}

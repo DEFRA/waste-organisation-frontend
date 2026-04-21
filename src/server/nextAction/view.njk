@@ -31,7 +31,7 @@
                 classes: "govuk-fieldset__legend--l"
               }
             },
-            errorMessage: error,
+            errorMessage: { text: error.message } if error,
             items: questions
           })
         }}
