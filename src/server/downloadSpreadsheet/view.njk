@@ -11,7 +11,7 @@
           text: downloadButton.text,
           href: downloadButton.href,
           element: "a",
-          classes: "govuk-!-margin-top-4",
+          classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-3",
           attributes: {
             "data-testid": "download-spreadsheet-button",
             "download": "",
@@ -19,7 +19,7 @@
           }
         })
       }}
-      <p class="govuk-visually-hidden" id="file-metadata" data-testid="file-metadata">{{ downloadButton.fileMetadata }}</p>
+      <p id="file-metadata" data-testid="file-metadata">{{ downloadButton.fileMetadata }}</p>
       <p class="govuk-body govuk-!-padding-top-4">
         <a class="govuk-link govuk-link--no-visited-state" href="{{ returnLink.href }}" data-testid="return-link">{{ returnLink.text }}</a>
       </p>
