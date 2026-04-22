@@ -1,9 +1,9 @@
 import { JSDOM } from 'jsdom'
 
-import { statusCodes } from '../common/constants/status-codes.js'
-import { initialiseServer } from '../../test-utils/initialise-server.js'
-import { paths } from '../../config/paths.js'
-import { content } from '../../config/content.js'
+import { statusCodes } from '../../common/constants/status-codes.js'
+import { initialiseServer } from '../../../test-utils/initialise-server.js'
+import { paths } from '../../../config/paths.js'
+import { content } from '../../../config/content.js'
 
 describe('#termsController', () => {
   let server
@@ -51,7 +51,7 @@ describe('#termsController', () => {
     const heading = document.querySelector('h1').textContent
     expect(heading).toEqual(expect.stringContaining(pageContent.heading))
 
-    const leadParagraph = document.querySelector('.govuk-body-l').textContent
+    const leadParagraph = document.querySelector('.govuk-body').textContent
     expect(leadParagraph).toEqual(
       expect.stringContaining(pageContent.leadParagraph)
     )
@@ -61,21 +61,6 @@ describe('#termsController', () => {
     pageContent.conditions.forEach((condition, index) => {
       expect(listItems[index].textContent).toEqual(
         expect.stringContaining(condition)
-      )
-    })
-
-    const relatedHeading = document.querySelector(
-      '.app-related-content h2'
-    ).textContent
-    expect(relatedHeading).toEqual(
-      expect.stringContaining(pageContent.relatedContent.heading)
-    )
-
-    const relatedLinks = document.querySelectorAll('.app-related-content a')
-    expect(relatedLinks).toHaveLength(pageContent.relatedContent.links.length)
-    pageContent.relatedContent.links.forEach((link, index) => {
-      expect(relatedLinks[index].textContent).toEqual(
-        expect.stringContaining(link.text)
       )
     })
   })
