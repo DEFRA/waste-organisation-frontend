@@ -1,4 +1,4 @@
-import { paths } from '../../config/paths.js'
+import { paths } from '../../../config/paths.js'
 import { cookiesController } from './controller.js'
 
 export const cookies = {

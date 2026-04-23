@@ -1,10 +1,10 @@
-import { content } from '../../config/content.js'
+import { content } from '../../../config/content.js'
 
 export const termsController = {
   handler(request, h) {
     const pageContent = content.terms(request)
 
-    return h.view('terms/index', {
+    return h.view('compliance/terms/index', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       leadParagraph: pageContent.leadParagraph,

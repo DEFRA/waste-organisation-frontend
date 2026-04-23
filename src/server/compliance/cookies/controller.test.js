@@ -1,9 +1,9 @@
 import { JSDOM } from 'jsdom'
 
-import { statusCodes } from '../common/constants/status-codes.js'
-import { initialiseServer } from '../../test-utils/initialise-server.js'
-import { paths } from '../../config/paths.js'
-import { content } from '../../config/content.js'
+import { statusCodes } from '../../common/constants/status-codes.js'
+import { initialiseServer } from '../../../test-utils/initialise-server.js'
+import { paths } from '../../../config/paths.js'
+import { content } from '../../../config/content.js'
 
 describe('#cookiesController', () => {
   let server

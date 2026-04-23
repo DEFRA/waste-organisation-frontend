@@ -3,9 +3,10 @@ import inert from '@hapi/inert'
 import { cacheControlNoStore } from '../config/config.js'
 import { home } from './home/index.js'
 import { about } from './about/index.js'
-import { cookies } from './cookies/index.js'
-import { terms } from './terms/index.js'
-import { privacy } from './privacy/index.js'
+import { cookies } from './compliance/cookies/index.js'
+import { terms } from './compliance/terms/index.js'
+import { privacy } from './compliance/privacy/index.js'
+import { accessibilityStatement } from './compliance/accessibilityStatement/index.js'
 import { health } from './health/index.js'
 import { serveStaticFiles } from './common/helpers/serve-static-files.js'
 import { search } from './search/index.js'
@@ -70,6 +71,7 @@ export const router = {
         cookies:        cookies.openRoutes,
         terms:          terms.openRoutes,
         privacy:        privacy.openRoutes,
+        accessibilityStatement: accessibilityStatement.openRoutes,
         signIn:         signIn.routes,
         health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:     onboarding.openRoutes,
