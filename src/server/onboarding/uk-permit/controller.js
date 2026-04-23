@@ -75,7 +75,7 @@ export const ukPermitController = {
     handler(request, h) {
       const isPermit = request.payload.isPermit
 
-      if (isPermit === 'yes') {
+      if (isPermit === 'no') {
         return h.redirect(paths.signinDefraIdCallback)
       }
 
