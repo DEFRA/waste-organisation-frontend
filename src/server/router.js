@@ -21,9 +21,6 @@ import { updateSpreadsheet } from './updateSpreadsheet/index.js'
 import { account } from './account/index.js'
 import { newAccount } from './newAccount/index.js'
 import { serviceCharge } from './serviceCharge/index.js'
-import { reviewPayment } from './serviceCharge/reviewPayment/index.js'
-import { initiatePayment } from './serviceCharge/initiatePayment/index.js'
-import { paymentDetails } from './serviceCharge/paymentDetails/index.js'
 import { signOut } from './signOut/index.js'
 import { signedOut } from './signedOut/index.js'
 import { organisationCheck } from './common/helpers/auth/organisation-check.js'
@@ -90,10 +87,7 @@ export const router = {
         account:        account.authedRoutes.map((a) => addAuthWithOrg(a)),
         newAccount:     newAccount.authedRoutes.map((a) => addAuthWithOrg(a)),
         serviceCharge:  serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a)),
-        reviewPayment:  reviewPayment.authedRoutes.map((a) => addAuthWithOrg(a)),
-        initiatePayment: initiatePayment.authedRoutes.map((a) => addAuthWithOrg(a)),
-        paymentDetails: paymentDetails.authedRoutes.map((a) => addAuthWithOrg(a)),
-        downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)),
+        downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a))
       }).reduce((p, entry) => createPlugin(p, entry), [])
 
       // Application specific routes, add your own routes here

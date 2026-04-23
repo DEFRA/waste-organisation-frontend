@@ -1,6 +1,3 @@
-import boom from '@hapi/boom'
-
-import { config } from '../../../config/config.js'
 import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 import { getGovPayPaymentStatus } from '../../common/helpers/govpay/get-payment-status.js'
@@ -21,10 +18,6 @@ const formatPounds = (amountInPence) => {
 
 export const paymentDetailsController = {
   async handler(request, h) {
-    if (!config.get('featureFlags.serviceCharge')) {
-      throw boom.notFound()
-    }
-
     const paymentId = request.yar.get('govPayPaymentId')
 
     if (!paymentId) {

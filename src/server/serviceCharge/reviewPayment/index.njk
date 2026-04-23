@@ -5,12 +5,19 @@
 
 {% set organisationRows = [
   {
-    key: { text: organisation.nameLabel },
-    value: { text: organisation.name }
-  },
-  {
-    key: { text: organisation.totalCostLabel },
-    value: { text: organisation.totalCost }
+    key: {
+      text: organisation.nameLabel
+    },
+    value: {
+      text: organisation.name
+    }
+  }, {
+    key: {
+      text: organisation.totalCostLabel
+    },
+    value: {
+      text: organisation.totalCost
+    }
   }
 ] %}
 
@@ -19,11 +26,12 @@
     <div class="govuk-grid-column-two-thirds">
       {{ appHeading(heading) }}
 
-      <p class="govuk-body" data-testid="review-payment-intro">
-        {{ intro }} <strong>{{ accessUntil }}</strong>.
+      <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-5" data-testid="review-payment-intro">
+        {{ intro }}
+        <strong>{{ accessUntil }}</strong>.
       </p>
 
-      <h2 class="govuk-heading-m govuk-!-margin-top-8" data-testid="review-payment-section-heading">{{ sectionHeading }}</h2>
+      <h2 class="govuk-heading-m govuk-!-padding-top-0 govuk-!-margin-bottom-5" data-testid="review-payment-section-heading">{{ sectionHeading }}</h2>
 
       <div class="govuk-summary-card govuk-!-margin-bottom-8" data-testid="review-payment-summary-card">
         <div class="govuk-summary-card__title-wrapper">

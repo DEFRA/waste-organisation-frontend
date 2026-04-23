@@ -106,7 +106,7 @@ describe('#reviewPaymentController', () => {
     expect(continueButton.getAttribute('href')).toBe(paths.initiatePayment)
 
     expect(cancelLink).not.toBeNull()
-    expect(cancelLink.getAttribute('href')).toBe(paths.serviceCharge)
+    expect(cancelLink.getAttribute('href')).toBe(paths.account)
     expect(cancelLink.textContent).toEqual(
       expect.stringContaining(pageContent.cancel)
     )
@@ -119,21 +119,5 @@ describe('#reviewPaymentController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.unauthorized)
-  })
-
-  test('returns not found when service charge feature flag is disabled', async () => {
-    config.set('featureFlags.serviceCharge', false)
-
-    const { statusCode } = await server.inject({
-      method: 'GET',
-      url: paths.reviewPayment,
-      auth: {
-        strategy: 'session',
-        credentials
-      }
-    })
-
-    expect(statusCode).toBe(statusCodes.notFound)
-    config.set('featureFlags.serviceCharge', true)
   })
 })
