@@ -29,47 +29,6 @@ describe('backendApi', () => {
     })
   })
 
-  test('getOrganisations get correct data', async () => {
-    const expectedOrganisation = [
-      { name: 'Monkey Barrel LTD', id: '9c6a06d7-e691-4740-89a2-a64d23478034' }
-    ]
-
-    vi.spyOn(wreck, 'get').mockImplementation(async () => {
-      return {
-        payload: {
-          organisations: expectedOrganisation
-        }
-      }
-    })
-
-    const actualOrganisations =
-      await backendApiService.getOrganisations('userId')
-
-    expect(actualOrganisations).toEqual(expectedOrganisation)
-  })
-
-  test('getOrganisations get correct data', async () => {
-    const expectedResponse = {
-      randomData: 'Some Data',
-      organisationId: 'organisationId',
-      userId: 'userId'
-    }
-
-    vi.spyOn(wreck, 'put').mockImplementation(async () => ({
-      payload: {
-        organisation: expectedResponse
-      }
-    }))
-
-    const actualResponse = await backendApiService.saveOrganisation(
-      'userId',
-      'organisationId',
-      { randomData: 'Some Data' }
-    )
-
-    expect(actualResponse).toEqual(expectedResponse)
-  })
-
   test('saveSpreadsheet dummy test for coverage reasons', async () => {
     const expectedResponse = {
       randomData: 'Some Data'
@@ -150,16 +109,6 @@ describe('backendApi', () => {
   })
 
   describe('Handle Exceptions', () => {
-    test('getOrganisations Should handle Errors', async () => {
-      vi.spyOn(wreck, 'get').mockImplementation(async () => {
-        throw new Error()
-      })
-
-      const actualResponse = await backendApiService.getOrganisations('userId')
-
-      expect(actualResponse).toBeUndefined()
-    })
-
     test('saveOrganisation Should handle Errors', async () => {
       vi.spyOn(wreck, 'put').mockImplementation(async () => {
         throw new Error()

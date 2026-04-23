@@ -25,12 +25,6 @@ const createRequest = (overrides = {}) => ({
       relationships: ['1:org-2:Relationship Org:0:0:0:0']
     }
   },
-  backendApi: {
-    getOrganisations: vi.fn().mockResolvedValue([
-      { id: 'org-1', name: 'First Org' },
-      { id: 'org-2', name: 'Second Org' }
-    ])
-  },
   logger: {
     error: vi.fn()
   },
@@ -76,9 +70,6 @@ describe('#paymentDetailsControllerUnit', () => {
           currentRelationshipId: 1,
           relationships: ['1:org-2:12345:0:0:0:0']
         }
-      },
-      backendApi: {
-        getOrganisations: vi.fn().mockResolvedValue([])
       }
     })
     const h = createH()
