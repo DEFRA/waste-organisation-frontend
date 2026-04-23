@@ -21,10 +21,9 @@ export const content = {
   ukPermit: (request) =>
     getContentForLanguage(request, {
       en: {
-        title:
-          'Do you operate one or more licensed or permitted waste receiving sites?',
+        title: 'Are you registering as a local authority?',
         heading: heading(
-          'Do you operate one or more licensed or permitted waste receiving sites?',
+          'Are you registering as a local authority?',
           null,
           null
         ),
@@ -33,11 +32,9 @@ export const content = {
           no: 'No'
         },
         error: {
-          pageTitle:
-            'Error: Do you operate one or more licensed or permitted waste receiving sites?',
+          pageTitle: 'Error: Are you registering as a local authority?',
           title: 'There is a problem',
-          message:
-            'Select Yes if you operate one or more licensed or permitted waste receiving sites.'
+          message: 'Select Yes if you are registering as a local authority?'
         },
         continueAction: 'Continue'
       }
@@ -48,7 +45,7 @@ export const content = {
         title: 'Sorry, you cannot use the service',
         heading: heading(
           'Sorry, you cannot use the service',
-          'Based on your answer, you cannot use this service as you do not operate any businesses or organisations that receive waste.',
+          'Based on your answer, you cannot continue as local authorities are currently unable to use this service.',
           null
         ),
         link: {

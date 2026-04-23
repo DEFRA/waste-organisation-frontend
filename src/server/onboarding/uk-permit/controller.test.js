@@ -100,7 +100,7 @@ describe('ukPermit', () => {
         method: 'POST',
         url: paths.ukPermit,
         payload: {
-          isPermit: 'yes'
+          isPermit: 'no'
         }
       })
 
@@ -112,7 +112,7 @@ describe('ukPermit', () => {
         method: 'POST',
         url: paths.ukPermit,
         payload: {
-          isPermit: 'no'
+          isPermit: 'yes'
         }
       })
 
