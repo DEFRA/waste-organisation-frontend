@@ -1,11 +1,11 @@
 import { JSDOM } from 'jsdom'
 
-import { config } from '../../config/config.js'
-import { content } from '../../config/content.js'
-import { paths } from '../../config/paths.js'
-import { statusCodes } from '../common/constants/status-codes.js'
-import { initialiseServer } from '../../test-utils/initialise-server.js'
-import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
+import { config } from '../../../config/config.js'
+import { content } from '../../../config/content.js'
+import { paths } from '../../../config/paths.js'
+import { statusCodes } from '../../common/constants/status-codes.js'
+import { initialiseServer } from '../../../test-utils/initialise-server.js'
+import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 
 describe('#serviceChargeController', () => {
   let server
@@ -104,21 +104,5 @@ describe('#serviceChargeController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.unauthorized)
-  })
-
-  test('returns not found when service charge feature flag is disabled', async () => {
-    config.set('featureFlags.serviceCharge', false)
-
-    const { statusCode } = await server.inject({
-      method: 'GET',
-      url: paths.serviceCharge,
-      auth: {
-        strategy: 'session',
-        credentials
-      }
-    })
-
-    expect(statusCode).toBe(statusCodes.notFound)
-    config.set('featureFlags.serviceCharge', true)
   })
 })

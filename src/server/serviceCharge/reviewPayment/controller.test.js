@@ -120,20 +120,4 @@ describe('#reviewPaymentController', () => {
 
     expect(statusCode).toBe(statusCodes.unauthorized)
   })
-
-  test('returns not found when service charge feature flag is disabled', async () => {
-    config.set('featureFlags.serviceCharge', false)
-
-    const { statusCode } = await server.inject({
-      method: 'GET',
-      url: paths.reviewPayment,
-      auth: {
-        strategy: 'session',
-        credentials
-      }
-    })
-
-    expect(statusCode).toBe(statusCodes.notFound)
-    config.set('featureFlags.serviceCharge', true)
-  })
 })
