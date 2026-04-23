@@ -106,7 +106,7 @@ describe('#reviewPaymentController', () => {
     expect(continueButton.getAttribute('href')).toBe(paths.initiatePayment)
 
     expect(cancelLink).not.toBeNull()
-    expect(cancelLink.getAttribute('href')).toBe(paths.serviceCharge)
+    expect(cancelLink.getAttribute('href')).toBe(paths.account)
     expect(cancelLink.textContent).toEqual(
       expect.stringContaining(pageContent.cancel)
     )

@@ -21,7 +21,7 @@ export const reviewPaymentController = {
       continueHref: paths.initiatePayment,
       cancelLink: {
         text: pageContent.cancel,
-        href: paths.serviceCharge
+        href: paths.account
       }
     })
   }
