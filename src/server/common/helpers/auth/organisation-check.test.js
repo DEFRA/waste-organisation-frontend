@@ -64,15 +64,6 @@ describe('#organisationCheck', () => {
     expect(statusCode).not.toBe(statusCodes.forbidden)
   })
 
-  test('does not block open routes', async () => {
-    const { statusCode } = await server.inject({
-      method: 'GET',
-      url: paths.startPage
-    })
-
-    expect(statusCode).toBe(statusCodes.ok)
-  })
-
   test('allows sign-out for authed user without organisation', async () => {
     const credentials = await setupAuthedUserSession(server)
     delete credentials.currentOrganisationId

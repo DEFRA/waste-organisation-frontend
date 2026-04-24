@@ -59,7 +59,7 @@ export const apiDisableController = {
         },
         questions,
         error: errorContent,
-        backLink: paths.startPage,
+        backLink: paths.apiList,
         apiCode
       })
     }

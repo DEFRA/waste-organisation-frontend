@@ -34,7 +34,7 @@ export const content = {
         error: {
           pageTitle: 'Error: Are you registering as a local authority?',
           title: 'There is a problem',
-          message: 'Select Yes if you are registering as a local authority?'
+          message: 'Select Yes if you are registering as a local authority'
         },
         continueAction: 'Continue'
       }

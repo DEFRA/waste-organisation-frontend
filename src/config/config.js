@@ -100,7 +100,7 @@ export const config = convict({
     startPage: {
       doc: 'Link to guidance start page',
       format: String,
-      default: '/start-page',
+      default: 'https://www.gov.uk/guidance/report-receipt-of-waste',
       env: 'LINK_GUIDANCE_START_PAGE'
     },
     account: {

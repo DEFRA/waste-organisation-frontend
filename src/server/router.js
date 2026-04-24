@@ -1,7 +1,6 @@
 import inert from '@hapi/inert'
 
 import { cacheControlNoStore } from '../config/config.js'
-import { home } from './home/index.js'
 import { about } from './about/index.js'
 import { cookies } from './compliance/cookies/index.js'
 import { terms } from './compliance/terms/index.js'
@@ -66,7 +65,6 @@ export const router = {
       // prettier-ignore
       const plugins = Object.entries({
         // Open routes
-        home:           home.openRoutes,
         about:          about.openRoutes,
         cookies:        cookies.openRoutes,
         terms:          terms.openRoutes,

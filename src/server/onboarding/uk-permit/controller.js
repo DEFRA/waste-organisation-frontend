@@ -1,6 +1,7 @@
 import joi from 'joi'
 import { paths } from '../../../config/paths.js'
 import { content } from '../../../config/content.js'
+import { config } from '../../../config/config.js'
 
 const flashMessage = 'isPermitError'
 
@@ -53,7 +54,7 @@ export const ukPermitController = {
         },
         questions,
         error: errorContent,
-        backLink: paths.startPage
+        backLink: config.get('links.startPage')
       })
     }
   },
