@@ -2,9 +2,7 @@
 export const paths = {
   chromeDevtools: '/.well-known/appspecific/com.chrome.devtools.json',
   cookies: '/cookies',
-
   health: '/health',
-  startPage: '/start-page',
   dashboard: '/dashboard',
   cannotUseService: '/cannot-use-service',
   ukPermit: '/',

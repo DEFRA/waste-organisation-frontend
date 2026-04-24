@@ -21,11 +21,7 @@ describe('#privacyNoticeController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.ok)
-    expect(result).toEqual(
-      expect.stringContaining(
-        'Waste tracking receipt of waste beta phase privacy notice |'
-      )
-    )
+    expect(result).toEqual(expect.stringContaining('Privacy notice |'))
   })
 
   test('Should have a link to privacy notice in the footer', async () => {
@@ -46,14 +42,12 @@ describe('#privacyNoticeController', () => {
     const { document } = new JSDOM(payload).window
 
     const heading = document.querySelector('h1')
-    expect(heading.textContent).toContain(
-      'Waste tracking receipt of waste beta phase privacy notice'
-    )
+    expect(heading.textContent).toContain('Privacy notice')
 
     const sectionHeadings = document.querySelectorAll(
       '.govuk-grid-column-two-thirds h2'
     )
-    expect(sectionHeadings).toHaveLength(13)
+    expect(sectionHeadings).toHaveLength(11)
     expect(sectionHeadings[0].textContent).toContain(
       'Who collects your personal data'
     )
