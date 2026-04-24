@@ -201,7 +201,7 @@ export const content = {
         ),
         body: 'If you do not have the software needed to use the API, download the spreadsheet to report your waste.',
         downloadButton: 'Download spreadsheet',
-        fileMetadata: 'XLSX, 431KB',
+        fileMetadata: 'XLSX, 428KB',
         returnLink: `Return to ${organisationName}`
       }
     }),
