@@ -75,6 +75,7 @@ export const router = {
         onboarding:     onboarding.openRoutes,
         signedOut:      signedOut.openRoutes,
         signOut:        signOut.openRoutes,
+        serviceCharge:  serviceCharge.openRoutes,
         // Routes that require auth
         search:         search.authedRoutes.map((a) => addAuthWithOrg(a)),
         spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(spreadsheet.openRoutes),
