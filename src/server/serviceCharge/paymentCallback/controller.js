@@ -4,38 +4,43 @@ import { config } from '../../../config/config.js'
 
 export const paymentWebhookController = {
   async handler(request, h) {
-    const webhookSigningSecret = config.get('govPay.webhookSigningSecret')
-    const webhookMessageBody = request.payload
-    const hmac = crypto
-      .createHmac('sha256', webhookSigningSecret)
-      .update(webhookMessageBody)
-      .digest('hex')
+    // TODO fix the logic when we've finished debugging
+    try {
+      const webhookSigningSecret = config.get('govPay.webhookSigningSecret')
+      const webhookMessageBody = request.payload
+      if (webhookMessageBody) {
+        const hmac = crypto
+          .createHmac('sha256', webhookSigningSecret)
+          .update(webhookMessageBody)
+          .digest('hex')
 
-    if (hmac === request.headers('Pay-Signature')) {
-      try {
-        const parsedMessage = JSON.parse(webhookMessageBody)
-        request.logger.info(
-          `webhookMessageBody: ${JSON.stringify(parsedMessage, null, 4)}`
-        )
-      } catch (e) {
-        request.logger.error(
-          `Error parsing message: ${e} message: webhookMessageBody} stacktrace: ${e.stack}`
-        )
+        if (hmac === request.headers['pay-signature']) {
+          try {
+            const parsedMessage = JSON.parse(webhookMessageBody)
+            request.logger.info(
+              `webhookMessageBody: ${JSON.stringify(parsedMessage, null, 4)}`
+            )
+            request.backendApi.savePayment(
+              parsedMessage.resource.metadata.organisationId,
+              parsedMessage.resource
+            )
+          } catch (e) {
+            request.logger.error(
+              `Error saving payment: ${e} message: ${JSON.stringify(parsedMessage, null, 4)} stacktrace: ${e.stack}`
+            )
+          }
+        } else {
+          throw boom.forbidden('Signature not valid')
+        }
+      } else {
+        request.logger.error(`No message body`)
       }
-      try {
-        request.backendApi.savePayment(
-          request.auth.credentials.currentOrganisationId,
-          parsedMessage.resource
-        )
-      } catch (e) {
-        request.logger.error(
-          `Error saving payment: ${e} message: ${JSON.stringify(parsedMessage, null, 4)} stacktrace: ${e.stack}`
-        )
-      }
-      h.response().code(200)
-    } else {
-      throw boom.forbidden('Signature not valid')
+    } catch (e) {
+      request.logger.error(
+        `Error saving payment: ${e} message: ${JSON.stringify(parsedMessage, null, 4)} stacktrace: ${e.stack}`
+      )
     }
+    return h.response().code(200)
   }
 }
 

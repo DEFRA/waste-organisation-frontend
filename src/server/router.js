@@ -65,28 +65,28 @@ export const router = {
       // prettier-ignore
       const plugins = Object.entries({
         // Open routes
-        about:          about.openRoutes,
-        cookies:        cookies.openRoutes,
-        terms:          terms.openRoutes,
-        privacy:        privacy.openRoutes,
-        accessibilityStatement: accessibilityStatement.openRoutes,
-        signIn:         signIn.routes,
-        health:         health.openRoutes, // Used by platform to check if service is running, do not remove!
-        onboarding:     onboarding.openRoutes,
-        signedOut:      signedOut.openRoutes,
-        signOut:        signOut.openRoutes,
-        serviceCharge:  serviceCharge.openRoutes,
+        about:                   about.openRoutes,
+        cookies:                 cookies.openRoutes,
+        terms:                   terms.openRoutes,
+        privacy:                 privacy.openRoutes,
+        accessibilityStatement:  accessibilityStatement.openRoutes,
+        signIn:                  signIn.routes,
+        health:                  health.openRoutes, // Used by platform to check if service is running, do not remove!
+        onboarding:              onboarding.openRoutes,
+        signedOut:               signedOut.openRoutes,
+        signOut:                 signOut.openRoutes,
+        serviceChargeCallback:   serviceCharge.openRoutes,
         // Routes that require auth
-        search:         search.authedRoutes.map((a) => addAuthWithOrg(a)),
-        spreadsheet:    spreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(spreadsheet.openRoutes),
-        updateSpreadsheet: updateSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(updateSpreadsheet.openRoutes),
-        dashboard:      dashboard.authedRoutes.map((a) => addAuthWithOrg(a)),
-        nextAction:     nextAction.authedRoutes.map((a) => addAuthWithOrg(a)),
-        apiManagement:  apiManagement.authedRoutes.map((a) => addAuthWithOrg(a)),
-        account:        account.authedRoutes.map((a) => addAuthWithOrg(a)),
-        newAccount:     newAccount.authedRoutes.map((a) => addAuthWithOrg(a)),
-        serviceCharge:  serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a)),
-        downloadSpreadsheet: downloadSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a))
+        search:                  search.authedRoutes.map((a) => addAuthWithOrg(a)),
+        spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(spreadsheet.openRoutes),
+        updateSpreadsheet:       updateSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(updateSpreadsheet.openRoutes),
+        dashboard:               dashboard.authedRoutes.map((a) => addAuthWithOrg(a)),
+        nextAction:              nextAction.authedRoutes.map((a) => addAuthWithOrg(a)),
+        apiManagement:           apiManagement.authedRoutes.map((a) => addAuthWithOrg(a)),
+        account:                 account.authedRoutes.map((a) => addAuthWithOrg(a)),
+        newAccount:              newAccount.authedRoutes.map((a) => addAuthWithOrg(a)),
+        serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a)),
+        downloadSpreadsheet:     downloadSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a))
       }).reduce((p, entry) => createPlugin(p, entry), [])
 
       // Application specific routes, add your own routes here

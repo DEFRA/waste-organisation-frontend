@@ -34,6 +34,7 @@ export const serviceCharge = config.get('featureFlags.serviceCharge')
         {
           method: 'POST',
           path: paths.paymentCallback,
+          options: { payload: { parse: false, output: 'data' } },
           ...paymentWebhookController
         }
       ]
