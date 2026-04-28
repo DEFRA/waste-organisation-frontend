@@ -108,4 +108,23 @@ describe('#paymentWebhookController', () => {
     expect(response.statusCode).toBe(200)
     expect(wreckPutMock).not.toHaveBeenCalled()
   })
+
+  test('returns forbidden and saves payment when signature is not valid', async () => {
+    wreckPutMock.mockReturnValue({ message: 'success' })
+    const payloadString = JSON.stringify(payload)
+    const signature = crypto
+      .createHmac('sha256', webhookSigningSecret)
+      .update('fish')
+      .digest('hex')
+
+    const response = await server.inject({
+      method: 'POST',
+      url: paths.paymentCallback,
+      headers: { 'pay-signature': signature },
+      payload: payloadString
+    })
+
+    expect(response.statusCode).toBe(403)
+    expect(wreckPutMock).not.toHaveBeenCalled()
+  })
 })
