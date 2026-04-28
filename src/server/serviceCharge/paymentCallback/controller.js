@@ -26,7 +26,7 @@ export const paymentWebhookController = {
             )
           } catch (e) {
             request.logger.error(
-              `Error saving payment: ${e} message: ${JSON.stringify(parsedMessage, null, 4)} stacktrace: ${e.stack}`
+              `Error saving payment: ${e} message: ${webhookMessageBody} stacktrace: ${e.stack}`
             )
           }
         } else {
@@ -36,9 +36,7 @@ export const paymentWebhookController = {
         request.logger.error(`No message body`)
       }
     } catch (e) {
-      request.logger.error(
-        `Error saving payment: ${e} message: ${JSON.stringify(parsedMessage, null, 4)} stacktrace: ${e.stack}`
-      )
+      request.logger.error(`Error saving payment: ${e} stacktrace: ${e.stack}`)
     }
     return h.response().code(200)
   }

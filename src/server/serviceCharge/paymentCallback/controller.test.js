@@ -4,13 +4,11 @@ import {
   initialiseServer,
   wreckPutMock
 } from '../../../test-utils/initialise-server.js'
-import { paymentWebhookController } from './controller.js'
-import boom from '@hapi/boom'
 import { paths } from '../../../config/paths.js'
 
 describe('#paymentWebhookController', () => {
   let server
-  let webhookSigningSecret = 'test-secret'
+  const webhookSigningSecret = 'test-secret'
 
   beforeAll(async () => {
     config.set('featureFlags.serviceCharge', true)
