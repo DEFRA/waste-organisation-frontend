@@ -92,6 +92,16 @@ const remoteCall = (backendUrl, presharedKey) => {
         { payment: paymentData }
       )
       return payment
+    },
+    savePayment: async (organisationId, payment) => {
+      console.log(' -- >>>', organisationId, payment)
+      const paymentResponse = await apiCall(
+        (url, r) => wreck.put(url, r),
+        presharedKey,
+        `${backendUrl}/organisation/${organisationId}/payment/${payment.payment_id}`,
+        { payment }
+      )
+      return paymentResponse
     }
   }
 }

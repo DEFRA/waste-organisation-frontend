@@ -64,6 +64,13 @@ export const config = convict({
       nullable: false,
       default: 2600,
       env: 'GOVPAY_SERVICE_CHARGE_AMOUNT_PENCE'
+    },
+    webhookSigningSecret: {
+      doc: 'The signing secret unique to the GOV.UK Pay webhook',
+      format: String,
+      nullable: true,
+      sensitive: true,
+      default: null
     }
   },
   fileUpload: {
