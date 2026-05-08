@@ -2,14 +2,19 @@ import { beforeEach, describe, expect, vi } from 'vitest'
 import hapi from '@hapi/hapi'
 import { backendApi } from './index.js'
 import wreck from '@hapi/wreck'
+import { config } from '../../../../config/config.js'
+const backendConfig = config.get('backendApi')
 
 describe('backendApi', () => {
   let backendApiService
   let server
+  let backendApiUrl
+  let backendApiAuthCode
 
   beforeEach(async () => {
     server = hapi.server({})
-
+    backendApiUrl = backendConfig.url
+    backendApiAuthCode = backendConfig.presharedKey
     await server.register([backendApi])
 
     server.route({
@@ -105,6 +110,38 @@ describe('backendApi', () => {
       {}
     )
 
+    expect(actualResponse).toEqual(expectedResponse)
+  })
+
+  test('createPayment should send data to create payment', async () => {
+    const expectedResponse = {
+      nextUrl: ''
+    }
+
+    const mockPost = vi.spyOn(wreck, 'post')
+    mockPost.mockImplementation(async () => ({
+      payload: expectedResponse
+    }))
+
+    const paymentPayload = { amount: 1 }
+
+    const actualResponse = await backendApiService.initiatePayment(
+      'organisationId',
+      paymentPayload
+    )
+
+    expect(mockPost).toBeCalledWith(
+      `${backendApiUrl}/organisation/organisationId/initiatePayment/`,
+      {
+        headers: {
+          'x-auth-token': backendApiAuthCode
+        },
+        json: 'strict',
+        payload: {
+          payment: paymentPayload
+        }
+      }
+    )
     expect(actualResponse).toEqual(expectedResponse)
   })
 

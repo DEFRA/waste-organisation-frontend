@@ -36,11 +36,28 @@ describe('#paymentDetailsController', () => {
     wreckPostMock.mockReturnValue({
       res: { statusCode: statusCodes.ok },
       payload: {
-        payment_id: 'pid_123',
-        _links: {
-          next_url: {
-            href: 'https://www.payments.service.gov.uk/secure/abc123'
-          }
+        message: 'success',
+        payment: {
+          organisationId: 'orgid',
+          paymentId: 'pid_123',
+          amount: 2600,
+          description: 'Annual report receipt of waste service charge',
+          govPayLinks: {
+            next_url: {
+              href: 'https://www.payments.service.gov.uk/secure/abc123'
+            }
+          },
+          metadata: {
+            organisationId: 'orgid',
+            servicePeriodStart: '2026-05-08T12:32:05.629Z',
+            servicePeriodEnd: '2027-10-31T00:00:00.000Z'
+          },
+          reference: 'WASTE-34D30C7B',
+          returnUrl: 'http://localhost:3000/payment-details',
+          servicePeriodEnd: '2027-10-31T00:00:00.000Z',
+          servicePeriodStart: '2026-05-08T12:32:05.629Z',
+          status: 'payment_in_progress',
+          version: 1
         }
       }
     })
