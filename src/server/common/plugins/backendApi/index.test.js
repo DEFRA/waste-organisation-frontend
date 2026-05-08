@@ -125,10 +125,7 @@ describe('backendApi', () => {
 
     const paymentPayload = { amount: 1 }
 
-    const actualResponse = await backendApiService.initiatePayment(
-      'organisationId',
-      paymentPayload
-    )
+    await backendApiService.initiatePayment('organisationId', paymentPayload)
 
     expect(mockPost).toBeCalledWith(
       `${backendApiUrl}/organisation/organisationId/initiatePayment/`,
@@ -142,6 +139,23 @@ describe('backendApi', () => {
         }
       }
     )
+  })
+
+  test('savePayment should send data to save payment', async () => {
+    const expectedResponse = {
+      payment_id: 'payment123',
+      status: 'success'
+    }
+
+    vi.spyOn(wreck, 'put').mockImplementation(async () => ({
+      payload: expectedResponse
+    }))
+
+    const actualResponse = await backendApiService.savePayment(
+      'organisationId',
+      { payment_id: 'payment123' }
+    )
+
     expect(actualResponse).toEqual(expectedResponse)
   })
 
@@ -183,6 +197,14 @@ describe('backendApi', () => {
 
       const actualResponse = await backendApiService.createApiCodes('userId')
 
+      expect(actualResponse).toBeNull()
+    })
+
+    test('savePayment Should handle Errors', async () => {
+      vi.spyOn(wreck, 'put').mockImplementation(async () => {
+        throw new Error()
+      })
+      const actualResponse = await backendApiService.savePayment('orgId', {})
       expect(actualResponse).toBeNull()
     })
   })

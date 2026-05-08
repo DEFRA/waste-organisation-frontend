@@ -41,6 +41,7 @@ export const paths = {
   initiatePayment: '/initiate-payment',
   paymentDetails: '/payment-details',
   manageAccount: '/manage-account',
+  paymentCallback: '/service-charge-callback',
 
   apiList: '/api',
   apiDisable: '/api/disable/{apiCode}',
