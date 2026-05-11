@@ -60,6 +60,10 @@ jobs:
           GOV_NOTIFY_KEY: ${{ secrets.GOV_NOTIFY_KEY }}
           GOVPAY_API_KEY: ${{ secrets.GOVPAY_API_KEY }}
         run: |
+          cat > .env <<EOF
+          GOV_NOTIFY_KEY=${GOV_NOTIFY_KEY}
+          GOVPAY_API_KEY=${GOVPAY_API_KEY}
+          EOF
           docker compose up -d --wait
           docker compose ps
 
@@ -120,7 +124,14 @@ jobs:
       - name: Stop Docker Compose Services
         if: always() && steps.start-docker-compose-services.outcome == 'success'
         env:
+          GOV_NOTIFY_KEY: ${{ secrets.GOV_NOTIFY_KEY }}
+          GOVPAY_API_KEY: ${{ secrets.GOVPAY_API_KEY }}
           ORGANISATION_BACKEND_PASSWORD: ${{ secrets.ORGANISATION_BACKEND_PASSWORD }}
           ENVIRONMENT: local
-        run: docker compose down
+        run: |
+          cat > .env <<EOF
+          GOV_NOTIFY_KEY=${GOV_NOTIFY_KEY}
+          GOVPAY_API_KEY=${GOVPAY_API_KEY}
+          EOF
+          docker compose down
 
