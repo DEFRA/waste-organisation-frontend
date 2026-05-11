@@ -6,6 +6,15 @@ services:
     restart: always
     networks:
       - cdp-tenant
+  
+  selenium-chrome:
+    image: selenium/standalone-chrome:123.0
+    environment:
+      - SE_NODE_ENABLE_MANAGED_DOWNLOADS=true
+    ports:
+      - 4444:4444
+    networks:
+      - cdp-tenant
 
   mongodb:
     image: mongo:6.0.13
@@ -53,8 +62,6 @@ services:
     image: defradigital/cdp-defra-id-stub:latest
     ports:
       - '3200:3200'
-      - '3000:3000'
-      - '7337:7337'
     depends_on:
       redis:
         condition: service_started
@@ -64,7 +71,7 @@ services:
       REDIS_HOST: redis
       SESSION_CACHE_ENGINE: redis
       USE_SINGLE_INSTANCE_CACHE: true
-      APP_BASE_URL: http://localhost:3200
+      APP_BASE_URL: http://cdp-defra-id-stub:3200
     networks:
       - cdp-tenant
 
@@ -83,13 +90,17 @@ services:
       VIRTUAL_PORT: 7337
       PORT: 7337
       NODE_ENV: development
+      APP_BASE_URL: 'http://cdp-uploader:7337'
       REDIS_HOST: redis
       USE_SINGLE_INSTANCE_CACHE: true
       MOCK_VIRUS_SCAN_ENABLED: true
       MOCK_VIRUS_RESULT_DELAY: 3
       SQS_ENDPOINT: http://localstack:4566
       S3_ENDPOINT: http://localstack:4566
-    network_mode: 'service:cdp-defra-id-stub'
+    ports:
+      - '7337:7337'
+    networks:
+      - cdp-tenant
 
   waste-movement-backend:
     image: defradigital/waste-movement-backend:latest
@@ -189,12 +200,15 @@ services:
     environment:
       PORT: 3000
       NODE_ENV: development
+      LOG_LEVEL: debug
       REDIS_HOST: redis
       USE_SINGLE_INSTANCE_CACHE: true
       SESSION_CACHE_ENGINE: redis
-      AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://localhost:3200/cdp-defra-id-stub/.well-known/openid-configuration'
+      APP_BASE_URL: 'http://waste-organisation-frontend:3000'
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://cdp-defra-id-stub:3200/cdp-defra-id-stub/.well-known/openid-configuration'
       BACKEND_API: http://waste-organisation-backend:3001
-      FILE_UPLOAD_SERVICE_URL: http://localhost:7337
+      FILE_UPLOAD_SERVICE_URL: http://cdp-uploader:7337
+      FILE_UPLOAD_BASE_URL: 'http://waste-organisation-frontend:3000'
       BACKEND_API_PRESHARED_KEY: test
       GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       GOVPAY_API_URL: ${GOVPAY_API_URL:-https://publicapi.payments.service.gov.uk/v1}
@@ -204,7 +218,10 @@ services:
       FEATURE_FLAG_TEST_ERRORS: true
       FEATURE_FLAG_NEW_ACCOUNT_PAGE: true
       FEATURE_FLAG_REBRAND: false
-    network_mode: 'service:cdp-defra-id-stub'
+    ports:
+      - '3000:3000'
+    networks:
+      - cdp-tenant
 
 volumes:
   mongodb-data:
