@@ -113,7 +113,7 @@
       "validator": "13.15.22",
       "immutable": "5.1.5"
     },
-    "fast-xml-parser": "5.5.7",
+    "fast-xml-parser": "5.7.3",
     "clean-webpack-plugin": {
       "del": {
         "globby": {
