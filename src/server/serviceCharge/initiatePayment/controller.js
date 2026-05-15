@@ -20,7 +20,7 @@ export const initiatePaymentController = {
           returnUrl: `${appBaseUrl}${paths.paymentDetails}`,
           metadata: {
             organisationId: request.auth.credentials.currentOrganisationId,
-            organisationName: request.auth.credentials.currentOrganisatioName,
+            organisationName: request.auth.credentials.currentOrganisationName,
             servicePeriodStart: receivedDate,
             servicePeriodEnd: new Date(
               `${receivedDate.getFullYear() + 1}-10-31`

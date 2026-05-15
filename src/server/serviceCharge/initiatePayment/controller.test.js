@@ -105,7 +105,7 @@ const createMockRequest = (
       auth: {
         credentials: {
           currentOrganisationId: organisationId,
-          currentOrganisatioName: organisationName
+          currentOrganisationName: organisationName
         }
       },
       backendApi: {
