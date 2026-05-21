@@ -22,7 +22,7 @@ export const openId = {
       )
       server.auth.strategy('defraId', 'bell', {
         location: (request) =>
-          `${defraId.httpProtocol}${request.info.host}${paths.signinDefraIdCallback}`,
+          `${defraId.httpProtocol}://${request.info.host}${paths.signinDefraIdCallback}`,
         provider: defra,
         password: cookie.password,
         clientId: defraId.clientId,

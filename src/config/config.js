@@ -399,7 +399,7 @@ export const config = convict({
         doc: 'Http protocol used when creating redirect url to send to defraID',
         format: String,
         env: 'AUTH_DEFRA_HTTP_PROTOCOL',
-        default: 'https://'
+        default: 'https'
       }
     },
     basic: {
