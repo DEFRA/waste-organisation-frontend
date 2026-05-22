@@ -12,8 +12,7 @@ export const openIdProvider = async (name, authConfig) => {
         authConfig.oidcConfigurationUrl,
         oidcConf.authorization_endpoint,
         oidcConf.token_endpoint,
-        oidcConf.end_session_endpoint,
-        'http://localhost:3200/'
+        oidcConf.end_session_endpoint
       ]
         .filter(Boolean)
         .map((endpoint) => {
