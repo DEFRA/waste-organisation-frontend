@@ -3,10 +3,8 @@ import { getOpenIdConfig } from './open-id-client.js'
 import { checkGroups } from './check-groups.js'
 import { config } from '../../../../config/config.js'
 
-export const openIdProvider = async (name, authConfig) => {
-  const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
-
-  const providerEndpoints = Array.from(
+const getProviderEndpoints = async (oidcConf, authConfig) => {
+  return Array.from(
     new Set(
       [
         authConfig.oidcConfigurationUrl,
@@ -21,6 +19,11 @@ export const openIdProvider = async (name, authConfig) => {
         })
     )
   )
+}
+
+export const openIdProvider = async (name, authConfig) => {
+  const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
+  const providerEndpoints = await getProviderEndpoints(oidcConf, authConfig)
 
   return {
     name,
