@@ -1,6 +1,7 @@
 import jwt from '@hapi/jwt'
 import { getOpenIdConfig } from './open-id-client.js'
 import { checkGroups } from './check-groups.js'
+import { config } from '../../../../config/config.js'
 
 export const openIdProvider = async (name, authConfig) => {
   const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
@@ -11,7 +12,8 @@ export const openIdProvider = async (name, authConfig) => {
         authConfig.oidcConfigurationUrl,
         oidcConf.authorization_endpoint,
         oidcConf.token_endpoint,
-        oidcConf.end_session_endpoint
+        oidcConf.end_session_endpoint,
+        'http://localhost:3200/'
       ]
         .filter(Boolean)
         .map((endpoint) => {
@@ -26,7 +28,9 @@ export const openIdProvider = async (name, authConfig) => {
     providerEndpoints,
     protocol: 'oauth2',
     useParamsAuth: true,
-    auth: oidcConf.authorization_endpoint,
+    auth:
+      config.get('auth.defraId.oidcConfigurationAuthorizationOverride') ||
+      oidcConf.authorization_endpoint,
     token: oidcConf.token_endpoint,
     pkce: 'S256',
     scope: authConfig.scopes,
@@ -78,7 +82,9 @@ export const openIdProvider = async (name, authConfig) => {
         roles: payload.roles,
         idToken: params.id_token,
         tokenUrl: oidcConf.token_endpoint,
-        logoutUrl: oidcConf.end_session_endpoint
+        logoutUrl:
+          config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
+          oidcConf.end_session_endpoint
       }
     }
   }
