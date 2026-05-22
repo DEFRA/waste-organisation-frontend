@@ -207,6 +207,7 @@ services:
       AUTH_DEFRA_HTTP_PROTOCOL: 'http'
       BACKEND_API: http://waste-organisation-backend:3001
       FILE_UPLOAD_SERVICE_URL: http://cdp-uploader:7337
+      FILE_UPLOAD_BASE_URL: http://waste-organisation-frontend:3000
       BACKEND_API_PRESHARED_KEY: test
       GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       GOVPAY_API_URL: ${GOVPAY_API_URL:-https://publicapi.payments.service.gov.uk/v1}
