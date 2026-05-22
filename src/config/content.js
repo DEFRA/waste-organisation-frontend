@@ -303,7 +303,7 @@ export const content = {
         heading: 'Annual Report receipt of waste charge',
         intro:
           'Once you have paid the service charge, your organisation will have full access to report waste movements until',
-        accessUntil: '11:59pm on Thursday 10 September 2026',
+        accessUntilDateIso: 'en',
         sectionHeading: 'Review the payment amount',
         organisation: {
           heading: 'Organisation',

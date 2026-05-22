@@ -4,7 +4,10 @@ import { config } from '../../../config/config.js'
 import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
-import { initialiseServer } from '../../../test-utils/initialise-server.js'
+import {
+  initialiseServer,
+  wreckGetMock
+} from '../../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 
 describe('#reviewPaymentController', () => {
@@ -27,6 +30,23 @@ describe('#reviewPaymentController', () => {
   })
 
   test('returns 200 with expected static page content', async () => {
+    const expectedOrganisation = {
+      organisationId: 'orgid',
+      disableAfter: '2026-10-01T00:00:00.000Z',
+      users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+      paymentPeriods: [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: 2700
+        }
+      ]
+    }
+
+    wreckGetMock.mockReturnValue({
+      payload: { organisation: expectedOrganisation }
+    })
+
     const pageContent = content.reviewPayment(
       {},
       credentials.currentOrganisationName
@@ -72,8 +92,10 @@ describe('#reviewPaymentController', () => {
     expect(intro.textContent).toEqual(
       expect.stringContaining(pageContent.intro)
     )
+
+    console.log('intro.textContent', intro.textContent)
     expect(intro.textContent).toEqual(
-      expect.stringContaining(pageContent.accessUntil)
+      expect.stringContaining('12:00am on Friday 1 October 2027')
     )
 
     expect(sectionHeading).not.toBeNull()

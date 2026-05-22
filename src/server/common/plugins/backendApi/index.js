@@ -37,6 +37,14 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
 
 const remoteCall = (backendUrl, presharedKey) => {
   return {
+    getOrganisation: async (userId, organisationId) => {
+      const response = await apiCall(
+        (url, r) => wreck.get(url, r),
+        presharedKey,
+        `${backendUrl}/user/${userId}/organisation/${organisationId}`
+      )
+      return response?.organisation
+    },
     saveOrganisation: async (userId, organisationId, orgData) => {
       const response = await apiCall(
         (url, r) => wreck.put(url, r),

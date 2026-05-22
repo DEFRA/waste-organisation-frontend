@@ -39,6 +39,23 @@ describe('backendApi', () => {
       randomData: 'Some Data'
     }
 
+    vi.spyOn(wreck, 'get').mockImplementation(async () => ({
+      payload: { organisation: expectedResponse }
+    }))
+
+    const actualResponse = await backendApiService.getOrganisation(
+      'userId',
+      'organisationId'
+    )
+
+    expect(actualResponse).toEqual(expectedResponse)
+  })
+
+  test('saveSpreadsheet dummy test for coverage reasons', async () => {
+    const expectedResponse = {
+      randomData: 'Some Data'
+    }
+
     vi.spyOn(wreck, 'put').mockImplementation(async () => ({
       payload: { spreadsheet: expectedResponse }
     }))
