@@ -15,6 +15,7 @@ services:
       - '3200:3200'
     environment:
       APP_BASE_URL: http://cdp-defra-id-stub:3200
+      OIDC_APP_BASE_URL: http://cdp-defra-id-stub:3200
 
   cdp-uploader:
     network_mode: !reset null
