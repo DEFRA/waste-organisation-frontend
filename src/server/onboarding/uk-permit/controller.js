@@ -49,7 +49,7 @@ export const ukPermitController = {
         pageTitle: error ? pageContent.error.pageTitle : pageContent.title,
         heading: pageContent.heading,
         action: {
-          url: paths.isPermit,
+          url: paths.ukPermit,
           text: pageContent.continueAction
         },
         questions,
