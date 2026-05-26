@@ -10,7 +10,8 @@ const getProviderEndpoints = async (oidcConf, authConfig) => {
         authConfig.oidcConfigurationUrl,
         oidcConf.authorization_endpoint,
         oidcConf.token_endpoint,
-        oidcConf.end_session_endpoint
+        oidcConf.end_session_endpoint,
+        config.get('auth.defraId.oidcConfigurationAuthorizationOverride')
       ]
         .filter(Boolean)
         .map((endpoint) => {
