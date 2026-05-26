@@ -15,6 +15,7 @@ services:
       - '3200:3200'
     environment:
       APP_BASE_URL: http://cdp-defra-id-stub:3200
+      OIDC_APP_BASE_URL: http://cdp-defra-id-stub:3200
 
   cdp-uploader:
     network_mode: !reset null
@@ -37,3 +38,5 @@ services:
       AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://cdp-defra-id-stub:3200/cdp-defra-id-stub/.well-known/openid-configuration'
       FILE_UPLOAD_SERVICE_URL: http://cdp-uploader:7337
       FILE_UPLOAD_BASE_URL: 'http://waste-organisation-frontend:3000'
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_AUTHORIZATION_OVERRIDE: !reset null
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_END_SESSION_OVERRIDE: !reset null

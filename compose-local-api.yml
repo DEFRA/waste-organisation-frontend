@@ -1,4 +1,9 @@
 services:
+  cdp-defra-id-stub:
+    environment:
+      APP_BASE_URL: http://localhost:3200
+      OIDC_APP_BASE_URL: http://cdp-defra-id-stub:3200
+
   waste-organisation-backend:
     image: !reset null
     build:
