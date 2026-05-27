@@ -350,6 +350,20 @@ export const config = convict({
         default:
           'http://localhost:3200/cdp-defra-id-stub/.well-known/openid-configuration'
       },
+      oidcConfigurationAuthorizationOverride: {
+        doc: 'Defra ID OIDC authorization override URL',
+        format: String,
+        env: 'AUTH_DEFRA_ID_OIDC_CONFIGURATION_AUTHORIZATION_OVERRIDE',
+        default: null,
+        nullable: true
+      },
+      oidcConfigurationEndSessionOverride: {
+        doc: 'Defra ID OIDC end session override URL',
+        format: String,
+        env: 'AUTH_DEFRA_ID_OIDC_CONFIGURATION_END_SESSION_OVERRIDE',
+        default: null,
+        nullable: true
+      },
       serviceId: {
         doc: 'Defra ID service ID',
         format: String,
@@ -395,6 +409,12 @@ export const config = convict({
         format: String,
         env: 'AUTH_DEFRA_ID_RESPONSE_TYPE',
         default: 'code'
+      },
+      httpProtocol: {
+        doc: 'Http protocol used when creating redirect url to send to defraID',
+        format: String,
+        env: 'AUTH_DEFRA_HTTP_PROTOCOL',
+        default: 'https'
       }
     },
     basic: {

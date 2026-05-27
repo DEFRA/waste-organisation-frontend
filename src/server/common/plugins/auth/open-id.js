@@ -11,8 +11,6 @@ export const openId = {
     register: async (server) => {
       const { defraId } = config.get('auth')
       const { cookie } = config.get('session')
-      const baseUrl = config.get('appBaseUrl')
-
       const defra = await openIdProvider('defraId', defraId)
       const providerEndpoints = Array.isArray(defra.providerEndpoints)
         ? [...defra.providerEndpoints]
@@ -23,7 +21,8 @@ export const openId = {
         `Initialising oauth providerEndpoints: ${JSON.stringify(providerEndpoints)}`
       )
       server.auth.strategy('defraId', 'bell', {
-        location: () => `${baseUrl}${paths.signinDefraIdCallback}`,
+        location: (request) =>
+          `${defraId.httpProtocol}://${request.info.host}${paths.signinDefraIdCallback}`,
         provider: defra,
         password: cookie.password,
         clientId: defraId.clientId,
