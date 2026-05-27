@@ -93,7 +93,6 @@ describe('#reviewPaymentController', () => {
       expect.stringContaining(pageContent.intro)
     )
 
-    console.log('intro.textContent', intro.textContent)
     expect(intro.textContent).toEqual(
       expect.stringContaining('12:00am on Friday 1 October 2027')
     )

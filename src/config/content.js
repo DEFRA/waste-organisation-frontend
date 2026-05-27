@@ -318,6 +318,21 @@ export const content = {
         cancel: 'Cancel'
       }
     }),
+  cannotMakePayment: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Sorry, you cannot make a payment for this organisation',
+        heading: heading(
+          'Sorry, you cannot make a payment for this organisation',
+          'Based on your answer, you cannot continue as local authorities are currently unable to use this service.',
+          null
+        ),
+        link: {
+          href: config.get('links.startPage'),
+          text: 'Find out more about Digital waste tracking'
+        }
+      }
+    }),
   paymentDetails: (request) =>
     getContentForLanguage(request, {
       en: {
