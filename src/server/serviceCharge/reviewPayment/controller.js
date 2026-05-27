@@ -10,6 +10,14 @@ export const reviewPaymentController = {
       id,
       currentOrganisationId
     )
+
+    if (
+      !organisation.paymentPeriods ||
+      organisation.paymentPeriods.length < 1
+    ) {
+      return h.redirect(paths.cannotMakePayment)
+    }
+
     const organisationName = currentOrganisationName?.trim()
     const pageContent = content.reviewPayment(request, organisationName)
     return h.view('serviceCharge/reviewPayment/index', {
