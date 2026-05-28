@@ -279,12 +279,12 @@ export const content = {
         }
       }
     }),
-  serviceCharge: (request) =>
+  serviceCharge: (request, priceInPence) =>
     getContentForLanguage(request, {
       en: {
         title: 'Pay annual report receipt of waste service charge',
         heading: 'Pay the annual report receipt of waste service charge',
-        cost: `The cost is ${formatPounds(config.get('govPay.serviceChargeAmountPence'))} per organisation.`,
+        cost: `The cost is ${formatPounds(priceInPence)} per organisation.`,
         requirementsIntro: 'To pay for the service charge, you will need:',
         requirements: [
           'a credit or debit card',
@@ -311,8 +311,7 @@ export const content = {
           name:
             organisationName ||
             '[Waste receiving organisation or business name]',
-          totalCostLabel: 'Total cost',
-          totalCost: formatPounds(config.get('govPay.serviceChargeAmountPence'))
+          totalCostLabel: 'Total cost'
         },
         continue: 'Continue',
         cancel: 'Cancel'

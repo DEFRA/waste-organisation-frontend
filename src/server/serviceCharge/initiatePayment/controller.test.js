@@ -6,7 +6,7 @@ import {
   wreckPostMock
 } from '../../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
-import { expect, test, vi } from 'vitest'
+import { afterEach, expect, test, vi } from 'vitest'
 import { initiatePaymentController } from './controller.js'
 
 import { faker } from '@faker-js/faker'
@@ -15,38 +15,44 @@ const ORGANISATION_ID = 456
 const ORGANISATION_NAME = 'Joe Bloggs Ltd'
 const SERVICE_CHARGE_DESCRIPTION =
   'Annual report receipt of waste service charge'
+const MESSAGE_TYPE = 'payment-periods'
 
 describe('#initiatePaymentController', () => {
   let server
   let credentials
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
-  })
-
-  afterAll(async () => {
-    config.set('featureFlags.serviceCharge', false)
-    await server.stop({ timeout: 0 })
-  })
-
-  beforeEach(async () => {
     credentials = await setupAuthedUserSession(server)
     wreckPostMock.mockReset()
   })
 
+  afterEach(async () => {
+    config.set('featureFlags.serviceCharge', false)
+    await server.stop({ timeout: 0 })
+  })
+
   test('initiate payment', async () => {
+    const serviceChargeAmountPence = 4000
+
     const dateNow = new Date('2026-05-05T10:00:00.000Z')
     const mockNextUrl = faker.internet.url
     const { backendMock, request, h } = createMockRequest(
       ORGANISATION_ID,
       ORGANISATION_NAME,
       dateNow,
-      mockNextUrl
+      mockNextUrl,
+      [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: serviceChargeAmountPence
+        }
+      ]
     )
-    const { serviceChargeAmountPence } = config.get('govPay')
-    const appBaseUrl = config.get('appBaseUrl').replace(/\/$/, '')
 
+    const appBaseUrl = config.get('appBaseUrl').replace(/\/$/, '')
     await initiatePaymentController.handler(request, h)
 
     expect(backendMock).toBeCalledWith(ORGANISATION_ID, {
@@ -56,8 +62,8 @@ describe('#initiatePaymentController', () => {
       metadata: {
         organisationId: ORGANISATION_ID,
         organisationName: ORGANISATION_NAME,
-        servicePeriodStart: dateNow,
-        servicePeriodEnd: new Date('2027-10-31')
+        servicePeriodStart: '2026-10-01T00:00:00.000Z',
+        servicePeriodEnd: '2027-10-01T00:00:00.000Z'
       }
     })
 
@@ -65,6 +71,16 @@ describe('#initiatePaymentController', () => {
   })
 
   test('returns bad gateway if GovPay payment creation fails', async () => {
+    server.injectYarState({
+      type: MESSAGE_TYPE,
+      message: [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: 4000
+        }
+      ]
+    })
     wreckPostMock.mockImplementation(async () => {
       throw new Error('GovPay unavailable')
     })
@@ -81,6 +97,22 @@ describe('#initiatePaymentController', () => {
     expect(statusCode).toBe(502)
   })
 
+  test('redirect to cannotMakePayment when no payments are avalible', async (paymentPeriods) => {
+    server.injectYarState({ type: MESSAGE_TYPE, message: [] })
+
+    const { statusCode, headers } = await server.inject({
+      method: 'GET',
+      url: paths.initiatePayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.found)
+    expect(headers.location).toBe(paths.cannotMakePayment)
+  })
+
   test('returns unauthorized when not authenticated', async () => {
     const { statusCode } = await server.inject({
       method: 'GET',
@@ -95,7 +127,8 @@ const createMockRequest = (
   organisationId,
   organisationName,
   dateNow,
-  nextUrl
+  nextUrl,
+  paymentPeriods
 ) => {
   const backendMock = vi.fn()
 
@@ -120,7 +153,8 @@ const createMockRequest = (
         error: vi.fn()
       },
       yar: {
-        set: vi.fn()
+        set: vi.fn(),
+        flash: vi.fn().mockReturnValue(paymentPeriods)
       },
       info: {
         received: dateNow.getTime()

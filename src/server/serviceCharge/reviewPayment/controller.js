@@ -1,23 +1,23 @@
 import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
+const MESSAGE_TYPE = 'payment-periods'
+
+const formatPounds = (amountInPence) =>
+  new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP'
+  }).format(amountInPence / 100)
 
 export const reviewPaymentController = {
   async handler(request, h) {
-    const { id, currentOrganisationId, currentOrganisationName } =
-      request.auth.credentials
-
-    const organisation = await request.backendApi.getOrganisation(
-      id,
-      currentOrganisationId
-    )
-
-    if (
-      !organisation.paymentPeriods ||
-      organisation.paymentPeriods.length < 1
-    ) {
+    const paymentPeriods = request.yar.flash(MESSAGE_TYPE)
+    if (!paymentPeriods || paymentPeriods < 1) {
       return h.redirect(paths.cannotMakePayment)
     }
+    const paymentPeriod = paymentPeriods[0]
+    request.yar.flash(MESSAGE_TYPE, paymentPeriod)
 
+    const { currentOrganisationName } = request.auth.credentials
     const organisationName = currentOrganisationName?.trim()
     const pageContent = content.reviewPayment(request, organisationName)
     return h.view('serviceCharge/reviewPayment/index', {
@@ -27,11 +27,12 @@ export const reviewPaymentController = {
       },
       intro: pageContent.intro,
       accessUntil: formatDate(
-        new Date(organisation.paymentPeriods[0].to),
+        new Date(paymentPeriod.to),
         pageContent.accessUntilDateIso
       ),
       sectionHeading: pageContent.sectionHeading,
       organisation: pageContent.organisation,
+      totalCost: formatPounds(paymentPeriod.priceInPence),
       continueText: pageContent.continue,
       continueHref: paths.initiatePayment,
       cancelLink: {

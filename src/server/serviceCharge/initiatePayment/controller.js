@@ -3,28 +3,31 @@ import { config } from '../../../config/config.js'
 import { paths } from '../../../config/paths.js'
 const SERVICE_CHARGE_DESCRIPTION =
   'Annual report receipt of waste service charge'
+const MESSAGE_TYPE = 'payment-periods'
 
 export const initiatePaymentController = {
   async handler(request, h) {
     try {
-      const { serviceChargeAmountPence } = config.get('govPay')
-      const appBaseUrl = config.get('appBaseUrl').replace(/\/$/, '')
+      const paymentPeriods = request.yar.flash(MESSAGE_TYPE)
 
-      const receivedDate = new Date(request.info.received)
+      if (!paymentPeriods || paymentPeriods < 1) {
+        return h.redirect(paths.cannotMakePayment)
+      }
+      const paymentPeriod = paymentPeriods[0]
+
+      const appBaseUrl = config.get('appBaseUrl').replace(/\/$/, '')
 
       const result = await request.backendApi.initiatePayment(
         request.auth.credentials.currentOrganisationId,
         {
-          amount: serviceChargeAmountPence,
+          amount: paymentPeriod.priceInPence,
           description: SERVICE_CHARGE_DESCRIPTION,
           returnUrl: `${appBaseUrl}${paths.paymentDetails}`,
           metadata: {
             organisationId: request.auth.credentials.currentOrganisationId,
             organisationName: request.auth.credentials.currentOrganisationName,
-            servicePeriodStart: receivedDate,
-            servicePeriodEnd: new Date(
-              `${receivedDate.getFullYear() + 1}-10-31`
-            )
+            servicePeriodStart: paymentPeriod.from,
+            servicePeriodEnd: paymentPeriod.to
           }
         }
       )
@@ -41,6 +44,7 @@ export const initiatePaymentController = {
         { err: error },
         `Failed to initiate GovPay payment: ${error?.message ?? 'unknown error'}`
       )
+
       throw boom.badGateway('Unable to initiate payment')
     }
   }
