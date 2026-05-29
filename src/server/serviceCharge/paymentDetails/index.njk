@@ -1,9 +1,9 @@
 {% extends 'layouts/page.njk' %}
 
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
-{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{# {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %} #}
 
-{% set paymentSummaryRows = [
+{# {% set paymentSummaryRows = [
   {
     key: { text: paymentSummary.paymentForLabel },
     value: { text: paymentSummary.paymentForValue }
@@ -16,20 +16,20 @@
     key: { text: paymentSummary.totalAmountLabel },
     value: { text: paymentSummary.totalAmountValue }
   }
-] %}
+] %} #}
 
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {{ govukPanel({
         titleText: heading,
-        html: (referenceLabel | escape) + '<br><strong data-testid="payment-reference">' + (paymentReference | escape) + '</strong>',
+      
         classes: 'govuk-!-margin-bottom-8'
       }) }}
 
-      <h2 class="govuk-heading-m" data-testid="payment-summary-heading">{{ summaryHeading }}</h2>
+      {# <h2 class="govuk-heading-m" data-testid="payment-summary-heading">{{ summaryHeading }}</h2> #}
 
-      {{ govukSummaryList({
+      {# {{ govukSummaryList({
         rows: paymentSummaryRows,
         attributes: {
           "data-testid": "payment-summary-list"
@@ -42,7 +42,7 @@
         <p class="govuk-body" data-testid="payment-next-step">{{ nextStep }}</p>
       {% endfor %}
 
-      <a class="govuk-link" href="{{ returnLink.href }}" data-testid="payment-return-link">{{ returnLink.text }}</a>
-    </div>
+      <a class="govuk-link" href="{{ returnLink.href }}" data-testid="payment-return-link">{{ returnLink.text }}</a>#}
+    </div> 
   </div>
 {% endblock %}

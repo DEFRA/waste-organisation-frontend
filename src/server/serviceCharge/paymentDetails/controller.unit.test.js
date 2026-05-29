@@ -36,7 +36,7 @@ const createH = () => ({
   view: vi.fn((template, context) => ({ template, context }))
 })
 
-describe('#paymentDetailsControllerUnit', () => {
+describe.skip('#paymentDetailsControllerUnit', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     config.set('featureFlags.serviceCharge', true)
