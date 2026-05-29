@@ -4,6 +4,8 @@ services:
     ports:
       - '6379:6379'
     restart: always
+    volumes:
+      - redis-data:/data:z
     networks:
       - cdp-tenant
 
@@ -19,6 +21,10 @@ services:
       - ./compose:/compose/:z
     restart: always
     command: --quiet
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: thing
     healthcheck:
       test: mongosh --quiet --eval "try { var status = rs.status(); if (status.members[0].stateStr === 'PRIMARY') { quit(0); } else { quit(1); } } catch(e) { quit(1); }"
       interval: 5s
@@ -53,8 +59,6 @@ services:
     image: defradigital/cdp-defra-id-stub:latest
     ports:
       - '3200:3200'
-      - '3000:3000'
-      - '7337:7337'
     depends_on:
       redis:
         condition: service_started
@@ -64,12 +68,14 @@ services:
       REDIS_HOST: redis
       SESSION_CACHE_ENGINE: redis
       USE_SINGLE_INSTANCE_CACHE: true
-      APP_BASE_URL: http://localhost:3200
+      APP_BASE_URL: http://cdp-defra-id-stub:3200
     networks:
       - cdp-tenant
 
   cdp-uploader:
     image: defradigital/cdp-uploader:latest
+    ports:
+      - '7337:7337'
     depends_on:
       localstack:
         condition: service_healthy
@@ -89,7 +95,8 @@ services:
       MOCK_VIRUS_RESULT_DELAY: 3
       SQS_ENDPOINT: http://localstack:4566
       S3_ENDPOINT: http://localstack:4566
-    network_mode: 'service:cdp-defra-id-stub'
+    networks:
+      - cdp-tenant
 
   waste-movement-backend:
     image: defradigital/waste-movement-backend:latest
@@ -119,12 +126,12 @@ services:
   waste-tracking-id-backend:
     image: defradigital/waste-tracking-id-backend:latest
     ports:
-      - '3003:3001'
+      - '3003:3003'
     depends_on:
       mongodb:
         condition: service_healthy
     environment:
-      PORT: 3001
+      PORT: 3003
       NODE_ENV: development
       ENVIRONMENT: local
       MONGO_URI: mongodb://mongodb:27017/?replicaSet=rs0&directConnection=true
@@ -160,6 +167,8 @@ services:
       AWS_S3_CHECKSUM_MODE: DISABLED
       GOV_NOTIFY_KEY: ${GOV_NOTIFY_KEY}
       LOG_LEVEL: trace
+      BULK_UPLOAD_COPY_SPREADSHEET_TO_DISK: true
+      GOVPAY_SERVICE_FREE_PERIOD_END: '2026-10-20T12:23:00.000Z'
     networks:
       - cdp-tenant
 
@@ -167,6 +176,8 @@ services:
     build:
       context: .
       target: development
+    ports:
+      - '3000:3000'
     volumes:
       - ./package.json:/home/node/package.json:z
       - ./package-lock.json:/home/node/package-lock.json:z
@@ -192,10 +203,13 @@ services:
       REDIS_HOST: redis
       USE_SINGLE_INSTANCE_CACHE: true
       SESSION_CACHE_ENGINE: redis
-      AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://localhost:3200/cdp-defra-id-stub/.well-known/openid-configuration'
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://cdp-defra-id-stub:3200/cdp-defra-id-stub/.well-known/openid-configuration'
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_AUTHORIZATION_OVERRIDE: 'http://localhost:3200/cdp-defra-id-stub/authorize'
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_END_SESSION_OVERRIDE: 'http://localhost:3200/cdp-defra-id-stub/logout'
       AUTH_DEFRA_HTTP_PROTOCOL: 'http'
       BACKEND_API: http://waste-organisation-backend:3001
-      FILE_UPLOAD_SERVICE_URL: http://localhost:7337
+      FILE_UPLOAD_SERVICE_URL: http://cdp-uploader:7337
+      FILE_UPLOAD_BASE_URL: http://waste-organisation-frontend:3000
       BACKEND_API_PRESHARED_KEY: test
       GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       GOVPAY_API_URL: ${GOVPAY_API_URL:-https://publicapi.payments.service.gov.uk/v1}
@@ -205,12 +219,14 @@ services:
       FEATURE_FLAG_TEST_ERRORS: true
       FEATURE_FLAG_NEW_ACCOUNT_PAGE: true
       FEATURE_FLAG_REBRAND: false
-    network_mode: 'service:cdp-defra-id-stub'
+      LOG_FORMAT: 'pino-pretty'
+    networks:
+      - cdp-tenant
 
 volumes:
   mongodb-data:
+  redis-data:
 
 networks:
   cdp-tenant:
     driver: bridge
-    name: cdp-tenant
