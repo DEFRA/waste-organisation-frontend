@@ -1,3 +1,4 @@
+import boom from '@hapi/boom'
 import { config } from '../../../config/config.js'
 import { paths } from '../../../config/paths.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
@@ -22,10 +23,10 @@ describe('#initiatePaymentController', () => {
   let credentials
 
   beforeEach(async () => {
+    wreckPostMock.mockReset()
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
     credentials = await setupAuthedUserSession(server)
-    wreckPostMock.mockReset()
   })
 
   afterEach(async () => {
@@ -70,7 +71,48 @@ describe('#initiatePaymentController', () => {
     expect(h.redirect).toBeCalledWith(mockNextUrl)
   })
 
-  test('returns bad gateway if GovPay payment creation fails', async () => {
+  test.each([
+    { error: new Error('ERROR MESSAGE'), message: 'ERROR MESSAGE' },
+    {
+      error: {},
+      message: 'unknown error'
+    }
+  ])('initiate payment handles exception', async ({ error, message }) => {
+    const serviceChargeAmountPence = 4000
+
+    const dateNow = new Date('2026-05-05T10:00:00.000Z')
+    const mockNextUrl = faker.internet.url
+    const { request, h } = createMockRequest(
+      ORGANISATION_ID,
+      ORGANISATION_NAME,
+      dateNow,
+      mockNextUrl,
+      [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: serviceChargeAmountPence
+        }
+      ]
+    )
+
+    request.backendApi = {
+      initiatePayment: (_request, _payload) => {
+        throw error
+      }
+    }
+
+    expect(initiatePaymentController.handler(request, h)).rejects.toThrowError(
+      boom.badGateway('Unable to initiate payment')
+    )
+
+    expect(request.logger.error).toBeCalledWith(
+      { err: error },
+      `Failed to initiate GovPay payment: ${message}`
+    )
+  })
+
+  test('returns bad gateway if GovPay payment creation returns errors', async () => {
     server.injectYarState({
       type: MESSAGE_TYPE,
       message: [
@@ -81,8 +123,11 @@ describe('#initiatePaymentController', () => {
         }
       ]
     })
-    wreckPostMock.mockImplementation(async () => {
-      throw new Error('GovPay unavailable')
+
+    wreckPostMock.mockReturnValue({
+      payload: {
+        errors: 'ERROR'
+      }
     })
 
     const { statusCode } = await server.inject({
