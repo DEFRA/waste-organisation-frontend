@@ -102,9 +102,9 @@ describe('#initiatePaymentController', () => {
       }
     }
 
-    expect(initiatePaymentController.handler(request, h)).rejects.toThrowError(
-      boom.badGateway('Unable to initiate payment')
-    )
+    await expect(
+      initiatePaymentController.handler(request, h)
+    ).rejects.toThrowError(boom.badGateway('Unable to initiate payment'))
 
     expect(request.logger.error).toBeCalledWith(
       { err: error },

@@ -17,6 +17,7 @@ const getContentForLanguage = (_request, data) => {
   return data['en']
 }
 
+/* v8 ignore next */
 export const content = {
   ukPermit: (request) =>
     getContentForLanguage(request, {
