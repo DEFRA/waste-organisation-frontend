@@ -1,6 +1,9 @@
+import crypto from 'crypto'
 import { statusCodes } from '../../constants/status-codes.js'
 import { config } from '../../../../config/config.js'
 import { initialiseServer } from '../../../../test-utils/initialise-server.js'
+import { paths } from '../../../../config/paths.js'
+import { beforeEach } from 'vitest'
 
 const encodeCredentials = (username, password) =>
   Buffer.from(`${username}:${password}`).toString('base64')
@@ -8,10 +11,16 @@ const encodeCredentials = (username, password) =>
 describe('#basicAuth', () => {
   const originalUsername = config.get('auth.basic.username')
   const originalPassword = config.get('auth.basic.password')
+  const originalServiceChargeFF = config.get('featureFlags.serviceCharge')
+
+  beforeEach(() => {
+    config.set('featureFlags.serviceCharge', true)
+  })
 
   afterEach(() => {
     config.set('auth.basic.username', originalUsername)
     config.set('auth.basic.password', originalPassword)
+    config.set('featureFlags.serviceCharge', originalServiceChargeFF)
   })
 
   describe('when BASIC_AUTH_PASSWORD is not set', () => {
@@ -80,6 +89,40 @@ describe('#basicAuth', () => {
       })
 
       expect(statusCode).toBe(403)
+      await server.stop({ timeout: 0 })
+    })
+
+    test('requests from service charge callback do not get 401 for service-charge-callback', async () => {
+      const url = paths.paymentCallback
+      const preSharedKey = 'abc123'
+
+      config.set('govPay.webhookSigningSecret', preSharedKey)
+
+      const signature = crypto
+        .createHmac('sha256', preSharedKey)
+        .update(JSON.stringify({ metadata: { preSharedKey } }))
+        .digest('hex')
+
+      const server = await initialiseServer()
+
+      const r1 = await server.inject({
+        method: 'POST',
+        url,
+        headers: { 'pay-signature': signature },
+        payload: JSON.stringify({ metadata: { preSharedKey } })
+      })
+
+      expect(r1.statusCode).toBe(200)
+
+      const { statusCode } = await server.inject({
+        method: 'POST',
+        url,
+        headers: { 'pay-signature': signature },
+        payload: JSON.stringify({ metadata: { preSharedKey: 'bork' } })
+      })
+
+      expect(statusCode).toBe(403)
+
       await server.stop({ timeout: 0 })
     })
 
