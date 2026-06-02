@@ -70,6 +70,7 @@ export const config = convict({
       format: String,
       nullable: true,
       sensitive: true,
+      env: 'GOVPAY_SERVICE_CHARGE_WEBHOOK_SECRET',
       default: null
     }
   },

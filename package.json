@@ -19,6 +19,8 @@
     "start:docker:local": "npm run docker:local:start",
     "docker:local:build": "docker compose -f compose.yml -f compose-local-api.yml build --no-cache",
     "docker:local:start": "docker compose -f compose.yml -f compose-local-api.yml up",
+    "docker:ngrok:build": "docker compose -f compose.yml -f compose-local-api.yml -f compose-ngrok.yml build --no-cache",
+    "docker:ngrok:start": "docker compose -f compose.yml -f compose-local-api.yml -f compose-ngrok.yml up",
     "docker:dev": "npm run dev",
     "format": "prettier --write \"src/**/*.js\" \"**/*.{js,cjs,md,json,config.js,test.js}\"",
     "format:check": "prettier --check \"src/**/*.js\" \"**/*.{js,cjs,md,json,config.js,test.js}\"",

@@ -166,7 +166,9 @@ services:
       WASTE_CLIENT_AUTH_TEST: test
       AWS_S3_CHECKSUM_MODE: DISABLED
       GOV_NOTIFY_KEY: ${GOV_NOTIFY_KEY}
+      GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       LOG_LEVEL: trace
+      LOG_FORMAT: pino-pretty
       BULK_UPLOAD_COPY_SPREADSHEET_TO_DISK: true
       GOVPAY_SERVICE_FREE_PERIOD_END: '2026-10-20T12:23:00.000Z'
     networks:
@@ -213,12 +215,9 @@ services:
       BACKEND_API_PRESHARED_KEY: test
       GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       GOVPAY_API_URL: ${GOVPAY_API_URL:-https://publicapi.payments.service.gov.uk/v1}
-      FEATURE_FLAG_ACCOUNT_PAGE: true
+      GOVPAY_SERVICE_CHARGE_WEBHOOK_SECRET: ${GOVPAY_SERVICE_CHARGE_WEBHOOK_SECRET}
       FEATURE_FLAG_SERVICE_CHARGE: true
       FEATURE_FLAG_SEARCH_PAGE: true
-      FEATURE_FLAG_TEST_ERRORS: true
-      FEATURE_FLAG_NEW_ACCOUNT_PAGE: true
-      FEATURE_FLAG_REBRAND: false
       LOG_FORMAT: 'pino-pretty'
     networks:
       - cdp-tenant
