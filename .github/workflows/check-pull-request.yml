@@ -20,10 +20,10 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Test code and Create Test Coverage Reports
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -43,7 +43,7 @@ jobs:
 
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]'
-        uses: SonarSource/sonarqube-scan-action@v6.0.0 #  (or check latest version on https://github.com/marketplace/actions/official-sonarqube-scan)
+        uses: SonarSource/sonarqube-scan-action@v8.1.0 #  (or check latest version on https://github.com/marketplace/actions/official-sonarqube-scan)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -57,7 +57,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Start Docker Compose Services
         id: start-docker-compose-services
@@ -73,13 +73,13 @@ jobs:
           docker compose -f compose.yml -f compose-github.override.yml ps
 
       - name: Checkout UAT Repository as Integration Test Suite
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DEFRA/digital-waste-tracking-fe-uat
           path: integration-tests
 
       - name: Setup Node.js for Integration Test Suite
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: integration-tests/.nvmrc
           cache: npm
@@ -107,7 +107,7 @@ jobs:
       - name: Upload Test Report
         if: always() && steps.generate-report.outcome == 'success'
         id: upload-report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-report
           path: integration-tests/allure-report/
@@ -115,7 +115,7 @@ jobs:
 
       - name: Comment Test Report Link on PR
         if: always() && steps.upload-report.outcome == 'success' && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const statusEmoji = '${{ steps.integration-tests.outcome }}' === 'success' ? '✅' : '❌';
