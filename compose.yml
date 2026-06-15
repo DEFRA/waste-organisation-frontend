@@ -64,8 +64,8 @@ services:
       - cdp-tenant
 
   cdp-defra-id-stub:
-    # defradigital/cdp-defra-id-stub:latest
-    image: defradigital/cdp-defra-id-stub@sha256:1904d104fe2f25d4b413e4d7378f79f63ee856e636e3b70715f0564ee9e5bbc1
+    # defradigital/cdp-defra-id-stub@sha256:1904d104fe2f25d4b413e4d7378f79f63ee856e636e3b70715f0564ee9e5bbc1
+    image: defradigital/cdp-defra-id-stub:latest
     ports:
       - '3200:3200'
     depends_on:
