@@ -5,16 +5,16 @@
 
 {% set paymentSummaryRows = [
   {
-    key: { text: paymentSummary.paymentForLabel },
-    value: { text: paymentSummary.paymentForValue }
+    key: { text: paymentForLabel },
+    value: { text: paymentForValue }
   },
   {
-    key: { text: paymentSummary.organisationLabel },
-    value: { text: paymentSummary.organisationValue }
+    key: { text: organisationLabel },
+    value: { text: organisationValue }
   },
   {
-    key: { text: paymentSummary.totalAmountLabel },
-    value: { text: paymentSummary.totalAmountValue }
+    key: { text: totalAmountLabel },
+    value: { text: totalAmountValue }
   }
 ] %}
 
@@ -22,9 +22,12 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {{ govukPanel({
-        titleText: heading,
+        titleText: heading.text,
         html: (referenceLabel | escape) + '<br><strong data-testid="payment-reference">' + (paymentReference | escape) + '</strong>',
-        classes: 'govuk-!-margin-bottom-8'
+        classes: 'govuk-!-margin-bottom-8',
+        attributes: {
+          "data-testid": "app-heading-title"
+        }
       }) }}
 
       <h2 class="govuk-heading-m" data-testid="payment-summary-heading">{{ summaryHeading }}</h2>
@@ -42,7 +45,7 @@
         <p class="govuk-body" data-testid="payment-next-step">{{ nextStep }}</p>
       {% endfor %}
 
-      <a class="govuk-link" href="{{ returnLink.href }}" data-testid="payment-return-link">{{ returnLink.text }}</a>
+      <a class="govuk-link" href="{{ returnToAccountLink}}" data-testid="payment-return-link">{{ returnToAccountLabel }}</a>
     </div>
   </div>
 {% endblock %}

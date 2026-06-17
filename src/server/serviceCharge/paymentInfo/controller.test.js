@@ -90,7 +90,7 @@ describe('#serviceChargeController', () => {
 
     expect(heading).not.toBeNull()
     expect(heading.textContent).toEqual(
-      expect.stringContaining(pageContent.heading)
+      expect.stringContaining(pageContent.heading.text)
     )
 
     expect(cost).not.toBeNull()

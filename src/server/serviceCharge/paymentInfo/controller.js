@@ -24,14 +24,13 @@ export const serviceChargeController = {
 
     const pageContent = content.serviceCharge(
       request,
-      paymentPeriod.priceInPence
+      paymentPeriod.priceInPence,
+      request.auth.credentials.currentOrganisationName
     )
 
     return h.view('serviceCharge/paymentInfo/index', {
       pageTitle: pageContent.title,
-      heading: {
-        text: pageContent.heading
-      },
+      heading: pageContent.heading,
       cost: pageContent.cost,
       requirementsIntro: pageContent.requirementsIntro,
       requirements: pageContent.requirements,

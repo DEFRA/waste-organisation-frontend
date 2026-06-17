@@ -3,41 +3,43 @@ import { paths } from '../../../config/paths.js'
 
 export const paymentConfirmationController = {
   async handler(request, h) {
-    const paymentId = request.yar.get('govPayPaymentId')
-
-    if (!paymentId) {
-      return h.redirect(paths.account)
-    }
-
-    const result = await request.backendApi.paymentStatus(
-      request.auth.credentials.currentOrganisationId,
-      paymentId
+    const pageContent = content.paymentDetails(
+      request,
+      3500,
+      request.auth.credentials.currentOrganisationName
     )
 
-    console.log('result', result)
+    const paymentId = request.yar.get('govPayPaymentId')
 
-    const pageContent = content.paymentDetails(request)
+    if (paymentId) {
+      const { payment } = await request.backendApi.paymentStatus(
+        request.auth.credentials.currentOrganisationId,
+        paymentId
+      )
 
-    return h.view('serviceCharge/paymentConfirmation/index', {
-      pageTitle: pageContent.title,
-      heading: pageContent.heading,
-      referenceLabel: pageContent.referenceLabel,
-      paymentReference: 'sdfksdfmklm',
-      summaryHeading: pageContent.summaryHeading,
-      paymentSummary: {
-        paymentForLabel: pageContent.paymentForLabel,
-        paymentForValue: pageContent.paymentForValue,
-        organisationLabel: pageContent.organisationLabel,
-        organisationValue: 'organisationName',
-        totalAmountLabel: pageContent.totalAmountLabel,
-        totalAmountValue: '£23.54'
-      },
-      whatHappensNextHeading: pageContent.whatHappensNextHeading,
-      whatHappensNext: pageContent.whatHappensNext,
-      returnLink: {
-        text: 'fdkjglndlkfgnm',
-        href: paths.account
+      if (payment.status === 'payment_succeeded') {
+        return h.view('serviceCharge/paymentConfirmation/success', {
+          paymentReference: 'HDJ3233F',
+          returnToAccountLink: paths.account,
+          ...pageContent.success
+        })
       }
-    })
+
+      if (payment.status === 'payment_failed') {
+        return h.view('serviceCharge/paymentConfirmation/message', {
+          returnToAccountLink: paths.serviceCharge,
+          ...pageContent.declined
+        })
+      }
+
+      if (payment.status === 'payment_in_progress') {
+        return h.view('serviceCharge/paymentConfirmation/message', {
+          returnToAccountLink: paths.account,
+          ...pageContent.pending
+        })
+      }
+    }
+
+    return h.redirect(paths.account)
   }
 }

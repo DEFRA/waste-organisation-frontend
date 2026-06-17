@@ -10,21 +10,25 @@ const formatPounds = (amountInPence) =>
 
 export const reviewPaymentController = {
   async handler(request, h) {
-    const paymentPeriods = request.yar.flash(MESSAGE_TYPE)
+    const { id, currentOrganisationId, currentOrganisationName } =
+      request.auth.credentials
+    const organisation = await request.backendApi.getOrganisation(
+      id,
+      currentOrganisationId
+    )
+
+    const paymentPeriods = organisation.paymentPeriods
     if (!paymentPeriods || paymentPeriods < 1) {
       return h.redirect(paths.cannotMakePayment)
     }
     const paymentPeriod = paymentPeriods[0]
     request.yar.flash(MESSAGE_TYPE, paymentPeriod)
 
-    const { currentOrganisationName } = request.auth.credentials
     const organisationName = currentOrganisationName?.trim()
     const pageContent = content.reviewPayment(request, organisationName)
     return h.view('serviceCharge/reviewPayment/index', {
       pageTitle: pageContent.title,
-      heading: {
-        text: pageContent.heading
-      },
+      heading: pageContent.heading,
       intro: pageContent.intro,
       accessUntil: formatDate(
         new Date(paymentPeriod.to),
