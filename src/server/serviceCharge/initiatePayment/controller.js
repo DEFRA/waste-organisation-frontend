@@ -3,12 +3,18 @@ import { config } from '../../../config/config.js'
 import { paths } from '../../../config/paths.js'
 const SERVICE_CHARGE_DESCRIPTION =
   'Annual report receipt of waste service charge'
-const MESSAGE_TYPE = 'payment-periods'
 
 export const initiatePaymentController = {
   async handler(request, h) {
     try {
-      const paymentPeriods = request.yar.flash(MESSAGE_TYPE)
+      const { id, currentOrganisationId } = request.auth.credentials
+
+      const organisation = await request.backendApi.getOrganisation(
+        id,
+        currentOrganisationId
+      )
+
+      const paymentPeriods = organisation.paymentPeriods
 
       if (!paymentPeriods || paymentPeriods < 1) {
         return h.redirect(paths.cannotMakePayment)

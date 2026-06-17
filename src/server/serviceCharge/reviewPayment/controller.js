@@ -1,6 +1,5 @@
 import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
-const MESSAGE_TYPE = 'payment-periods'
 
 const formatPounds = (amountInPence) =>
   new Intl.NumberFormat('en-GB', {
@@ -22,7 +21,6 @@ export const reviewPaymentController = {
       return h.redirect(paths.cannotMakePayment)
     }
     const paymentPeriod = paymentPeriods[0]
-    request.yar.flash(MESSAGE_TYPE, paymentPeriod)
 
     const organisationName = currentOrganisationName?.trim()
     const pageContent = content.reviewPayment(request, organisationName)

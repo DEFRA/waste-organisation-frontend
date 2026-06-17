@@ -10,8 +10,6 @@ import {
 } from '../../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 
-const MESSAGE_TYPE = 'payment-periods'
-
 describe('#reviewPaymentController', () => {
   let server
   let credentials
@@ -51,7 +49,7 @@ describe('#reviewPaymentController', () => {
       credentials.currentOrganisationName
     )
 
-    const { statusCode, payload, request } = await server.inject({
+    const { statusCode, payload } = await server.inject({
       method: 'GET',
       url: paths.reviewPayment,
       auth: {
@@ -59,14 +57,6 @@ describe('#reviewPaymentController', () => {
         credentials
       }
     })
-
-    expect(request.yar.flash(MESSAGE_TYPE)).toEqual([
-      {
-        from: '2026-10-01T00:00:00.000Z',
-        to: '2027-10-01T00:00:00.000Z',
-        priceInPence: 4000
-      }
-    ])
 
     const { document } = new JSDOM(payload).window
 

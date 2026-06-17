@@ -25,7 +25,11 @@ const getProviderEndpoints = async (oidcConf, authConfig) => {
 export const openIdProvider = async (name, authConfig) => {
   const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
   const providerEndpoints = await getProviderEndpoints(oidcConf, authConfig)
+  const auth =
+    config.get('auth.defraId.oidcConfigurationAuthorizationOverride') ||
+    oidcConf.authorization_endpoint
 
+  console.log('auth', auth)
   return {
     name,
     providerEndpoints,

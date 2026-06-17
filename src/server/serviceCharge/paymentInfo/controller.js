@@ -1,8 +1,6 @@
 import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 
-const MESSAGE_TYPE = 'payment-periods'
-
 export const serviceChargeController = {
   async handler(request, h) {
     const { id, currentOrganisationId } = request.auth.credentials
@@ -20,7 +18,6 @@ export const serviceChargeController = {
     }
 
     const paymentPeriod = organisation.paymentPeriods[0]
-    request.yar.flash(MESSAGE_TYPE, paymentPeriod)
 
     const pageContent = content.serviceCharge(
       request,
