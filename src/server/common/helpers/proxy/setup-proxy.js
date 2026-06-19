@@ -1,5 +1,6 @@
-import { ProxyAgent, setGlobalDispatcher } from 'undici'
-import { bootstrap } from 'global-agent'
+import http from 'node:http'
+import https from 'node:https'
+import Wreck from '@hapi/wreck'
 
 import { createLogger } from '../logging/logger.js'
 import { config } from '../../../../config/config.js'
@@ -17,11 +18,7 @@ export function setupProxy() {
   if (proxyUrl) {
     logger.info('setting up global proxies')
 
-    // Undici proxy
-    setGlobalDispatcher(new ProxyAgent(proxyUrl))
-
-    // global-agent (axios/request/and others)
-    bootstrap({ rejectUnauthorized: false })
-    global.GLOBAL_AGENT.HTTP_PROXY = proxyUrl
+    Wreck.agents.http = http.globalAgent
+    Wreck.agents.https = https.globalAgent
   }
 }

@@ -182,7 +182,10 @@ services:
       LOG_FORMAT: pino-pretty
       BULK_UPLOAD_COPY_SPREADSHEET_TO_DISK: true
       GOVPAY_SERVICE_FREE_PERIOD_END: '2026-10-20T12:23:00.000Z'
+      NODE_USE_ENV_PROXY: 1
       HTTP_PROXY: http://squid:3128
+      HTTPS_PROXY: http://squid:3128
+      NO_PROXY: .cdp-int.defra.cloud,.s3.eu-west-2.amazonaws.com,sqs.eu-west-2.amazonaws.com,sns.eu-west-2.amazonaws.com,dynamodb.eu-west-2.amazonaws.com
     networks:
       - cdp-tenant
 
@@ -231,7 +234,10 @@ services:
       FEATURE_FLAG_SERVICE_CHARGE: true
       FEATURE_FLAG_SEARCH_PAGE: true
       LOG_FORMAT: 'pino-pretty'
+      NODE_USE_ENV_PROXY: 1
       HTTP_PROXY: http://squid:3128
+      HTTPS_PROXY: http://squid:3128
+      NO_PROXY: .cdp-int.defra.cloud,.s3.eu-west-2.amazonaws.com,sqs.eu-west-2.amazonaws.com,sns.eu-west-2.amazonaws.com,dynamodb.eu-west-2.amazonaws.com
     networks:
       - cdp-tenant
 
