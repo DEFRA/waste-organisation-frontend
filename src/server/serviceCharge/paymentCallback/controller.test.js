@@ -5,6 +5,7 @@ import {
   wreckPutMock
 } from '../../../test-utils/initialise-server.js'
 import { paths } from '../../../config/paths.js'
+import { paymentWebhookController } from './controller.js'
 
 describe('#paymentWebhookController', () => {
   let server
@@ -109,22 +110,41 @@ describe('#paymentWebhookController', () => {
     expect(wreckPutMock).not.toHaveBeenCalled()
   })
 
-  test('returns forbidden and saves payment when signature is not valid', async () => {
+  test('returns forbidden and does not saves payment when signature is invalid', async () => {
     wreckPutMock.mockReturnValue({ message: 'success' })
     const payloadString = JSON.stringify(payload)
     const signature = crypto
       .createHmac('sha256', webhookSigningSecret)
-      .update('fish')
+      .update(payloadString)
       .digest('hex')
 
     const response = await server.inject({
       method: 'POST',
       url: paths.paymentCallback,
       headers: { 'pay-signature': signature },
-      payload: payloadString
+      payload: JSON.stringify({ foo: 'bar' })
     })
 
     expect(response.statusCode).toBe(403)
     expect(wreckPutMock).not.toHaveBeenCalled()
+  })
+
+  test('returns ok if no message body', async () => {
+    const request = {
+      payload: null,
+      logger: {
+        error: vi.fn()
+      }
+    }
+    const mockCode = vi.fn()
+    const h = {
+      response: vi.fn().mockImplementation(() => ({
+        code: mockCode
+      }))
+    }
+
+    await paymentWebhookController.handler(request, h)
+
+    expect(mockCode).toHaveBeenCalledWith(200)
   })
 })

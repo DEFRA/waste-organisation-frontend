@@ -2,14 +2,19 @@ import { beforeEach, describe, expect, vi } from 'vitest'
 import hapi from '@hapi/hapi'
 import { backendApi } from './index.js'
 import wreck from '@hapi/wreck'
+import { config } from '../../../../config/config.js'
+const backendConfig = config.get('backendApi')
 
 describe('backendApi', () => {
   let backendApiService
   let server
+  let backendApiUrl
+  let backendApiAuthCode
 
   beforeEach(async () => {
     server = hapi.server({})
-
+    backendApiUrl = backendConfig.url
+    backendApiAuthCode = backendConfig.presharedKey
     await server.register([backendApi])
 
     server.route({
@@ -27,6 +32,23 @@ describe('backendApi', () => {
       method: 'GET',
       url: '/'
     })
+  })
+
+  test('saveSpreadsheet dummy test for coverage reasons', async () => {
+    const expectedResponse = {
+      randomData: 'Some Data'
+    }
+
+    vi.spyOn(wreck, 'get').mockImplementation(async () => ({
+      payload: { organisation: expectedResponse }
+    }))
+
+    const actualResponse = await backendApiService.getOrganisation(
+      'userId',
+      'organisationId'
+    )
+
+    expect(actualResponse).toEqual(expectedResponse)
   })
 
   test('saveSpreadsheet dummy test for coverage reasons', async () => {
@@ -106,6 +128,34 @@ describe('backendApi', () => {
     )
 
     expect(actualResponse).toEqual(expectedResponse)
+  })
+
+  test('createPayment should send data to create payment', async () => {
+    const expectedResponse = {
+      nextUrl: ''
+    }
+
+    const mockPost = vi.spyOn(wreck, 'post')
+    mockPost.mockImplementation(async () => ({
+      payload: expectedResponse
+    }))
+
+    const paymentPayload = { amount: 1 }
+
+    await backendApiService.initiatePayment('organisationId', paymentPayload)
+
+    expect(mockPost).toBeCalledWith(
+      `${backendApiUrl}/organisation/organisationId/initiatePayment/`,
+      {
+        headers: {
+          'x-auth-token': backendApiAuthCode
+        },
+        json: 'strict',
+        payload: {
+          payment: paymentPayload
+        }
+      }
+    )
   })
 
   test('savePayment should send data to save payment', async () => {

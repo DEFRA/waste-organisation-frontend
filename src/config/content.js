@@ -17,6 +17,7 @@ const getContentForLanguage = (_request, data) => {
   return data['en']
 }
 
+/* v8 ignore next */
 export const content = {
   ukPermit: (request) =>
     getContentForLanguage(request, {
@@ -279,12 +280,12 @@ export const content = {
         }
       }
     }),
-  serviceCharge: (request) =>
+  serviceCharge: (request, priceInPence) =>
     getContentForLanguage(request, {
       en: {
         title: 'Pay annual report receipt of waste service charge',
         heading: 'Pay the annual report receipt of waste service charge',
-        cost: `The cost is ${formatPounds(config.get('govPay.serviceChargeAmountPence'))} per organisation.`,
+        cost: `The cost is ${formatPounds(priceInPence)} per organisation.`,
         requirementsIntro: 'To pay for the service charge, you will need:',
         requirements: [
           'a credit or debit card',
@@ -303,7 +304,7 @@ export const content = {
         heading: 'Annual Report receipt of waste charge',
         intro:
           'Once you have paid the service charge, your organisation will have full access to report waste movements until',
-        accessUntil: '11:59pm on Thursday 10 September 2026',
+        accessUntilDateIso: 'en',
         sectionHeading: 'Review the payment amount',
         organisation: {
           heading: 'Organisation',
@@ -311,11 +312,25 @@ export const content = {
           name:
             organisationName ||
             '[Waste receiving organisation or business name]',
-          totalCostLabel: 'Total cost',
-          totalCost: formatPounds(config.get('govPay.serviceChargeAmountPence'))
+          totalCostLabel: 'Total cost'
         },
         continue: 'Continue',
         cancel: 'Cancel'
+      }
+    }),
+  cannotMakePayment: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Sorry, you cannot make a payment for this organisation',
+        heading: heading(
+          'Sorry, you cannot make a payment for this organisation',
+          'Based on your answer, you cannot continue as local authorities are currently unable to use this service.',
+          null
+        ),
+        link: {
+          href: config.get('links.startPage'),
+          text: 'Find out more about Digital waste tracking'
+        }
       }
     }),
   paymentDetails: (request) =>

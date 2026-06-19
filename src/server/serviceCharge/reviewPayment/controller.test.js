@@ -7,32 +7,42 @@ import { statusCodes } from '../../common/constants/status-codes.js'
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 
+const MESSAGE_TYPE = 'payment-periods'
+
 describe('#reviewPaymentController', () => {
   let server
   let credentials
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
-  })
-
-  afterAll(async () => {
-    config.set('featureFlags.serviceCharge', false)
-    await server.stop({ timeout: 0 })
-  })
-
-  beforeEach(async () => {
     credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationName = 'Test Waste Organisation'
   })
 
+  afterEach(async () => {
+    config.set('featureFlags.serviceCharge', false)
+    await server.stop({ timeout: 0 })
+  })
+
   test('returns 200 with expected static page content', async () => {
+    server.injectYarState({
+      type: MESSAGE_TYPE,
+      message: [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: 4000
+        }
+      ]
+    })
+
     const pageContent = content.reviewPayment(
       {},
       credentials.currentOrganisationName
     )
 
-    const { statusCode, payload } = await server.inject({
+    const { statusCode, payload, request } = await server.inject({
       method: 'GET',
       url: paths.reviewPayment,
       auth: {
@@ -40,6 +50,14 @@ describe('#reviewPaymentController', () => {
         credentials
       }
     })
+
+    expect(request.yar.flash(MESSAGE_TYPE)).toEqual([
+      {
+        from: '2026-10-01T00:00:00.000Z',
+        to: '2027-10-01T00:00:00.000Z',
+        priceInPence: 4000
+      }
+    ])
 
     const { document } = new JSDOM(payload).window
 
@@ -72,8 +90,9 @@ describe('#reviewPaymentController', () => {
     expect(intro.textContent).toEqual(
       expect.stringContaining(pageContent.intro)
     )
+
     expect(intro.textContent).toEqual(
-      expect.stringContaining(pageContent.accessUntil)
+      expect.stringContaining('12:00am on Friday 1 October 2027')
     )
 
     expect(sectionHeading).not.toBeNull()
@@ -95,9 +114,7 @@ describe('#reviewPaymentController', () => {
     expect(payload).toEqual(
       expect.stringContaining(pageContent.organisation.totalCostLabel)
     )
-    expect(payload).toEqual(
-      expect.stringContaining(pageContent.organisation.totalCost)
-    )
+    expect(payload).toEqual(expect.stringContaining('£40.00'))
 
     expect(continueButton).not.toBeNull()
     expect(continueButton.textContent).toEqual(
@@ -110,6 +127,22 @@ describe('#reviewPaymentController', () => {
     expect(cancelLink.textContent).toEqual(
       expect.stringContaining(pageContent.cancel)
     )
+  })
+
+  test('redirect to cannotMakePayment when no payments are avalible', async (paymentPeriods) => {
+    server.injectYarState({ type: MESSAGE_TYPE, message: [] })
+
+    const { statusCode, headers } = await server.inject({
+      method: 'GET',
+      url: paths.reviewPayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.found)
+    expect(headers.location).toBe(paths.cannotMakePayment)
   })
 
   test('returns unauthorized when not authenticated', async () => {

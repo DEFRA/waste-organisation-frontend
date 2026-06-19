@@ -1,4 +1,12 @@
 services:
+  squid:
+    image: ubuntu/squid:6.13-25.04_beta
+    ports:
+      - '3128:3128'
+    restart: always
+    networks:
+      - cdp-tenant
+
   redis:
     image: redis:7.2.3-alpine3.18
     ports:
@@ -56,6 +64,7 @@ services:
       - cdp-tenant
 
   cdp-defra-id-stub:
+    # defradigital/cdp-defra-id-stub@sha256:1904d104fe2f25d4b413e4d7378f79f63ee856e636e3b70715f0564ee9e5bbc1
     image: defradigital/cdp-defra-id-stub:latest
     ports:
       - '3200:3200'
@@ -120,6 +129,7 @@ services:
       SERVICE_AUTH_PASSWORD: 92fa681e-44b4-4b9c-8f7a-59c117757452
       SERVICE_AUTH_PASSWORD_WASTE_MOVEMENT_BACKEND: 92fa681e-44b4-4b9c-8f7a-59c117757452
       WASTE_TRACKING_SERVICE_URL: http://waste-tracking-id-backend:3001
+      HTTP_PROXY: http://squid:3128
     networks:
       - cdp-tenant
 
@@ -137,6 +147,7 @@ services:
       MONGO_URI: mongodb://mongodb:27017/?replicaSet=rs0&directConnection=true
       ACCESS_CRED_WASTE_MOVEMENT_EXTERNAL_API: d2FzdGUtbW92ZW1lbnQtZXh0ZXJuYWwtYXBpPTkyZmE2ODFlLTQ0YjQtNGI5Yy04ZjdhLTU5YzExNzc1NzQ1Mg==
       ACCESS_CRED_WASTE_MOVEMENT_BACKEND: d2FzdGUtbW92ZW1lbnQtYmFja2VuZD05MmZhNjgxZS00NGI0LTRiOWMtOGY3YS01OWMxMTc3NTc0NTI=
+      HTTP_PROXY: http://squid:3128
     networks:
       - cdp-tenant
 
@@ -166,9 +177,12 @@ services:
       WASTE_CLIENT_AUTH_TEST: test
       AWS_S3_CHECKSUM_MODE: DISABLED
       GOV_NOTIFY_KEY: ${GOV_NOTIFY_KEY}
+      GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       LOG_LEVEL: trace
+      LOG_FORMAT: pino-pretty
       BULK_UPLOAD_COPY_SPREADSHEET_TO_DISK: true
       GOVPAY_SERVICE_FREE_PERIOD_END: '2026-10-20T12:23:00.000Z'
+      HTTP_PROXY: http://squid:3128
     networks:
       - cdp-tenant
 
@@ -213,13 +227,11 @@ services:
       BACKEND_API_PRESHARED_KEY: test
       GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       GOVPAY_API_URL: ${GOVPAY_API_URL:-https://publicapi.payments.service.gov.uk/v1}
-      FEATURE_FLAG_ACCOUNT_PAGE: true
+      GOVPAY_SERVICE_CHARGE_WEBHOOK_SECRET: ${GOVPAY_SERVICE_CHARGE_WEBHOOK_SECRET}
       FEATURE_FLAG_SERVICE_CHARGE: true
       FEATURE_FLAG_SEARCH_PAGE: true
-      FEATURE_FLAG_TEST_ERRORS: true
-      FEATURE_FLAG_NEW_ACCOUNT_PAGE: true
-      FEATURE_FLAG_REBRAND: false
       LOG_FORMAT: 'pino-pretty'
+      HTTP_PROXY: http://squid:3128
     networks:
       - cdp-tenant
 
