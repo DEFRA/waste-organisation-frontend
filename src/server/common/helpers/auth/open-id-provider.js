@@ -2,6 +2,9 @@ import jwt from '@hapi/jwt'
 import { getOpenIdConfig } from './open-id-client.js'
 import { checkGroups } from './check-groups.js'
 import { config } from '../../../../config/config.js'
+const authorizationOverride = config.get(
+  'auth.defraId.oidcConfigurationAuthorizationOverride'
+)
 
 const getProviderEndpoints = async (oidcConf, authConfig) => {
   return Array.from(
@@ -11,7 +14,7 @@ const getProviderEndpoints = async (oidcConf, authConfig) => {
         oidcConf.authorization_endpoint,
         oidcConf.token_endpoint,
         oidcConf.end_session_endpoint,
-        config.get('auth.defraId.oidcConfigurationAuthorizationOverride')
+        authorizationOverride
       ]
         .filter(Boolean)
         .map((endpoint) => {
@@ -25,9 +28,7 @@ const getProviderEndpoints = async (oidcConf, authConfig) => {
 export const openIdProvider = async (name, authConfig) => {
   const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
   const providerEndpoints = await getProviderEndpoints(oidcConf, authConfig)
-  const auth =
-    config.get('auth.defraId.oidcConfigurationAuthorizationOverride') ||
-    oidcConf.authorization_endpoint
+  const auth = authorizationOverride || oidcConf.authorization_endpoint
 
   console.log('auth', auth)
   return {
@@ -35,9 +36,7 @@ export const openIdProvider = async (name, authConfig) => {
     providerEndpoints,
     protocol: 'oauth2',
     useParamsAuth: true,
-    auth:
-      config.get('auth.defraId.oidcConfigurationAuthorizationOverride') ||
-      oidcConf.authorization_endpoint,
+    auth: authorizationOverride || oidcConf.authorization_endpoint,
     token: oidcConf.token_endpoint,
     pkce: 'S256',
     scope: authConfig.scopes,
