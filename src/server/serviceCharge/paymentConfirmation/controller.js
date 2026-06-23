@@ -3,18 +3,18 @@ import { paths } from '../../../config/paths.js'
 
 export const paymentConfirmationController = {
   async handler(request, h) {
-    const pageContent = content.paymentDetails(
-      request,
-      3500,
-      request.auth.credentials.currentOrganisationName
-    )
-
     const paymentId = request.yar.get('govPayPaymentId')
 
     if (paymentId) {
       const { payment } = await request.backendApi.paymentStatus(
         request.auth.credentials.currentOrganisationId,
         paymentId
+      )
+
+      const pageContent = content.paymentDetails(
+        request,
+        payment.amount,
+        request.auth.credentials.currentOrganisationName
       )
 
       if (payment.status === 'payment_succeeded') {

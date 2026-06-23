@@ -30,7 +30,7 @@ describe('#paymentDetailsController', () => {
   test('renders payment confirmation page whern a payment is successful', async () => {
     const pageContent = content.paymentDetails(
       {},
-      3500,
+      2500,
       credentials.currentOrganisationName
     ).success
 
@@ -39,7 +39,8 @@ describe('#paymentDetailsController', () => {
     wreckPostMock.mockReturnValue({
       payload: {
         payment: {
-          status: 'payment_succeeded'
+          status: 'payment_succeeded',
+          amount: 2500
         }
       }
     })
@@ -71,7 +72,7 @@ describe('#paymentDetailsController', () => {
   test('renders payment confirmation page whern a payment is pending', async () => {
     const pageContent = content.paymentDetails(
       {},
-      3500,
+      2500,
       credentials.currentOrganisationName
     ).pending
 
@@ -80,7 +81,8 @@ describe('#paymentDetailsController', () => {
     wreckPostMock.mockReturnValue({
       payload: {
         payment: {
-          status: 'payment_in_progress'
+          status: 'payment_in_progress',
+          amount: 2500
         }
       }
     })
