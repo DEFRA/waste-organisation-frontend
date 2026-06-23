@@ -28,9 +28,7 @@ const getProviderEndpoints = async (oidcConf, authConfig) => {
 export const openIdProvider = async (name, authConfig) => {
   const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
   const providerEndpoints = await getProviderEndpoints(oidcConf, authConfig)
-  const auth = authorizationOverride || oidcConf.authorization_endpoint
 
-  console.log('auth', auth)
   return {
     name,
     providerEndpoints,
