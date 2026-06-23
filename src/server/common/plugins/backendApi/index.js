@@ -118,6 +118,14 @@ const paymentCall = (backendUrl, presharedKey) => ({
       { payment }
     )
     return paymentResponse
+  },
+  paymentStatus: async (organisationId, paymentId) => {
+    const paymentResponse = await apiCall(
+      (url, r) => wreck.post(url, r),
+      presharedKey,
+      `${backendUrl}/organisation/${organisationId}/payment/${paymentId}`
+    )
+    return paymentResponse
   }
 })
 

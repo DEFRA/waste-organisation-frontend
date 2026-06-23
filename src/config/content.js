@@ -280,11 +280,15 @@ export const content = {
         }
       }
     }),
-  serviceCharge: (request, priceInPence) =>
+  serviceCharge: (request, priceInPence, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Pay annual report receipt of waste service charge',
-        heading: 'Pay the annual report receipt of waste service charge',
+        title: 'Pay the annual report receipt of waste service charge',
+        heading: heading(
+          'Pay the annual report receipt of waste service charge',
+          null,
+          organisationName
+        ),
         cost: `The cost is ${formatPounds(priceInPence)} per organisation.`,
         requirementsIntro: 'To pay for the service charge, you will need:',
         requirements: [
@@ -301,7 +305,11 @@ export const content = {
     getContentForLanguage(request, {
       en: {
         title: 'Annual Report receipt of waste charge',
-        heading: 'Annual Report receipt of waste charge',
+        heading: heading(
+          'Annual Report receipt of waste charge',
+          null,
+          organisationName
+        ),
         intro:
           'Once you have paid the service charge, your organisation will have full access to report waste movements until',
         accessUntilDateIso: 'en',
@@ -333,26 +341,56 @@ export const content = {
         }
       }
     }),
-  paymentDetails: (request) =>
+  paymentDetails: (request, priceInPence, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Payment confirmation',
-        heading: 'Payment confirmation',
-        referenceLabel: 'Your payment reference',
-        summaryHeading: 'Payment summary',
-        paymentForLabel: 'Payment for',
-        paymentForValue: 'Report receipt of waste annual service charge',
-        organisationLabel: 'Organisation',
-        organisationPlaceholder:
-          '[Waste receiving organisation or business name]',
-        totalAmountLabel: 'Total amount',
-        whatHappensNextHeading: 'What happens next',
-        whatHappensNext: [
-          'You will receive an email confirming your payment.',
-          'You can now use the service to report your waste movements.'
-        ],
-        returnToAccountPrefix: 'Return to',
-        returnToAccountSuffix: 'waste receiving account'
+        success: {
+          pageTitle: 'Payment confirmation',
+          heading: heading('Payment confirmation', null, organisationName),
+          referenceLabel: 'Your payment reference',
+          summaryHeading: 'Payment summary',
+          paymentForLabel: 'Payment for',
+          paymentForValue: 'Report receipt of waste annual service charge',
+          organisationLabel: 'Organisation',
+          organisationValue:
+            organisationName ||
+            '[Waste receiving organisation or business name]',
+          totalAmountLabel: 'Total amount',
+          totalAmountValue: formatPounds(priceInPence),
+          whatHappensNextHeading: 'What happens next',
+          whatHappensNext: [
+            'You will receive an email confirming your payment.',
+            'You can now use the service to report your waste movements.'
+          ],
+          returnToAccountLabel: `Return to ${organisationName} waste receiving account`
+        },
+        pending: {
+          pageTitle: 'Payment pending',
+          heading: heading('Payment pending', null, organisationName),
+          summaryContent: 'Your payment is currently being processed.',
+          whatHappensNextHeading: 'What happens next',
+          whatHappensNext: [
+            'Once your payment has been completed, you will receive an email confirmation. You will then be able to use the service to report your waste movements.'
+          ],
+          returnToAccountLabel: `Return to ${organisationName} waste receiving account`
+        },
+        declined: {
+          pageTitle: 'Your payment has been declined',
+          heading: heading(
+            'Your payment has been declined',
+            null,
+            organisationName
+          ),
+          summaryContent: 'Contact your bank for more details or try again.',
+          returnToAccountLabel: `Try payment again`
+        },
+        failed: {
+          pageTitle: 'Your payment has failed',
+          heading: heading('Your payment has failed', null, organisationName),
+          summaryContent:
+            'Your payment has not been processed. Contact your bank or try again.',
+          returnToAccountLabel: `Try payment again`
+        }
       }
     }),
   cookies: (request) =>

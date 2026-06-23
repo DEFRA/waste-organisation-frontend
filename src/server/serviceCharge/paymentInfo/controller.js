@@ -1,8 +1,6 @@
 import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 
-const MESSAGE_TYPE = 'payment-periods'
-
 export const serviceChargeController = {
   async handler(request, h) {
     const { id, currentOrganisationId } = request.auth.credentials
@@ -20,18 +18,16 @@ export const serviceChargeController = {
     }
 
     const paymentPeriod = organisation.paymentPeriods[0]
-    request.yar.flash(MESSAGE_TYPE, paymentPeriod)
 
     const pageContent = content.serviceCharge(
       request,
-      paymentPeriod.priceInPence
+      paymentPeriod.priceInPence,
+      request.auth.credentials.currentOrganisationName
     )
 
     return h.view('serviceCharge/paymentInfo/index', {
       pageTitle: pageContent.title,
-      heading: {
-        text: pageContent.heading
-      },
+      heading: pageContent.heading,
       cost: pageContent.cost,
       requirementsIntro: pageContent.requirementsIntro,
       requirements: pageContent.requirements,

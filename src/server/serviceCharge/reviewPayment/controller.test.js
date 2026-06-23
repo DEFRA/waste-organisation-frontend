@@ -4,37 +4,44 @@ import { config } from '../../../config/config.js'
 import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
-import { initialiseServer } from '../../../test-utils/initialise-server.js'
+import {
+  initialiseServer,
+  wreckGetMock
+} from '../../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
-
-const MESSAGE_TYPE = 'payment-periods'
 
 describe('#reviewPaymentController', () => {
   let server
   let credentials
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
     credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationName = 'Test Waste Organisation'
   })
 
-  afterEach(async () => {
+  afterAll(async () => {
     config.set('featureFlags.serviceCharge', false)
     await server.stop({ timeout: 0 })
   })
 
   test('returns 200 with expected static page content', async () => {
-    server.injectYarState({
-      type: MESSAGE_TYPE,
-      message: [
+    const expectedOrganisation = {
+      organisationId: 'orgid',
+      disableAfter: '2026-10-01T00:00:00.000Z',
+      users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+      paymentPeriods: [
         {
           from: '2026-10-01T00:00:00.000Z',
           to: '2027-10-01T00:00:00.000Z',
           priceInPence: 4000
         }
       ]
+    }
+
+    wreckGetMock.mockReturnValue({
+      payload: { organisation: expectedOrganisation }
     })
 
     const pageContent = content.reviewPayment(
@@ -42,7 +49,7 @@ describe('#reviewPaymentController', () => {
       credentials.currentOrganisationName
     )
 
-    const { statusCode, payload, request } = await server.inject({
+    const { statusCode, payload } = await server.inject({
       method: 'GET',
       url: paths.reviewPayment,
       auth: {
@@ -50,14 +57,6 @@ describe('#reviewPaymentController', () => {
         credentials
       }
     })
-
-    expect(request.yar.flash(MESSAGE_TYPE)).toEqual([
-      {
-        from: '2026-10-01T00:00:00.000Z',
-        to: '2027-10-01T00:00:00.000Z',
-        priceInPence: 4000
-      }
-    ])
 
     const { document } = new JSDOM(payload).window
 
@@ -83,7 +82,7 @@ describe('#reviewPaymentController', () => {
 
     expect(heading).not.toBeNull()
     expect(heading.textContent).toEqual(
-      expect.stringContaining(pageContent.heading)
+      expect.stringContaining(pageContent.heading.text)
     )
 
     expect(intro).not.toBeNull()
@@ -130,7 +129,16 @@ describe('#reviewPaymentController', () => {
   })
 
   test('redirect to cannotMakePayment when no payments are avalible', async (paymentPeriods) => {
-    server.injectYarState({ type: MESSAGE_TYPE, message: [] })
+    const expectedOrganisation = {
+      organisationId: 'orgid',
+      disableAfter: '2026-10-01T00:00:00.000Z',
+      users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+      paymentPeriods: []
+    }
+
+    wreckGetMock.mockReturnValue({
+      payload: { organisation: expectedOrganisation }
+    })
 
     const { statusCode, headers } = await server.inject({
       method: 'GET',

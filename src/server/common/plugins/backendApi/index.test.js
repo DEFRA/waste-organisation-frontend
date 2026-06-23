@@ -176,6 +176,24 @@ describe('backendApi', () => {
     expect(actualResponse).toEqual(expectedResponse)
   })
 
+  test('paymentStatus should send data to get payment status', async () => {
+    const expectedResponse = {
+      payment_id: 'payment123',
+      status: 'success'
+    }
+
+    vi.spyOn(wreck, 'post').mockImplementation(async () => ({
+      payload: expectedResponse
+    }))
+
+    const actualResponse = await backendApiService.paymentStatus(
+      'organisationId',
+      'payment123'
+    )
+
+    expect(actualResponse).toEqual(expectedResponse)
+  })
+
   describe('Handle Exceptions', () => {
     test('saveOrganisation Should handle Errors', async () => {
       vi.spyOn(wreck, 'put').mockImplementation(async () => {
@@ -222,6 +240,17 @@ describe('backendApi', () => {
         throw new Error()
       })
       const actualResponse = await backendApiService.savePayment('orgId', {})
+      expect(actualResponse).toBeNull()
+    })
+
+    test('paymentStatus Should handle Errors', async () => {
+      vi.spyOn(wreck, 'post').mockImplementation(async () => {
+        throw new Error()
+      })
+      const actualResponse = await backendApiService.paymentStatus(
+        'orgId',
+        'paymentId'
+      )
       expect(actualResponse).toBeNull()
     })
   })

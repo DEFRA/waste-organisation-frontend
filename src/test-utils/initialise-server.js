@@ -17,6 +17,13 @@ export async function initialiseServer({ domain, mockedPlugins } = {}) {
     })
   }
 
+  server.setYarState = async (state) => {
+    await server.ext('onPreAuth', (request, h) => {
+      request.yar.set(state.type, state.message)
+      return h.continue
+    })
+  }
+
   return server
 }
 

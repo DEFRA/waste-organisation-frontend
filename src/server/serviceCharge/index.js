@@ -5,6 +5,7 @@ import { initiatePaymentController } from './initiatePayment/controller.js'
 import { paymentWebhookController } from './paymentCallback/controller.js'
 import { config } from '../../config/config.js'
 import { cannotMakePaymentController } from './cannotMakePayment/controller.js'
+import { paymentConfirmationController } from './paymentConfirmation/controller.js'
 
 export const serviceCharge = config.get('featureFlags.serviceCharge')
   ? {
@@ -28,6 +29,11 @@ export const serviceCharge = config.get('featureFlags.serviceCharge')
           method: 'GET',
           path: paths.cannotMakePayment,
           ...cannotMakePaymentController
+        },
+        {
+          method: 'GET',
+          path: paths.paymentDetails,
+          ...paymentConfirmationController
         }
       ],
       openRoutes: [

@@ -4,10 +4,10 @@ import { paths } from '../../../config/paths.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
 import {
   initialiseServer,
+  wreckGetMock,
   wreckPostMock
 } from '../../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
-import { afterEach, expect, test, vi } from 'vitest'
 import { initiatePaymentController } from './controller.js'
 
 import { faker } from '@faker-js/faker'
@@ -16,20 +16,19 @@ const ORGANISATION_ID = 456
 const ORGANISATION_NAME = 'Joe Bloggs Ltd'
 const SERVICE_CHARGE_DESCRIPTION =
   'Annual report receipt of waste service charge'
-const MESSAGE_TYPE = 'payment-periods'
 
 describe('#initiatePaymentController', () => {
   let server
   let credentials
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     wreckPostMock.mockReset()
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
     credentials = await setupAuthedUserSession(server)
   })
 
-  afterEach(async () => {
+  afterAll(async () => {
     config.set('featureFlags.serviceCharge', false)
     await server.stop({ timeout: 0 })
   })
@@ -96,10 +95,8 @@ describe('#initiatePaymentController', () => {
       ]
     )
 
-    request.backendApi = {
-      initiatePayment: (_request, _payload) => {
-        throw error
-      }
+    request.backendApi.initiatePayment = (_request, _payload) => {
+      throw error
     }
 
     await expect(
@@ -113,17 +110,6 @@ describe('#initiatePaymentController', () => {
   })
 
   test('returns bad gateway if GovPay payment creation returns errors', async () => {
-    server.injectYarState({
-      type: MESSAGE_TYPE,
-      message: [
-        {
-          from: '2026-10-01T00:00:00.000Z',
-          to: '2027-10-01T00:00:00.000Z',
-          priceInPence: 4000
-        }
-      ]
-    })
-
     wreckPostMock.mockReturnValue({
       payload: {
         errors: 'ERROR'
@@ -143,7 +129,13 @@ describe('#initiatePaymentController', () => {
   })
 
   test('redirect to cannotMakePayment when no payments are avalible', async (paymentPeriods) => {
-    server.injectYarState({ type: MESSAGE_TYPE, message: [] })
+    const expectedOrganisation = {
+      paymentPeriods: []
+    }
+
+    wreckGetMock.mockReturnValue({
+      payload: { organisation: expectedOrganisation }
+    })
 
     const { statusCode, headers } = await server.inject({
       method: 'GET',
@@ -176,6 +168,7 @@ const createMockRequest = (
   paymentPeriods
 ) => {
   const backendMock = vi.fn()
+  const getOrganisationMock = vi.fn()
 
   return {
     backendMock,
@@ -187,6 +180,12 @@ const createMockRequest = (
         }
       },
       backendApi: {
+        getOrganisation: getOrganisationMock.mockReturnValue({
+          organisationId: 'orgid',
+          disableAfter: '2026-10-01T00:00:00.000Z',
+          users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+          paymentPeriods
+        }),
         initiatePayment: backendMock.mockReturnValue({
           payment: {
             paymentId: faker.string.uuid,
@@ -198,8 +197,7 @@ const createMockRequest = (
         error: vi.fn()
       },
       yar: {
-        set: vi.fn(),
-        flash: vi.fn().mockReturnValue(paymentPeriods)
+        set: vi.fn()
       },
       info: {
         received: dateNow.getTime()
