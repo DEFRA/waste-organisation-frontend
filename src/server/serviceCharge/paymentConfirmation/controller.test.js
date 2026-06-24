@@ -40,7 +40,8 @@ describe('#paymentDetailsController', () => {
       payload: {
         payment: {
           status: 'payment_succeeded',
-          amount: 2500
+          amount: 2500,
+          reference: 'Some Reference'
         }
       }
     })
@@ -65,8 +66,7 @@ describe('#paymentDetailsController', () => {
     expect(pageHeading).toEqual(
       expect.stringContaining(pageContent.heading.text)
     )
-
-    expect(pageHeading).toEqual(expect.stringContaining('HDJ3233F'))
+    expect(pageHeading).toEqual(expect.stringContaining('Some Reference'))
   })
 
   test('renders payment confirmation page whern a payment is pending', async () => {
