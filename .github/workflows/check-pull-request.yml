@@ -132,8 +132,7 @@ jobs:
           GOV_NOTIFY_KEY=${GOV_NOTIFY_KEY}
           GOVPAY_API_KEY=${GOVPAY_API_KEY}
           EOF
-          docker compose -f compose.yml -f compose-github.override.yml up -d --wait --no-build
-          docker compose -f compose.yml -f compose-github.override.yml ps
+          docker compose -f compose.yml -f compose-github.override.yml up -d --no-build
 
       - name: Checkout UAT Repository as Integration Test Suite
         uses: actions/checkout@v6
@@ -152,8 +151,18 @@ jobs:
         working-directory: integration-tests
         run: npm ci --ignore-scripts
 
+      - name: Wait for Docker Compose Services
+        id: wait-for-docker-compose-services
+        if: steps.start-docker-compose-services.outcome == 'success'
+        env:
+          COMPOSE_PROJECT_NAME: waste-organisation-frontend
+        run: |
+          docker compose -f compose.yml -f compose-github.override.yml wait
+          docker compose -f compose.yml -f compose-github.override.yml ps
+
       - name: Run Integration Tests
         id: integration-tests
+        if: steps.wait-for-docker-compose-services.outcome == 'success'
         working-directory: integration-tests
         env:
           ORGANISATION_BACKEND_PASSWORD: ${{ secrets.ORGANISATION_BACKEND_PASSWORD }}
