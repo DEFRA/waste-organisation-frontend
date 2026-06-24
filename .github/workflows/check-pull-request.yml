@@ -59,6 +59,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Prepare compose environment
+        env:
+          GOV_NOTIFY_KEY: ${{ secrets.GOV_NOTIFY_KEY }}
+          GOVPAY_API_KEY: ${{ secrets.GOVPAY_API_KEY }}
+        run: |
+          cat > .env <<EOF
+          GOV_NOTIFY_KEY=${GOV_NOTIFY_KEY}
+          GOVPAY_API_KEY=${GOVPAY_API_KEY}
+          EOF
+
       - name: Cache external Docker images
         uses: actions/cache@v4
         id: external-docker-cache
@@ -125,14 +135,7 @@ jobs:
         id: start-docker-compose-services
         env:
           COMPOSE_PROJECT_NAME: waste-organisation-frontend
-          GOV_NOTIFY_KEY: ${{ secrets.GOV_NOTIFY_KEY }}
-          GOVPAY_API_KEY: ${{ secrets.GOVPAY_API_KEY }}
-        run: |
-          cat > .env <<EOF
-          GOV_NOTIFY_KEY=${GOV_NOTIFY_KEY}
-          GOVPAY_API_KEY=${GOVPAY_API_KEY}
-          EOF
-          docker compose -f compose.yml -f compose-github.override.yml up -d --no-build
+        run: docker compose -f compose.yml -f compose-github.override.yml up -d --no-build
 
       - name: Checkout UAT Repository as Integration Test Suite
         uses: actions/checkout@v6
@@ -202,14 +205,5 @@ jobs:
         if: always() && steps.start-docker-compose-services.outcome == 'success'
         env:
           COMPOSE_PROJECT_NAME: waste-organisation-frontend
-          GOV_NOTIFY_KEY: ${{ secrets.GOV_NOTIFY_KEY }}
-          GOVPAY_API_KEY: ${{ secrets.GOVPAY_API_KEY }}
-          ORGANISATION_BACKEND_PASSWORD: ${{ secrets.ORGANISATION_BACKEND_PASSWORD }}
-          ENVIRONMENT: local
-        run: |
-          cat > .env <<EOF
-          GOV_NOTIFY_KEY=${GOV_NOTIFY_KEY}
-          GOVPAY_API_KEY=${GOVPAY_API_KEY}
-          EOF
-          docker compose -f compose.yml -f compose-github.override.yml down
+        run: docker compose -f compose.yml -f compose-github.override.yml down
 
