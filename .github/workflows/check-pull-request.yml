@@ -170,7 +170,7 @@ jobs:
         env:
           COMPOSE_PROJECT_NAME: waste-organisation-frontend
         run: |
-          docker compose -f compose.yml -f compose-github.override.yml wait
+          docker compose -f compose.yml -f compose-github.override.yml up -d --no-build --wait --wait-timeout 300
           docker compose -f compose.yml -f compose-github.override.yml ps
 
       - name: Run Integration Tests
