@@ -66,7 +66,6 @@ describe('#paymentDetailsController', () => {
     expect(pageHeading).toEqual(
       expect.stringContaining(pageContent.heading.text)
     )
-
     expect(pageHeading).toEqual(expect.stringContaining('Some Reference'))
   })
 

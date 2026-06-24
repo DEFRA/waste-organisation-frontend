@@ -11,8 +11,6 @@ export const paymentConfirmationController = {
         paymentId
       )
 
-      console.log('payment', payment)
-
       const pageContent = content.paymentDetails(
         request,
         payment.amount,
