@@ -11,6 +11,8 @@ export const paymentConfirmationController = {
         paymentId
       )
 
+      console.log('payment', payment)
+
       const pageContent = content.paymentDetails(
         request,
         payment.amount,
@@ -19,7 +21,7 @@ export const paymentConfirmationController = {
 
       if (payment.status === 'payment_succeeded') {
         return h.view('serviceCharge/paymentConfirmation/success', {
-          paymentReference: 'HDJ3233F',
+          paymentReference: payment.reference,
           returnToAccountLink: paths.account,
           ...pageContent.success
         })
