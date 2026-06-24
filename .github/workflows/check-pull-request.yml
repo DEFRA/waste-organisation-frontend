@@ -83,6 +83,14 @@ jobs:
           COMPOSE_FILES="-f compose.yml -f compose-github.override.yml"
           COMPOSE_CONFIG="$(docker compose $COMPOSE_FILES config --format json)"
 
+          CACHE_SERVICES="$(echo "$COMPOSE_CONFIG" | jq -r '
+            .services
+            | to_entries[]
+            | select(.value.image != null and (.value.build == null))
+            | select(.value.image | test(":latest$") | not)
+            | .key
+          ' | sort -u)"
+
           CACHE_IMAGES="$(echo "$COMPOSE_CONFIG" | jq -r '
             .services
             | to_entries[]
@@ -99,7 +107,9 @@ jobs:
             | .key
           ' | sort -u)"
 
-          echo "Pinned images to cache:"
+          echo "Pinned services to cache:"
+          echo "$CACHE_SERVICES"
+          echo "Pinned images to save:"
           echo "$CACHE_IMAGES"
           echo "Latest-tagged services to pull fresh:"
           echo "$LATEST_SERVICES"
@@ -107,14 +117,14 @@ jobs:
           if [ "${{ steps.external-docker-cache.outputs.cache-hit }}" = "true" ]; then
             echo "Restoring pinned images from cache"
             docker load -i /tmp/external-images.tar
-          elif [ -n "$CACHE_IMAGES" ]; then
+          elif [ -n "$CACHE_SERVICES" ]; then
             echo "Pulling and caching pinned images"
-            echo "$CACHE_IMAGES" | xargs docker pull
-            echo "$CACHE_IMAGES" | xargs docker save -o /tmp/external-images.tar
+            echo "$CACHE_SERVICES" | xargs -r docker compose $COMPOSE_FILES pull
+            echo "$CACHE_IMAGES" | xargs -r docker save -o /tmp/external-images.tar
           fi
 
           if [ -n "$LATEST_SERVICES" ]; then
-            echo "$LATEST_SERVICES" | xargs docker compose $COMPOSE_FILES pull
+            echo "$LATEST_SERVICES" | xargs -r docker compose $COMPOSE_FILES pull
           fi
 
       - name: Set up Docker Buildx
