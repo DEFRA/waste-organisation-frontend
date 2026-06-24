@@ -59,6 +59,54 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Cache external Docker images
+        uses: actions/cache@v4
+        id: external-docker-cache
+        with:
+          path: /tmp/external-images.tar
+          key: integration-external-${{ hashFiles('compose.yml', 'compose-github.override.yml') }}
+
+      - name: Pull Docker Compose images
+        run: |
+          set -euo pipefail
+
+          COMPOSE_FILES="-f compose.yml -f compose-github.override.yml"
+          COMPOSE_CONFIG="$(docker compose $COMPOSE_FILES config --format json)"
+
+          CACHE_IMAGES="$(echo "$COMPOSE_CONFIG" | jq -r '
+            .services
+            | to_entries[]
+            | select(.value.image != null and (.value.build == null))
+            | select(.value.image | test(":latest$") | not)
+            | .value.image
+          ' | sort -u)"
+
+          LATEST_SERVICES="$(echo "$COMPOSE_CONFIG" | jq -r '
+            .services
+            | to_entries[]
+            | select(.value.image != null and (.value.build == null))
+            | select(.value.image | test(":latest$"))
+            | .key
+          ' | sort -u)"
+
+          echo "Pinned images to cache:"
+          echo "$CACHE_IMAGES"
+          echo "Latest-tagged services to pull fresh:"
+          echo "$LATEST_SERVICES"
+
+          if [ "${{ steps.external-docker-cache.outputs.cache-hit }}" = "true" ]; then
+            echo "Restoring pinned images from cache"
+            docker load -i /tmp/external-images.tar
+          elif [ -n "$CACHE_IMAGES" ]; then
+            echo "Pulling and caching pinned images"
+            echo "$CACHE_IMAGES" | xargs docker pull
+            echo "$CACHE_IMAGES" | xargs docker save -o /tmp/external-images.tar
+          fi
+
+          if [ -n "$LATEST_SERVICES" ]; then
+            echo "$LATEST_SERVICES" | xargs docker compose $COMPOSE_FILES pull
+          fi
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
