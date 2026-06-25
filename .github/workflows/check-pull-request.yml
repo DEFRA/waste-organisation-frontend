@@ -27,7 +27,8 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: |
+      - name: Install, Audit, Lint and Test
+        run: |
           npm ci
           npm audit --audit-level=high
           npm run format:check
