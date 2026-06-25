@@ -69,83 +69,11 @@ jobs:
           GOVPAY_API_KEY=${GOVPAY_API_KEY}
           EOF
 
-      - name: Cache external Docker images
-        uses: actions/cache@v4
-        id: external-docker-cache
-        with:
-          path: /tmp/external-images.tar
-          key: integration-external-${{ hashFiles('compose.yml', 'compose-github.override.yml') }}
-
-      - name: Pull Docker Compose images
-        run: |
-          set -euo pipefail
-
-          COMPOSE_FILES="-f compose.yml -f compose-github.override.yml"
-          COMPOSE_CONFIG="$(docker compose $COMPOSE_FILES config --format json)"
-
-          CACHE_SERVICES="$(echo "$COMPOSE_CONFIG" | jq -r '
-            .services
-            | to_entries[]
-            | select(.value.image != null and (.value.build == null))
-            | select(.value.image | test(":latest$") | not)
-            | .key
-          ' | sort -u)"
-
-          CACHE_IMAGES="$(echo "$COMPOSE_CONFIG" | jq -r '
-            .services
-            | to_entries[]
-            | select(.value.image != null and (.value.build == null))
-            | select(.value.image | test(":latest$") | not)
-            | .value.image
-          ' | sort -u)"
-
-          LATEST_SERVICES="$(echo "$COMPOSE_CONFIG" | jq -r '
-            .services
-            | to_entries[]
-            | select(.value.image != null and (.value.build == null))
-            | select(.value.image | test(":latest$"))
-            | .key
-          ' | sort -u)"
-
-          echo "Pinned services to cache:"
-          echo "$CACHE_SERVICES"
-          echo "Pinned images to save:"
-          echo "$CACHE_IMAGES"
-          echo "Latest-tagged services to pull fresh:"
-          echo "$LATEST_SERVICES"
-
-          if [ "${{ steps.external-docker-cache.outputs.cache-hit }}" = "true" ]; then
-            echo "Restoring pinned images from cache"
-            docker load -i /tmp/external-images.tar
-          elif [ -n "$CACHE_SERVICES" ]; then
-            echo "Pulling and caching pinned images"
-            echo "$CACHE_SERVICES" | xargs -r docker compose $COMPOSE_FILES pull
-            echo "$CACHE_IMAGES" | xargs -r docker save -o /tmp/external-images.tar
-          fi
-
-          if [ -n "$LATEST_SERVICES" ]; then
-            echo "$LATEST_SERVICES" | xargs -r docker compose $COMPOSE_FILES pull
-          fi
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Frontend Image with Layer Cache
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          target: development
-          load: true
-          tags: waste-organisation-frontend-waste-organisation-frontend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
       - name: Start Docker Compose Services
         id: start-docker-compose-services
         env:
           COMPOSE_PROJECT_NAME: waste-organisation-frontend
-        run: docker compose -f compose.yml -f compose-github.override.yml up -d --no-build
+        run: docker compose -f compose.yml -f compose-github.override.yml up -d
 
       - name: Checkout UAT Repository as Integration Test Suite
         uses: actions/checkout@v6
