@@ -3,12 +3,13 @@ import { statusCodes } from '../../constants/status-codes.js'
 import { config } from '../../../../config/config.js'
 import { initialiseServer } from '../../../../test-utils/initialise-server.js'
 import { paths } from '../../../../config/paths.js'
-import { beforeEach } from 'vitest'
 
 const encodeCredentials = (username, password) =>
   Buffer.from(`${username}:${password}`).toString('base64')
 
 describe('#basicAuth', () => {
+  let server
+
   const originalUsername = config.get('auth.basic.username')
   const originalPassword = config.get('auth.basic.password')
   const originalServiceChargeFF = config.get('featureFlags.serviceCharge')
@@ -24,10 +25,16 @@ describe('#basicAuth', () => {
   })
 
   describe('when BASIC_AUTH_PASSWORD is not set', () => {
-    test('requests pass through without basic auth', async () => {
+    beforeEach(async () => {
       config.set('auth.basic.password', null)
-      const server = await initialiseServer()
+      server = await initialiseServer()
+    })
 
+    afterEach(async () => {
+      await server?.stop({ timeout: 0 })
+    })
+
+    test('requests pass through without basic auth', async () => {
       const { statusCode, result } = await server.inject({
         method: 'GET',
         url: '/health'
@@ -35,8 +42,6 @@ describe('#basicAuth', () => {
 
       expect(statusCode).toBe(statusCodes.ok)
       expect(result).toEqual({ message: 'success' })
-
-      await server.stop({ timeout: 0 })
     })
   })
 
@@ -44,151 +49,155 @@ describe('#basicAuth', () => {
     const username = 'admin'
     const password = 'test-secret'
 
-    beforeEach(() => {
-      config.set('auth.basic.username', username)
-      config.set('auth.basic.password', password)
-    })
-
-    test('requests without Authorization header get 401', async () => {
-      const server = await initialiseServer()
-
-      const { statusCode, headers } = await server.inject({
-        method: 'GET',
-        url: '/health'
+    describe('standard requests', () => {
+      beforeEach(async () => {
+        config.set('auth.basic.username', username)
+        config.set('auth.basic.password', password)
+        server = await initialiseServer()
       })
 
-      expect(statusCode).toBe(statusCodes.unauthorized)
-      expect(headers['www-authenticate']).toBe(
-        'Basic realm="Access restricted"'
-      )
+      afterEach(async () => {
+        await server?.stop({ timeout: 0 })
+      })
 
-      await server.stop({ timeout: 0 })
+      test('requests without Authorization header get 401', async () => {
+        const { statusCode, headers } = await server.inject({
+          method: 'GET',
+          url: '/health'
+        })
+
+        expect(statusCode).toBe(statusCodes.unauthorized)
+        expect(headers['www-authenticate']).toBe(
+          'Basic realm="Access restricted"'
+        )
+      })
+
+      test('requests with incorrect password get 401', async () => {
+        const { statusCode } = await server.inject({
+          method: 'GET',
+          url: '/health',
+          headers: {
+            authorization: `Basic ${encodeCredentials(username, 'wrong-password')}`
+          }
+        })
+
+        expect(statusCode).toBe(statusCodes.unauthorized)
+      })
+
+      test('requests with incorrect username get 401', async () => {
+        const { statusCode } = await server.inject({
+          method: 'GET',
+          url: '/health',
+          headers: {
+            authorization: `Basic ${encodeCredentials('wrong-user', password)}`
+          }
+        })
+
+        expect(statusCode).toBe(statusCodes.unauthorized)
+      })
+
+      test('requests with correct credentials get 200', async () => {
+        const { statusCode, result } = await server.inject({
+          method: 'GET',
+          url: '/health',
+          headers: {
+            authorization: `Basic ${encodeCredentials(username, password)}`
+          }
+        })
+
+        expect(statusCode).toBe(statusCodes.ok)
+        expect(result).toEqual({ message: 'success' })
+      })
+
+      test('requests with malformed Authorization header get 401', async () => {
+        const { statusCode } = await server.inject({
+          method: 'GET',
+          url: '/health',
+          headers: {
+            authorization: 'Bearer some-token'
+          }
+        })
+
+        expect(statusCode).toBe(statusCodes.unauthorized)
+      })
     })
 
-    test.each([
-      '/organisation/organisationId-123/update-spreadsheet/upload-callback',
-      '/organisation/organisationId-123/spreadsheet/upload-callback'
-    ])('requests to cdp uploader callback do not get 401', async (url) => {
+    describe('cdp uploader callback', () => {
       const preSharedKey = 'abc123'
-      config.set('fileUpload.preSharedKey', preSharedKey)
 
-      const server = await initialiseServer()
-
-      const r1 = await server.inject({
-        method: 'POST',
-        url,
-        payload: { metadata: { preSharedKey } }
+      beforeEach(async () => {
+        config.set('auth.basic.username', username)
+        config.set('auth.basic.password', password)
+        config.set('fileUpload.preSharedKey', preSharedKey)
+        server = await initialiseServer()
       })
 
-      expect(r1.statusCode).toBe(200)
-
-      const { statusCode } = await server.inject({
-        method: 'POST',
-        url,
-        payload: { metadata: { preSharedKey: 'bork' } }
+      afterEach(async () => {
+        await server?.stop({ timeout: 0 })
       })
 
-      expect(statusCode).toBe(403)
-      await server.stop({ timeout: 0 })
+      test.each([
+        '/organisation/organisationId-123/update-spreadsheet/upload-callback',
+        '/organisation/organisationId-123/spreadsheet/upload-callback'
+      ])('requests to cdp uploader callback do not get 401', async (url) => {
+        const r1 = await server.inject({
+          method: 'POST',
+          url,
+          payload: { metadata: { preSharedKey } }
+        })
+
+        expect(r1.statusCode).toBe(200)
+
+        const { statusCode } = await server.inject({
+          method: 'POST',
+          url,
+          payload: { metadata: { preSharedKey: 'bork' } }
+        })
+
+        expect(statusCode).toBe(403)
+      })
     })
 
-    test('requests from service charge callback do not get 401 for service-charge-callback', async () => {
-      const url = paths.paymentCallback
+    describe('service charge callback', () => {
       const preSharedKey = 'abc123'
 
-      config.set('govPay.webhookSigningSecret', preSharedKey)
-
-      const signature = crypto
-        .createHmac('sha256', preSharedKey)
-        .update(JSON.stringify({ metadata: { preSharedKey } }))
-        .digest('hex')
-
-      const server = await initialiseServer()
-
-      const r1 = await server.inject({
-        method: 'POST',
-        url,
-        headers: { 'pay-signature': signature },
-        payload: JSON.stringify({ metadata: { preSharedKey } })
+      beforeEach(async () => {
+        config.set('auth.basic.username', username)
+        config.set('auth.basic.password', password)
+        config.set('govPay.webhookSigningSecret', preSharedKey)
+        server = await initialiseServer()
       })
 
-      expect(r1.statusCode).toBe(200)
-
-      const { statusCode } = await server.inject({
-        method: 'POST',
-        url,
-        headers: { 'pay-signature': signature },
-        payload: JSON.stringify({ metadata: { preSharedKey: 'bork' } })
+      afterEach(async () => {
+        await server?.stop({ timeout: 0 })
       })
 
-      expect(statusCode).toBe(403)
+      test('requests from service charge callback do not get 401 for service-charge-callback', async () => {
+        const url = paths.paymentCallback
 
-      await server.stop({ timeout: 0 })
-    })
+        const signature = crypto
+          .createHmac('sha256', preSharedKey)
+          .update(JSON.stringify({ metadata: { preSharedKey } }))
+          .digest('hex')
 
-    test('requests with incorrect password get 401', async () => {
-      const server = await initialiseServer()
+        const r1 = await server.inject({
+          method: 'POST',
+          url,
+          headers: { 'pay-signature': signature },
+          payload: JSON.stringify({ metadata: { preSharedKey } })
+        })
 
-      const { statusCode } = await server.inject({
-        method: 'GET',
-        url: '/health',
-        headers: {
-          authorization: `Basic ${encodeCredentials(username, 'wrong-password')}`
-        }
+        expect(r1.statusCode).toBe(200)
+
+        const { statusCode } = await server.inject({
+          method: 'POST',
+          url,
+          headers: { 'pay-signature': signature },
+          payload: JSON.stringify({ metadata: { preSharedKey: 'bork' } })
+        })
+
+        expect(statusCode).toBe(403)
       })
-
-      expect(statusCode).toBe(statusCodes.unauthorized)
-
-      await server.stop({ timeout: 0 })
-    })
-
-    test('requests with incorrect username get 401', async () => {
-      const server = await initialiseServer()
-
-      const { statusCode } = await server.inject({
-        method: 'GET',
-        url: '/health',
-        headers: {
-          authorization: `Basic ${encodeCredentials('wrong-user', password)}`
-        }
-      })
-
-      expect(statusCode).toBe(statusCodes.unauthorized)
-
-      await server.stop({ timeout: 0 })
-    })
-
-    test('requests with correct credentials get 200', async () => {
-      const server = await initialiseServer()
-
-      const { statusCode, result } = await server.inject({
-        method: 'GET',
-        url: '/health',
-        headers: {
-          authorization: `Basic ${encodeCredentials(username, password)}`
-        }
-      })
-
-      expect(statusCode).toBe(statusCodes.ok)
-      expect(result).toEqual({ message: 'success' })
-
-      await server.stop({ timeout: 0 })
-    })
-
-    test('requests with malformed Authorization header get 401', async () => {
-      const server = await initialiseServer()
-
-      const { statusCode } = await server.inject({
-        method: 'GET',
-        url: '/health',
-        headers: {
-          authorization: 'Bearer some-token'
-        }
-      })
-
-      expect(statusCode).toBe(statusCodes.unauthorized)
-
-      await server.stop({ timeout: 0 })
     })
   })
 })
