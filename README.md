@@ -10,8 +10,11 @@ functionality, using the Gov.uk Design System and Defra ID for authentication.
 
 - [Prerequisites](#prerequisites)
 - [Local development](#local-development)
+  - [Quick start](#quick-start)
   - [Setup](#setup)
   - [Development](#development)
+  - [Committing changes](#committing-changes)
+  - [Troubleshooting local setup](#troubleshooting-local-setup)
   - [Production](#production)
   - [Npm scripts](#npm-scripts)
   - [Routes](#routes)
@@ -30,7 +33,9 @@ functionality, using the Gov.uk Design System and Defra ID for authentication.
 
 ## Prerequisites
 
-For the minimum version of Node.js, see the [package.json](./package.json) 'engines' property.
+Use the exact Node.js version in [.nvmrc](./.nvmrc) before installing dependencies or running tests.
+The project tooling is sensitive to Node.js version changes, so using an older version can lead to
+misleading lint, test, or Husky errors.
 
 - [Node.js](http://nodejs.org/)
 - [Docker](https://www.docker.com/)
@@ -40,6 +45,23 @@ as [nvm](https://github.com/creationix/nvm) or [n](https://www.npmjs.com/package
 project folder you can then either run `nvm use` or `n auto` to install the required version.
 
 ## Local development
+
+### Quick start
+
+```bash
+nvm use
+npm ci
+npm run build:frontend
+npm test
+```
+
+If you have just changed Node.js version, or `.nvmrc` has changed since you last worked on the
+project, reinstall dependencies before continuing:
+
+```bash
+rm -rf node_modules
+npm ci
+```
 
 ### Setup
 
@@ -54,7 +76,8 @@ parent-directory/
 Install application dependencies:
 
 ```bash
-npm install
+nvm use
+npm ci
 ```
 
 ### Development
@@ -99,6 +122,33 @@ npm run dev
 and hit <http://localhost:3000> in your browser. This will
 use [Defra ID stub](https://github.com/DEFRA/cdp-defra-id-stub?tab=readme-ov-file#cdp-defra-id-stub)
 for login.
+
+### Committing changes
+
+Git commits run the Husky pre-commit hook, which executes formatting, linting and tests:
+
+```bash
+npm run git:pre-commit-hook
+```
+
+This can take a little while on a fresh checkout or slower development machine. Before committing,
+make sure you are using the Node.js version from [.nvmrc](./.nvmrc).
+
+If you use Cursor or another GUI editor on macOS, launch it from a shell after `nvm use` so Git
+hooks inherit the correct `node` and `npm` binaries.
+
+### Troubleshooting local setup
+
+- `npm: command not found` during a GUI commit:
+  Launch Cursor or your editor from a terminal after `nvm use`, then retry the commit.
+- Lint or test failures immediately after changing Node.js version:
+  Remove `node_modules` and run `npm ci` again so optional/native dependencies are reinstalled for
+  the active runtime.
+- Static asset tests returning `404` after a fresh install:
+  Run `npm run build:frontend`. Some tests expect generated assets to exist in `.public`.
+- `npm test` vs `npm run test-long-timeout`:
+  `npm test` runs `pretest` first, which builds frontend assets. `npm run test-long-timeout` does
+  not, so on a clean checkout you may need to run `npm run build:frontend` manually first.
 
 ### Production
 
