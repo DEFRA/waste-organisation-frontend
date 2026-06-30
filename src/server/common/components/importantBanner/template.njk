@@ -1,0 +1,20 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+<div class="govuk-grid-row" data-testid="app-important-banner">
+  <div class="govuk-grid-column-two-thirds govuk-!-margin-top-4">
+    {% set importantNoticeHtml %}
+    <p class="govuk-notification-banner__heading">{{ params.heading }}</p>
+    <p class="govuk-body">
+      {{ params.content | safe }}
+    </p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      titleText: importantNotice.title,
+      html: importantNoticeHtml,
+      attributes: {
+        "data-testid": "service-charge-important-notice"
+      }
+    }) }}
+  </div>
+</div>
