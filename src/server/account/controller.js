@@ -1,47 +1,39 @@
 import { config } from '../../config/config.js'
 import { content } from '../../config/content.js'
 import { paths } from '../../config/paths.js'
-
-const paymentStatusFlash = 'paymentStatus'
-const paymentStatusSuccess = 'success'
-const serviceChargeStatusKey = 'serviceChargeStatus'
-const serviceChargeStatusPaid = 'paid'
+import { getPaymentStatus } from '../common/helpers/govpay/paymentStatus.js'
 
 export const accountController = {
-  handler(request, h) {
+  async handler(request, h) {
     const isServiceChargeEnabled = config.get('featureFlags.serviceCharge')
 
-    const organisationName = request?.auth?.credentials?.currentOrganisationName
-    const organisationId = request?.auth?.credentials?.currentOrganisationId
+    const { id, currentOrganisationId, currentOrganisationName } =
+      request.auth.credentials
 
-    const pageContent = content.account(request, organisationName)
-    const [paymentStatus] = request.yar.flash(paymentStatusFlash)
+    const pageContent = content.account(request, currentOrganisationName)
+    const { notPaidNotice } = content.sharedServiceChargeInfo(
+      request,
+      currentOrganisationName
+    )
 
-    if (
-      isServiceChargeEnabled &&
-      paymentStatus === paymentStatusSuccess &&
-      organisationId
-    ) {
-      const existingStatusByOrg = request.yar.get(serviceChargeStatusKey) || {}
-      existingStatusByOrg[organisationId] = serviceChargeStatusPaid
-      request.yar.set(serviceChargeStatusKey, existingStatusByOrg)
-    }
+    const organisation = await request.backendApi.getOrganisation(
+      id,
+      currentOrganisationId
+    )
 
-    const serviceChargeStatusByOrg =
-      request.yar.get(serviceChargeStatusKey) || {}
-    const isServiceChargePaid =
-      isServiceChargeEnabled &&
-      organisationId &&
-      serviceChargeStatusByOrg[organisationId] === serviceChargeStatusPaid
+    const paymentStatus = getPaymentStatus(organisation)
 
     return h.view('account/view', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       switchOrganisation: pageContent.switchOrganisation,
-      importantNotice: pageContent.importantNotice,
+      importantNotice: notPaidNotice,
       cards: pageContent.cards,
       isServiceChargeEnabled,
-      isServiceChargePaid,
+      paymentStatus: {
+        ...paymentStatus,
+        tagClass: paymentStatus.disabled ? 'govuk-tag--red' : 'govuk-tag--green'
+      },
       switchOrganisationHref: paths.signinDefraIdCallback,
       reportWasteHref: paths.nextAction,
       serviceChargeHref: paths.serviceCharge,

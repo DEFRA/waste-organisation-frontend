@@ -212,14 +212,6 @@ export const content = {
         title: 'Waste receiving account',
         heading: heading('Waste receiving account', null, organisationName),
         switchOrganisation: 'Switch organisation',
-        importantNotice: {
-          title: 'Important',
-          heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
-          bodyPrefix: 'You can still',
-          manageApiCode: 'manage your API code',
-          bodySuffix:
-            ', but you will not be able to use it to send data to the regulators.'
-        },
         cards: {
           reportWaste: { text: 'Report receipt of waste' },
           manageAccount: { text: 'Manage account' },
@@ -228,7 +220,8 @@ export const content = {
             tag: 'Due October 2026',
             paymentDueTag: 'Payment due',
             paidTag: 'Paid',
-            nextPaymentDue: 'Next payment due October 2027'
+            nextPaymentDue: 'Next payment due',
+            payNow: 'Pay Now'
           }
         }
       }
@@ -277,6 +270,16 @@ export const content = {
             paidTag: 'Paid',
             nextPaymentDue: 'Next payment due October 2027'
           }
+        }
+      }
+    }),
+  sharedServiceChargeInfo: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        notPaidNotice: {
+          title: 'Important',
+          heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
+          body: 'If you need help or have a question about service charge, call 03000 203 781'
         }
       }
     }),
