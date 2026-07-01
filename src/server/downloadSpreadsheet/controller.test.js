@@ -3,18 +3,29 @@ import { content } from '../../config/content.js'
 import { paths } from '../../config/paths.js'
 import { JSDOM } from 'jsdom'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
+import { config } from '../../config/config.js'
+import { wreckGetMock } from '../../test-utils/mock-oidc-config.js'
+import { faker } from '@faker-js/faker'
 
 const organisationName = 'ORG NAME'
 
 describe('#downloadSpreadsheetController', () => {
   let server
   let credentials
+  let initialServiceChargeFeatureFlag
 
   beforeAll(async () => {
+    initialServiceChargeFeatureFlag = config.get('featureFlags.serviceCharge')
     server = await initialiseServer()
   })
 
+  beforeEach(async () => {
+    config.set('featureFlags.serviceCharge', false)
+  })
+
   afterAll(async () => {
+    config.set('featureFlags.serviceCharge', initialServiceChargeFeatureFlag)
+    wreckGetMock.mockReset()
     await server.stop({ timeout: 0 })
   })
 
@@ -116,6 +127,103 @@ describe('#downloadSpreadsheetController', () => {
     expect(returnLink.getAttribute('href')).toBe(paths.nextAction)
     expect(returnLink.textContent).toEqual(
       expect.stringContaining(`Return to ${organisationName}`)
+    )
+  })
+
+  test('page does not show important notice when service feature is disabled', async () => {
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    const infoBanner = document.querySelector(
+      '[data-testid="app-important-banner"]'
+    )
+    expect(infoBanner).toBeNull()
+  })
+
+  test('page does not show important notice when service is paid', async () => {
+    config.set('featureFlags.serviceCharge', true)
+    wreckGetMock.mockReturnValue({
+      payload: {
+        organisation: {
+          organisationId: 'orgid',
+          disableAfter: faker.date.future(),
+          users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+          paymentPeriods: []
+        }
+      }
+    })
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    const infoBanner = document.querySelector(
+      '[data-testid="app-important-banner"]'
+    )
+    expect(infoBanner).toBeNull()
+  })
+
+  test('page shows important notice when service it not paid', async () => {
+    config.set('featureFlags.serviceCharge', true)
+    wreckGetMock.mockReturnValue({
+      payload: {
+        organisation: {
+          organisationId: 'orgid',
+          disableAfter: faker.date.past(),
+          users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+          paymentPeriods: [
+            {
+              from: '2026-10-01T00:00:00.000Z',
+              to: '2027-10-01T00:00:00.000Z',
+              priceInPence: 4000
+            }
+          ]
+        }
+      }
+    })
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    const sharedServiceChargeContent = content.sharedServiceChargeInfo(
+      {},
+      credentials.currentOrganisationName
+    )
+
+    const infoBanner = document.querySelector(
+      '[data-testid="app-important-banner"]'
+    )
+    expect(infoBanner).not.toBeNull()
+    expect(
+      infoBanner.querySelector('.govuk-notification-banner__heading')
+        .textContent
+    ).toBe(sharedServiceChargeContent.notPaidNotice.heading)
+
+    expect(infoBanner.querySelector('.govuk-body').textContent).toEqual(
+      expect.stringContaining(sharedServiceChargeContent.notPaidNotice.body)
     )
   })
 })
