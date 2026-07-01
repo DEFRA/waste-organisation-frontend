@@ -23,6 +23,7 @@ import { serviceCharge } from './serviceCharge/index.js'
 import { signOut } from './signOut/index.js'
 import { signedOut } from './signedOut/index.js'
 import { organisationCheck } from './common/helpers/auth/organisation-check.js'
+import { paymentCheck } from './common/helpers/auth/payment-check.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -56,6 +57,21 @@ const addAuthWithOrg = (route) => {
   }
 }
 
+const addAuthWithOrgPayment = (route) => {
+  const authedRoute = addAuth(route)
+  return {
+    ...authedRoute,
+    options: {
+      ...authedRoute.options,
+      pre: [
+        { method: organisationCheck },
+        { method: paymentCheck },
+        ...(authedRoute.options.pre ?? [])
+      ]
+    }
+  }
+}
+
 export const router = {
   plugin: {
     name: 'router',
@@ -78,11 +94,11 @@ export const router = {
         serviceChargeCallback:   serviceCharge.openRoutes,
         // Routes that require auth
         search:                  search.authedRoutes.map((a) => addAuthWithOrg(a)),
-        spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(spreadsheet.openRoutes),
-        updateSpreadsheet:       updateSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a)).concat(updateSpreadsheet.openRoutes),
+        spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(spreadsheet.openRoutes),
+        updateSpreadsheet:       updateSpreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(updateSpreadsheet.openRoutes),
         dashboard:               dashboard.authedRoutes.map((a) => addAuthWithOrg(a)),
         nextAction:              nextAction.authedRoutes.map((a) => addAuthWithOrg(a)),
-        apiManagement:           apiManagement.authedRoutes.map((a) => addAuthWithOrg(a)),
+        apiManagement:           apiManagement.authedRoutes.map((a) => addAuthWithOrgPayment(a)),
         account:                 account.authedRoutes.map((a) => addAuthWithOrg(a)),
         newAccount:              newAccount.authedRoutes.map((a) => addAuthWithOrg(a)),
         serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a)),
