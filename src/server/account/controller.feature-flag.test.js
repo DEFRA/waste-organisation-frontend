@@ -16,6 +16,7 @@ const organisationName = 'Test Organisation'
 describe('#accountController', () => {
   let server
   let credentials
+  let initialServiceChargeFeatureFlag
   beforeEach(() => {
     wreckGetMock.mockReturnValue({
       payload: {
@@ -35,6 +36,7 @@ describe('#accountController', () => {
     })
   })
   beforeAll(async () => {
+    initialServiceChargeFeatureFlag = config.get('featureFlags.serviceCharge')
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
     credentials = await setupAuthedUserSession(server)
@@ -43,7 +45,7 @@ describe('#accountController', () => {
   })
 
   afterAll(async () => {
-    config.set('featureFlags.serviceCharge', false)
+    config.set('featureFlags.serviceCharge', initialServiceChargeFeatureFlag)
     wreckGetMock.mockReset()
     await server.stop({ timeout: 0 })
   })

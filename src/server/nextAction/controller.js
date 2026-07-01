@@ -1,6 +1,8 @@
+import { config } from '../../config/config.js'
 import { content } from '../../config/content.js'
 import { paths, pathTo } from '../../config/paths.js'
 import joi from 'joi'
+import { getPaymentStatus } from '../common/helpers/govpay/paymentStatus.js'
 const flashMessage = 'isNextActionError'
 
 export const nextActionController = {
@@ -10,10 +12,10 @@ export const nextActionController = {
         extraAuthOrigins: request.authProviderEndpoints
       }
 
-      const organisationName =
-        request?.auth?.credentials?.currentOrganisationName
+      const { id, currentOrganisationId, currentOrganisationName } =
+        request.auth.credentials
 
-      const pageContent = content.nextAction(request, organisationName)
+      const pageContent = content.nextAction(request, currentOrganisationName)
 
       const [error] = request.yar.flash(flashMessage)
       let errorContent
@@ -22,24 +24,45 @@ export const nextActionController = {
         errorContent = pageContent.error
       }
 
-      const questions = Object.entries(pageContent.questions).map(
-        (question) => {
-          const [key, value] = question
-          return {
-            value: key,
-            text: value,
-            id: key,
+      let pageQuestions = pageContent.questions
+
+      const isServiceChargeEnabled = config.get('featureFlags.serviceCharge')
+
+      let notPaidNotice
+
+      if (isServiceChargeEnabled) {
+        const organisation = await request.backendApi.getOrganisation(
+          id,
+          currentOrganisationId
+        )
+
+        const paymentStatus = getPaymentStatus(organisation)
+
+        if (paymentStatus.disabled) {
+          pageQuestions = pageContent.questionsNotPaid
+          notPaidNotice = content.sharedServiceChargeInfo(
+            request,
+            currentOrganisationName
+          ).notPaidNotice
+        }
+      }
+
+      const questions = Object.entries(pageQuestions).map((question) => {
+        const [key, value] = question
+        return {
+          value: key,
+          text: value,
+          id: key,
+          attributes: {
+            'data-testid': `${key}-radio`
+          },
+          label: {
             attributes: {
-              'data-testid': `${key}-radio`
-            },
-            label: {
-              attributes: {
-                'data-testid': `${key}-label`
-              }
+              'data-testid': `${key}-label`
             }
           }
         }
-      )
+      })
 
       return h.view('nextAction/view', {
         pageTitle: error ? pageContent.error.pageTitle : pageContent.title,
@@ -52,7 +75,8 @@ export const nextActionController = {
         },
         questions,
         error: errorContent,
-        backLink: paths.account
+        backLink: paths.account,
+        notPaidNotice
       })
     }
   },

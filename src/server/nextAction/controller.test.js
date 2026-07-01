@@ -5,6 +5,9 @@ import { paths, pathTo } from '../../config/paths.js'
 
 import { JSDOM } from 'jsdom'
 import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
+import { config } from '../../config/config.js'
+import { wreckGetMock } from '../../test-utils/mock-oidc-config.js'
+import { faker } from '@faker-js/faker'
 
 const organisationName = 'ORG NAME'
 
@@ -13,21 +16,22 @@ const pageContent = content.nextAction({})
 describe('#nextActionController', () => {
   let server
   let credentials
-
+  let initialServiceChargeFeatureFlag
   beforeAll(async () => {
     server = await initialiseServer()
-  })
-
-  afterAll(async () => {
-    await server.stop({ timeout: 0 })
-  })
-
-  beforeEach(async () => {
+    initialServiceChargeFeatureFlag = config.get('featureFlags.serviceCharge')
     credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationName = organisationName
   })
 
+  afterAll(async () => {
+    await server.stop({ timeout: 0 })
+    config.set('featureFlags.serviceCharge', initialServiceChargeFeatureFlag)
+    wreckGetMock.mockReset()
+  })
+
   test('Should provide expected response', async () => {
+    config.set('featureFlags.serviceCharge', false)
     const pageContent = content.nextAction()
     const { payload } = await server.inject({
       method: 'GET',
@@ -60,11 +64,120 @@ describe('#nextActionController', () => {
     )
   })
 
-  test.each(
-    Object.entries(pageContent.questions).filter(
-      ([key]) => key !== 'updateSpreadsheet'
-    )
-  )('Should show question', async (key, value) => {
+  test.each(Object.entries(pageContent.questions))(
+    'Should show question',
+    async (key, value) => {
+      config.set('featureFlags.serviceCharge', false)
+      const { payload } = await server.inject({
+        method: 'GET',
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
+
+      const { document } = new JSDOM(payload).window
+
+      const pageHeading = document.querySelectorAll(
+        `[data-testid="${key}-label"]`
+      )[0].textContent
+
+      expect(pageHeading).toEqual(expect.stringContaining(value))
+    }
+  )
+
+  test.each(Object.entries(pageContent.questionsNotPaid))(
+    'Should show not paid question if service charge is not paid',
+    async (key, value) => {
+      config.set('featureFlags.serviceCharge', true)
+
+      wreckGetMock.mockReturnValue({
+        payload: {
+          organisation: {
+            organisationId: 'orgid',
+            disableAfter: faker.date.past(),
+            paymentPeriods: []
+          }
+        }
+      })
+
+      const { payload } = await server.inject({
+        method: 'GET',
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
+
+      const { document } = new JSDOM(payload).window
+
+      const pageHeading = document.querySelectorAll(
+        `[data-testid="${key}-label"]`
+      )[0].textContent
+
+      expect(pageHeading).toEqual(expect.stringContaining(value))
+
+      const radioCount = document.querySelectorAll('.govuk-radios__item').length
+
+      expect(radioCount).toEqual(
+        Object.entries(pageContent.questionsNotPaid).length
+      )
+    }
+  )
+
+  test.each(Object.entries(pageContent.questions))(
+    'Should all question if service charge is paid',
+    async (key, value) => {
+      config.set('featureFlags.serviceCharge', true)
+
+      wreckGetMock.mockReturnValue({
+        payload: {
+          organisation: {
+            organisationId: 'orgid',
+            disableAfter: faker.date.future(),
+            paymentPeriods: []
+          }
+        }
+      })
+
+      const { payload } = await server.inject({
+        method: 'GET',
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
+
+      const { document } = new JSDOM(payload).window
+
+      const pageHeading = document.querySelectorAll(
+        `[data-testid="${key}-label"]`
+      )[0].textContent
+
+      expect(pageHeading).toEqual(expect.stringContaining(value))
+
+      const radioCount = document.querySelectorAll('.govuk-radios__item').length
+
+      expect(radioCount).toEqual(Object.entries(pageContent.questions).length)
+    }
+  )
+
+  test('page does not show important notice when service is paid', async () => {
+    config.set('featureFlags.serviceCharge', true)
+    wreckGetMock.mockReturnValue({
+      payload: {
+        organisation: {
+          organisationId: 'orgid',
+          disableAfter: faker.date.future(),
+          users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+          paymentPeriods: []
+        }
+      }
+    })
+
     const { payload } = await server.inject({
       method: 'GET',
       url: paths.nextAction,
@@ -76,11 +189,59 @@ describe('#nextActionController', () => {
 
     const { document } = new JSDOM(payload).window
 
-    const pageHeading = document.querySelectorAll(
-      `[data-testid="${key}-label"]`
-    )[0].textContent
+    const infoBanner = document.querySelector(
+      '[data-testid="app-important-banner"]'
+    )
+    expect(infoBanner).toBeNull()
+  })
 
-    expect(pageHeading).toEqual(expect.stringContaining(value))
+  test('page shows important notice when service it not paid', async () => {
+    config.set('featureFlags.serviceCharge', true)
+    wreckGetMock.mockReturnValue({
+      payload: {
+        organisation: {
+          organisationId: 'orgid',
+          disableAfter: faker.date.past(),
+          users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+          paymentPeriods: [
+            {
+              from: '2026-10-01T00:00:00.000Z',
+              to: '2027-10-01T00:00:00.000Z',
+              priceInPence: 4000
+            }
+          ]
+        }
+      }
+    })
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.nextAction,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    const sharedServiceChargeContent = content.sharedServiceChargeInfo(
+      {},
+      credentials.currentOrganisationName
+    )
+
+    const infoBanner = document.querySelector(
+      '[data-testid="app-important-banner"]'
+    )
+    expect(infoBanner).not.toBeNull()
+    expect(
+      infoBanner.querySelector('.govuk-notification-banner__heading')
+        .textContent
+    ).toBe(sharedServiceChargeContent.notPaidNotice.heading)
+
+    expect(infoBanner.querySelector('.govuk-body').textContent).toEqual(
+      expect.stringContaining(sharedServiceChargeContent.notPaidNotice.body)
+    )
   })
 
   test('should show back link to account when account page flag is on', async () => {
