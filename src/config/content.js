@@ -283,6 +283,16 @@ export const content = {
           title: 'Important',
           heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
           body: 'If you need help or have a question about service charge, call 03000 203 781'
+        },
+        alreadyPaidNotice: {
+          title: 'Important',
+          heading: 'A payment has already been submitted',
+          body: 'A service charge payment for this account has already been processed. Do not try again.'
+        },
+        duplicatePaymentNotice: {
+          title: 'Important',
+          heading: 'A payment is already in progress',
+          body: 'A service charge payment for this account is already in progress. Do not try again.'
         }
       }
     }),

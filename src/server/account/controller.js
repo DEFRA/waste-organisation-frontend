@@ -10,24 +10,34 @@ export const accountController = {
     const { id, currentOrganisationId, currentOrganisationName } =
       request.auth.credentials
 
-    const pageContent = content.account(request, currentOrganisationName)
-    const { notPaidNotice } = content.sharedServiceChargeInfo(
-      request,
-      currentOrganisationName
-    )
-
     const organisation = await request.backendApi.getOrganisation(
       id,
       currentOrganisationId
     )
 
     const paymentStatus = getPaymentStatus(organisation)
+    let importantNotice
+    if (paymentStatus.disabled) {
+      const { notPaidNotice } = content.sharedServiceChargeInfo(
+        request,
+        currentOrganisationName
+      )
+      importantNotice = notPaidNotice
+    }
+
+    const [flashMessage] = request.yar.flash('infoMessage')
+
+    if (flashMessage) {
+      importantNotice = flashMessage
+    }
+
+    const pageContent = content.account(request, currentOrganisationName)
 
     return h.view('account/view', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       switchOrganisation: pageContent.switchOrganisation,
-      importantNotice: notPaidNotice,
+      importantNotice,
       cards: pageContent.cards,
       isServiceChargeEnabled,
       paymentStatus: {

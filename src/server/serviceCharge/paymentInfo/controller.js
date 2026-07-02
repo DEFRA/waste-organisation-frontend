@@ -14,7 +14,12 @@ export const serviceChargeController = {
       !organisation.paymentPeriods ||
       organisation.paymentPeriods.length < 1
     ) {
-      return h.redirect(paths.cannotMakePayment)
+      const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
+        request,
+        request.auth.credentials.currentOrganisationName
+      )
+      request.yar.flash('infoMessage', alreadyPaidNotice)
+      return h.redirect(paths.account)
     }
 
     const paymentPeriod = organisation.paymentPeriods[0]

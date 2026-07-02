@@ -18,7 +18,12 @@ export const reviewPaymentController = {
 
     const paymentPeriods = organisation.paymentPeriods
     if (!paymentPeriods || paymentPeriods < 1) {
-      return h.redirect(paths.cannotMakePayment)
+      const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
+        request,
+        request.auth.credentials.currentOrganisationName
+      )
+      request.yar.flash('infoMessage', alreadyPaidNotice)
+      return h.redirect(paths.account)
     }
     const paymentPeriod = paymentPeriods[0]
 

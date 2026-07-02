@@ -11,6 +11,7 @@ import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 import { initiatePaymentController } from './controller.js'
 
 import { faker } from '@faker-js/faker'
+import { content } from '../../../config/content.js'
 
 const ORGANISATION_ID = 456
 const ORGANISATION_NAME = 'Joe Bloggs Ltd'
@@ -23,6 +24,7 @@ describe('#initiatePaymentController', () => {
 
   beforeAll(async () => {
     wreckPostMock.mockReset()
+    wreckGetMock.mockReset()
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
     credentials = await setupAuthedUserSession(server)
@@ -109,6 +111,55 @@ describe('#initiatePaymentController', () => {
     )
   })
 
+  test('returns user to account page with message when duplicate payment', async () => {
+    const expectedOrganisation = {
+      organisationId: 'orgid',
+      disableAfter: '2026-10-01T00:00:00.000Z',
+      users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+      paymentPeriods: [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: 4000
+        }
+      ]
+    }
+
+    wreckGetMock.mockReturnValue({
+      payload: { organisation: expectedOrganisation }
+    })
+    wreckPostMock.mockReturnValue({
+      payload: { message: 'duplicate payment' }
+    })
+
+    let lastRequest
+    server.ext('onPreResponse', (request, h) => {
+      lastRequest = request
+      return h.continue
+    })
+
+    const { statusCode, headers } = await server.inject({
+      method: 'GET',
+      url: paths.initiatePayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.found)
+    expect(headers.location).toBe(paths.account)
+
+    const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
+      {},
+      'Organisation Name'
+    )
+
+    expect(lastRequest.yar.flash('infoMessage')).toEqual([
+      duplicatePaymentNotice
+    ])
+  })
+
   test('returns bad gateway if GovPay payment creation returns errors', async () => {
     wreckPostMock.mockReturnValue({
       payload: {
@@ -128,27 +179,46 @@ describe('#initiatePaymentController', () => {
     expect(statusCode).toBe(502)
   })
 
-  test('redirect to cannotMakePayment when no payments are avalible', async (paymentPeriods) => {
-    const expectedOrganisation = {
-      paymentPeriods: []
-    }
-
-    wreckGetMock.mockReturnValue({
-      payload: { organisation: expectedOrganisation }
-    })
-
-    const { statusCode, headers } = await server.inject({
-      method: 'GET',
-      url: paths.initiatePayment,
-      auth: {
-        strategy: 'session',
-        credentials
+  test.each([{}, { paymentPeriods: [] }, { paymentPeriods: null }])(
+    'redirect to account with message when no payments are avalible',
+    async (paymentPeriods) => {
+      const expectedOrganisation = {
+        organisationId: 'orgid',
+        disableAfter: '2026-10-01T00:00:00.000Z',
+        users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+        ...paymentPeriods
       }
-    })
 
-    expect(statusCode).toBe(statusCodes.found)
-    expect(headers.location).toBe(paths.cannotMakePayment)
-  })
+      wreckGetMock.mockReturnValue({
+        payload: { organisation: expectedOrganisation }
+      })
+
+      let lastRequest
+      server.ext('onPreResponse', (request, h) => {
+        lastRequest = request
+        return h.continue
+      })
+
+      const { statusCode, headers } = await server.inject({
+        method: 'GET',
+        url: paths.initiatePayment,
+        auth: {
+          strategy: 'session',
+          credentials
+        }
+      })
+
+      expect(statusCode).toBe(statusCodes.found)
+      expect(headers.location).toBe(paths.account)
+
+      const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
+        {},
+        'Organisation Name'
+      )
+
+      expect(lastRequest.yar.flash('infoMessage')).toEqual([alreadyPaidNotice])
+    }
+  )
 
   test('returns unauthorized when not authenticated', async () => {
     const { statusCode } = await server.inject({

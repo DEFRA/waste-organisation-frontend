@@ -261,6 +261,58 @@ describe('#accountController', () => {
     )
   })
 
+  test('session message should overide existing message', async () => {
+    wreckGetMock.mockReturnValue({
+      payload: {
+        organisation: {
+          organisationId: 'orgid',
+          disableAfter: faker.date.past(),
+          users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+          paymentPeriods: [
+            {
+              from: '2026-10-01T00:00:00.000Z',
+              to: '2027-10-01T00:00:00.000Z',
+              priceInPence: 4000
+            }
+          ]
+        }
+      }
+    })
+
+    server.injectYarState({
+      type: 'infoMessage',
+      message: {
+        title: 'Important',
+        heading: 'Some Message Title',
+        body: 'Some Body for the message'
+      }
+    })
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.account,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    const infoBanner = document.querySelector(
+      '[data-testid="app-important-banner"]'
+    )
+    expect(infoBanner).not.toBeNull()
+    expect(
+      infoBanner.querySelector('.govuk-notification-banner__heading')
+        .textContent
+    ).toBe('Some Message Title')
+
+    expect(infoBanner.querySelector('.govuk-body').textContent).toEqual(
+      expect.stringContaining('Some Body for the message')
+    )
+  })
+
   test('shows paid state when service charge paid', async () => {
     const expectedOrganisation = {
       disableAfter: '2026-10-01T00:00:00.000Z',
