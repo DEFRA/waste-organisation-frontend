@@ -118,7 +118,7 @@ describe('#serviceChargeController', () => {
   })
 
   test.each([{}, { paymentPeriods: [] }, { paymentPeriods: null }])(
-    'redirect to cannotMakePayment when no payments are avalible',
+    'redirect to account with message when no payments are avalible',
     async (paymentPeriods) => {
       const expectedOrganisation = {
         organisationId: 'orgid',
@@ -131,6 +131,12 @@ describe('#serviceChargeController', () => {
         payload: { organisation: expectedOrganisation }
       })
 
+      let lastRequest
+      server.ext('onPreResponse', (request, h) => {
+        lastRequest = request
+        return h.continue
+      })
+
       const { statusCode, headers } = await server.inject({
         method: 'GET',
         url: paths.serviceCharge,
@@ -141,7 +147,14 @@ describe('#serviceChargeController', () => {
       })
 
       expect(statusCode).toBe(statusCodes.found)
-      expect(headers.location).toBe(paths.cannotMakePayment)
+      expect(headers.location).toBe(paths.account)
+
+      const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
+        {},
+        'Organisation Name'
+      )
+
+      expect(lastRequest.yar.flash('infoMessage')).toEqual([alreadyPaidNotice])
     }
   )
 

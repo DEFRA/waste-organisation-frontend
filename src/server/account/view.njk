@@ -8,7 +8,7 @@
   <div class="govuk-!-margin-bottom-6">
     {% if isServiceChargeEnabled %}
 
-      {% if paymentStatus.disabled %}
+      {% if importantNotice %}
 
         {% set importantNoticeHtml %}
         {{ importantNotice.bodyPrefix }}

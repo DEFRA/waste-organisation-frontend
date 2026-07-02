@@ -1,6 +1,7 @@
 import boom from '@hapi/boom'
 import { config } from '../../../config/config.js'
 import { paths } from '../../../config/paths.js'
+import { content } from '../../../config/content.js'
 const SERVICE_CHARGE_DESCRIPTION =
   'Annual report receipt of waste service charge'
 
@@ -17,7 +18,12 @@ export const initiatePaymentController = {
       const paymentPeriods = organisation.paymentPeriods
 
       if (!paymentPeriods || paymentPeriods < 1) {
-        return h.redirect(paths.cannotMakePayment)
+        const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
+          request,
+          request.auth.credentials.currentOrganisationName
+        )
+        request.yar.flash('infoMessage', alreadyPaidNotice)
+        return h.redirect(paths.account)
       }
       const paymentPeriod = paymentPeriods[0]
 
