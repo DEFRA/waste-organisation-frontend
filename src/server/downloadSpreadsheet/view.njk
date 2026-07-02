@@ -2,6 +2,13 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
+  {% if notPaidNotice %}
+    {{ appImportantBanner({
+      title: notPaidNotice.title,
+      heading: notPaidNotice.heading,
+      content: notPaidNotice.body
+    }) }}
+  {% endif %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {{ appHeading(heading) }}

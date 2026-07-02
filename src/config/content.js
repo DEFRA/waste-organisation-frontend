@@ -66,6 +66,9 @@ export const content = {
           uploadSpreadsheet: 'Upload a spreadsheet',
           updateSpreadsheet: 'Upload a spreadsheet that has Waste tracking IDs'
         },
+        questionsNotPaid: {
+          downloadSpreadsheet: 'Download spreadsheet template'
+        },
         error: {
           pageTitle: 'Error: Report receipt of waste',
           title: 'There is a problem',
