@@ -133,7 +133,7 @@ describe('#downloadSpreadsheetController', () => {
   test('page does not show important notice when service feature is disabled', async () => {
     const { payload } = await server.inject({
       method: 'GET',
-      url: paths.nextAction,
+      url: paths.downloadSpreadsheet,
       auth: {
         strategy: 'session',
         credentials
@@ -163,7 +163,7 @@ describe('#downloadSpreadsheetController', () => {
 
     const { payload } = await server.inject({
       method: 'GET',
-      url: paths.nextAction,
+      url: paths.downloadSpreadsheet,
       auth: {
         strategy: 'session',
         credentials
@@ -199,7 +199,7 @@ describe('#downloadSpreadsheetController', () => {
 
     const { payload } = await server.inject({
       method: 'GET',
-      url: paths.nextAction,
+      url: paths.downloadSpreadsheet,
       auth: {
         strategy: 'session',
         credentials

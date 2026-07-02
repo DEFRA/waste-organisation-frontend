@@ -79,11 +79,11 @@ describe('#nextActionController', () => {
 
       const { document } = new JSDOM(payload).window
 
-      const pageHeading = document.querySelectorAll(
+      const radioLabel = document.querySelectorAll(
         `[data-testid="${key}-label"]`
       )[0].textContent
 
-      expect(pageHeading).toEqual(expect.stringContaining(value))
+      expect(radioLabel).toEqual(expect.stringContaining(value))
     }
   )
 
@@ -113,11 +113,11 @@ describe('#nextActionController', () => {
 
       const { document } = new JSDOM(payload).window
 
-      const pageHeading = document.querySelectorAll(
+      const radioLabel = document.querySelectorAll(
         `[data-testid="${key}-label"]`
       )[0].textContent
 
-      expect(pageHeading).toEqual(expect.stringContaining(value))
+      expect(radioLabel).toEqual(expect.stringContaining(value))
 
       const radioCount = document.querySelectorAll('.govuk-radios__item').length
 
@@ -348,6 +348,25 @@ describe('#nextActionController', () => {
 
       expect(headers.location).toBe(
         pathTo(paths.updateSpreadsheetUpload, { organisationId: 'abc-123' })
+      )
+    })
+
+    test('should redirect to uploadSpreadsheet if uploadSpreadsheet is selected', async () => {
+      credentials.currentOrganisationId = 'abc-123'
+      const { headers } = await server.inject({
+        method: 'POST',
+        url: paths.nextAction,
+        auth: {
+          strategy: 'session',
+          credentials
+        },
+        payload: {
+          nextAction: 'uploadSpreadsheet'
+        }
+      })
+
+      expect(headers.location).toBe(
+        pathTo(paths.spreadsheetUpload, { organisationId: 'abc-123' })
       )
     })
 
