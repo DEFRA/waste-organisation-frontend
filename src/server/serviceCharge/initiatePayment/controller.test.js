@@ -24,6 +24,7 @@ describe('#initiatePaymentController', () => {
 
   beforeAll(async () => {
     wreckPostMock.mockReset()
+    wreckGetMock.mockReset()
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
     credentials = await setupAuthedUserSession(server)
@@ -108,6 +109,55 @@ describe('#initiatePaymentController', () => {
       { err: error },
       `Failed to initiate GovPay payment: ${message}`
     )
+  })
+
+  test('returns user to account page with message when duplicate payment', async () => {
+    const expectedOrganisation = {
+      organisationId: 'orgid',
+      disableAfter: '2026-10-01T00:00:00.000Z',
+      users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+      paymentPeriods: [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: 4000
+        }
+      ]
+    }
+
+    wreckGetMock.mockReturnValue({
+      payload: { organisation: expectedOrganisation }
+    })
+    wreckPostMock.mockReturnValue({
+      payload: { message: 'duplicate payment' }
+    })
+
+    let lastRequest
+    server.ext('onPreResponse', (request, h) => {
+      lastRequest = request
+      return h.continue
+    })
+
+    const { statusCode, headers } = await server.inject({
+      method: 'GET',
+      url: paths.initiatePayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.found)
+    expect(headers.location).toBe(paths.account)
+
+    const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
+      {},
+      'Organisation Name'
+    )
+
+    expect(lastRequest.yar.flash('infoMessage')).toEqual([
+      duplicatePaymentNotice
+    ])
   })
 
   test('returns bad gateway if GovPay payment creation returns errors', async () => {

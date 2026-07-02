@@ -44,6 +44,15 @@ export const initiatePaymentController = {
         }
       )
 
+      if (result.message === 'duplicate payment') {
+        const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
+          request,
+          request.auth.credentials.currentOrganisationName
+        )
+        request.yar.flash('infoMessage', duplicatePaymentNotice)
+        return h.redirect(paths.account)
+      }
+
       if (result.errors) {
         throw new Error('Error initiateing payment')
       }

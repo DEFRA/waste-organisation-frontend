@@ -288,6 +288,11 @@ export const content = {
           title: 'Important',
           heading: 'A payment has already been submitted',
           body: 'A service charge payment for this account has already been processed. Do not try again.'
+        },
+        duplicatePaymentNotice: {
+          title: 'Important',
+          heading: 'A payment is already in progress',
+          body: 'A service charge payment for this account is already in progress. Do not try again.'
         }
       }
     }),
