@@ -34,7 +34,7 @@ describe('backendApi', () => {
     })
   })
 
-  test('saveSpreadsheet dummy test for coverage reasons', async () => {
+  test('get organisation test for coverage reasons', async () => {
     const expectedResponse = {
       randomData: 'Some Data'
     }

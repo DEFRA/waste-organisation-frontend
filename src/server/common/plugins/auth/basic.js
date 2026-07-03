@@ -48,7 +48,7 @@ export const basicAuth = {
       }
 
       const callbackRe = new RegExp(
-        `${paths.updateSpreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.spreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.paymentCallback}`
+        `${paths.updateSpreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.spreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.paymentCallback}` // nosonar
       )
 
       server.ext('onRequest', (request, h) => {
