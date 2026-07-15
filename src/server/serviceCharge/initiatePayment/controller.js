@@ -45,18 +45,20 @@ export const initiatePaymentController = {
       )
 
       if (result.message === 'success') {
-        request.yar.set(`initiate-payment-${result.payment.idempotencyKey}`, {
-          govPayLinks: result.payment.govPayLinks
-        })
+        request.yar.set(`initiate-payment-${result.payment.paymentId}`, {})
       }
 
       if (result.message === 'duplicate payment') {
         const previousRequest = request.yar.get(
-          `initiate-payment-${result.payment.idempotencyKey}`
+          `initiate-payment-${result.payment.paymentId}`
         )
 
         if (previousRequest) {
-          return h.redirect(previousRequest.govPayLinks.next_url.href)
+          const paymentStatus = await request.backendApi.paymentStatus(
+            currentOrganisationId,
+            result.payment.paymentId
+          )
+          return h.redirect(paymentStatus.payment.govPayLinks.next_url.href)
         }
 
         const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(

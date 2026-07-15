@@ -112,7 +112,7 @@ describe('#initiatePaymentController', () => {
   })
 
   test('returns user to account page with message when duplicate payment', async () => {
-    const idempotencyKey = faker.string.uuid()
+    const paymentId = faker.string.uuid()
     const expectedOrganisation = {
       organisationId: 'orgid',
       disableAfter: '2026-10-01T00:00:00.000Z',
@@ -130,7 +130,7 @@ describe('#initiatePaymentController', () => {
       payload: { organisation: expectedOrganisation }
     })
     wreckPostMock.mockReturnValue({
-      payload: { message: 'duplicate payment', payment: { idempotencyKey } }
+      payload: { message: 'duplicate payment', payment: { paymentId } }
     })
 
     let lastRequest
@@ -163,35 +163,10 @@ describe('#initiatePaymentController', () => {
 
   test('sets govGay url in session if the request is not duplicate', async () => {
     const paymentId = faker.string.uuid()
-    const idempotencyKey = faker.string.uuid()
     const govPayLinks = {
-      self: {
-        href: 'https://publicapi.payments.service.gov.uk/v1/payments/m0cdt0oqsjf95hn8jdp606fv06',
-        method: 'GET'
-      },
       next_url: {
         href: 'https://card.payments.service.gov.uk/secure/d7d168a4-1cc8-44e9-8259-af7fd7a4fc53',
         method: 'GET'
-      },
-      next_url_post: {
-        type: 'application/x-www-form-urlencoded',
-        params: {
-          chargeTokenId: 'd7d168a4-1cc8-44e9-8259-af7fd7a4fc53'
-        },
-        href: 'https://card.payments.service.gov.uk/secure',
-        method: 'POST'
-      },
-      events: {
-        href: 'https://publicapi.payments.service.gov.uk/v1/payments/m0cdt0oqsjf95hn8jdp606fv06/events',
-        method: 'GET'
-      },
-      refunds: {
-        href: 'https://publicapi.payments.service.gov.uk/v1/payments/m0cdt0oqsjf95hn8jdp606fv06/refunds',
-        method: 'GET'
-      },
-      cancel: {
-        href: 'https://publicapi.payments.service.gov.uk/v1/payments/m0cdt0oqsjf95hn8jdp606fv06/cancel',
-        method: 'POST'
       }
     }
 
@@ -216,7 +191,6 @@ describe('#initiatePaymentController', () => {
         message: 'success',
         payment: {
           paymentId,
-          idempotencyKey,
           govPayLinks
         }
       }
@@ -240,41 +214,15 @@ describe('#initiatePaymentController', () => {
     expect(statusCode).toBe(statusCodes.found)
     expect(headers.location).toBe(govPayLinks.next_url.href)
 
-    expect(lastRequest.yar.get(`initiate-payment-${idempotencyKey}`)).toEqual({
-      govPayLinks
-    })
+    expect(lastRequest.yar.get(`initiate-payment-${paymentId}`)).toEqual({})
   })
 
-  test('should redirect user to payment page on duplicate payement if set in session', async () => {
-    const idempotencyKey = faker.string.uuid()
+  test('should redirect user to payment page on duplicate payment if set in session', async () => {
+    const paymentId = faker.string.uuid()
     const govPayLinks = {
-      self: {
-        href: 'https://publicapi.payments.service.gov.uk/v1/payments/m0cdt0oqsjf95hn8jdp606fv06',
-        method: 'GET'
-      },
       next_url: {
         href: 'https://card.payments.service.gov.uk/secure/d7d168a4-1cc8-44e9-8259-af7fd7a4fc53',
         method: 'GET'
-      },
-      next_url_post: {
-        type: 'application/x-www-form-urlencoded',
-        params: {
-          chargeTokenId: 'd7d168a4-1cc8-44e9-8259-af7fd7a4fc53'
-        },
-        href: 'https://card.payments.service.gov.uk/secure',
-        method: 'POST'
-      },
-      events: {
-        href: 'https://publicapi.payments.service.gov.uk/v1/payments/m0cdt0oqsjf95hn8jdp606fv06/events',
-        method: 'GET'
-      },
-      refunds: {
-        href: 'https://publicapi.payments.service.gov.uk/v1/payments/m0cdt0oqsjf95hn8jdp606fv06/refunds',
-        method: 'GET'
-      },
-      cancel: {
-        href: 'https://publicapi.payments.service.gov.uk/v1/payments/m0cdt0oqsjf95hn8jdp606fv06/cancel',
-        method: 'POST'
       }
     }
 
@@ -291,20 +239,39 @@ describe('#initiatePaymentController', () => {
       ]
     }
     server.setYarState({
-      type: `initiate-payment-${idempotencyKey}`,
-      message: {
-        govPayLinks
-      }
+      type: `initiate-payment-${paymentId}`,
+      message: {}
     })
 
     wreckGetMock.mockReturnValue({
       payload: { organisation: expectedOrganisation }
     })
-    wreckPostMock.mockReturnValue({
-      payload: {
-        message: 'duplicate payment',
-        payment: {
-          idempotencyKey
+
+    wreckPostMock.mockImplementation((url, _) => {
+      const initiatePaymentUrl = `http://localhost/TODO/organisation/${credentials.currentOrganisationId}/initiatePayment/`
+      const statusUrl = `http://localhost/TODO/organisation/${credentials.currentOrganisationId}/payment/${paymentId}`
+
+      if (url === initiatePaymentUrl) {
+        return {
+          payload: {
+            message: 'duplicate payment',
+            payment: {
+              paymentId
+            }
+          }
+        }
+      }
+
+      if (url === statusUrl) {
+        return {
+          payload: {
+            message: 'success',
+            payment: {
+              paymentId,
+              govPayLinks,
+              status: 'payment_in_progress'
+            }
+          }
         }
       }
     })
@@ -327,9 +294,7 @@ describe('#initiatePaymentController', () => {
     expect(statusCode).toBe(statusCodes.found)
     expect(headers.location).toBe(govPayLinks.next_url.href)
 
-    expect(lastRequest.yar.get(`initiate-payment-${idempotencyKey}`)).toEqual({
-      govPayLinks
-    })
+    expect(lastRequest.yar.get(`initiate-payment-${paymentId}`)).toEqual({})
   })
 
   test('returns bad gateway if GovPay payment creation returns errors', async () => {
