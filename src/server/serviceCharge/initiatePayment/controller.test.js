@@ -161,15 +161,8 @@ describe('#initiatePaymentController', () => {
     ])
   })
 
-  test('sets govGay url in session if the request is not duplicate', async () => {
+  test('returns user to account page with message when duplicate payment if they have a paymentId stored that doesnt match', async () => {
     const paymentId = faker.string.uuid()
-    const govPayLinks = {
-      next_url: {
-        href: 'https://card.payments.service.gov.uk/secure/d7d168a4-1cc8-44e9-8259-af7fd7a4fc53',
-        method: 'GET'
-      }
-    }
-
     const expectedOrganisation = {
       organisationId: 'orgid',
       disableAfter: '2026-10-01T00:00:00.000Z',
@@ -187,13 +180,12 @@ describe('#initiatePaymentController', () => {
       payload: { organisation: expectedOrganisation }
     })
     wreckPostMock.mockReturnValue({
-      payload: {
-        message: 'success',
-        payment: {
-          paymentId,
-          govPayLinks
-        }
-      }
+      payload: { message: 'duplicate payment', payment: { paymentId } }
+    })
+
+    server.setYarState({
+      type: 'govPayPaymentId',
+      message: faker.string.uuid()
     })
 
     let lastRequest
@@ -212,9 +204,16 @@ describe('#initiatePaymentController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.found)
-    expect(headers.location).toBe(govPayLinks.next_url.href)
+    expect(headers.location).toBe(paths.account)
 
-    expect(lastRequest.yar.get(`initiate-payment-${paymentId}`)).toEqual({})
+    const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
+      {},
+      'Organisation Name'
+    )
+
+    expect(lastRequest.yar.flash('infoMessage')).toEqual([
+      duplicatePaymentNotice
+    ])
   })
 
   test('should redirect user to payment page on duplicate payment if set in session', async () => {
@@ -239,8 +238,8 @@ describe('#initiatePaymentController', () => {
       ]
     }
     server.setYarState({
-      type: `initiate-payment-${paymentId}`,
-      message: {}
+      type: 'govPayPaymentId',
+      message: paymentId
     })
 
     wreckGetMock.mockReturnValue({
@@ -276,12 +275,6 @@ describe('#initiatePaymentController', () => {
       }
     })
 
-    let lastRequest
-    server.ext('onPreResponse', (request, h) => {
-      lastRequest = request
-      return h.continue
-    })
-
     const { statusCode, headers } = await server.inject({
       method: 'GET',
       url: paths.initiatePayment,
@@ -293,8 +286,6 @@ describe('#initiatePaymentController', () => {
 
     expect(statusCode).toBe(statusCodes.found)
     expect(headers.location).toBe(govPayLinks.next_url.href)
-
-    expect(lastRequest.yar.get(`initiate-payment-${paymentId}`)).toEqual({})
   })
 
   test('returns bad gateway if GovPay payment creation returns errors', async () => {

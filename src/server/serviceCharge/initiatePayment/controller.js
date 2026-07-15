@@ -44,16 +44,10 @@ export const initiatePaymentController = {
         }
       )
 
-      if (result.message === 'success') {
-        request.yar.set(`initiate-payment-${result.payment.paymentId}`, {})
-      }
-
       if (result.message === 'duplicate payment') {
-        const previousRequest = request.yar.get(
-          `initiate-payment-${result.payment.paymentId}`
-        )
+        const previousRequest = request.yar.get('govPayPaymentId')
 
-        if (previousRequest) {
+        if (previousRequest === result.payment.paymentId) {
           const paymentStatus = await request.backendApi.paymentStatus(
             currentOrganisationId,
             result.payment.paymentId
