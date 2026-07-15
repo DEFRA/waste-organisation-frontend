@@ -44,7 +44,21 @@ export const initiatePaymentController = {
         }
       )
 
+      if (result.message === 'success') {
+        request.yar.set(`initiate-payment-${result.payment.idempotencyKey}`, {
+          govPayLinks: result.payment.govPayLinks
+        })
+      }
+
       if (result.message === 'duplicate payment') {
+        const previousRequest = request.yar.get(
+          `initiate-payment-${result.payment.idempotencyKey}`
+        )
+
+        if (previousRequest) {
+          return h.redirect(previousRequest.govPayLinks.next_url.href)
+        }
+
         const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
           request,
           request.auth.credentials.currentOrganisationName
