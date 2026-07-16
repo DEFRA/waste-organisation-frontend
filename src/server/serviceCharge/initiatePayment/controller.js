@@ -52,7 +52,14 @@ export const initiatePaymentController = {
             currentOrganisationId,
             result.payment.paymentId
           )
-          return h.redirect(paymentStatus.payment.govPayLinks.next_url.href)
+
+          const nextUrl = paymentStatus?.payment?.govPayLinks?.next_url?.href
+
+          if (!nextUrl) {
+            throw new Error('Unable to resume GovPay payment: missing next_url')
+          }
+
+          return h.redirect(nextUrl)
         }
 
         const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
