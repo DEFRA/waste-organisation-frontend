@@ -47,27 +47,26 @@ export const initiatePaymentController = {
       if (result.message === 'duplicate payment') {
         const previousRequest = request.yar.get('govPayPaymentId')
 
-        if (previousRequest === result.payment.paymentId) {
-          const paymentStatus = await request.backendApi.paymentStatus(
-            currentOrganisationId,
-            result.payment.paymentId
+        if (previousRequest !== result.payment.paymentId) {
+          const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
+            request,
+            request.auth.credentials.currentOrganisationName
           )
+          request.yar.flash('infoMessage', duplicatePaymentNotice)
+          return h.redirect(paths.account)
+        }
+        const paymentStatus = await request.backendApi.paymentStatus(
+          currentOrganisationId,
+          result.payment.paymentId
+        )
 
-          const nextUrl = paymentStatus?.payment?.govPayLinks?.next_url?.href
+        const nextUrl = paymentStatus?.payment?.govPayLinks?.next_url?.href
 
-          if (!nextUrl) {
-            throw new Error('Unable to resume GovPay payment: missing next_url')
-          }
-
-          return h.redirect(nextUrl)
+        if (!nextUrl) {
+          throw new Error('Unable to resume GovPay payment: missing next_url')
         }
 
-        const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
-          request,
-          request.auth.credentials.currentOrganisationName
-        )
-        request.yar.flash('infoMessage', duplicatePaymentNotice)
-        return h.redirect(paths.account)
+        return h.redirect(nextUrl)
       }
 
       if (result.errors) {
