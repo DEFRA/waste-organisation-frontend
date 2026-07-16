@@ -112,6 +112,7 @@ describe('#initiatePaymentController', () => {
   })
 
   test('returns user to account page with message when duplicate payment', async () => {
+    const paymentId = faker.string.uuid()
     const expectedOrganisation = {
       organisationId: 'orgid',
       disableAfter: '2026-10-01T00:00:00.000Z',
@@ -129,7 +130,7 @@ describe('#initiatePaymentController', () => {
       payload: { organisation: expectedOrganisation }
     })
     wreckPostMock.mockReturnValue({
-      payload: { message: 'duplicate payment' }
+      payload: { message: 'duplicate payment', payment: { paymentId } }
     })
 
     let lastRequest
@@ -158,6 +159,196 @@ describe('#initiatePaymentController', () => {
     expect(lastRequest.yar.flash('infoMessage')).toEqual([
       duplicatePaymentNotice
     ])
+  })
+
+  test('returns user to account page with message when duplicate payment if they have a paymentId stored that doesnt match', async () => {
+    const paymentId = faker.string.uuid()
+    const expectedOrganisation = {
+      organisationId: 'orgid',
+      disableAfter: '2026-10-01T00:00:00.000Z',
+      users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+      paymentPeriods: [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: 4000
+        }
+      ]
+    }
+
+    wreckGetMock.mockReturnValue({
+      payload: { organisation: expectedOrganisation }
+    })
+    wreckPostMock.mockReturnValue({
+      payload: { message: 'duplicate payment', payment: { paymentId } }
+    })
+
+    server.setYarState({
+      type: 'govPayPaymentId',
+      message: faker.string.uuid()
+    })
+
+    let lastRequest
+    server.ext('onPreResponse', (request, h) => {
+      lastRequest = request
+      return h.continue
+    })
+
+    const { statusCode, headers } = await server.inject({
+      method: 'GET',
+      url: paths.initiatePayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.found)
+    expect(headers.location).toBe(paths.account)
+
+    const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
+      {},
+      'Organisation Name'
+    )
+
+    expect(lastRequest.yar.flash('infoMessage')).toEqual([
+      duplicatePaymentNotice
+    ])
+  })
+
+  test('should redirect user to payment page on duplicate payment if set in session', async () => {
+    const paymentId = faker.string.uuid()
+    const govPayLinks = {
+      next_url: {
+        href: 'https://card.payments.service.gov.uk/secure/d7d168a4-1cc8-44e9-8259-af7fd7a4fc53',
+        method: 'GET'
+      }
+    }
+
+    const expectedOrganisation = {
+      organisationId: 'orgid',
+      disableAfter: '2026-10-01T00:00:00.000Z',
+      users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+      paymentPeriods: [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: 4000
+        }
+      ]
+    }
+    server.setYarState({
+      type: 'govPayPaymentId',
+      message: paymentId
+    })
+
+    wreckGetMock.mockReturnValue({
+      payload: { organisation: expectedOrganisation }
+    })
+
+    wreckPostMock.mockImplementation((url, _) => {
+      const initiatePaymentUrl = `http://localhost/TODO/organisation/${credentials.currentOrganisationId}/initiatePayment/`
+      const statusUrl = `http://localhost/TODO/organisation/${credentials.currentOrganisationId}/payment/${paymentId}`
+
+      if (url === initiatePaymentUrl) {
+        return {
+          payload: {
+            message: 'duplicate payment',
+            payment: {
+              paymentId
+            }
+          }
+        }
+      }
+
+      if (url === statusUrl) {
+        return {
+          payload: {
+            message: 'success',
+            payment: {
+              paymentId,
+              govPayLinks,
+              status: 'payment_in_progress'
+            }
+          }
+        }
+      }
+    })
+
+    const { statusCode, headers } = await server.inject({
+      method: 'GET',
+      url: paths.initiatePayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.found)
+    expect(headers.location).toBe(govPayLinks.next_url.href)
+  })
+
+  test('should handle error when next URL doesnt exist', async () => {
+    const paymentId = faker.string.uuid()
+    const expectedOrganisation = {
+      organisationId: 'orgid',
+      disableAfter: '2026-10-01T00:00:00.000Z',
+      users: ['6310cc75-8c51-46cd-9fb2-93656667ca69'],
+      paymentPeriods: [
+        {
+          from: '2026-10-01T00:00:00.000Z',
+          to: '2027-10-01T00:00:00.000Z',
+          priceInPence: 4000
+        }
+      ]
+    }
+    server.setYarState({
+      type: 'govPayPaymentId',
+      message: paymentId
+    })
+
+    wreckGetMock.mockReturnValue({
+      payload: { organisation: expectedOrganisation }
+    })
+
+    wreckPostMock.mockImplementation((url, _) => {
+      const initiatePaymentUrl = `http://localhost/TODO/organisation/${credentials.currentOrganisationId}/initiatePayment/`
+      const statusUrl = `http://localhost/TODO/organisation/${credentials.currentOrganisationId}/payment/${paymentId}`
+
+      if (url === initiatePaymentUrl) {
+        return {
+          payload: {
+            message: 'duplicate payment',
+            payment: {
+              paymentId
+            }
+          }
+        }
+      }
+
+      if (url === statusUrl) {
+        return {
+          payload: {
+            message: 'success',
+            payment: {
+              paymentId,
+              status: 'payment_in_progress'
+            }
+          }
+        }
+      }
+    })
+
+    const { statusCode } = await server.inject({
+      method: 'GET',
+      url: paths.initiatePayment,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(statusCodes.badGateway)
   })
 
   test('returns bad gateway if GovPay payment creation returns errors', async () => {
