@@ -1,5 +1,5 @@
 import { paths } from '../../config/paths.js'
-import { cannotUseServiceController } from './cannotUseService/controller.js'
+import { localAuthorityGuidenceController } from './localAuthorityGuidence/controller.js'
 import { ukPermitController } from './uk-permit/controller.js'
 
 export const onboarding = {
@@ -16,8 +16,8 @@ export const onboarding = {
     },
     {
       method: 'GET',
-      path: paths.cannotUseService,
-      ...cannotUseServiceController
+      path: paths.localAuthorityGuidence,
+      ...localAuthorityGuidenceController
     }
   ]
 }

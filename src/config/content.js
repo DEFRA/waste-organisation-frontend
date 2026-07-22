@@ -40,18 +40,25 @@ export const content = {
         continueAction: 'Continue'
       }
     }),
-  cannotUseService: (request) =>
+  localAuthorityGuidence: (request) =>
     getContentForLanguage(request, {
       en: {
-        title: 'Sorry, you cannot use the service',
+        title: 'Are you registering as a local authority?',
         heading: heading(
-          'Sorry, you cannot use the service',
-          'Based on your answer, you cannot continue as local authorities are currently unable to use this service.',
+          'Are you registering as a local authority?',
+          'If you are registering as a local authority and do not have a company registration number, you will need to:',
           null
         ),
+        steps: [
+          'Select "Yes" when asked if you are registering as a business or organisation.',
+          'Confirm you do not have a company registration number.',
+          'Select "Sole trader" when asked about what kind of business or organisation you have.'
+        ],
+        finalNote:
+          'Before you continue, check if your local authority has already been registered.',
         link: {
-          href: config.get('links.startPage'),
-          text: 'Find out more about Digital waste tracking'
+          href: paths.signinDefraIdCallback,
+          text: 'Continue'
         }
       }
     }),

@@ -4,7 +4,7 @@ export const paths = {
   cookies: '/cookies',
   health: '/health',
   dashboard: '/dashboard',
-  cannotUseService: '/cannot-use-service',
+  localAuthorityGuidence: '/local-authority-guidence',
   ukPermit: '/',
   nextAction: '/next-action',
   downloadSpreadsheet: '/download-spreadsheet',
