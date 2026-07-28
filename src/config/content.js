@@ -390,21 +390,14 @@ export const content = {
           ],
           returnToAccountLabel: `Return to ${organisationName} waste receiving account`
         },
-        declined: {
-          pageTitle: 'Your payment has been declined',
+        unsuccessful: {
+          pageTitle: 'Your payment has been unsuccessful',
           heading: heading(
-            'Your payment has been declined',
+            'Your payment has been unsuccessful',
             null,
             organisationName
           ),
           summaryContent: 'Contact your bank for more details or try again.',
-          returnToAccountLabel: `Try payment again`
-        },
-        failed: {
-          pageTitle: 'Your payment has failed',
-          heading: heading('Your payment has failed', null, organisationName),
-          summaryContent:
-            'Your payment has not been processed. Contact your bank or try again.',
           returnToAccountLabel: `Try payment again`
         }
       }

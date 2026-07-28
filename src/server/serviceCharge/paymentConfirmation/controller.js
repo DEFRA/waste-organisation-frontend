@@ -28,7 +28,7 @@ export const paymentConfirmationController = {
       if (payment.status === 'payment_failed') {
         return h.view('serviceCharge/paymentConfirmation/message', {
           returnToAccountLink: paths.serviceCharge,
-          ...pageContent.declined
+          ...pageContent.unsuccessful
         })
       }
 

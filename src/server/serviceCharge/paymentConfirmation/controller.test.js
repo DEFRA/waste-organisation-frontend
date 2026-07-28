@@ -108,7 +108,7 @@ describe('#paymentDetailsController', () => {
       {},
       3500,
       credentials.currentOrganisationName
-    ).declined
+    ).unsuccessful
 
     server.setYarState({ type: 'govPayPaymentId', message: 'paymentID' })
 
