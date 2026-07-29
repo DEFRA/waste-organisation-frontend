@@ -2,9 +2,13 @@ import jwt from '@hapi/jwt'
 import { getOpenIdConfig } from './open-id-client.js'
 import { checkGroups } from './check-groups.js'
 import { config } from '../../../../config/config.js'
+import { createLogger } from '../logging/logger.js'
+
 const authorizationOverride = config.get(
   'auth.defraId.oidcConfigurationAuthorizationOverride'
 )
+
+const logger = createLogger()
 
 const getProviderEndpoints = async (oidcConf, authConfig) => {
   return Array.from(
