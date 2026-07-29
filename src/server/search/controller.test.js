@@ -59,13 +59,13 @@ describe('#searchController', () => {
       expect(result).toEqual(expect.stringContaining('Disabled'))
     })
 
-    test('Should return unauthorized when not authenticated', async () => {
+    test('Should allow access', async () => {
       const { statusCode } = await server.inject({
         method: 'GET',
         url: paths.search
       })
 
-      expect(statusCode).toBe(statusCodes.unauthorized)
+      expect(statusCode).toBe(statusCodes.ok)
     })
   })
 
