@@ -11,9 +11,11 @@ export const signInController = (metricName) => ({
     metricsCounter(metricName)
     const { id, currentOrganisationId, currentOrganisationName } =
       request.auth.credentials.profile
-    await request.backendApi.saveOrganisation(id, currentOrganisationId, {
-      name: currentOrganisationName
-    })
+    if (currentOrganisationId != null) {
+      await request.backendApi.saveOrganisation(id, currentOrganisationId, {
+        name: currentOrganisationName
+      })
+    }
 
     const redirectPath = paths.account
     return h.redirect(redirectPath)
