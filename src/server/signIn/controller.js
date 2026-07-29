@@ -9,9 +9,16 @@ export const signInController = (metricName) => ({
     await setUserSession(request, sessionId)
     request.cookieAuth.set({ sessionId })
     metricsCounter(metricName)
-    const { id, currentOrganisationId, currentOrganisationName } =
-      request.auth.credentials.profile
-    if (currentOrganisationId != null) {
+    const {
+      id,
+      currentOrganisationId,
+      currentOrganisationName,
+      relationships
+    } = request.auth.credentials.profile
+    request.logger.info(
+      `about to save org with id ${currentOrganisationId} - ${JSON.stringify(relationships)}`
+    )
+    if (currentOrganisationId) {
       await request.backendApi.saveOrganisation(id, currentOrganisationId, {
         name: currentOrganisationName
       })

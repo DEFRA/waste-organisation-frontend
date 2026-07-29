@@ -49,10 +49,12 @@ export const openIdProvider = async (name, authConfig) => {
         )
       }
       const payload = jwt.token.decode(credentials.token).decoded.payload
+      logger.debug(`open id provider payload >> ${JSON.stringify(payload)}`)
 
       if (credentials.provider === 'entraId') {
-        const { groups = [] } = jwt.token.decode(params.id_token).decoded
-          .payload
+        const p = jwt.token.decode(params.id_token).decoded.payload
+        logger.debug(`open id entra provider payload >> ${JSON.stringify(p)}`)
+        const { groups = [] } = p
         checkGroups(groups)
       }
 
@@ -98,6 +100,12 @@ export const openIdProvider = async (name, authConfig) => {
       } else {
         logger.error(
           `Error extracting org info from token - rel: ${JSON.stringify(payload?.relationships)} - current rel: ${payload.currentRelationshipId}`
+        )
+        logger.debug(
+          `Error extracting defra id payload ${JSON.stringify(payload)}`
+        )
+        throw new Error(
+          `${name} Unable to retrieve organisation data from defra id payload.`
         )
       }
     }
