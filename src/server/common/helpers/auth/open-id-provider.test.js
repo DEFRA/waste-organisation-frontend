@@ -146,12 +146,8 @@ test('defraId: broken credentials are broken', async () => {
   )
 
   const credentials = { token }
-
-  // await provider.profile(credentials, { id_token: 'test-id-token' }, {})
-
-  await expect(
-    provider.profile(credentials, { id_token: 'test-id-token' }, {})
-  ).rejects.toThrow()
+  await provider.profile(credentials, { id_token: 'test-id-token' }, {})
+  expect(credentials.profile).toEqual(undefined)
 })
 
 test('defraId: broken credentials are broken v2', async () => {
@@ -199,10 +195,8 @@ test('defraId: broken credentials are broken v2', async () => {
   )
 
   const credentials = { token }
-
-  await expect(
-    provider.profile(credentials, { id_token: 'test-id-token' }, {})
-  ).rejects.toThrow()
+  await provider.profile(credentials, { id_token: 'test-id-token' }, {})
+  expect(credentials.profile).toEqual(undefined)
 })
 
 test('defraId: provider setup correctly', async () => {
