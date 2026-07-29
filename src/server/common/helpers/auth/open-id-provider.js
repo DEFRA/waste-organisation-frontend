@@ -104,9 +104,6 @@ export const openIdProvider = async (name, authConfig) => {
         logger.debug(
           `Error extracting defra id payload ${JSON.stringify(payload)}`
         )
-        throw new Error(
-          `${name} Unable to retrieve organisation data from defra id payload.`
-        )
       }
     }
   }
