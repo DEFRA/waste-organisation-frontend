@@ -22,13 +22,15 @@ export const searchController = {
 
     const featureFlagRows = getFeatureFlagTableRows()
 
-    request.contentSecurityPolicy = {
-      extraAuthOrigins: request.auth.credentials.providerEndpoints
+    if (request?.auth?.credentials?.providerEndpoints) {
+      request.contentSecurityPolicy = {
+        extraAuthOrigins: request.auth.credentials.providerEndpoints
+      }
     }
     return h.view('search/index', {
       pageTitle: 'Search',
       heading: 'You are logged in',
-      credentials: JSON.stringify(request.auth.credentials, null, 2),
+      credentials: JSON.stringify(request?.auth?.credentials, null, 2),
       featureFlagRows
     })
   }

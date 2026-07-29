@@ -30,7 +30,9 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
 
     return response.payload
   } catch (e) {
-    logger.error(`ERROR calling backend api ${e}, ${url}, ${payload}`)
+    logger.error(
+      `ERROR calling backend api ${e}, ${url}, ${JSON.stringify(payload)}`
+    )
     return null
   }
 }

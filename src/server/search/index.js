@@ -6,7 +6,7 @@ import { searchController } from './controller.js'
  * These routes are registered in src/server/router.js.
  */
 export const search = {
-  authedRoutes: [
+  openRoutes: [
     {
       method: 'GET',
       path: paths.search,
