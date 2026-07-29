@@ -18,7 +18,7 @@ export const signInController = (metricName) => ({
     request.logger.info(
       `about to save org with id ${currentOrganisationId} - ${JSON.stringify(relationships)}`
     )
-    if (currentOrganisationId != null) {
+    if (currentOrganisationId) {
       await request.backendApi.saveOrganisation(id, currentOrganisationId, {
         name: currentOrganisationName
       })
