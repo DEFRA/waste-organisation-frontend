@@ -149,32 +149,58 @@ test('defraId: broken credentials are broken', async () => {
 
   await provider.profile(credentials, { id_token: 'test-id-token' }, {})
 
-  expect(credentials.profile).toEqual({
-    id: 'testSub',
-    correlationId: 'testCorrelationId',
-    sessionId: 'testSessionId',
-    contactId: 'testContactId',
-    serviceId: 'testServiceId',
-    firstName: 'Test',
-    lastName: 'User',
-    displayName: 'Test User',
-    email: 'testEmail',
-    uniqueReference: 'testUniqueRef',
-    loa: 'testLoa',
-    aal: 'testAal',
-    enrolmentCount: 1,
-    enrolmentRequestCount: 1,
-    currentRelationshipId,
-    currentOrganisationId: undefined,
-    currentOrganisationName: undefined,
-    relationships: [
-      `garbage${currentRelationshipId}:${organisationId}:my org name with a : in it:0:Employee:0`
-    ],
-    roles: 'testRoles',
-    idToken: 'test-id-token',
-    tokenUrl: 'http://some-token-endpoint/path',
-    logoutUrl: 'http://some-end-session-endpoint/path'
+  expect(credentials.profile).toEqual(undefined)
+})
+
+test('defraId: broken credentials are broken v2', async () => {
+  const provider = await openIdProvider('defraId', {
+    oidcConfigurationUrl: 'https://test.it/path',
+    scopes: ['email']
   })
+
+  const currentRelationshipId = 'rel-id-909'
+  const organisationId = 'undefined'
+
+  config.set('auth.defraId.organisations', [organisationId])
+
+  const token = jwt.token.generate(
+    {
+      sub: 'testSub',
+      correlationId: 'testCorrelationId',
+      sessionId: 'testSessionId',
+      contactId: 'testContactId',
+      serviceId: 'testServiceId',
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'testEmail',
+      uniqueReference: 'testUniqueRef',
+      loa: 'testLoa',
+      aal: 'testAal',
+      enrolmentCount: 1,
+      enrolmentRequestCount: 1,
+      currentRelationshipId,
+      relationships: [
+        `${currentRelationshipId}:${organisationId}:my org name with a : in it:0:Employee:0`
+      ],
+      roles: 'testRoles',
+      aud: 'test',
+      iss: 'test',
+      user: 'Test User'
+    },
+    {
+      key: 'test',
+      algorithm: 'HS256'
+    },
+    {
+      ttlSec: 1
+    }
+  )
+
+  const credentials = { token }
+
+  await provider.profile(credentials, { id_token: 'test-id-token' }, {})
+
+  expect(credentials.profile).toEqual(undefined)
 })
 
 test('defraId: provider setup correctly', async () => {
