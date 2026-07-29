@@ -18,7 +18,7 @@ export function renderOrganisationRequired(request, h) {
 }
 
 export function organisationCheck(request, h) {
-  const currentOrganisationId = request.auth.credentials?.currentOrganisationId
+  const currentOrganisationId = request.auth?.credentials?.currentOrganisationId
 
   if (!currentOrganisationId) {
     return renderOrganisationRequired(request, h).takeover()

@@ -2,9 +2,13 @@ import jwt from '@hapi/jwt'
 import { getOpenIdConfig } from './open-id-client.js'
 import { checkGroups } from './check-groups.js'
 import { config } from '../../../../config/config.js'
+import { createLogger } from '../logging/logger.js'
+
 const authorizationOverride = config.get(
   'auth.defraId.oidcConfigurationAuthorizationOverride'
 )
+
+const logger = createLogger()
 
 const getProviderEndpoints = async (oidcConf, authConfig) => {
   return Array.from(
@@ -64,31 +68,37 @@ export const openIdProvider = async (name, authConfig) => {
           ?.match(/[^:]*:([^:]*):(.*)[^:]*:[^:]*:[^:]*:[^:]*/) || // NOSONAR
         []
 
-      credentials.profile = {
-        id: payload.sub,
-        correlationId: payload.correlationId,
-        sessionId: payload.sessionId,
-        contactId: payload.contactId,
-        serviceId: payload.serviceId,
-        firstName: payload.firstName,
-        lastName: payload.lastName,
-        displayName,
-        email: payload.email,
-        uniqueReference: payload.uniqueReference,
-        loa: payload.loa,
-        aal: payload.aal,
-        enrolmentCount: payload.enrolmentCount,
-        enrolmentRequestCount: payload.enrolmentRequestCount,
-        currentRelationshipId: payload.currentRelationshipId,
-        currentOrganisationId,
-        currentOrganisationName,
-        relationships: payload.relationships,
-        roles: payload.roles,
-        idToken: params.id_token,
-        tokenUrl: oidcConf.token_endpoint,
-        logoutUrl:
-          config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
-          oidcConf.end_session_endpoint
+      if (currentOrganisationId?.match(/-/)) {
+        credentials.profile = {
+          id: payload.sub,
+          correlationId: payload.correlationId,
+          sessionId: payload.sessionId,
+          contactId: payload.contactId,
+          serviceId: payload.serviceId,
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+          displayName,
+          email: payload.email,
+          uniqueReference: payload.uniqueReference,
+          loa: payload.loa,
+          aal: payload.aal,
+          enrolmentCount: payload.enrolmentCount,
+          enrolmentRequestCount: payload.enrolmentRequestCount,
+          currentRelationshipId: payload.currentRelationshipId,
+          currentOrganisationId,
+          currentOrganisationName,
+          relationships: payload.relationships,
+          roles: payload.roles,
+          idToken: params.id_token,
+          tokenUrl: oidcConf.token_endpoint,
+          logoutUrl:
+            config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
+            oidcConf.end_session_endpoint
+        }
+      } else {
+        logger.error(
+          `Error extracting org info from token - rel: ${JSON.stringify(payload?.relationships)} - current rel: ${payload.currentRelationshipId}`
+        )
       }
     }
   }
