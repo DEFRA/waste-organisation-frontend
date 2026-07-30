@@ -9,7 +9,7 @@ export const signInController = (metricName) => ({
     await setUserSession(request, sessionId)
     request.cookieAuth.set({ sessionId })
     metricsCounter(metricName)
-    if (request?.auth?.credentials?.profile) {
+    if (request?.auth?.credentials?.profile.currentOrganisationId) {
       const {
         id,
         currentOrganisationId,
@@ -17,13 +17,11 @@ export const signInController = (metricName) => ({
         relationships
       } = request.auth.credentials.profile
       request.logger.info(
-        `about to save org with id ${currentOrganisationId} - ${JSON.stringify(relationships)}`
+        `about to save org with id ${currentOrganisationId} "${currentOrganisationName}" - ${JSON.stringify(relationships)}`
       )
-      if (currentOrganisationId) {
-        await request.backendApi.saveOrganisation(id, currentOrganisationId, {
-          name: currentOrganisationName
-        })
-      }
+      await request.backendApi.saveOrganisation(id, currentOrganisationId, {
+        name: currentOrganisationName
+      })
     }
     return h.redirect(paths.account)
   }

@@ -104,6 +104,11 @@ export const openIdProvider = async (name, authConfig) => {
         logger.debug(
           `Error extracting defra id payload ${JSON.stringify(payload)}`
         )
+        credentials.profile = {
+          logoutUrl:
+            config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
+            oidcConf.end_session_endpoint
+        }
       }
     }
   }
