@@ -23,7 +23,7 @@ export const signInController = (metricName) => ({
       const [isLocalAuthority] = request.yar.flash('isLocalAuthority')
       await request.backendApi.saveOrganisation(id, currentOrganisationId, {
         name: currentOrganisationName,
-      ...(isLocalAuthority ? { isLocalAuthority } : {})
+        ...(isLocalAuthority ? { isLocalAuthority } : {})
       })
     }
     return h.redirect(paths.account)
