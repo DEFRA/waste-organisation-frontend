@@ -13,8 +13,9 @@ const formatPounds = (amountInPence) =>
     currency: 'GBP'
   }).format(amountInPence / 100)
 
-const getContentForLanguage = (_request, data) => {
-  return data['en']
+const getContentForLanguage = (request, data) => {
+  const locale = request.locale ?? 'en'
+  return data[locale]
 }
 
 /* v8 ignore next */
@@ -38,6 +39,20 @@ export const content = {
           message: 'Select Yes if you are registering as a local authority'
         },
         continueAction: 'Continue'
+      },
+      zz: {
+        title: 'ZZZZ zzzz zzzz zzzz?',
+        heading: heading('ZZZZ zzzz zzzz zzzz?', null, null),
+        questions: {
+          yes: 'ZZ',
+          no: 'zz'
+        },
+        error: {
+          pageTitle: 'Error: ZZZZ zzzz zzzz zzzz?',
+          title: 'ZZZZ zzzz zzzz zzzz',
+          message: 'ZZZZ zzzz zzzz zzzz'
+        },
+        continueAction: 'zzzzz'
       }
     }),
   cannotUseService: (request) =>
