@@ -29,6 +29,80 @@ const getProviderEndpoints = async (oidcConf, authConfig) => {
   )
 }
 
+const extractOrgInfo = (payload) =>
+  payload?.relationships
+    ?.filter((r) => r.startsWith(payload.currentRelationshipId + ':'))[0]
+    ?.match(/[^:]*:([^:]*):(.*)[^:]*:[^:]*:[^:]*:[^:]*/) || // NOSONAR
+  []
+
+const populateSessionProfile =
+  (oidcConf, name) => async (credentials, params, _get) => {
+    if (!credentials?.token) {
+      throw new Error(
+        `${name} Auth Access Token not present. Unable to retrieve profile.`
+      )
+    }
+    const payload = jwt.token.decode(credentials.token).decoded.payload
+    logger.debug(`open id provider payload >> ${JSON.stringify(payload)}`)
+
+    if (credentials.provider === 'entraId') {
+      const p = jwt.token.decode(params.id_token).decoded.payload
+      logger.debug(`open id entra provider payload >> ${JSON.stringify(p)}`)
+      const { groups = [] } = p
+      checkGroups(groups)
+    }
+
+    const displayName = [payload.firstName, payload.lastName]
+      .filter((part) => part)
+      .join(' ')
+
+    // ignoring sonar regex warning because token is securely communicated from defra id
+    // eslint-disable-next-line no-unused-vars
+    const [_, currentOrganisationId, currentOrganisationName] =
+      extractOrgInfo(payload)
+
+    if (currentOrganisationId?.match(/-/)) {
+      credentials.profile = {
+        id: payload.sub,
+        correlationId: payload.correlationId,
+        sessionId: payload.sessionId,
+        contactId: payload.contactId,
+        serviceId: payload.serviceId,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        displayName,
+        email: payload.email,
+        uniqueReference: payload.uniqueReference,
+        loa: payload.loa,
+        aal: payload.aal,
+        enrolmentCount: payload.enrolmentCount,
+        enrolmentRequestCount: payload.enrolmentRequestCount,
+        currentRelationshipId: payload.currentRelationshipId,
+        currentOrganisationId,
+        currentOrganisationName,
+        relationships: payload.relationships,
+        roles: payload.roles,
+        idToken: params.id_token,
+        tokenUrl: oidcConf.token_endpoint,
+        logoutUrl:
+          config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
+          oidcConf.end_session_endpoint
+      }
+    } else {
+      logger.error(
+        `Error extracting org info from token - rel: ${JSON.stringify(payload?.relationships)} - current rel: ${payload.currentRelationshipId}`
+      )
+      logger.debug(
+        `Error extracting defra id payload ${JSON.stringify(payload)}`
+      )
+      credentials.profile = {
+        logoutUrl:
+          config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
+          oidcConf.end_session_endpoint
+      }
+    }
+  }
+
 export const openIdProvider = async (name, authConfig) => {
   const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
   const providerEndpoints = await getProviderEndpoints(oidcConf, authConfig)
@@ -42,74 +116,6 @@ export const openIdProvider = async (name, authConfig) => {
     token: oidcConf.token_endpoint,
     pkce: 'S256',
     scope: authConfig.scopes,
-    profile: async (credentials, params, _get) => {
-      if (!credentials?.token) {
-        throw new Error(
-          `${name} Auth Access Token not present. Unable to retrieve profile.`
-        )
-      }
-      const payload = jwt.token.decode(credentials.token).decoded.payload
-      logger.debug(`open id provider payload >> ${JSON.stringify(payload)}`)
-
-      if (credentials.provider === 'entraId') {
-        const p = jwt.token.decode(params.id_token).decoded.payload
-        logger.debug(`open id entra provider payload >> ${JSON.stringify(p)}`)
-        const { groups = [] } = p
-        checkGroups(groups)
-      }
-
-      const displayName = [payload.firstName, payload.lastName]
-        .filter((part) => part)
-        .join(' ')
-
-      // ignoring sonar regex warning because token is securely communicated from defra id
-      // eslint-disable-next-line no-unused-vars
-      const [_, currentOrganisationId, currentOrganisationName] =
-        payload?.relationships
-          ?.filter((r) => r.startsWith(payload.currentRelationshipId + ':'))[0]
-          ?.match(/[^:]*:([^:]*):(.*)[^:]*:[^:]*:[^:]*:[^:]*/) || // NOSONAR
-        []
-
-      if (currentOrganisationId?.match(/-/)) {
-        credentials.profile = {
-          id: payload.sub,
-          correlationId: payload.correlationId,
-          sessionId: payload.sessionId,
-          contactId: payload.contactId,
-          serviceId: payload.serviceId,
-          firstName: payload.firstName,
-          lastName: payload.lastName,
-          displayName,
-          email: payload.email,
-          uniqueReference: payload.uniqueReference,
-          loa: payload.loa,
-          aal: payload.aal,
-          enrolmentCount: payload.enrolmentCount,
-          enrolmentRequestCount: payload.enrolmentRequestCount,
-          currentRelationshipId: payload.currentRelationshipId,
-          currentOrganisationId,
-          currentOrganisationName,
-          relationships: payload.relationships,
-          roles: payload.roles,
-          idToken: params.id_token,
-          tokenUrl: oidcConf.token_endpoint,
-          logoutUrl:
-            config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
-            oidcConf.end_session_endpoint
-        }
-      } else {
-        logger.error(
-          `Error extracting org info from token - rel: ${JSON.stringify(payload?.relationships)} - current rel: ${payload.currentRelationshipId}`
-        )
-        logger.debug(
-          `Error extracting defra id payload ${JSON.stringify(payload)}`
-        )
-        credentials.profile = {
-          logoutUrl:
-            config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
-            oidcConf.end_session_endpoint
-        }
-      }
-    }
+    profile: populateSessionProfile(oidcConf, name)
   }
 }
