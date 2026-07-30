@@ -30,7 +30,9 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
 
     return response.payload
   } catch (e) {
-    logger.error(`ERROR calling backend api ${e}, ${url}, ${payload}`)
+    logger.error(
+      `ERROR calling backend api ${e}, ${url}, ${JSON.stringify(payload)}`
+    )
     return null
   }
 }
@@ -110,7 +112,6 @@ const paymentCall = (backendUrl, presharedKey) => ({
     return payment
   },
   savePayment: async (organisationId, payment) => {
-    console.log(' -- >>>', organisationId, payment)
     const paymentResponse = await apiCall(
       (url, r) => wreck.put(url, r),
       presharedKey,

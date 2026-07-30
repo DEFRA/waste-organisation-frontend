@@ -2,9 +2,13 @@ import jwt from '@hapi/jwt'
 import { getOpenIdConfig } from './open-id-client.js'
 import { checkGroups } from './check-groups.js'
 import { config } from '../../../../config/config.js'
+import { createLogger } from '../logging/logger.js'
+
 const authorizationOverride = config.get(
   'auth.defraId.oidcConfigurationAuthorizationOverride'
 )
+
+const logger = createLogger()
 
 const getProviderEndpoints = async (oidcConf, authConfig) => {
   return Array.from(
@@ -25,45 +29,39 @@ const getProviderEndpoints = async (oidcConf, authConfig) => {
   )
 }
 
-export const openIdProvider = async (name, authConfig) => {
-  const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
-  const providerEndpoints = await getProviderEndpoints(oidcConf, authConfig)
+const extractOrgInfo = (payload) =>
+  payload?.relationships
+    ?.filter((r) => r.startsWith(payload.currentRelationshipId + ':'))[0]
+    ?.match(/[^:]*:([^:]*):(.*)[^:]*:[^:]*:[^:]*:[^:]*/) || // NOSONAR
+  []
 
-  return {
-    name,
-    providerEndpoints,
-    protocol: 'oauth2',
-    useParamsAuth: true,
-    auth: authorizationOverride || oidcConf.authorization_endpoint,
-    token: oidcConf.token_endpoint,
-    pkce: 'S256',
-    scope: authConfig.scopes,
-    profile: async (credentials, params, _get) => {
-      if (!credentials?.token) {
-        throw new Error(
-          `${name} Auth Access Token not present. Unable to retrieve profile.`
-        )
-      }
-      const payload = jwt.token.decode(credentials.token).decoded.payload
+const populateSessionProfile =
+  (oidcConf, name) => async (credentials, params, _get) => {
+    if (!credentials?.token) {
+      throw new Error(
+        `${name} Auth Access Token not present. Unable to retrieve profile.`
+      )
+    }
+    const payload = jwt.token.decode(credentials.token).decoded.payload
+    logger.debug(`open id provider payload >> ${JSON.stringify(payload)}`)
 
-      if (credentials.provider === 'entraId') {
-        const { groups = [] } = jwt.token.decode(params.id_token).decoded
-          .payload
-        checkGroups(groups)
-      }
+    if (credentials.provider === 'entraId') {
+      const p = jwt.token.decode(params.id_token).decoded.payload
+      logger.debug(`open id entra provider payload >> ${JSON.stringify(p)}`)
+      const { groups = [] } = p
+      checkGroups(groups)
+    }
 
-      const displayName = [payload.firstName, payload.lastName]
-        .filter((part) => part)
-        .join(' ')
+    const displayName = [payload.firstName, payload.lastName]
+      .filter((part) => part)
+      .join(' ')
 
-      // ignoring sonar regex warning because token is securely communicated from defra id
-      // eslint-disable-next-line no-unused-vars
-      const [_, currentOrganisationId, currentOrganisationName] =
-        payload?.relationships
-          ?.filter((r) => r.startsWith(payload.currentRelationshipId + ':'))[0]
-          ?.match(/[^:]*:([^:]*):(.*)[^:]*:[^:]*:[^:]*:[^:]*/) || // NOSONAR
-        []
+    // ignoring sonar regex warning because token is securely communicated from defra id
+    // eslint-disable-next-line no-unused-vars
+    const [_, currentOrganisationId, currentOrganisationName] =
+      extractOrgInfo(payload)
 
+    if (currentOrganisationId?.match(/-/)) {
       credentials.profile = {
         id: payload.sub,
         correlationId: payload.correlationId,
@@ -90,6 +88,34 @@ export const openIdProvider = async (name, authConfig) => {
           config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
           oidcConf.end_session_endpoint
       }
+    } else {
+      logger.error(
+        `Error extracting org info from token - rel: ${JSON.stringify(payload?.relationships)} - current rel: ${payload.currentRelationshipId}`
+      )
+      logger.debug(
+        `Error extracting defra id payload ${JSON.stringify(payload)}`
+      )
+      credentials.profile = {
+        logoutUrl:
+          config.get('auth.defraId.oidcConfigurationEndSessionOverride') ||
+          oidcConf.end_session_endpoint
+      }
     }
+  }
+
+export const openIdProvider = async (name, authConfig) => {
+  const oidcConf = await getOpenIdConfig(authConfig.oidcConfigurationUrl)
+  const providerEndpoints = await getProviderEndpoints(oidcConf, authConfig)
+
+  return {
+    name,
+    providerEndpoints,
+    protocol: 'oauth2',
+    useParamsAuth: true,
+    auth: authorizationOverride || oidcConf.authorization_endpoint,
+    token: oidcConf.token_endpoint,
+    pkce: 'S256',
+    scope: authConfig.scopes,
+    profile: populateSessionProfile(oidcConf, name)
   }
 }
