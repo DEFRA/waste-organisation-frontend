@@ -1,4 +1,5 @@
 import { content } from '../../../config/content.js'
+import { paths } from '../../../config/paths.js'
 
 export const localAuthorityGuidenceController = {
   async handler(request, h) {
@@ -9,7 +10,8 @@ export const localAuthorityGuidenceController = {
       heading: pageContent.heading,
       steps: pageContent.steps,
       finalNote: pageContent.finalNote,
-      link: pageContent.link
+      link: pageContent.link,
+      backLink: paths.ukPermit
     })
   }
 }
