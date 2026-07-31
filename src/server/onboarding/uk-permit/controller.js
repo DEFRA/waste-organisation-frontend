@@ -75,12 +75,13 @@ export const ukPermitController = {
     },
     handler(request, h) {
       const isPermit = request.payload.isPermit
+      request.yar.flash('isLocalAuthority', isPermit === 'yes')
 
       if (isPermit === 'no') {
         return h.redirect(paths.signinDefraIdCallback)
       }
 
-      return h.redirect(paths.cannotUseService)
+      return h.redirect(paths.localAuthorityGuidence)
     }
   }
 }

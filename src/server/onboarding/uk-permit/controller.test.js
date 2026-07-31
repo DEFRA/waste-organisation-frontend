@@ -96,6 +96,12 @@ describe('ukPermit', () => {
 
   describe('POST', () => {
     test('should redirect to login if yes is selected', async () => {
+      let lastRequest
+      server.ext('onPreResponse', (request, h) => {
+        lastRequest = request
+        return h.continue
+      })
+
       const { headers } = await server.inject({
         method: 'POST',
         url: paths.ukPermit,
@@ -105,9 +111,16 @@ describe('ukPermit', () => {
       })
 
       expect(headers.location).toBe(paths.signinDefraIdCallback)
+      const [isLocalAuthority] = lastRequest.yar.flash('isLocalAuthority')
+      expect(isLocalAuthority).toBeFalsy()
     })
 
     test('should redirect to cannotUseService if no is selected', async () => {
+      let lastRequest
+      server.ext('onPreResponse', (request, h) => {
+        lastRequest = request
+        return h.continue
+      })
       const { headers } = await server.inject({
         method: 'POST',
         url: paths.ukPermit,
@@ -116,7 +129,9 @@ describe('ukPermit', () => {
         }
       })
 
-      expect(headers.location).toBe(paths.cannotUseService)
+      expect(headers.location).toBe(paths.localAuthorityGuidence)
+      const [isLocalAuthority] = lastRequest.yar.flash('isLocalAuthority')
+      expect(isLocalAuthority).toBeTruthy()
     })
 
     test.each([{}, { payload: {} }, { payload: { isPermit: 'foo' } }])(

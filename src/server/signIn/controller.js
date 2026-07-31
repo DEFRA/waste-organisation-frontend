@@ -9,6 +9,7 @@ export const signInController = (metricName) => ({
     await setUserSession(request, sessionId)
     request.cookieAuth.set({ sessionId })
     metricsCounter(metricName)
+
     if (request?.auth?.credentials?.profile.currentOrganisationId) {
       const {
         id,
@@ -19,8 +20,10 @@ export const signInController = (metricName) => ({
       request.logger.info(
         `about to save org with id ${currentOrganisationId} "${currentOrganisationName}" - ${JSON.stringify(relationships)}`
       )
+      const [isLocalAuthority] = request.yar.flash('isLocalAuthority')
       await request.backendApi.saveOrganisation(id, currentOrganisationId, {
-        name: currentOrganisationName
+        name: currentOrganisationName,
+        ...(isLocalAuthority ? { isLocalAuthority } : {})
       })
     }
     return h.redirect(paths.account)
