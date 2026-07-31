@@ -1,0 +1,31 @@
+{% from "govuk/components/exit-this-page/macro.njk" import govukExitThisPage %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% extends 'layouts/page.njk' %}
+
+{% block content %}
+  <div class="govuk-grid-row" data-testid="app-heading">
+    <div class="govuk-grid-column-two-thirds">
+      {{ appHeading(heading) }}
+
+      <ol class="govuk-list govuk-list--number">
+        {% for step in steps %}
+          <li>{{ step }}</li>
+        {% endfor %}
+      </ol>
+
+      <p class="govuk-body final-note">
+        {{finalNote}}
+      </p>
+
+      {{
+        govukButton({
+          text: link.text,
+          href: link.href,
+          attributes: {
+            "data-testid": "local-authority-signin"
+          }
+        })
+      }}
+    </div>
+  </div>
+{% endblock %}

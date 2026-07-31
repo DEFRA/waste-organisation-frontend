@@ -20,35 +20,122 @@ describe('signIn', () => {
     await server.stop()
   })
 
-  test.each([
-    {
+  test('user redirected to Auth Provider when not logged in', async () => {
+    const { headers, statusCode } = await server.inject({
+      method: 'get',
+      url: paths.signinDefraIdCallback
+    })
+
+    const configUrl = config.get('auth.defraId.oidcConfigurationUrl')
+
+    const actualURL = new URL(headers.location)
+    const expectedURL = new URL(domain)
+
+    expect(wreckGetMock).toBeCalledWith(configUrl, {
+      json: 'strict'
+    })
+    expect(statusCode).toBe(302)
+    expect(actualURL.origin).toBe(expectedURL.origin)
+  })
+
+  test('user redirected to account page when logged in', async () => {
+    const credentials = await setupAuthedUserSession(server)
+    credentials.profile = [
+      'id',
+      'currentOrganisationId',
+      'currentOrganisationName'
+    ].reduce((acc, k) => {
+      if (k in credentials) {
+        acc[k] = credentials[k]
+      }
+      return acc
+    }, {})
+    delete credentials['id']
+    delete credentials['currentOrganisationId']
+    delete credentials['currentOrganisationName']
+
+    const { headers, statusCode } = await server.inject({
+      method: 'get',
       url: paths.signinDefraIdCallback,
-      oidcConfigurationUrl: 'auth.defraId.oidcConfigurationUrl'
-    }
-  ])(
-    'user redirected to Auth Provider when not logged in',
-    async ({ url, oidcConfigurationUrl }) => {
-      const { headers, statusCode } = await server.inject({
-        method: 'get',
-        url
+      auth: {
+        strategy: 'defraId',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(302)
+    expect(headers.location).toBe(paths.account)
+    expect(wreckPutMock).toBeCalledWith(
+      `http://localhost/TODO/user/${credentials.profile.id}/organisation/${credentials.profile.currentOrganisationId}`,
+      {
+        headers: {
+          'x-auth-token': 'abc123'
+        },
+        json: 'strict',
+        payload: {
+          organisation: {
+            name: credentials.profile.currentOrganisationName
+          }
+        }
+      }
+    )
+  })
+
+  test('isLocalAuthority is added to the organisation', async () => {
+    server.injectYarState({
+      type: 'isLocalAuthority',
+      message: true
+    })
+    const credentials = await setupAuthedUserSession(server)
+    credentials.profile = [
+      'id',
+      'currentOrganisationId',
+      'currentOrganisationName'
+    ].reduce((acc, k) => {
+      if (k in credentials) {
+        acc[k] = credentials[k]
+      }
+      return acc
+    }, {})
+    delete credentials['id']
+    delete credentials['currentOrganisationId']
+    delete credentials['currentOrganisationName']
+
+    const { headers, statusCode } = await server.inject({
+      method: 'get',
+      url: paths.signinDefraIdCallback,
+      auth: {
+        strategy: 'defraId',
+        credentials
+      }
+    })
+
+    expect(statusCode).toBe(302)
+    expect(headers.location).toBe(paths.account)
+    expect(wreckPutMock).toBeCalledWith(
+      `http://localhost/TODO/user/${credentials.profile.id}/organisation/${credentials.profile.currentOrganisationId}`,
+      {
+        headers: {
+          'x-auth-token': 'abc123'
+        },
+        json: 'strict',
+        payload: {
+          organisation: {
+            name: credentials.profile.currentOrganisationName,
+            isLocalAuthority: true
+          }
+        }
+      }
+    )
+  })
+
+  test.each([false, undefined, null, ''])(
+    'isLocalAuthority is not added to the organisation if false or undefined',
+    async (isLocalAuthority) => {
+      server.injectYarState({
+        type: 'isLocalAuthority',
+        message: isLocalAuthority
       })
-
-      const configUrl = config.get(oidcConfigurationUrl)
-
-      const actualURL = new URL(headers.location)
-      const expectedURL = new URL(domain)
-
-      expect(wreckGetMock).toBeCalledWith(configUrl, {
-        json: 'strict'
-      })
-      expect(statusCode).toBe(302)
-      expect(actualURL.origin).toBe(expectedURL.origin)
-    }
-  )
-
-  test.each([{ url: paths.signinDefraIdCallback, strategy: 'defraId' }])(
-    'user redirected to account page when logged in',
-    async ({ url, strategy }) => {
       const credentials = await setupAuthedUserSession(server)
       credentials.profile = [
         'id',
@@ -66,9 +153,9 @@ describe('signIn', () => {
 
       const { headers, statusCode } = await server.inject({
         method: 'get',
-        url,
+        url: paths.signinDefraIdCallback,
         auth: {
-          strategy,
+          strategy: 'defraId',
           credentials
         }
       })

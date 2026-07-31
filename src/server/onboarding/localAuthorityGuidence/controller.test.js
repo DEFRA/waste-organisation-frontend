@@ -1,3 +1,4 @@
+import { expect } from 'vitest'
 import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
@@ -16,10 +17,10 @@ describe('#cannotUseServiceController', () => {
   })
 
   test('Should provide expected response', async () => {
-    const pageContent = content.cannotUseService()
+    const pageContent = content.localAuthorityGuidence()
     const { payload } = await server.inject({
       method: 'GET',
-      url: paths.cannotUseService
+      url: paths.localAuthorityGuidence
     })
 
     const { document } = new JSDOM(payload).window
@@ -42,10 +43,26 @@ describe('#cannotUseServiceController', () => {
       expect.stringContaining(pageContent.heading.caption)
     )
 
-    const link = document.querySelector(
-      '[data-testid="app-heading"] .govuk-body .govuk-link'
+    const steps = document.querySelectorAll(
+      '.govuk-list.govuk-list--number > li'
     )
+
+    expect(steps.length).toEqual(3)
+    expect(steps[0].textContent).toEqual(pageContent.steps[0])
+    expect(steps[1].textContent).toEqual(pageContent.steps[1])
+    expect(steps[2].textContent).toEqual(pageContent.steps[2])
+
+    const finalNote = document.querySelector('.final-note').textContent
+
+    expect(finalNote).toEqual(expect.stringContaining(pageContent.finalNote))
+
+    const link = document.querySelector(
+      '[data-testid="local-authority-signin"]'
+    )
+
     expect(link.getAttribute('href')).toBe(pageContent.link.href)
-    expect(link.textContent).toBe(pageContent.link.text)
+    expect(link.textContent).toEqual(
+      expect.stringContaining(pageContent.link.text)
+    )
   })
 })

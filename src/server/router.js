@@ -92,8 +92,8 @@ export const router = {
         signedOut:               signedOut.openRoutes,
         signOut:                 signOut.openRoutes,
         serviceChargeCallback:   serviceCharge.openRoutes,
+        search:                  search.openRoutes,
         // Routes that require auth
-        search:                  search.authedRoutes.map((a) => addAuthWithOrg(a)),
         spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(spreadsheet.openRoutes),
         updateSpreadsheet:       updateSpreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(updateSpreadsheet.openRoutes),
         dashboard:               dashboard.authedRoutes.map((a) => addAuthWithOrg(a)),
