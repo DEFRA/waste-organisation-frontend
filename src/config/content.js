@@ -1,179 +1,26 @@
-import { config } from './config.js'
+import { account } from '../server/account/content.js'
+import { apiManagement } from '../server/apiManagement/content.js'
+import { onboarding } from '../server/onboarding/content.js'
+import { serviceCharge } from '../server/serviceCharge/content.js'
 import { paths } from './paths.js'
 
-const heading = (text, caption, organisationName) => ({
+export const heading = (text, caption, organisationName) => ({
   text,
   caption,
   organisationName
 })
 
-const formatPounds = (amountInPence) =>
-  new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency: 'GBP'
-  }).format(amountInPence / 100)
-
-const getContentForLanguage = (request, data) => {
+export const getContentForLanguage = (request, data) => {
   const locale = request.locale ?? 'en'
   return data[locale]
 }
 
 /* v8 ignore next */
 export const content = {
-  ukPermit: (request) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Are you registering as a local authority?',
-        heading: heading(
-          'Are you registering as a local authority?',
-          null,
-          null
-        ),
-        questions: {
-          yes: 'Yes',
-          no: 'No'
-        },
-        error: {
-          pageTitle: 'Error: Are you registering as a local authority?',
-          title: 'There is a problem',
-          message: 'Select Yes if you are registering as a local authority'
-        },
-        continueAction: 'Continue'
-      },
-      zz: {
-        title: 'ZZZZ zzzz zzzz zzzz?',
-        heading: heading('ZZZZ zzzz zzzz zzzz?', null, null),
-        questions: {
-          yes: 'ZZ',
-          no: 'zz'
-        },
-        error: {
-          pageTitle: 'Error: ZZZZ zzzz zzzz zzzz?',
-          title: 'ZZZZ zzzz zzzz zzzz',
-          message: 'ZZZZ zzzz zzzz zzzz'
-        },
-        continueAction: 'zzzzz'
-      }
-    }),
-  localAuthorityGuidence: (request) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Are you registering as a local authority?',
-        heading: heading(
-          'Are you registering as a local authority?',
-          'If you are registering as a local authority and do not have a company registration number, you will need to:',
-          null
-        ),
-        steps: [
-          'Select "Yes" when asked if you are registering as a business or organisation.',
-          'Confirm you do not have a company registration number.',
-          'Select "Sole trader" when asked about what kind of business or organisation you have.'
-        ],
-        finalNote:
-          'Before you continue, check if your local authority has already been registered.',
-        link: {
-          href: paths.signinDefraIdCallback,
-          text: 'Continue'
-        }
-      }
-    }),
-  nextAction: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Report receipt of waste',
-        heading: heading('Report receipt of waste', null, organisationName),
-        questions: {
-          connectYourSoftware: 'Manage my API code',
-          downloadSpreadsheet: 'Download spreadsheet template',
-          uploadSpreadsheet: 'Upload a spreadsheet',
-          updateSpreadsheet: 'Upload a spreadsheet that has Waste tracking IDs'
-        },
-        questionsNotPaid: {
-          downloadSpreadsheet: 'Download spreadsheet template'
-        },
-        error: {
-          pageTitle: 'Error: Report receipt of waste',
-          title: 'There is a problem',
-          message: 'You must select an option'
-        },
-        continueAction: 'Continue'
-      }
-    }),
-  apiList: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Your API code',
-        heading: heading('Your API code', null, organisationName),
-        noEnabledApiCodes: 'You have no API codes',
-        additionalCode: {
-          title: 'Do you need to create an additional API code?',
-          content:
-            'If you work with multiple software providers, you should give each one an API code.',
-          action: {
-            additional: 'Create additional code',
-            new: 'Create new code'
-          }
-        },
-        disabledSuccessMessage: () => ({
-          title: 'We have disabled this code',
-          description: {
-            pre: 'The code',
-            post: 'cannot be used to send any new waste movements.'
-          }
-        }),
-        returnAction: `Return to ${organisationName}`,
-        changeName: {
-          action: 'Change',
-          hiddenText: 'name for'
-        }
-      }
-    }),
-  apiChangeName: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Change API code name',
-        heading: heading('Change API code name', null, organisationName),
-        label: 'API code name',
-        hint: 'You can change the name of the API by overwriting the existing one.',
-        error: {
-          pageTitle: 'Error: Change API code name',
-          title: 'There is a problem',
-          message: 'Enter a name for your API code'
-        },
-        updateError: {
-          title: 'There is a problem',
-          message: 'The API code name could not be updated. Try again.'
-        },
-        saveAction: 'Save and continue'
-      }
-    }),
-  apiDisable: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Do you want to disable this API code?',
-        heading: heading(
-          'Do you want to disable this API code?',
-          null,
-          organisationName
-        ),
-        caption: {
-          pre: 'If you agree this code',
-          post: 'will no longer work.'
-        },
-        warning:
-          'You will not be able to use this code to send any new waste movements.',
-        questions: {
-          yes: 'Yes',
-          no: 'No'
-        },
-        error: {
-          pageTitle: 'Error: Do you want to disable this API code?',
-          title: 'There is a problem',
-          message: 'Select Yes if want to disable this API code.'
-        },
-        continueAction: 'Continue'
-      }
-    }),
+  ...account,
+  ...onboarding,
+  ...apiManagement,
+  ...serviceCharge,
   spreadsheetUpload: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
@@ -231,199 +78,7 @@ export const content = {
         returnLink: `Return to ${organisationName}`
       }
     }),
-  account: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Waste receiving account',
-        heading: heading('Waste receiving account', null, organisationName),
-        switchOrganisation: 'Switch organisation',
-        cards: {
-          reportWaste: { text: 'Report receipt of waste' },
-          manageAccount: { text: 'Manage account' },
-          serviceCharge: {
-            text: 'Service charge',
-            tag: 'Due October 2026',
-            paymentDueTag: 'Payment due',
-            paidTag: 'Paid',
-            nextPaymentDue: 'Next payment due',
-            payNow: 'Pay Now'
-          }
-        }
-      }
-    }),
-  newAccount: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Waste receiving account',
-        heading: heading('Waste receiving account', null, organisationName),
-        switchOrganisation: {
-          heading: 'Switch or add an organisation',
-          description:
-            'You can have more than one waste receiving organisation on your account.',
-          switchLinkText: 'Switch organisation',
-          switchLinkSuffix: 'to change account or',
-          addLinkText: 'add an organisation',
-          addLinkSuffix: 'if you want to register a new one.'
-        },
-        importantNotice: {
-          title: 'Important',
-          heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
-          bodyPrefix: 'You can still',
-          manageApiCode: 'manage your API code',
-          bodySuffix:
-            ', but you will not be able to use it to send data to the regulators.'
-        },
-        cards: {
-          reportWaste: {
-            text: 'Report receipt of waste',
-            description:
-              'Upload a spreadsheet or connect your software to report your waste movements.',
-            links: {
-              connectYourSoftware: 'Manage my API code',
-              downloadSpreadsheet: 'Download spreadsheet template',
-              uploadSpreadsheet: 'Upload a spreadsheet',
-              updateSpreadsheet:
-                'Upload a spreadsheet that has Waste tracking IDs'
-            }
-          },
-          serviceCharge: {
-            text: 'Service charge',
-            description: 'Pay your annual service charge to use this service.',
-            tag: 'Due October 2026',
-            paymentDueTag: 'Payment due',
-            payServiceCharge: 'Pay service charge',
-            paidTag: 'Paid',
-            nextPaymentDue: 'Next payment due October 2027'
-          }
-        }
-      }
-    }),
-  sharedServiceChargeInfo: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        notPaidNotice: {
-          title: 'Important',
-          heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
-          body: 'If you need help or have a question about service charge, call 03000 203 781'
-        },
-        alreadyPaidNotice: {
-          title: 'Important',
-          heading: 'A payment has already been submitted',
-          body: 'A service charge payment for this account has already been processed. Do not try again.'
-        },
-        duplicatePaymentNotice: {
-          title: 'Important',
-          heading: 'A payment is already in progress',
-          body: 'A service charge payment for this account is already in progress. Do not try again.'
-        }
-      }
-    }),
-  serviceCharge: (request, priceInPence, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Pay the annual report receipt of waste service charge',
-        heading: heading(
-          'Pay the annual report receipt of waste service charge',
-          null,
-          organisationName
-        ),
-        cost: `The cost is ${formatPounds(priceInPence)} per organisation.`,
-        requirementsIntro: 'To pay for the service charge, you will need:',
-        requirements: [
-          'a credit or debit card',
-          'an email address to receive the payment confirmation'
-        ],
-        warning:
-          'You will not be able to use this service to report your waste movements until you have paid the service charge.',
-        payServiceCharge: 'Pay service charge',
-        cancel: 'Cancel'
-      }
-    }),
-  reviewPayment: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Annual Report receipt of waste charge',
-        heading: heading(
-          'Annual Report receipt of waste charge',
-          null,
-          organisationName
-        ),
-        intro:
-          'Once you have paid the service charge, your organisation will have full access to report waste movements until',
-        accessUntilDateIso: 'en',
-        sectionHeading: 'Review the payment amount',
-        organisation: {
-          heading: 'Organisation',
-          nameLabel: 'Name',
-          name:
-            organisationName ||
-            '[Waste receiving organisation or business name]',
-          totalCostLabel: 'Total cost'
-        },
-        continue: 'Continue',
-        cancel: 'Cancel'
-      }
-    }),
-  cannotMakePayment: (request, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'Sorry, you cannot make a payment for this organisation',
-        heading: heading(
-          'Sorry, you cannot make a payment for this organisation',
-          'Based on your answer, you cannot continue as local authorities are currently unable to use this service.',
-          null
-        ),
-        link: {
-          href: config.get('links.startPage'),
-          text: 'Find out more about Digital waste tracking'
-        }
-      }
-    }),
-  paymentDetails: (request, priceInPence, organisationName) =>
-    getContentForLanguage(request, {
-      en: {
-        success: {
-          pageTitle: 'Payment confirmation',
-          heading: heading('Payment confirmation', null, organisationName),
-          referenceLabel: 'Your payment reference',
-          summaryHeading: 'Payment summary',
-          paymentForLabel: 'Payment for',
-          paymentForValue: 'Report receipt of waste annual service charge',
-          organisationLabel: 'Organisation',
-          organisationValue:
-            organisationName ||
-            '[Waste receiving organisation or business name]',
-          totalAmountLabel: 'Total amount',
-          totalAmountValue: formatPounds(priceInPence),
-          whatHappensNextHeading: 'What happens next',
-          whatHappensNext: [
-            'You will receive an email confirming your payment.',
-            'You can now use the service to report your waste movements.'
-          ],
-          returnToAccountLabel: `Return to ${organisationName} waste receiving account`
-        },
-        pending: {
-          pageTitle: 'Payment pending',
-          heading: heading('Payment pending', null, organisationName),
-          summaryContent: 'Your payment is currently being processed.',
-          whatHappensNextHeading: 'What happens next',
-          whatHappensNext: [
-            'Once your payment has been completed, you will receive an email confirmation. You will then be able to use the service to report your waste movements.'
-          ],
-          returnToAccountLabel: `Return to ${organisationName} waste receiving account`
-        },
-        unsuccessful: {
-          pageTitle: 'Your payment has been unsuccessful',
-          heading: heading(
-            'Your payment has been unsuccessful',
-            null,
-            organisationName
-          ),
-          summaryContent: 'Contact your bank for more details or try again.',
-          returnToAccountLabel: `Try payment again`
-        }
-      }
-    }),
+
   cookies: (request) =>
     getContentForLanguage(request, {
       en: {
@@ -474,23 +129,7 @@ export const content = {
         navigationLink: 'Manage Defra account'
       }
     }),
-  signOut: (request) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'You are being signed out',
-        heading: 'You are being signed out',
-        fallbackLink: 'Continue signing out',
-        navigationLink: 'Sign out'
-      }
-    }),
-  signedOut: (request) =>
-    getContentForLanguage(request, {
-      en: {
-        title: 'You have been signed out',
-        heading: 'You have been signed out',
-        signInButton: 'Sign in'
-      }
-    }),
+
   organisationRequired: (request) =>
     getContentForLanguage(request, {
       en: {

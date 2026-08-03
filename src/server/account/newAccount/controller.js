@@ -1,8 +1,8 @@
 import boom from '@hapi/boom'
 
-import { config } from '../../config/config.js'
-import { content } from '../../config/content.js'
-import { paths, pathTo } from '../../config/paths.js'
+import { config } from '../../../config/config.js'
+import { content } from '../../../config/content.js'
+import { paths, pathTo } from '../../../config/paths.js'
 
 const paymentStatusFlash = 'paymentStatus'
 const paymentStatusSuccess = 'success'
@@ -62,7 +62,7 @@ export const newAccountController = {
         testId: `report-waste-${key}-link`
       }))
 
-    return h.view('newAccount/view', {
+    return h.view('account/newAccount/view', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       switchOrganisation: pageContent.switchOrganisation,

@@ -1,14 +1,14 @@
 import { JSDOM } from 'jsdom'
 
-import { config } from '../../config/config.js'
-import { content } from '../../config/content.js'
-import { paths } from '../../config/paths.js'
-import { statusCodes } from '../common/constants/status-codes.js'
+import { config } from '../../../config/config.js'
+import { content } from '../../../config/content.js'
+import { paths } from '../../../config/paths.js'
+import { statusCodes } from '../../common/constants/status-codes.js'
 import {
   initialiseServer,
   wreckGetMock
-} from '../../test-utils/initialise-server.js'
-import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
+} from '../../../test-utils/initialise-server.js'
+import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 import { faker } from '@faker-js/faker'
 
 const organisationName = 'Test Organisation'

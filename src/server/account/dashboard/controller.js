@@ -1,7 +1,7 @@
-import { config } from '../../config/config.js'
-import { content } from '../../config/content.js'
-import { paths } from '../../config/paths.js'
-import { getPaymentStatus } from '../common/helpers/govpay/paymentStatus.js'
+import { config } from '../../../config/config.js'
+import { content } from '../../../config/content.js'
+import { paths } from '../../../config/paths.js'
+import { getPaymentStatus } from '../../common/helpers/govpay/paymentStatus.js'
 
 export const accountController = {
   async handler(request, h) {
@@ -33,7 +33,7 @@ export const accountController = {
 
     const pageContent = content.account(request, currentOrganisationName)
 
-    return h.view('account/view', {
+    return h.view('account/dashboard/view', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       switchOrganisation: pageContent.switchOrganisation,

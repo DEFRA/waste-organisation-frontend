@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { paths } from '../../config/paths.js'
+import { paths } from '../../../config/paths.js'
 import {
   initialiseServer,
   wreckGetMock,
   wreckPutMock
-} from '../../test-utils/initialise-server.js'
-import { config } from '../../config/config.js'
-import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
+} from '../../../test-utils/initialise-server.js'
+import { config } from '../../../config/config.js'
+import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 
 describe('signIn', () => {
   const domain = 'http://localhost:2'

@@ -1,12 +1,12 @@
 import { JSDOM } from 'jsdom'
 
-import { config } from '../../config/config.js'
-import { paths } from '../../config/paths.js'
+import { config } from '../../../config/config.js'
+import { paths } from '../../../config/paths.js'
 import {
   initialiseServer,
   wreckGetMock
-} from '../../test-utils/initialise-server.js'
-import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
+} from '../../../test-utils/initialise-server.js'
+import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 
 const organisationName = 'Test Organisation'
 

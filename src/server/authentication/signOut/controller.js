@@ -1,8 +1,8 @@
-import { config } from '../../config/config.js'
-import { content } from '../../config/content.js'
-import { paths } from '../../config/paths.js'
-import { removeUserSession } from '../common/helpers/auth/user-session.js'
-import { metricsCounter } from '../common/helpers/metrics.js'
+import { config } from '../../../config/config.js'
+import { content } from '../../../config/content.js'
+import { paths } from '../../../config/paths.js'
+import { removeUserSession } from '../../common/helpers/auth/user-session.js'
+import { metricsCounter } from '../../common/helpers/metrics.js'
 
 export const signOutController = {
   async handler(request, h) {
@@ -28,7 +28,7 @@ export const signOutController = {
 
     const pageContent = content.signOut(request)
 
-    return h.view('signOut/index', {
+    return h.view('authentication/signOut/index', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       fallbackLink: pageContent.fallbackLink,

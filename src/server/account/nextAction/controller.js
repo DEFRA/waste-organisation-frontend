@@ -1,8 +1,8 @@
-import { config } from '../../config/config.js'
-import { content } from '../../config/content.js'
-import { paths, pathTo } from '../../config/paths.js'
+import { config } from '../../../config/config.js'
+import { paths, pathTo } from '../../../config/paths.js'
 import joi from 'joi'
-import { getPaymentStatus } from '../common/helpers/govpay/paymentStatus.js'
+import { getPaymentStatus } from '../../common/helpers/govpay/paymentStatus.js'
+import { content } from '../../../config/content.js'
 const flashMessage = 'isNextActionError'
 
 export const nextActionController = {
@@ -64,7 +64,7 @@ export const nextActionController = {
         }
       })
 
-      return h.view('nextAction/view', {
+      return h.view('account/nextAction/view', {
         pageTitle: error ? pageContent.error.pageTitle : pageContent.title,
         heading: pageContent.heading,
         description: pageContent.description,

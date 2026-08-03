@@ -1,12 +1,12 @@
-import { initialiseServer } from '../../test-utils/initialise-server.js'
-import { content } from '../../config/content.js'
+import { initialiseServer } from '../../../test-utils/initialise-server.js'
+import { content } from '../../../config/content.js'
 
-import { paths, pathTo } from '../../config/paths.js'
+import { paths, pathTo } from '../../../config/paths.js'
 
 import { JSDOM } from 'jsdom'
-import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
-import { config } from '../../config/config.js'
-import { wreckGetMock } from '../../test-utils/mock-oidc-config.js'
+import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
+import { config } from '../../../config/config.js'
+import { wreckGetMock } from '../../../test-utils/mock-oidc-config.js'
 import { faker } from '@faker-js/faker'
 
 const organisationName = 'ORG NAME'
