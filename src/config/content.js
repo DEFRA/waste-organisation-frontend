@@ -40,7 +40,7 @@ export const content = {
         continueAction: 'Continue'
       }
     }),
-  localAuthorityGuidence: (request) =>
+  localAuthorityGuidance: (request) =>
     getContentForLanguage(request, {
       en: {
         title: 'Are you registering as a local authority?',

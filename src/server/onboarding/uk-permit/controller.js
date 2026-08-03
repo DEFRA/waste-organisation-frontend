@@ -81,7 +81,7 @@ export const ukPermitController = {
         return h.redirect(paths.signinDefraIdCallback)
       }
 
-      return h.redirect(paths.localAuthorityGuidence)
+      return h.redirect(paths.localAuthorityGuidance)
     }
   }
 }

@@ -1,11 +1,11 @@
 import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 
-export const localAuthorityGuidenceController = {
+export const localAuthorityGuidanceController = {
   async handler(request, h) {
-    const pageContent = content.localAuthorityGuidence(request)
+    const pageContent = content.localAuthorityGuidance(request)
 
-    return h.view('onboarding/localAuthorityGuidence/view', {
+    return h.view('onboarding/localAuthorityGuidance/view', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       steps: pageContent.steps,

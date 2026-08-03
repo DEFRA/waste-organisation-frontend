@@ -17,10 +17,10 @@ describe('#cannotUseServiceController', () => {
   })
 
   test('Should provide expected response', async () => {
-    const pageContent = content.localAuthorityGuidence()
+    const pageContent = content.localAuthorityGuidance()
     const { payload } = await server.inject({
       method: 'GET',
-      url: paths.localAuthorityGuidence
+      url: paths.localAuthorityGuidance
     })
 
     const { document } = new JSDOM(payload).window
