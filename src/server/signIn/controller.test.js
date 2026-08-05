@@ -75,7 +75,8 @@ describe('signIn', () => {
         payload: {
           organisation: {
             name: credentials.profile.currentOrganisationName
-          }
+          },
+          initialValues: {}
         }
       }
     )
@@ -121,7 +122,9 @@ describe('signIn', () => {
         json: 'strict',
         payload: {
           organisation: {
-            name: credentials.profile.currentOrganisationName,
+            name: credentials.profile.currentOrganisationName
+          },
+          initialValues: {
             isLocalAuthority: true
           }
         }
@@ -172,7 +175,8 @@ describe('signIn', () => {
           payload: {
             organisation: {
               name: credentials.profile.currentOrganisationName
-            }
+            },
+            initialValues: {}
           }
         }
       )

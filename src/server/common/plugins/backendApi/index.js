@@ -46,13 +46,14 @@ const organisationCall = (backendUrl, presharedKey) => ({
     )
     return response?.organisation
   },
-  saveOrganisation: async (userId, organisationId, orgData) => {
+  saveOrganisation: async (userId, organisationId, orgData, initialValues) => {
     const response = await apiCall(
       (url, r) => wreck.put(url, r),
       presharedKey,
       `${backendUrl}/user/${userId}/organisation/${organisationId}`,
       {
-        organisation: orgData
+        organisation: orgData,
+        initialValues
       }
     )
     return response?.organisation
