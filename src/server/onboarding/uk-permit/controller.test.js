@@ -129,7 +129,7 @@ describe('ukPermit', () => {
         }
       })
 
-      expect(headers.location).toBe(paths.localAuthorityGuidence)
+      expect(headers.location).toBe(paths.localAuthorityGuidance)
       const [isLocalAuthority] = lastRequest.yar.flash('isLocalAuthority')
       expect(isLocalAuthority).toBeTruthy()
     })
