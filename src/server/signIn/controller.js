@@ -21,10 +21,16 @@ export const signInController = (metricName) => ({
         `about to save org with id ${currentOrganisationId} "${currentOrganisationName}" - ${JSON.stringify(relationships)}`
       )
       const [isLocalAuthority] = request.yar.flash('isLocalAuthority')
-      await request.backendApi.saveOrganisation(id, currentOrganisationId, {
-        name: currentOrganisationName,
-        ...(isLocalAuthority ? { isLocalAuthority } : {})
-      })
+      await request.backendApi.saveOrganisation(
+        id,
+        currentOrganisationId,
+        {
+          name: currentOrganisationName
+        },
+        {
+          ...(isLocalAuthority ? { isLocalAuthority } : {})
+        }
+      )
     }
     return h.redirect(paths.account)
   }
