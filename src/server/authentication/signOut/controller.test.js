@@ -1,11 +1,11 @@
-import { statusCodes } from '../../common/constants/status-codes.js'
-import { paths } from '../../../config/paths.js'
 import { config } from '../../../config/config.js'
+import { paths } from '../../../config/paths.js'
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
 import {
   setupAuthedUserSession,
   getSessionCookie
 } from '../../../test-utils/session-helper.js'
+import { statusCodes } from '../../common/constants/status-codes.js'
 
 describe('#signOutController', () => {
   let server

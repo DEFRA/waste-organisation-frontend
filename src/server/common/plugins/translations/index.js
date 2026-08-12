@@ -27,7 +27,7 @@ export const translation = {
           request.headers['accept-language']
         )
         console.log('browser language')
-        request.locale = browserLanguage.language === 'cy' ? 'zz' : 'en'
+        request.locale = browserLanguage?.language === 'cy' ? 'zz' : 'en'
         return h.continue
       })
     }

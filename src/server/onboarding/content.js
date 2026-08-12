@@ -37,7 +37,7 @@ export const onboarding = {
         continueAction: 'zzzzz'
       }
     }),
-  localAuthorityGuidence: (request) =>
+  localAuthorityGuidance: (request) =>
     getContentForLanguage(request, {
       en: {
         title: 'Are you registering as a local authority?',

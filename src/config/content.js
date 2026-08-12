@@ -1,5 +1,6 @@
 import { account } from '../server/account/content.js'
 import { apiManagement } from '../server/apiManagement/content.js'
+import { authentication } from '../server/authentication/content.js'
 import { onboarding } from '../server/onboarding/content.js'
 import { serviceCharge } from '../server/serviceCharge/content.js'
 import { paths } from './paths.js'
@@ -11,7 +12,7 @@ export const heading = (text, caption, organisationName) => ({
 })
 
 export const getContentForLanguage = (request, data) => {
-  const locale = request.locale ?? 'en'
+  const locale = request?.locale ?? 'en'
   return data[locale]
 }
 
@@ -21,6 +22,7 @@ export const content = {
   ...onboarding,
   ...apiManagement,
   ...serviceCharge,
+  ...authentication,
   spreadsheetUpload: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {

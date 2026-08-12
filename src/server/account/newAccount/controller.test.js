@@ -1,11 +1,11 @@
 import { JSDOM } from 'jsdom'
 
-import { config } from '../../config/config.js'
-import { content } from '../../config/content.js'
-import { paths, pathTo } from '../../config/paths.js'
-import { statusCodes } from '../common/constants/status-codes.js'
-import { initialiseServer } from '../../test-utils/initialise-server.js'
-import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
+import { config } from '../../../config/config.js'
+import { content } from '../../../config/content.js'
+import { paths, pathTo } from '../../../config/paths.js'
+import { statusCodes } from '../../common/constants/status-codes.js'
+import { initialiseServer } from '../../../test-utils/initialise-server.js'
+import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 
 const organisationName = 'Test Organisation'
 const organisationId = 'org-1'

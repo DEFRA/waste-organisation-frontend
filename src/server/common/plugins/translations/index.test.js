@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, vi } from 'vitest'
 import hapi from '@hapi/hapi'
-import { backendApi } from './index.js'
+import { backendApi } from '../backendApi/index.js'
 import wreck from '@hapi/wreck'
 import { config } from '../../../../config/config.js'
 const backendConfig = config.get('backendApi')
