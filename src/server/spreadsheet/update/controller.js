@@ -1,11 +1,11 @@
-import { config } from '../../config/config.js'
-import { paths } from '../../config/paths.js'
-import { createLogger } from '../common/helpers/logging/logger.js'
-import { content } from '../../config/content.js'
+import { config } from '../../../config/config.js'
+import { paths } from '../../../config/paths.js'
+import { createLogger } from '../../common/helpers/logging/logger.js'
+import { content } from '../../../config/content.js'
 import {
   initiateUpload,
   createCallbackHandler
-} from '../common/helpers/cdp-upload.js'
+} from '../../common/helpers/cdp-upload.js'
 const uploadSessionName = 'upload'
 const logger = createLogger()
 
@@ -13,7 +13,10 @@ export const beginUpload = {
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
 
-    const pageContent = content.spreadsheetUpload(request, organisationName)
+    const pageContent = content.updateSpreadsheetUpload(
+      request,
+      organisationName
+    )
 
     /* v8 ignore start - covered by integration tests but v8 coverage merge across test files misattributes */
     const { uploadUrl, referenceNumber } = await initiateUpload(
@@ -25,15 +28,13 @@ export const beginUpload = {
         displayName: request.auth.credentials.displayName
       },
       {
-        callbackPath: paths.spreadsheetUploadCallback,
-        redirectPath: paths.spreadsheetUploaded,
-        uploadType: 'create'
+        callbackPath: paths.updateSpreadsheetUploadCallback,
+        redirectPath: paths.updateSpreadsheetUploaded,
+        uploadType: 'update'
       }
     )
-
     request.yar.set(uploadSessionName, { referenceNumber })
     await request.yar.commit(h)
-
     logger.info(`uploaded requested - ${referenceNumber} ${uploadUrl}`)
     const { origin } = new URL(
       uploadUrl?.startsWith('h') ? uploadUrl : config.get('fileUpload.url')
@@ -42,9 +43,10 @@ export const beginUpload = {
       extraAuthOrigins: origin
     }
 
-    return h.view('spreadsheet/begin-upload', {
-      pageTitle: 'Upload a receipt of waste movement spreadsheet',
+    return h.view('spreadsheet/update/begin-upload', {
+      pageTitle: pageContent.title,
       heading: pageContent.heading,
+      description: pageContent.description,
       action: uploadUrl,
       backLink: paths.nextAction
     })
@@ -55,9 +57,10 @@ export const fileUploaded = {
   /* v8 ignore stop */
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
-    const pageContent = content.spreadsheetUploaded(request, organisationName)
     const uploadData = request.yar.get(uploadSessionName)
-    return h.view('spreadsheet/file-uploaded', {
+    const pageContent = content.spreadsheetUploaded(request, organisationName)
+
+    return h.view('spreadsheet/update/file-uploaded', {
       pageTitle: pageContent.heading.text,
       content: pageContent.content,
       uploadData,

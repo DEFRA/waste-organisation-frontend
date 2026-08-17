@@ -1,6 +1,6 @@
-import { statusCodes } from '../common/constants/status-codes.js'
-import { paths } from '../../config/paths.js'
-import { initialiseServer } from '../../test-utils/initialise-server.js'
+import { paths } from '../../../config/paths.js'
+import { initialiseServer } from '../../../test-utils/initialise-server.js'
+import { statusCodes } from '../../common/constants/status-codes.js'
 
 describe('#signedOutController', () => {
   let server

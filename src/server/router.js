@@ -12,7 +12,6 @@ import { onboarding } from './onboarding/index.js'
 import { spreadsheet } from './spreadsheet/index.js'
 import { apiManagement } from './apiManagement/index.js'
 import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
-import { updateSpreadsheet } from './updateSpreadsheet/index.js'
 import { serviceCharge } from './serviceCharge/index.js'
 
 import { organisationCheck } from './common/helpers/auth/organisation-check.js'
@@ -87,7 +86,6 @@ export const router = {
         search:                  search.openRoutes,
         // Routes that require auth
         spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(spreadsheet.openRoutes),
-        updateSpreadsheet:       updateSpreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(updateSpreadsheet.openRoutes),
         apiManagement:           apiManagement.authedRoutes.map((a) => addAuthWithOrgPayment(a)),
         account:                 account.authedRoutes.map((a) => addAuthWithOrg(a)),
         serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a)),

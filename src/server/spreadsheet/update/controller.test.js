@@ -3,12 +3,12 @@ import {
   initialiseServer,
   wreckPostMock,
   wreckPutMock
-} from '../../test-utils/initialise-server.js'
-import { paths, pathTo } from '../../config/paths.js'
+} from '../../../test-utils/initialise-server.js'
+import { paths, pathTo } from '../../../config/paths.js'
 import { JSDOM } from 'jsdom'
-import { setupAuthedUserSession } from '../../test-utils/session-helper.js'
-import { content } from '../../config/content.js'
-import { config } from '../../config/config.js'
+import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
+import { content } from '../../../config/content.js'
+import { config } from '../../../config/config.js'
 
 const { preSharedKey } = config.get('fileUpload')
 
