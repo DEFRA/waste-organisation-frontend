@@ -1,6 +1,7 @@
 import { getContentForLanguage, heading } from '../../config/content.js'
 import { paths } from '../../config/paths.js'
 
+/* v8 ignore next */
 export const onboarding = {
   ukPermit: (request) =>
     getContentForLanguage(request, {

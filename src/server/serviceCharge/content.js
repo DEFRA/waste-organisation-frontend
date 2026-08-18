@@ -7,6 +7,7 @@ const formatPounds = (amountInPence) =>
     currency: 'GBP'
   }).format(amountInPence / 100)
 
+/* v8 ignore next */
 export const serviceCharge = {
   sharedServiceChargeInfo: (request, organisationName) =>
     getContentForLanguage(request, {

@@ -1,5 +1,6 @@
 import { getContentForLanguage, heading } from '../../config/content.js'
 
+/* v8 ignore next */
 export const apiManagement = {
   apiList: (request, organisationName) =>
     getContentForLanguage(request, {

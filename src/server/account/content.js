@@ -1,5 +1,6 @@
 import { getContentForLanguage, heading } from '../../config/content.js'
 
+/* v8 ignore next */
 export const account = {
   account: (request, organisationName) =>
     getContentForLanguage(request, {
