@@ -1,17 +1,17 @@
-function getBrowserLanguage(acceptLanguage = '') {
-  return acceptLanguage
-    .split(',')
-    .map((item) => {
-      const [locale, qualityValue = 'q=1'] = item.trim().split(';')
+// function getBrowserLanguage(acceptLanguage = '') {
+//   return acceptLanguage
+//     .split(',')
+//     .map((item) => {
+//       const [locale, qualityValue = 'q=1'] = item.trim().split(';')
 
-      return {
-        language: locale.toLowerCase().split('-')[0],
-        quality: Number(qualityValue.replace('q=', '')) || 0
-      }
-    })
-    .sort((a, b) => b.quality - a.quality)
-    .find(({ language }) => language === 'en' || language === 'cy')
-}
+//       return {
+//         language: locale.toLowerCase().split('-')[0],
+//         quality: Number(qualityValue.replace('q=', '')) || 0
+//       }
+//     })
+//     .sort((a, b) => b.quality - a.quality)
+//     .find(({ language }) => language === 'en' || language === 'cy')
+// }
 
 export const translation = {
   plugin: {
