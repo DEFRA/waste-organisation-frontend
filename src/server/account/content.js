@@ -20,6 +20,23 @@ export const account = {
             payNow: 'Pay Now'
           }
         }
+      },
+      cy: {
+        title: 'Cyfrif derbyn gwastraff',
+        heading: heading('Cyfrif derbyn gwastraff', null, organisationName),
+        switchOrganisation: 'Newid sefydliad',
+        cards: {
+          reportWaste: { text: 'Rhoi gwybod am dderbyn gwastraff' },
+          manageAccount: { text: "Rheoli'r cyfrif" },
+          serviceCharge: {
+            text: 'Tâl gwasanaeth',
+            tag: 'Yn ddyledus ym mis Hydref 2026 ',
+            paymentDueTag: 'zzzzz',
+            paidTag: 'zzzzz',
+            nextPaymentDue: 'zzzzz',
+            payNow: 'zzzzz'
+          }
+        }
       }
     }),
   nextAction: (request, organisationName) =>
@@ -42,6 +59,30 @@ export const account = {
           message: 'You must select an option'
         },
         continueAction: 'Continue'
+      },
+      cy: {
+        title: 'Rhoi gwybod am dderbyn gwastraff',
+        heading: heading(
+          'Rhoi gwybod am dderbyn gwastraff ',
+          null,
+          organisationName
+        ),
+        questions: {
+          connectYourSoftware: 'Rheoli fy nghod API',
+          downloadSpreadsheet: 'Lawrlwytho templed y daenlen',
+          uploadSpreadsheet: 'Uwchlwytho taenlen',
+          updateSpreadsheet:
+            "Uwchlwytho taenlen sy'n cynnwys IDs Tracio Gwastraff"
+        },
+        questionsNotPaid: {
+          downloadSpreadsheet: 'Lawrlwytho templed y daenlen'
+        },
+        error: {
+          pageTitle: 'Gwall: Rhoi gwybod am dderbyn gwastraff',
+          title: 'Mae yna broblem',
+          message: 'Rhaid ichi ddewis opsiwn'
+        },
+        continueAction: 'Parhau'
       }
     }),
   newAccount: (request, organisationName) =>
@@ -87,6 +128,46 @@ export const account = {
             payServiceCharge: 'Pay service charge',
             paidTag: 'Paid',
             nextPaymentDue: 'Next payment due October 2027'
+          }
+        }
+      },
+      cy: {
+        title: 'qqqqq',
+        heading: heading('qqqqq', null, organisationName),
+        switchOrganisation: {
+          heading: 'qqqqq',
+          description: 'qqqqq',
+          switchLinkText: 'qqqqq',
+          switchLinkSuffix: 'qqqqq',
+          addLinkText: 'qqqqq',
+          addLinkSuffix: 'qqqqq'
+        },
+        importantNotice: {
+          title: 'qqqqq',
+          heading: 'qqqqq',
+          bodyPrefix: 'qqqqq',
+          manageApiCode: 'qqqqq',
+          bodySuffix: 'qqqqq'
+        },
+        cards: {
+          reportWaste: {
+            text: 'qqqqq',
+            description: 'qqqqq',
+            links: {
+              connectYourSoftware: 'qqqqq',
+              downloadSpreadsheet: 'qqqqq',
+              uploadSpreadsheet: 'qqqqq',
+              updateSpreadsheet: 'qqqqq'
+            }
+          },
+          serviceCharge: {
+            text: 'qqqqq',
+            description: 'qqqqq',
+            tag: 'qqqqq',
+            paymentDueTag: 'qqqqq',
+            payServiceCharge: 'qqqqq',
+            paidTag: 'qqqqq',
+            nextPaymentDue: 'qqqqq'
           }
         }
       }

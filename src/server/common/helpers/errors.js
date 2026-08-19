@@ -28,7 +28,6 @@ export function catchAll(request, h) {
 
   if (statusCode >= statusCodes.internalServerError) {
     request.logger.error(response?.stack)
-    console.error('BROKEN', response?.stack)
   }
 
   if (statusCode === statusCodes.unauthorized) {

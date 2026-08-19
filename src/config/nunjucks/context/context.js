@@ -25,7 +25,10 @@ export function context(request) {
 
   return {
     assetPath: `${assetPath}/assets`,
-    serviceName: config.get('serviceName'),
+    serviceName:
+      request.locale === 'cy'
+        ? config.get('serviceNameCY')
+        : config.get('serviceName'),
     serviceUrl: config.get('links.account'),
     feedbackUrl: config.get('links.feedback'),
     breadcrumbs: [],

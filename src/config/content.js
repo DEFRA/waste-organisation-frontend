@@ -13,7 +13,7 @@ export const heading = (text, caption, organisationName) => ({
 })
 
 export const getContentForLanguage = (request, data) => {
-  const locale = request?.locale ?? 'en'
+  const locale = request?.locale ?? 'cy'
   return data[locale]
 }
 
@@ -72,6 +72,9 @@ export const content = {
   manageAccount: (request) =>
     getContentForLanguage(request, {
       en: {
+        navigationLink: 'Manage Defra account'
+      },
+      cy: {
         navigationLink: 'Manage Defra account'
       }
     }),

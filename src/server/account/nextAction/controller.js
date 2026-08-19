@@ -37,7 +37,8 @@ export const nextActionController = {
         )
 
         const paymentStatus = getPaymentStatus(organisation)
-
+        console.log('pageContent', pageContent)
+        console.log('pageQuestions 1', pageQuestions)
         if (paymentStatus.disabled) {
           pageQuestions = pageContent.questionsNotPaid
           notPaidNotice = content.sharedServiceChargeInfo(
@@ -46,6 +47,8 @@ export const nextActionController = {
           ).notPaidNotice
         }
       }
+
+      console.log('pageQuestions 2', pageQuestions)
 
       const questions = Object.entries(pageQuestions).map((question) => {
         const [key, value] = question

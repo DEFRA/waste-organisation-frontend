@@ -23,19 +23,23 @@ export const onboarding = {
         },
         continueAction: 'Continue'
       },
-      zz: {
-        title: 'ZZZZ zzzz zzzz zzzz?',
-        heading: heading('ZZZZ zzzz zzzz zzzz?', null, null),
+      cy: {
+        title: "Ydych chi'n cofrestru fel awdurdod lleol?",
+        heading: heading(
+          'Ydych chi’n cofrestru fel awdurdod lleol?',
+          null,
+          null
+        ),
         questions: {
-          yes: 'ZZ',
-          no: 'zz'
+          yes: 'Ydw',
+          no: 'Nac ydw'
         },
         error: {
-          pageTitle: 'Error: ZZZZ zzzz zzzz zzzz?',
-          title: 'ZZZZ zzzz zzzz zzzz',
-          message: 'ZZZZ zzzz zzzz zzzz'
+          pageTitle: "Gwall: Ydych chi'n cofrestru fel awdurdod lleol?",
+          title: 'Mae yna broblem',
+          message: "ewiswch Ydw os ydych chi'n cofrestru fel awdurdod lleol"
         },
-        continueAction: 'zzzzz'
+        continueAction: 'Parhau'
       }
     }),
   localAuthorityGuidance: (request) =>
@@ -57,6 +61,25 @@ export const onboarding = {
         link: {
           href: paths.signinDefraIdCallback,
           text: 'Continue'
+        }
+      },
+      cy: {
+        title: "Ydych chi'n cofrestru fel awdurdod lleol?",
+        heading: heading(
+          "Ydych chi'n cofrestru fel awdurdod lleol?",
+          "Os ydych chi'n cofrestru fel awdurdod lleol ac nad oes gennych rif cofrestru cwmni, bydd angen ichi wneud y canlynol:",
+          null
+        ),
+        steps: [
+          `Dewis "Ydw" pan ofynnir ichi a ydych chi'n cofrestru fel busnes neu sefydliad.`,
+          'Cadarnhau nad oes gennych chi rif cofrestru cwmni.',
+          'Dewis "Unig fasnachwr" pan ofynnir ichi pa fath o fusnes neu sefydliad sydd gennych chi.'
+        ],
+        finalNote:
+          'Cyn ichi fwrw ymlaen, edrychwch i weld a yw’ch awdurdod lleol wedi cael ei gofrestru’n barod. ',
+        link: {
+          href: paths.signinDefraIdCallback,
+          text: 'Parhau'
         }
       }
     })

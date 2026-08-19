@@ -161,6 +161,11 @@ export const config = convict({
     format: String,
     default: 'Report receipt of waste'
   },
+  serviceNameCY: {
+    doc: 'Applications Service Name Welsh',
+    format: String,
+    default: 'Rhoi gwybod am dderbyn gwastraff'
+  },
   root: {
     doc: 'Project root',
     format: String,

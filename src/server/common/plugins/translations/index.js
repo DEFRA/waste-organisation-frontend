@@ -28,7 +28,21 @@ export const translation = {
         // )
         // console.log('browser language')
         // request.locale = browserLanguage?.language === 'cy' ? 'zz' : 'en'
-        request.locale = 'en'
+        request.locale = 'cy'
+        return h.continue
+      })
+
+      server.ext('onPreResponse', (request, h) => {
+        const response = request.response
+
+        if (response.variety !== 'view') {
+          return h.continue
+        }
+
+        response.source.context ??= {}
+
+        response.source.context.locale = request?.locale
+
         return h.continue
       })
     }

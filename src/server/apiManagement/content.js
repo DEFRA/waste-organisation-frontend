@@ -8,6 +8,17 @@ export const apiManagement = {
         title: 'Your API code',
         heading: heading('Your API code', null, organisationName),
         noEnabledApiCodes: 'You have no API codes',
+        words: {
+          copy: 'Copy',
+          copied: 'Copied',
+          code: 'code',
+          disable: 'Disable',
+          disabled: 'Disabled',
+          change: 'Change',
+          codeName: 'code name',
+          name: 'Name',
+          apiCode: 'API code'
+        },
         additionalCode: {
           title: 'Do you need to create an additional API code?',
           content:
@@ -28,6 +39,43 @@ export const apiManagement = {
         changeName: {
           action: 'Change',
           hiddenText: 'name for'
+        }
+      },
+      cy: {
+        title: 'Eich cod API',
+        heading: heading('Eich cod API', null, organisationName),
+        noEnabledApiCodes: 'zzzzz',
+        words: {
+          copy: 'Copi',
+          copied: 'zzzzz',
+          code: 'cod',
+          disable: 'Analluogi',
+          disabled: "Wedi'i analluogi",
+          change: 'Newid',
+          codeName: 'zzzzz',
+          name: 'Enw',
+          apiCode: 'Cod API'
+        },
+        additionalCode: {
+          title: 'Oes angen ichi greu cod API ychwanegol?',
+          content:
+            "Os ydych chi'n gweithio gyda mwy nag un darparwr meddalwedd, dylech roi cod API i bob un.",
+          action: {
+            additional: 'Creu cod ychwanegol',
+            new: 'zzzzz'
+          }
+        },
+        disabledSuccessMessage: () => ({
+          title: 'We have disabled this code',
+          description: {
+            pre: 'The code',
+            post: 'cannot be used to send any new waste movements.'
+          }
+        }),
+        returnAction: `Dychwelyd i ${organisationName}`,
+        changeName: {
+          action: 'Newid',
+          hiddenText: 'zzzzz'
         }
       }
     }),
