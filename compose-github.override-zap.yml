@@ -1,0 +1,86 @@
+# GitHub Actions / CI overlay: merge with compose.yml
+#   docker compose -f compose.yml -f compose-github.override-zap.yml up -d --wait
+services:
+  # OWASP ZAP daemon — HTTP proxy on port 8080.
+  # - From other Compose services on cdp-tenant: http://zap:8080
+  # - From the host (npm/WebDriver HTTP client on the runner / your laptop): http://127.0.0.1:8080
+  #   (hostname "zap" only resolves inside the Compose network — not from Node on the CI runner.)
+  # - Proxied targets on the host: use http://host.docker.internal:<port> (not localhost) so ZAP
+  #   reaches services published on the runner / Mac (extra_hosts below maps host.docker.internal).
+  # Reports: export after tests with ./compose/zap-export-report.sh (writes to ./zap-reports).
+  # Trust ZAP MITM TLS in Node: export root CA then set NODE_EXTRA_CA_CERTS to zap-reports/zap-root-ca.pem
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    user: zap
+    environment:
+      ZAP_REPORTS_DIR: /home/zap/reports
+    volumes:
+      - ./zap-reports:/home/zap/reports:z
+    command:
+      - zap.sh
+      - -daemon
+      - -host
+      - 0.0.0.0
+      - -port
+      - '8080'
+      - -config
+      - api.addrs.addr.name=.*
+      - -config
+      - api.addrs.addr.regex=true
+      - -config
+      - api.disablekey=true
+    ports:
+      - '8080:8080'
+    # extra_hosts:
+    #   - 'host.docker.internal:host-gateway'
+    networks:
+      - cdp-tenant
+
+  # LocalStack: enable DynamoDB and return container-resolvable URLs for inter-service traffic.
+  localstack:
+    environment:
+      SERVICES: s3,sqs,sns,firehose,dynamodb
+      LOCALSTACK_HOST: localstack:4566
+    volumes:
+      - ./compose/start-localstack-dynamodb.sh:/etc/localstack/init/ready.d/start-localstack-dynamodb.sh:z
+
+  selenium-chrome:
+    image: selenium/standalone-chrome:123.0
+    environment:
+      - SE_NODE_ENABLE_MANAGED_DOWNLOADS=true
+    ports:
+      - 4444:4444
+    networks:
+      - cdp-tenant
+
+  cdp-defra-id-stub:
+    ports: !override
+      - '3200:3200'
+    environment:
+      APP_BASE_URL: http://cdp-defra-id-stub:3200
+      OIDC_APP_BASE_URL: http://cdp-defra-id-stub:3200
+      DYNAMODB_ENDPOINT: http://localstack:4566
+
+  cdp-uploader:
+    network_mode: !reset null
+    ports:
+      - '7337:7337'
+    networks:
+      - cdp-tenant
+    environment:
+      APP_BASE_URL: 'http://cdp-uploader:7337'
+
+  waste-organisation-frontend:
+    network_mode: !reset null
+    ports:
+      - '3000:3000'
+    networks:
+      - cdp-tenant
+    environment:
+      LOG_LEVEL: debug
+      APP_BASE_URL: 'http://waste-organisation-frontend:3000'
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_URL: 'http://cdp-defra-id-stub:3200/cdp-defra-id-stub/.well-known/openid-configuration'
+      FILE_UPLOAD_SERVICE_URL: http://cdp-uploader:7337
+      FILE_UPLOAD_BASE_URL: 'http://waste-organisation-frontend:3000'
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_AUTHORIZATION_OVERRIDE: !reset null
+      AUTH_DEFRA_ID_OIDC_CONFIGURATION_END_SESSION_OVERRIDE: !reset null
