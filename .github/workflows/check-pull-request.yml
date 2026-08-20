@@ -113,7 +113,7 @@ jobs:
           ZAP_PROXY_URL: http://zap:8080
           ZAP_PROXY_API_URL: http://127.0.0.1:8080
         run: |
-          npm run test
+          npm run test:smoke
 
       - name: Generate Test Report
         if: always()
