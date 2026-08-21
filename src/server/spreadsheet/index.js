@@ -10,6 +10,8 @@ import {
   callback as updateCallback
 } from './update/controller.js'
 
+import { downloadSpreadsheetController } from './downloadSpreadsheet/controller.js'
+
 const createRoute = ([method, path, controller]) => ({
   method: method || 'GET',
   path,
@@ -21,7 +23,8 @@ export const spreadsheet = {
     ['GET', paths.spreadsheetUpload, createBeginUpload, 'session'],
     ['GET', paths.spreadsheetUploaded, createFileUploaded, 'session'],
     ['GET', paths.updateSpreadsheetUpload, updateBeginUpload],
-    ['GET', paths.updateSpreadsheetUploaded, updateFileUploaded]
+    ['GET', paths.updateSpreadsheetUploaded, updateFileUploaded],
+    ['GET', paths.downloadSpreadsheet, downloadSpreadsheetController]
   ].map(createRoute),
   openRoutes: [
     ['POST', paths.spreadsheetUploadCallback, createCallback],

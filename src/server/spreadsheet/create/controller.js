@@ -43,9 +43,12 @@ export const beginUpload = {
     }
 
     return h.view('spreadsheet/create/begin-upload', {
-      pageTitle: 'Upload a receipt of waste movement spreadsheet',
+      pageTitle: pageContent.heading.text,
       heading: pageContent.heading,
-      action: uploadUrl,
+      action: {
+        text: pageContent.continueAction,
+        link: uploadUrl
+      },
       backLink: paths.nextAction
     })
   }

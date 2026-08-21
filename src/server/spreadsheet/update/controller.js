@@ -47,7 +47,10 @@ export const beginUpload = {
       pageTitle: pageContent.title,
       heading: pageContent.heading,
       description: pageContent.description,
-      action: uploadUrl,
+      action: {
+        text: pageContent.continueAction,
+        link: uploadUrl
+      },
       backLink: paths.nextAction
     })
   }

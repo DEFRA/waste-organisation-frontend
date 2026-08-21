@@ -1,0 +1,38 @@
+{% extends 'layouts/page.njk' %}
+
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Cwcis</h1>
+
+      <p class="govuk-body">Mae'r gwasanaeth hwn yn rhoi ffeiliau bach (a elwir yn gwcis) ar eich cyfrifiadur. Mae'r cwcis hyn yn cael eu defnyddio i wneud i'r gwasanaeth weithio ac ni ellir eu diffodd.</p>
+
+      <h2 class="govuk-heading-m">Cwcis hanfodol</h2>
+
+      <p class="govuk-body">Mae cwcis hanfodol yn cadw'ch gwybodaeth yn ddiogel wrth ichi ddefnyddio'r gwasanaeth hwn. Nid oes angen inni ofyn am ganiatâd i'w defnyddio.</p>
+
+      {{ govukTable({
+          head: [{ text: 'Enw' }, { text: 'Pwrpas' }, { text: 'Yn dod i ben' }],
+          rows: [
+            [
+              { text: 'userSession' },
+              { text: 'Yn eich cadw chi wedi mewngofnodi' },
+              { text: '4 awr' }
+            ],
+            [
+              { text: 'session' },
+              { text: 'Yn storio data sesiwn' },
+              { text: '4 awr' }
+            ],
+            [
+              { text: 'bell-defraId' },
+              { text: 'Yn cael ei ddefnyddio i fewngofnodi gydag ID' },
+              { text: "fyddwch chi'n cau'ch porwr" }
+            ]
+          ]
+        }) }}
+    </div>
+  </div>
+{% endblock %}

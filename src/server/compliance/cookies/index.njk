@@ -5,15 +5,34 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">{{ heading }}</h1>
+      <h1 class="govuk-heading-l">Cookies</h1>
 
-      <p class="govuk-body">{{ introParagraph }}</p>
+      <p class="govuk-body">This service puts small files (known as cookies) onto your computer. These cookies are used to make the service work and cannot be turned off.</p>
 
-      <h2 class="govuk-heading-m">{{ essentialCookiesHeading }}</h2>
+      <h2 class="govuk-heading-m">Essential cookies</h2>
 
-      <p class="govuk-body">{{ essentialCookiesDescription }}</p>
+      <p class="govuk-body">Essential cookies keep your information secure while you use this service. We do not need to ask permission to use them.</p>
 
-      {{ govukTable(cookieTable) }}
+      {{ govukTable({
+          head: [{ text: 'Name' }, { text: 'Purpose' }, { text: 'Expires' }],
+          rows: [
+            [
+              { text: 'userSession' },
+              { text: 'Keeps you signed in' },
+              { text: '4 hours' }
+            ],
+            [
+              { text: 'session' },
+              { text: 'Stores session data' },
+              { text: '4 hours' }
+            ],
+            [
+              { text: 'bell-defraId' },
+              { text: 'Used to sign in with Defra ID' },
+              { text: 'When you close your browser' }
+            ]
+          ]
+        }) }}
     </div>
   </div>
 {% endblock %}

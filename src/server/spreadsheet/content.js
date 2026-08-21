@@ -11,6 +11,15 @@ export const spreadsheet = {
           organisationName
         ),
         continueAction: 'Upload'
+      },
+      cy: {
+        title: 'Uwchlwytho taenlen symudiadau derbyn gwastraff  ',
+        heading: heading(
+          'Uwchlwytho taenlen symudiadau derbyn gwastraff  ',
+          null,
+          organisationName
+        ),
+        continueAction: 'Uwchlwytho'
       }
     }),
   spreadsheetUploaded: (request, organisationName) =>
@@ -27,6 +36,19 @@ export const spreadsheet = {
           referenceText: 'Spreadsheet reference:'
         },
         returnLink: `Return to ${organisationName}`
+      },
+      cy: {
+        title: "Taenlen wedi'i huwchlwytho",
+        heading: heading("Taenlen wedi'i huwchlwytho", null, null),
+        content: {
+          heading: 'Beth fydd yn digwydd nesaf',
+          text: [
+            "Byddwn ni'n edrych ar eich taenlen am firysau a gwallau.",
+            "Byddwch chi wedyn yn cael e-bost yn cadarnhau a yw'r daenlen wedi cael ei derbyn neu ei gwrthod."
+          ],
+          referenceText: 'Cyfeirnod y daenlen:'
+        },
+        returnLink: `Dychwelyd i ${organisationName}`
       }
     }),
   updateSpreadsheetUpload: (request, organisationName) =>
@@ -41,6 +63,17 @@ export const spreadsheet = {
         description:
           'You will only be able to update an existing spreadsheet if you have been given a Waste Tracking ID for that waste movement.',
         continueAction: 'Continue'
+      },
+      cy: {
+        title: "Diweddaru taenlen sy'n bodoli'n barod",
+        heading: heading(
+          "Diweddaru taenlen sy'n bodoli'n barod  ",
+          null,
+          organisationName
+        ),
+        description:
+          "Dim ond os ydych chi wedi cael ID Tracio Gwastraff ar gyfer y symudiad gwastraff hwnnw y byddwch chi'n gallu diweddaru taenlen sy'n bodoli'n barod.",
+        continueAction: 'Parhau'
       }
     }),
   downloadSpreadsheet: (request, organisationName) =>
@@ -56,6 +89,18 @@ export const spreadsheet = {
         downloadButton: 'Download spreadsheet',
         fileMetadata: 'XLSX, 428KB',
         returnLink: `Return to ${organisationName}`
+      },
+      cy: {
+        title: 'Lawrlwytho taenlen Derbyn gwastraff',
+        heading: heading(
+          'Lawrlwytho taenlen Derbyn gwastraff',
+          null,
+          organisationName
+        ),
+        body: "Os nad oes gennych y feddalwedd sydd arnoch ei hangen i ddefnyddio'r API, lawrlwythwch y daenlen i roi gwybod am eich gwastraff.",
+        downloadButton: "Lawrlwytho'r daenlen",
+        fileMetadata: 'XLSX, 428KB',
+        returnLink: `Dychwelyd i ${organisationName}`
       }
     })
 }

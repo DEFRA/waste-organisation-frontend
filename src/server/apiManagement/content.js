@@ -29,6 +29,7 @@ export const apiManagement = {
           }
         },
         disabledSuccessMessage: () => ({
+          successTitle: 'Success',
           title: 'We have disabled this code',
           description: {
             pre: 'The code',
@@ -66,10 +67,11 @@ export const apiManagement = {
           }
         },
         disabledSuccessMessage: () => ({
-          title: 'We have disabled this code',
+          successTitle: 'Llwyddiant',
+          title: 'Rydyn ni wedi analluogi’r cod hwn  ',
           description: {
-            pre: 'The code',
-            post: 'cannot be used to send any new waste movements.'
+            pre: "Dydych chi ddim yn gallu defnyddio'r cod",
+            post: 'i anfon unrhyw symudiadau gwastraff newydd.'
           }
         }),
         returnAction: `Dychwelyd i ${organisationName}`,
@@ -96,6 +98,22 @@ export const apiManagement = {
           message: 'The API code name could not be updated. Try again.'
         },
         saveAction: 'Save and continue'
+      },
+      cy: {
+        title: 'Newid enw cod API',
+        heading: heading('Newid enw cod API', null, organisationName),
+        label: 'Enw cod API  ',
+        hint: "Gallwch newid enw'r API drwy ddisodli'r un presennol.",
+        error: {
+          pageTitle: 'Gwall: Newid enw cod API',
+          title: 'Mae yna broblem',
+          message: 'zzzzz'
+        },
+        updateError: {
+          title: 'Mae yna broblem',
+          message: 'zzzzz'
+        },
+        saveAction: 'Cadw a bwrw ymlaen'
       }
     }),
   apiDisable: (request, organisationName) =>
@@ -123,6 +141,30 @@ export const apiManagement = {
           message: 'Select Yes if want to disable this API code.'
         },
         continueAction: 'Continue'
+      },
+      cy: {
+        title: "Ydych chi am analluogi'r cod API hwn?",
+        heading: heading(
+          "Ydych chi am analluogi'r cod API hwn?",
+          null,
+          organisationName
+        ),
+        caption: {
+          pre: "Os ydych chi'n cytuno, ni fydd y cod",
+          post: 'hwn yn gweithio mwyach.'
+        },
+        warning:
+          "Ni fyddwch yn gallu defnyddio'r cod hwn i anfon unrhyw symudiadau gwastraff newydd.",
+        questions: {
+          yes: 'Ydw',
+          no: 'Nac ydw'
+        },
+        error: {
+          pageTitle: "Gwall: Ydych chi am analluogi'r cod API hwn?",
+          title: 'Mae yna broblem',
+          message: 'zzzzz'
+        },
+        continueAction: 'Parhau'
       }
     })
 }

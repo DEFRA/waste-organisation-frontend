@@ -13,7 +13,7 @@ export const account = {
           manageAccount: { text: 'Manage account' },
           serviceCharge: {
             text: 'Service charge',
-            tag: 'Due October 2026',
+            tag: 'Due October 2026', // used when service charge feature is disabled
             paymentDueTag: 'Payment due',
             paidTag: 'Paid',
             nextPaymentDue: 'Next payment due',
@@ -30,10 +30,10 @@ export const account = {
           manageAccount: { text: "Rheoli'r cyfrif" },
           serviceCharge: {
             text: 'Tâl gwasanaeth',
-            tag: 'Yn ddyledus ym mis Hydref 2026 ',
-            paymentDueTag: 'zzzzz',
-            paidTag: 'zzzzz',
-            nextPaymentDue: 'zzzzz',
+            tag: 'Yn ddyledus ym mis Hydref 2026', // used when service charge feature is disabled
+            paymentDueTag: 'Taliad yn ddyledus',
+            paidTag: 'Wedi talu',
+            nextPaymentDue: 'Taliad nesaf yn ddyledus ym mis',
             payNow: 'zzzzz'
           }
         }
@@ -170,6 +170,15 @@ export const account = {
             nextPaymentDue: 'qqqqq'
           }
         }
+      }
+    }),
+  manageAccount: (request) =>
+    getContentForLanguage(request, {
+      en: {
+        navigationLink: 'Manage Defra account'
+      },
+      cy: {
+        navigationLink: 'Manage Defra account'
       }
     })
 }

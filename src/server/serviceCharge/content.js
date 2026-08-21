@@ -27,6 +27,23 @@ export const serviceCharge = {
           heading: 'A payment is already in progress',
           body: 'A service charge payment for this account is already in progress. Do not try again.'
         }
+      },
+      cy: {
+        notPaidNotice: {
+          title: 'Pwysig',
+          heading: `Mae angen ichi dalu'ch tâl gwasanaeth blynyddol ar gyfer ${organisationName || '[Waste receiving organisation or business name]'} cyn y gallwch roi gwybod am eich symudiadau.`,
+          body: 'Os oes arnoch angen help neu os oes gennych gwestiwn am y tâl gwasanaeth, ffoniwch 03000 203 781.'
+        },
+        alreadyPaidNotice: {
+          title: 'Pwysig',
+          heading: 'zzzzz',
+          body: 'zzzzz'
+        },
+        duplicatePaymentNotice: {
+          title: 'Pwysig',
+          heading: 'Mae taliad ar y gweill yn barod',
+          body: "Mae taliad tâl gwasanaeth ar gyfer y cyfrif hwn yn mynd rhagddo'n barod. Peidiwch â rhoi cynnig arall arni."
+        }
       }
     }),
   serviceCharge: (request, priceInPence, organisationName) =>
@@ -48,6 +65,25 @@ export const serviceCharge = {
           'You will not be able to use this service to report your waste movements until you have paid the service charge.',
         payServiceCharge: 'Pay service charge',
         cancel: 'Cancel'
+      },
+      cy: {
+        title:
+          "Talu'r tâl blynyddol ar gyfer y gwasanaeth rhoi gwybod am dderbyn gwastraff",
+        heading: heading(
+          "Talu'r tâl blynyddol ar gyfer y gwasanaeth rhoi gwybod am dderbyn gwastraff",
+          null,
+          organisationName
+        ),
+        cost: `Y gost yw ${formatPounds(priceInPence)} i bob sefydliad.`,
+        requirementsIntro: 'I dalu am y tâl gwasanaeth, bydd arnoch angen:',
+        requirements: [
+          'cerdyn credyd neu ddebyd',
+          "cyfeiriad e-bost i gael cadarnhad o'r taliad"
+        ],
+        warning:
+          "Ni fyddwch yn gallu defnyddio'r gwasanaeth hwn i roi gwybod am eich symudiadau gwastraff nes eich bod wedi talu'r tâl gwasanaeth.",
+        payServiceCharge: 'Talu tâl gwasanaeth',
+        cancel: 'Canslo'
       }
     }),
   reviewPayment: (request, organisationName) =>
@@ -73,6 +109,28 @@ export const serviceCharge = {
         },
         continue: 'Continue',
         cancel: 'Cancel'
+      },
+      cy: {
+        title: 'Tâl gwasanaeth blynyddol Rhoi gwybod bod am dderbyn gwastraff',
+        heading: heading(
+          'Tâl gwasanaeth blynyddol Rhoi gwybod bod am dderbyn gwastraff',
+          null,
+          organisationName
+        ),
+        intro:
+          "Ar ôl ichi dalu'r tâl gwasanaeth, bydd gan eich sefydliad fynediad llawn i roi gwybod am symudiadau gwastraff hyd at",
+        accessUntilDateIso: 'cy',
+        sectionHeading: 'Adolygu swm y taliad',
+        organisation: {
+          heading: 'Sefydliad',
+          nameLabel: 'Enw',
+          name:
+            organisationName ||
+            '[Waste receiving organisation or business name]',
+          totalCostLabel: 'Cyfanswm y gost'
+        },
+        continue: 'Parhau',
+        cancel: 'Canslo'
       }
     }),
   cannotMakePayment: (request, organisationName) =>
@@ -87,6 +145,14 @@ export const serviceCharge = {
         link: {
           href: config.get('links.startPage'),
           text: 'Find out more about Digital waste tracking'
+        }
+      },
+      cy: {
+        title: 'zzzzz',
+        heading: heading('zzzzz', 'zzzzz', null),
+        link: {
+          href: config.get('links.startPage'),
+          text: 'zzzzz'
         }
       }
     }),
@@ -132,6 +198,48 @@ export const serviceCharge = {
           ),
           summaryContent: 'Contact your bank for more details or try again.',
           returnToAccountLabel: `Try payment again`
+        }
+      },
+      cy: {
+        success: {
+          pageTitle: "Cadarnhad o'r taliad",
+          heading: heading("Cadarnhad o'r taliad", null, organisationName),
+          referenceLabel: 'Eich cyfeirnod talu',
+          summaryHeading: 'Crynodeb Taliad',
+          paymentForLabel: 'Taliad ar gyfer',
+          paymentForValue:
+            'Tâl gwasanaeth blynyddol Rhoi gwybod am dderbyn gwastraff  ',
+          organisationLabel: 'Sefydliad',
+          organisationValue:
+            organisationName ||
+            '[Waste receiving organisation or business name]',
+          totalAmountLabel: 'Cyfanswm',
+          totalAmountValue: formatPounds(priceInPence),
+          whatHappensNextHeading: 'Beth fydd yn digwydd nesaf',
+          whatHappensNext: [
+            "Byddwch chi'n cael e-bost i gadarnhau eich bod wedi talu.",
+            "Gallwch nawr ddefnyddio'r gwasanaeth i roi gwybod am eich symudiadau gwastraff."
+          ],
+          returnToAccountLabel: `Dychwelyd i gyfrif derbyn gwastraff ${organisationName}`
+        },
+        pending: {
+          pageTitle: 'Payment pending',
+          heading: heading('Payment pending', null, organisationName),
+          summaryContent: 'Your payment is currently being processed.',
+          whatHappensNextHeading: 'What happens next',
+          whatHappensNext: ['zzzzz'],
+          returnToAccountLabel: `Dychwelyd i gyfrif derbyn gwastraff ${organisationName}`
+        },
+        unsuccessful: {
+          pageTitle: 'Nid oedd eich taliad yn llwyddiannus',
+          heading: heading(
+            'Nid oedd eich taliad yn llwyddiannus',
+            null,
+            organisationName
+          ),
+          summaryContent:
+            "Cysylltwch â'ch banc i gael rhagor o fanylion neu rhowch gynnig arall arni.",
+          returnToAccountLabel: 'Rhowch gynnig arall ar dalu'
         }
       }
     })

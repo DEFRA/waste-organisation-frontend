@@ -11,7 +11,6 @@ import { search } from './search/index.js'
 import { onboarding } from './onboarding/index.js'
 import { spreadsheet } from './spreadsheet/index.js'
 import { apiManagement } from './apiManagement/index.js'
-import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
 import { serviceCharge } from './serviceCharge/index.js'
 
 import { organisationCheck } from './common/helpers/auth/organisation-check.js'
@@ -88,8 +87,7 @@ export const router = {
         spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(spreadsheet.openRoutes),
         apiManagement:           apiManagement.authedRoutes.map((a) => addAuthWithOrgPayment(a)),
         account:                 account.authedRoutes.map((a) => addAuthWithOrg(a)),
-        serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a)),
-        downloadSpreadsheet:     downloadSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a))
+        serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a))
       }).reduce((p, entry) => createPlugin(p, entry), [])
 
       // Application specific routes, add your own routes here

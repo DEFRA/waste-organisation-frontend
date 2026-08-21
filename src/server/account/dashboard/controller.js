@@ -15,7 +15,13 @@ export const accountController = {
       currentOrganisationId
     )
 
-    const paymentStatus = getPaymentStatus(organisation)
+    const pageContent = content.account(request, currentOrganisationName)
+
+    const paymentStatus = getPaymentStatus(
+      organisation,
+      pageContent.cards.serviceCharge,
+      request.locale
+    )
     let importantNotice
     if (paymentStatus.disabled) {
       const { notPaidNotice } = content.sharedServiceChargeInfo(
@@ -30,8 +36,6 @@ export const accountController = {
     if (flashMessage) {
       importantNotice = flashMessage
     }
-
-    const pageContent = content.account(request, currentOrganisationName)
 
     return h.view('account/dashboard/view', {
       pageTitle: pageContent.title,

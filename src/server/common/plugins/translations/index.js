@@ -28,7 +28,7 @@ export const translation = {
         // )
         // console.log('browser language')
         // request.locale = browserLanguage?.language === 'cy' ? 'zz' : 'en'
-        request.locale = 'cy'
+        request.locale = 'en'
         return h.continue
       })
 
@@ -42,6 +42,7 @@ export const translation = {
         response.source.context ??= {}
 
         response.source.context.locale = request?.locale
+        response.source.context.htmlLang = request?.locale
 
         return h.continue
       })

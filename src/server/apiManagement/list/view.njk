@@ -17,6 +17,7 @@
         </p>
         {% endset %}
         {{ govukNotificationBanner({
+          titleText: disabledSuccessMessage.successTitle,
           html: html,
           type: "success"
         }) }}
