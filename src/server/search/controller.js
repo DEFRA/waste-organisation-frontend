@@ -29,11 +29,10 @@ export const searchController = {
       }
     }
     /* v8 ignore stop */
-    const { id, currentOrganisationId } = request.auth.credentials
 
     const organisation = await request.backendApi.getOrganisation(
-      id,
-      currentOrganisationId
+      request?.auth?.credentials?.id,
+      request?.auth?.credentials?.currentOrganisationId
     )
 
     return h.view('search/index', {
