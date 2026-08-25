@@ -8,7 +8,10 @@ services:
   # - Proxied targets on the host: use http://host.docker.internal:<port> (not localhost) so ZAP
   #   reaches services published on the runner / Mac (extra_hosts below maps host.docker.internal).
   # Reports: export after tests with ./compose/zap-export-report.sh (writes to ./zap-reports).
-  # Trust ZAP MITM TLS in Node: export root CA then set NODE_EXTRA_CA_CERTS to zap-reports/zap-root-ca.pem
+  # Trust ZAP MITM TLS in Node: export root CA to a host-writable path (not ./zap-reports —
+  # that directory is bind-mounted and owned by the container user after compose starts).
+  #   curl -f http://127.0.0.1:8080/OTHER/core/other/rootcert/ -o /tmp/zap-root-ca.pem
+  #   export NODE_EXTRA_CA_CERTS=/tmp/zap-root-ca.pem
   zap:
     image: ghcr.io/zaproxy/zaproxy:stable
     user: zap

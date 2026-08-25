@@ -99,9 +99,8 @@ jobs:
       - name: Prepare ZAP for integration tests
         if: steps.wait-for-docker-compose-services.outcome == 'success'
         run: |
-          mkdir -p zap-reports
-          curl -f http://127.0.0.1:8080/OTHER/core/other/rootcert/ -o zap-reports/zap-root-ca.pem
-          echo "NODE_EXTRA_CA_CERTS=${{ github.workspace }}/zap-reports/zap-root-ca.pem" >> "$GITHUB_ENV"
+          curl -f http://127.0.0.1:8080/OTHER/core/other/rootcert/ -o "$RUNNER_TEMP/zap-root-ca.pem"
+          echo "NODE_EXTRA_CA_CERTS=$RUNNER_TEMP/zap-root-ca.pem" >> "$GITHUB_ENV"
 
       - name: Run Integration Tests
         id: integration-tests
