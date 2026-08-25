@@ -93,8 +93,8 @@ jobs:
         env:
           COMPOSE_PROJECT_NAME: waste-organisation-frontend
         run: |
-          docker compose -f compose.yml -f $compose-github.override-zap.yml up -d --no-build --wait --wait-timeout 300
-          docker compose -f compose.yml -f $compose-github.override-zap.yml ps
+          docker compose -f compose.yml -f compose-github.override-zap.yml up -d --no-build --wait --wait-timeout 300
+          docker compose -f compose.yml -f compose-github.override-zap.yml ps
 
       - name: Prepare ZAP for integration tests
         if: steps.wait-for-docker-compose-services.outcome == 'success'
