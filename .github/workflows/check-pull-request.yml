@@ -130,6 +130,15 @@ jobs:
           path: integration-tests/allure-report/
           retention-days: 30
 
+      - name: Upload Zap Report
+        if: always() && steps.integration-tests.outcome == 'success'
+        id: upload-zap-report
+        uses: actions/upload-artifact@v7
+        with:
+          name: zap-test-report
+          path: integration-tests/zap-report/
+          retention-days: 30
+
       - name: Comment Test Report Link on PR
         if: always() && steps.upload-report.outcome == 'success' && github.event_name == 'pull_request'
         uses: actions/github-script@v9
