@@ -37,7 +37,7 @@ export const onboarding = {
         error: {
           pageTitle: "Gwall: Ydych chi'n cofrestru fel awdurdod lleol?",
           title: 'Mae yna broblem',
-          message: "ewiswch Ydw os ydych chi'n cofrestru fel awdurdod lleol"
+          message: "Dewiswch Ydw os ydych chi'n cofrestru fel awdurdod lleol"
         },
         continueAction: 'Parhau'
       }
@@ -76,7 +76,7 @@ export const onboarding = {
           'Dewis "Unig fasnachwr" pan ofynnir ichi pa fath o fusnes neu sefydliad sydd gennych chi.'
         ],
         finalNote:
-          'Cyn ichi fwrw ymlaen, edrychwch i weld a yw’ch awdurdod lleol wedi cael ei gofrestru’n barod. ',
+          'Cyn ichi fwrw ymlaen, edrychwch i weld a yw’ch awdurdod lleol wedi cael ei gofrestru’n barod.',
         link: {
           href: paths.signinDefraIdCallback,
           text: 'Parhau'

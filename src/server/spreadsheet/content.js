@@ -13,9 +13,9 @@ export const spreadsheet = {
         continueAction: 'Upload'
       },
       cy: {
-        title: 'Uwchlwytho taenlen symudiadau derbyn gwastraff  ',
+        title: 'Uwchlwytho taenlen symudiadau derbyn gwastraff',
         heading: heading(
-          'Uwchlwytho taenlen symudiadau derbyn gwastraff  ',
+          'Uwchlwytho taenlen symudiadau derbyn gwastraff',
           null,
           organisationName
         ),
@@ -67,7 +67,7 @@ export const spreadsheet = {
       cy: {
         title: "Diweddaru taenlen sy'n bodoli'n barod",
         heading: heading(
-          "Diweddaru taenlen sy'n bodoli'n barod  ",
+          "Diweddaru taenlen sy'n bodoli'n barod",
           null,
           organisationName
         ),

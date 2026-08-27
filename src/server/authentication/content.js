@@ -1,7 +1,7 @@
 import { getContentForLanguage } from '../../config/content.js'
 import { paths } from '../../config/paths.js'
 
-//TODO: not translated
+// zzzzz marks strings that are not in the Welsh translation pack
 
 export const authentication = {
   signOut: (request) =>

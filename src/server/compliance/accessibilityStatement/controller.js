@@ -3,7 +3,7 @@ export const accessibilityStatementController = {
     if (request.locale === 'cy') {
       return h.view('compliance/accessibilityStatement/index-cy', {
         pageTitle:
-          'Datganiad hygyrchedd ar gyfer Rhoi gwybod am dderbyn gwastraff  '
+          'Datganiad hygyrchedd ar gyfer Rhoi gwybod am dderbyn gwastraff'
       })
     }
 

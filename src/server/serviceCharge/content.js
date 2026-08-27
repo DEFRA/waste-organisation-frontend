@@ -208,7 +208,7 @@ export const serviceCharge = {
           summaryHeading: 'Crynodeb Taliad',
           paymentForLabel: 'Taliad ar gyfer',
           paymentForValue:
-            'Tâl gwasanaeth blynyddol Rhoi gwybod am dderbyn gwastraff  ',
+            'Tâl gwasanaeth blynyddol Rhoi gwybod am dderbyn gwastraff',
           organisationLabel: 'Sefydliad',
           organisationValue:
             organisationName ||
@@ -223,10 +223,10 @@ export const serviceCharge = {
           returnToAccountLabel: `Dychwelyd i gyfrif derbyn gwastraff ${organisationName}`
         },
         pending: {
-          pageTitle: 'Payment pending',
-          heading: heading('Payment pending', null, organisationName),
-          summaryContent: 'Your payment is currently being processed.',
-          whatHappensNextHeading: 'What happens next',
+          pageTitle: 'zzzzz',
+          heading: heading('zzzzz', null, organisationName),
+          summaryContent: 'zzzzz',
+          whatHappensNextHeading: 'zzzzz',
           whatHappensNext: ['zzzzz'],
           returnToAccountLabel: `Dychwelyd i gyfrif derbyn gwastraff ${organisationName}`
         },

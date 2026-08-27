@@ -63,7 +63,7 @@ export const account = {
       cy: {
         title: 'Rhoi gwybod am dderbyn gwastraff',
         heading: heading(
-          'Rhoi gwybod am dderbyn gwastraff ',
+          'Rhoi gwybod am dderbyn gwastraff',
           null,
           organisationName
         ),
@@ -178,7 +178,7 @@ export const account = {
         navigationLink: 'Manage Defra account'
       },
       cy: {
-        navigationLink: 'Manage Defra account'
+        navigationLink: 'zzzzz'
       }
     })
 }

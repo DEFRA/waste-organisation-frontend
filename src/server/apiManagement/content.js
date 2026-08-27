@@ -68,7 +68,7 @@ export const apiManagement = {
         },
         disabledSuccessMessage: () => ({
           successTitle: 'Llwyddiant',
-          title: 'Rydyn ni wedi analluogi’r cod hwn  ',
+          title: 'Rydyn ni wedi analluogi’r cod hwn',
           description: {
             pre: "Dydych chi ddim yn gallu defnyddio'r cod",
             post: 'i anfon unrhyw symudiadau gwastraff newydd.'
@@ -102,7 +102,7 @@ export const apiManagement = {
       cy: {
         title: 'Newid enw cod API',
         heading: heading('Newid enw cod API', null, organisationName),
-        label: 'Enw cod API  ',
+        label: 'Enw cod API',
         hint: "Gallwch newid enw'r API drwy ddisodli'r un presennol.",
         error: {
           pageTitle: 'Gwall: Newid enw cod API',

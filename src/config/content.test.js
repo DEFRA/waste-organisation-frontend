@@ -56,6 +56,7 @@ describe('Content', () => {
     }
   )
 
+  // zzzzz is the sentinel for strings not in the Welsh pack. Keep this skipped until those gaps are filled.
   test.skip.each(Object.keys(content))(
     '%s: object stucture should match per language and should not include zzzzz',
     (key) => {
