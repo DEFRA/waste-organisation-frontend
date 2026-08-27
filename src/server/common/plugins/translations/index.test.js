@@ -61,7 +61,7 @@ describe('#translation plugin', () => {
   })
 
   test('uses the language cookie when the query param is absent', async () => {
-    const { result } = await server.inject({
+    const { result, headers } = await server.inject({
       method: 'GET',
       url: '/',
       headers: {
@@ -70,6 +70,9 @@ describe('#translation plugin', () => {
     })
 
     expect(result.locale).toBe('cy')
+    expect(languageCookie(headers)).toEqual(
+      expect.stringContaining(`${LANGUAGE_COOKIE_NAME}=cy`)
+    )
   })
 
   test('prefers the query param over the cookie', async () => {
@@ -85,7 +88,7 @@ describe('#translation plugin', () => {
   })
 
   test('uses Accept-Language when query and cookie are absent', async () => {
-    const { result } = await server.inject({
+    const { result, headers } = await server.inject({
       method: 'GET',
       url: '/',
       headers: {
@@ -94,6 +97,7 @@ describe('#translation plugin', () => {
     })
 
     expect(result.locale).toBe('cy')
+    expect(languageCookie(headers)).toBeUndefined()
   })
 })
 

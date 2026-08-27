@@ -23,7 +23,7 @@ describe('layout content', () => {
       url: paths.cookies
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document, Node } = new JSDOM(payload).window
 
     expect(document.documentElement.lang).toBe('en')
     expect(
@@ -37,6 +37,17 @@ describe('layout content', () => {
     )
     expect(payload).toContain(englishLayout.licence.linkText)
     expect(payload).toContain(englishLayout.copyright)
+
+    const feedbackLink = document.querySelector('[data-testid="feedback-link"]')
+    const languageToggle = document.querySelector(
+      '[data-testid="language-toggle"]'
+    )
+    expect(
+      Boolean(
+        feedbackLink.compareDocumentPosition(languageToggle) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+      )
+    ).toBe(true)
   })
 
   test('renders Welsh layout when lang=cy', async () => {
@@ -75,6 +86,59 @@ describe('layout content', () => {
     const backLink = document.querySelector('[data-testid="back-link"]')
 
     expect(backLink.textContent.trim()).toBe(welshLayout.back)
+  })
+
+  test('renders English as text and Cymraeg as a link by default', async () => {
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.cookies
+    })
+
+    const { document } = new JSDOM(payload).window
+    const toggle = document.querySelector('[data-testid="language-toggle"]')
+    const english = toggle.querySelector('[lang="en"]')
+    const welsh = toggle.querySelector('[lang="cy"]')
+
+    expect(english.tagName).toBe('SPAN')
+    expect(english.getAttribute('aria-current')).toBe('true')
+    expect(english.textContent.trim()).toBe('English')
+    expect(welsh.tagName).toBe('A')
+    expect(welsh.getAttribute('href')).toContain('lang=cy')
+    expect(welsh.getAttribute('hreflang')).toBe('cy')
+  })
+
+  test('renders Cymraeg as text and English as a link when lang=cy', async () => {
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: `${paths.cookies}?lang=cy`
+    })
+
+    const { document } = new JSDOM(payload).window
+    const toggle = document.querySelector('[data-testid="language-toggle"]')
+    const english = toggle.querySelector('[lang="en"]')
+    const welsh = toggle.querySelector('[lang="cy"]')
+
+    expect(welsh.tagName).toBe('SPAN')
+    expect(welsh.getAttribute('aria-current')).toBe('true')
+    expect(welsh.textContent.trim()).toBe('Cymraeg')
+    expect(english.tagName).toBe('A')
+    expect(english.getAttribute('href')).toContain('lang=en')
+    expect(english.getAttribute('hreflang')).toBe('en')
+  })
+
+  test('keeps other query params on the language toggle href', async () => {
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: `${paths.cookies}?foo=bar`
+    })
+
+    const { document } = new JSDOM(payload).window
+    const welsh = document.querySelector(
+      '[data-testid="language-toggle"] [lang="cy"]'
+    )
+
+    expect(welsh.getAttribute('href')).toContain('foo=bar')
+    expect(welsh.getAttribute('href')).toContain('lang=cy')
   })
 })
 

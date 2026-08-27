@@ -1,0 +1,38 @@
+<nav
+  class="app-language-toggle"
+  aria-label="{{ params.ariaLabel }}"
+  data-testid="language-toggle"
+>
+  <ul class="app-language-toggle__list">
+    <li class="app-language-toggle__list-item">
+      {% if params.locale == 'en' %}
+        <span lang="en" aria-current="true">{{ params.english }}</span>
+      {% else %}
+        <a
+          class="govuk-link"
+          href="{{ params.englishHref }}"
+          lang="en"
+          hreflang="en"
+          rel="alternate"
+        >
+          {{ params.english }}<span class="govuk-visually-hidden"> – {{ params.changeToEnglish }}</span>
+        </a>
+      {% endif %}
+    </li>
+    <li class="app-language-toggle__list-item">
+      {% if params.locale == 'cy' %}
+        <span lang="cy" aria-current="true">{{ params.welsh }}</span>
+      {% else %}
+        <a
+          class="govuk-link"
+          href="{{ params.welshHref }}"
+          lang="cy"
+          hreflang="cy"
+          rel="alternate"
+        >
+          {{ params.welsh }}<span class="govuk-visually-hidden"> – {{ params.changeToWelsh }}</span>
+        </a>
+      {% endif %}
+    </li>
+  </ul>
+</nav>

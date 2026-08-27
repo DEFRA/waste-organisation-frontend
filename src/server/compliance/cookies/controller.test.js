@@ -56,9 +56,9 @@ describe('#cookiesController', () => {
     const tableRows = document.querySelectorAll(
       '.govuk-table__body .govuk-table__row'
     )
-    expect(tableRows).toHaveLength(3)
+    expect(tableRows).toHaveLength(4)
 
-    const cookieNames = ['userSession', 'session', 'bell-defraId']
+    const cookieNames = ['userSession', 'session', 'bell-defraId', 'lang']
     cookieNames.forEach((cookieName) => {
       expect(payload).toEqual(expect.stringContaining(cookieName))
     })

@@ -7,6 +7,7 @@
 {# Import custom components globally #}
 {% from "heading/macro.njk" import appHeading %}
 {% from "importantBanner/macro.njk" import appImportantBanner %}
+{% from "languageToggle/macro.njk" import appLanguageToggle %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
@@ -73,8 +74,6 @@
 {% endblock %}
 
 {% block beforeContent %}
-
-
   {% set phaseHtml %}
     {{ layout.phaseBanner.beforeLink }}<a
       class="govuk-link"
@@ -92,6 +91,19 @@
       text: layout.phaseBanner.tag
     },
     html: phaseHtml
+    })
+  }}
+
+  {{
+    appLanguageToggle({
+      locale: languageToggle.locale,
+      englishHref: languageToggle.englishHref,
+      welshHref: languageToggle.welshHref,
+      ariaLabel: layout.languageToggle.ariaLabel,
+      english: layout.languageToggle.english,
+      welsh: layout.languageToggle.welsh,
+      changeToEnglish: layout.languageToggle.changeToEnglish,
+      changeToWelsh: layout.languageToggle.changeToWelsh
     })
   }}
 

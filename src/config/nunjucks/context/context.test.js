@@ -50,6 +50,11 @@ describe('context and cache', () => {
           assetPath: '/public/assets',
           breadcrumbs: [],
           layout: content.layout(mockRequest),
+          languageToggle: {
+            locale: 'en',
+            englishHref: '/?lang=en',
+            welshHref: '/?lang=cy'
+          },
           getAssetPath: expect.any(Function),
           navigation: [],
           serviceName: 'Report receipt of waste',
@@ -130,6 +135,11 @@ describe('context and cache', () => {
           assetPath: '/public/assets',
           breadcrumbs: [],
           layout: content.layout(mockRequest),
+          languageToggle: {
+            locale: 'en',
+            englishHref: '/?lang=en',
+            welshHref: '/?lang=cy'
+          },
           getAssetPath: expect.any(Function),
           navigation: [],
           serviceName: 'Report receipt of waste',

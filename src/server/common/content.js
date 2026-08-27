@@ -12,6 +12,13 @@ export const common = {
           afterLink: '.'
         },
         back: 'Back',
+        languageToggle: {
+          ariaLabel: 'Change language',
+          english: 'English',
+          welsh: 'Cymraeg',
+          changeToEnglish: 'Change to English',
+          changeToWelsh: 'zzzzz'
+        },
         footer: {
           privacy: 'Privacy',
           cookies: 'Cookies',
@@ -33,6 +40,13 @@ export const common = {
           afterLink: '.'
         },
         back: 'Yn ôl',
+        languageToggle: {
+          ariaLabel: 'zzzzz',
+          english: 'English',
+          welsh: 'Cymraeg',
+          changeToEnglish: 'Change to English',
+          changeToWelsh: 'zzzzz'
+        },
         footer: {
           privacy: 'Preifatrwydd',
           cookies: 'Cwcis',

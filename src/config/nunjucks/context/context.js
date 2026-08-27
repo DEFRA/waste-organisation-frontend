@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 
 import { config } from '../../config.js'
 import { content } from '../../content.js'
+import { languageToggleHref } from '../../../server/common/plugins/translations/language-toggle-href.js'
 import { buildNavigation } from './build-navigation.js'
 import { createLogger } from '../../../server/common/helpers/logging/logger.js'
 
@@ -33,6 +34,11 @@ export function context(request) {
     serviceUrl: config.get('links.account'),
     feedbackUrl: config.get('links.feedback'),
     layout: content.layout(request),
+    languageToggle: {
+      locale: request.locale === 'cy' ? 'cy' : 'en',
+      englishHref: languageToggleHref(request, 'en'),
+      welshHref: languageToggleHref(request, 'cy')
+    },
     breadcrumbs: [],
     navigation: buildNavigation(request),
     getAssetPath(asset) {

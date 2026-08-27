@@ -1,0 +1,31 @@
+@use 'govuk-frontend' as *;
+
+.app-language-toggle {
+  @include govuk-font($size: 16);
+  text-align: right;
+  margin-top: govuk-spacing(3);
+  margin-bottom: govuk-spacing(2);
+
+  [aria-current='true'] {
+    font-weight: 400;
+  }
+}
+
+.app-language-toggle__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-language-toggle__list-item {
+  display: inline-block;
+
+  &:not(:last-child)::after {
+    content: '';
+    display: inline-block;
+    height: 1em;
+    border-right: 1px solid $govuk-border-colour;
+    margin: 0 govuk-spacing(1);
+    vertical-align: middle;
+  }
+}

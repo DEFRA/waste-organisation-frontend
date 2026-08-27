@@ -2,7 +2,8 @@ import { config } from '../../../../config/config.js'
 import {
   firstSupportedLocale,
   LANGUAGE_COOKIE_NAME,
-  resolveLocale
+  resolveLocale,
+  supportedLocale
 } from './resolve-locale.js'
 
 export const translation = {
@@ -27,8 +28,14 @@ export const translation = {
         })
 
         const queryLang = firstSupportedLocale(request.query?.lang)
+        const cookieLang = supportedLocale(
+          request.state?.[LANGUAGE_COOKIE_NAME]
+        )
+
         if (queryLang) {
           h.state(LANGUAGE_COOKIE_NAME, queryLang)
+        } else if (cookieLang) {
+          h.state(LANGUAGE_COOKIE_NAME, cookieLang)
         }
 
         return h.continue
