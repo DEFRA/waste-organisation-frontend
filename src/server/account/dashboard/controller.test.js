@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom'
 
 import { config } from '../../../config/config.js'
+import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 import {
   initialiseServer,
@@ -97,5 +98,26 @@ describe('#accountController', () => {
     expect(paymentDueTag).toBeNull()
     expect(nextPaymentDue).toBeNull()
     expect(importantNotice).toBeNull()
+  })
+
+  test('displays Welsh heading when lang=cy', async () => {
+    const pageContent = content.account({ locale: 'cy' }, organisationName)
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: `${paths.account}?lang=cy`,
+      auth: {
+        strategy: 'session',
+        credentials
+      }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    expect(document.title).toEqual(
+      expect.stringContaining(`${pageContent.title} |`)
+    )
+    expect(
+      document.querySelector('[data-testid="app-heading-title"]').textContent
+    ).toEqual(expect.stringContaining(pageContent.heading.text))
   })
 })

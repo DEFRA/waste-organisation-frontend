@@ -51,6 +51,23 @@ describe('ukPermit', () => {
       )
     })
 
+    test('should render Welsh content when lang=cy', async () => {
+      const welshContent = content.ukPermit({ locale: 'cy' })
+      const { payload } = await server.inject({
+        method: 'GET',
+        url: `${paths.ukPermit}?lang=cy`
+      })
+
+      const { document } = new JSDOM(payload).window
+
+      expect(document.title).toEqual(
+        expect.stringContaining(`${welshContent.title} |`)
+      )
+      expect(
+        document.querySelector('[data-testid="app-heading-title"]').textContent
+      ).toEqual(expect.stringContaining(welshContent.heading.text))
+    })
+
     test('should show error message if there is an error', async () => {
       const expectedErrorMessage = pageContent.error.message
       server.injectYarState({ type: 'isPermitError', message: true })
