@@ -1,34 +1,36 @@
-// function getBrowserLanguage(acceptLanguage = '') {
-//   return acceptLanguage
-//     .split(',')
-//     .map((item) => {
-//       const [locale, qualityValue = 'q=1'] = item.trim().split(';')
-
-//       return {
-//         language: locale.toLowerCase().split('-')[0],
-//         quality: Number(qualityValue.replace('q=', '')) || 0
-//       }
-//     })
-//     .sort((a, b) => b.quality - a.quality)
-//     .find(({ language }) => language === 'en' || language === 'cy')
-// }
+import { config } from '../../../../config/config.js'
+import {
+  firstSupportedLocale,
+  LANGUAGE_COOKIE_NAME,
+  resolveLocale
+} from './resolve-locale.js'
 
 export const translation = {
   plugin: {
     name: 'translation',
     register: async (server) => {
-      server.ext('onPreHandler', (request, h) => {
-        // console.log(
-        //   'initial language header',
-        //   request.headers['accept-language']
-        // )
+      server.state(LANGUAGE_COOKIE_NAME, {
+        ttl: null,
+        isSecure: config.get('session.cookie.secure'),
+        isHttpOnly: true,
+        isSameSite: config.get('session.cookie.sameSite'),
+        path: '/',
+        encoding: 'none',
+        clearInvalid: true
+      })
 
-        // const browserLanguage = getBrowserLanguage(
-        //   request.headers['accept-language']
-        // )
-        // console.log('browser language')
-        // request.locale = browserLanguage?.language === 'cy' ? 'zz' : 'en'
-        request.locale = 'en'
+      server.ext('onPreHandler', (request, h) => {
+        request.locale = resolveLocale({
+          queryLang: request.query?.lang,
+          cookieLang: request.state?.[LANGUAGE_COOKIE_NAME],
+          acceptLanguage: request.headers['accept-language']
+        })
+
+        const queryLang = firstSupportedLocale(request.query?.lang)
+        if (queryLang) {
+          h.state(LANGUAGE_COOKIE_NAME, queryLang)
+        }
+
         return h.continue
       })
 
@@ -41,8 +43,8 @@ export const translation = {
 
         response.source.context ??= {}
 
-        response.source.context.locale = request?.locale
-        response.source.context.htmlLang = request?.locale
+        response.source.context.locale = request.locale
+        response.source.context.htmlLang = request.locale
 
         return h.continue
       })
