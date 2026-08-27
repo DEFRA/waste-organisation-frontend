@@ -23,7 +23,9 @@ export const spreadsheet = {
     ['GET', paths.spreadsheetUpload, createBeginUpload, 'session'],
     ['GET', paths.spreadsheetUploaded, createFileUploaded, 'session'],
     ['GET', paths.updateSpreadsheetUpload, updateBeginUpload],
-    ['GET', paths.updateSpreadsheetUploaded, updateFileUploaded],
+    ['GET', paths.updateSpreadsheetUploaded, updateFileUploaded]
+  ].map(createRoute),
+  downloadRoutes: [
     ['GET', paths.downloadSpreadsheet, downloadSpreadsheetController]
   ].map(createRoute),
   openRoutes: [

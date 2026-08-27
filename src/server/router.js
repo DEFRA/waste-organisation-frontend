@@ -84,7 +84,7 @@ export const router = {
         serviceChargeCallback:   serviceCharge.openRoutes,
         search:                  search.openRoutes,
         // Routes that require auth
-        spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(spreadsheet.openRoutes),
+        spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(spreadsheet.downloadRoutes.map((a) => addAuthWithOrg(a))).concat(spreadsheet.openRoutes),
         apiManagement:           apiManagement.authedRoutes.map((a) => addAuthWithOrgPayment(a)),
         account:                 account.authedRoutes.map((a) => addAuthWithOrg(a)),
         serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a))
