@@ -145,7 +145,7 @@ jobs:
           script: |
             const statusEmoji = '${{ steps.integration-tests.outcome }}' === 'success' ? '✅' : '❌';
             const zapLine = '${{ steps.upload-zap-report.outcome }}' === 'success'
-              ? `\n\n🔒 [Download ZAP DAST Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.upload-zap-report.outputs.artifact-id }})`
+              ? `\n\n🔒 [Download ZAP Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.upload-zap-report.outputs.artifact-id }})`
               : '';
             github.rest.issues.createComment({
               issue_number: context.issue.number,
