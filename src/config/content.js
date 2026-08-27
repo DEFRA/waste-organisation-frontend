@@ -12,8 +12,8 @@ export const heading = (text, caption, organisationName) => ({
 })
 
 export const getContentForLanguage = (request, data) => {
-  const locale = request?.locale ?? 'cy'
-  return data[locale]
+  const locale = request?.locale === 'cy' ? 'cy' : 'en'
+  return data[locale] ?? data.en
 }
 
 /* v8 ignore next */

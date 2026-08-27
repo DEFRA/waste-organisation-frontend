@@ -1,5 +1,5 @@
 import { expect } from 'vitest'
-import { content } from './content'
+import { content, getContentForLanguage } from './content'
 
 function shape(obj, replaceValue = null) {
   return Object.fromEntries(
@@ -13,6 +13,37 @@ function shape(obj, replaceValue = null) {
     ])
   )
 }
+
+describe('#getContentForLanguage', () => {
+  const data = {
+    en: { title: 'English' },
+    cy: { title: 'Cymraeg' }
+  }
+
+  test('returns Welsh when locale is cy', () => {
+    expect(getContentForLanguage({ locale: 'cy' }, data)).toEqual(data.cy)
+  })
+
+  test('returns English when locale is en', () => {
+    expect(getContentForLanguage({ locale: 'en' }, data)).toEqual(data.en)
+  })
+
+  test('returns English when locale is missing', () => {
+    expect(getContentForLanguage({}, data)).toEqual(data.en)
+    expect(getContentForLanguage(undefined, data)).toEqual(data.en)
+  })
+
+  test('returns English when locale is unexpected', () => {
+    expect(getContentForLanguage({ locale: 'fr' }, data)).toEqual(data.en)
+    expect(getContentForLanguage({ locale: 'zz' }, data)).toEqual(data.en)
+  })
+
+  test('falls back to English if the selected tree is missing', () => {
+    expect(getContentForLanguage({ locale: 'cy' }, { en: data.en })).toEqual(
+      data.en
+    )
+  })
+})
 
 describe('Content', () => {
   test.each(Object.keys(content))(

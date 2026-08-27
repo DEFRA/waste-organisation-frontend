@@ -10,7 +10,7 @@ export const translation = {
     name: 'translation',
     register: async (server) => {
       server.state(LANGUAGE_COOKIE_NAME, {
-        ttl: null,
+        ttl: 400 * 24 * 60 * 60 * 1000,
         isSecure: config.get('session.cookie.secure'),
         isHttpOnly: true,
         isSameSite: config.get('session.cookie.sameSite'),
