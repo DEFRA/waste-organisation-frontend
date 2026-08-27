@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
 import { config } from '../../config.js'
+import { content } from '../../content.js'
 
 const mockReadFileSync = vi.fn()
 const mockLoggerError = vi.fn()
@@ -48,6 +49,7 @@ describe('context and cache', () => {
         expect(contextResult).toEqual({
           assetPath: '/public/assets',
           breadcrumbs: [],
+          layout: content.layout(mockRequest),
           getAssetPath: expect.any(Function),
           navigation: [],
           serviceName: 'Report receipt of waste',
@@ -127,6 +129,7 @@ describe('context and cache', () => {
         expect(contextResult).toEqual({
           assetPath: '/public/assets',
           breadcrumbs: [],
+          layout: content.layout(mockRequest),
           getAssetPath: expect.any(Function),
           navigation: [],
           serviceName: 'Report receipt of waste',

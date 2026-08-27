@@ -1,6 +1,7 @@
 import { account } from '../server/account/content.js'
 import { apiManagement } from '../server/apiManagement/content.js'
 import { authentication } from '../server/authentication/content.js'
+import { common } from '../server/common/content.js'
 import { onboarding } from '../server/onboarding/content.js'
 import { serviceCharge } from '../server/serviceCharge/content.js'
 import { spreadsheet } from '../server/spreadsheet/content.js'
@@ -18,6 +19,7 @@ export const getContentForLanguage = (request, data) => {
 
 /* v8 ignore next */
 export const content = {
+  ...common,
   ...account,
   ...onboarding,
   ...apiManagement,

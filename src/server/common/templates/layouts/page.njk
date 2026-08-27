@@ -7,25 +7,30 @@
 {# Import custom components globally #}
 {% from "heading/macro.njk" import appHeading %}
 {% from "importantBanner/macro.njk" import appImportantBanner %}
-
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block head %}
   {% if govukRebrand == false %}
     <link
-    href="{{ getAssetPath('stylesheets/application-black.scss')}}"
-    rel="stylesheet"
-/>
-    <link rel="icon" href="{{ getAssetPath('assets/images/favicon.png') }}" type="image/png">
-    <link rel="apple-touch-icon" href="{{ getAssetPath('assets/images/favicon.png') }}">
+      href="{{ getAssetPath('stylesheets/application-black.scss') }}"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="{{ getAssetPath('assets/images/favicon.png') }}"
+      type="image/png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="{{ getAssetPath('assets/images/favicon.png') }}"
+    />
   {% else %}
     <link
-    href="{{ getAssetPath('stylesheets/application.scss')}}"
-    rel="stylesheet"
-/>
+      href="{{ getAssetPath('stylesheets/application.scss') }}"
+      rel="stylesheet"
+    />
   {% endif %}
-
 {% endblock %}
 
 {% block header %}
@@ -35,7 +40,7 @@
     <div class="govuk-header">
       <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__logo">
-          <a href="{{serviceUrl}}" class="govuk-header__homepage-link">
+          <a href="{{ serviceUrl }}" class="govuk-header__homepage-link">
             Department for Environment, Food and Rural Affairs
           </a>
         </div>
@@ -43,13 +48,13 @@
     </div>
   {% else %}
     {{
-    govukHeader({
-      homepageUrl: "https://www.gov.uk/",
-      classes: "app-header",
-      containerClasses: "govuk-width-container",
-      useTudorCrown: true
-    })
-  }}
+      govukHeader({
+        homepageUrl: "https://www.gov.uk/",
+        classes: "app-header",
+        containerClasses: "govuk-width-container",
+        useTudorCrown: true
+      })
+    }}
   {% endif %}
 
   {{
@@ -63,24 +68,28 @@
 {% endblock %}
 
 {% block pageTitle %}
-  {{ pageTitle }} | {{ serviceName }}
+  {{ pageTitle }}
+  | {{ serviceName }}
 {% endblock %}
 
 {% block beforeContent %}
 
-  {% set phaseHtml %}
 
-  {% if locale === 'cy' %}
-    Mae hwn yn wasanaeth newydd. Helpwch ni i'w wella drwy <a class="govuk-link" href="{{feedbackUrl}}" target="_blank" rel="noopener noreferrer" data-testid="feedback-link">roi'ch adborth (yn agor mewn tab newydd)</a>. 
-  {% else %}
-    This is a new service. Help us improve it and <a class="govuk-link" href="{{feedbackUrl}}" target="_blank" rel="noopener noreferrer" data-testid="feedback-link">give your feedback (opens in new tab)</a>.
-  {% endif %}
+  {% set phaseHtml %}
+    {{ layout.phaseBanner.beforeLink }}<a
+      class="govuk-link"
+      href="{{ feedbackUrl }}"
+      target="_blank"
+      rel="noopener noreferrer"
+      data-testid="feedback-link"
+      >{{ layout.phaseBanner.linkText }}</a
+    >{{ layout.phaseBanner.afterLink }}
   {% endset -%}
 
   {{
     govukPhaseBanner({
     tag: {
-      text: "Beta"
+      text: layout.phaseBanner.tag
     },
     html: phaseHtml
     })
@@ -95,27 +104,31 @@
   {% endif %}
 
   {% if backLink %}
-    {{ govukBackLink({
-      text: "Yn ôl" if locale === 'cy' else "Back",
-      href: backLink,
-      attributes: {
-        "data-testid": "back-link"
-      }
-    }) }}
+    {{
+      govukBackLink({
+        text: layout.back,
+        href: backLink,
+        attributes: {
+          "data-testid": "back-link"
+        }
+      })
+    }}
   {% endif %}
 {% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+{% endblock %}
 
 {% block footer %}
 
-  {% set phaseContentLicence %}
-  {% if locale === 'cy' %}
-      Mae'r holl gynnwys ar gael dan y <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Drwydded Llywodraeth Agored 3.0</a> ac eithrio pan nodir fel arall 
-    {% else %}
-      All content is available under the
-            <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated
-    {% endif %}
+
+  {% set contentLicenceHtml %}
+    {{ layout.licence.beforeLink }}<a
+      class="govuk-footer__link"
+      href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      rel="license"
+      >{{ layout.licence.linkText }}</a
+    >{{ layout.licence.afterLink }}
   {% endset -%}
 
   {{
@@ -124,27 +137,27 @@
         items: [
           {
             href: "/privacy-notice",
-            text: "Preifatrwydd" if locale === 'cy' else "Privacy"
+            text: layout.footer.privacy
           },
           {
             href: "/cookies",
-            text: "Cwcis" if locale === 'cy' else "Cookies"
+            text: layout.footer.cookies
           },
           {
             href: "/accessibility-statement",
-            text: "Datganiad hygyrchedd" if locale === 'cy' else "Accessibility statement"
+            text: layout.footer.accessibility
           },
           {
             href: "/terms",
-            text: "Telerau" if locale === 'cy' else "Terms"
+            text: layout.footer.terms
           }
         ]
       },
       contentLicence: {
-        html: phaseContentLicence
+        html: contentLicenceHtml
       },
       copyright: {
-        text: "© Hawlfraint y Goron " if locale === 'cy' else "© Crown copyright"
+        text: layout.copyright
       }
     })
   }}

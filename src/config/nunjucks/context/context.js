@@ -2,6 +2,7 @@ import path from 'node:path'
 import { readFileSync } from 'node:fs'
 
 import { config } from '../../config.js'
+import { content } from '../../content.js'
 import { buildNavigation } from './build-navigation.js'
 import { createLogger } from '../../../server/common/helpers/logging/logger.js'
 
@@ -31,6 +32,7 @@ export function context(request) {
         : config.get('serviceName'),
     serviceUrl: config.get('links.account'),
     feedbackUrl: config.get('links.feedback'),
+    layout: content.layout(request),
     breadcrumbs: [],
     navigation: buildNavigation(request),
     getAssetPath(asset) {
