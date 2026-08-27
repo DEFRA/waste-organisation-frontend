@@ -14,7 +14,22 @@ describe('#searchController', () => {
   describe('when feature flag is enabled', () => {
     beforeEach(async () => {
       config.set('featureFlags.searchPage', true)
-      server = await initialiseServer()
+      server = await initialiseServer({
+        mockedPlugins: {
+          backendApi: {
+            plugin: {
+              name: 'mockBackendApi',
+              register: async (server) => {
+                server.decorate('request', 'backendApi', {
+                  getOrganisation: async () => {
+                    return { organisation: { test: 123 } }
+                  }
+                })
+              }
+            }
+          }
+        }
+      })
     })
 
     afterEach(() => {
