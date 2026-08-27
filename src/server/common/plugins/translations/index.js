@@ -32,10 +32,9 @@ export const translation = {
           request.state?.[LANGUAGE_COOKIE_NAME]
         )
 
-        if (queryLang) {
-          h.state(LANGUAGE_COOKIE_NAME, queryLang)
-        } else if (cookieLang) {
-          h.state(LANGUAGE_COOKIE_NAME, cookieLang)
+        const langToPersist = queryLang || cookieLang
+        if (langToPersist) {
+          h.state(LANGUAGE_COOKIE_NAME, langToPersist)
         }
 
         return h.continue
