@@ -144,11 +144,14 @@ jobs:
         with:
           script: |
             const statusEmoji = '${{ steps.integration-tests.outcome }}' === 'success' ? '✅' : '❌';
+            const zapLine = '${{ steps.upload-zap-report.outcome }}' === 'success'
+              ? `\n\n🔒 [Download ZAP DAST Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.upload-zap-report.outputs.artifact-id }})`
+              : '';
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## 📊 Integration Test Report ${statusEmoji}\n\nThe test report has been generated and is available as an artifact.\n\n📥 [Download Test Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.upload-report.outputs.artifact-id }})`
+              body: `## 📊 Integration Test Report ${statusEmoji}\n\nThe test report has been generated and is available as an artifact.\n\n📥 [Download Test Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.upload-report.outputs.artifact-id }})${zapLine}`
             })
 
       - name: Stop Docker Compose Services
