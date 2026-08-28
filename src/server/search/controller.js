@@ -15,7 +15,7 @@ function getFeatureFlagTableRows() {
 }
 
 export const searchController = {
-  handler(request, h) {
+  async handler(request, h) {
     if (!config.get('featureFlags.searchPage')) {
       throw boom.notFound()
     }
@@ -29,10 +29,17 @@ export const searchController = {
       }
     }
     /* v8 ignore stop */
+
+    const organisation = await request.backendApi.getOrganisation(
+      request?.auth?.credentials?.id,
+      request?.auth?.credentials?.currentOrganisationId
+    )
+
     return h.view('search/index', {
       pageTitle: 'Search',
       heading: 'You are logged in',
       credentials: JSON.stringify(request?.auth?.credentials, null, 2),
+      organisation: JSON.stringify(organisation, null, 2),
       featureFlagRows
     })
   }

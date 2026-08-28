@@ -21,11 +21,10 @@
           id: "start-now-button",
           classes: "govuk-!-margin-top-5" })
         }}
-
-        <pre>
-          {{ credentials }}
-        </pre
-        >
+        <h2 class="govuk-heading-m">Credentials</h2>
+        <pre> {{ credentials }} </pre>
+        <h2 class="govuk-heading-m">Organisation</h2>
+        <pre> {{ organisation }} </pre>
       </div>
     </div>
   </div>
@@ -34,14 +33,16 @@
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-m">Feature flags</h2>
 
-      {{ govukTable({
-        head: [
-          { text: "Name" },
-          { text: "Environment variable" },
-          { text: "Status" }
-        ],
-        rows: featureFlagRows
-      }) }}
+      {{
+        govukTable({
+          head: [
+            { text: "Name" },
+            { text: "Environment variable" },
+            { text: "Status" }
+          ],
+          rows: featureFlagRows
+        })
+      }}
     </div>
   </div>
 {% endblock %}
