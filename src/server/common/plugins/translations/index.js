@@ -7,7 +7,8 @@ import {
   supportedLocale
 } from './resolve-locale.js'
 
-const LANGUAGE_COOKIE_TTL_MS = 400 * 24 * 60 * 60 * 1000
+const LANGUAGE_COOKIE_TTL_DAYS = 400
+const LANGUAGE_COOKIE_TTL_MS = LANGUAGE_COOKIE_TTL_DAYS * 24 * 60 * 60 * 1000
 
 export const translation = {
   plugin: {
