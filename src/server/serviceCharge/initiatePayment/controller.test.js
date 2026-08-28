@@ -61,6 +61,7 @@ describe('#initiatePaymentController', () => {
       amount: serviceChargeAmountPence,
       description: SERVICE_CHARGE_DESCRIPTION,
       returnUrl: `${appBaseUrl}${paths.paymentDetails}`,
+      language: 'en',
       metadata: {
         organisationId: ORGANISATION_ID,
         organisationName: ORGANISATION_NAME,
@@ -71,6 +72,44 @@ describe('#initiatePaymentController', () => {
 
     expect(h.redirect).toBeCalledWith(mockNextUrl)
   })
+
+  test.each([
+    { locale: 'cy', language: 'cy' },
+    { locale: 'en', language: 'en' },
+    { locale: undefined, language: 'en' }
+  ])(
+    'sends language $language when request.locale is $locale',
+    async ({ locale, language }) => {
+      const serviceChargeAmountPence = 4000
+      const dateNow = new Date('2026-05-05T10:00:00.000Z')
+      const mockNextUrl = faker.internet.url
+      const { backendMock, request, h } = createMockRequest(
+        ORGANISATION_ID,
+        ORGANISATION_NAME,
+        dateNow,
+        mockNextUrl,
+        [
+          {
+            from: '2026-10-01T00:00:00.000Z',
+            to: '2027-10-01T00:00:00.000Z',
+            priceInPence: serviceChargeAmountPence
+          }
+        ],
+        locale
+      )
+
+      if (locale === undefined) {
+        delete request.locale
+      }
+
+      await initiatePaymentController.handler(request, h)
+
+      expect(backendMock).toBeCalledWith(
+        ORGANISATION_ID,
+        expect.objectContaining({ language })
+      )
+    }
+  )
 
   test.each([
     { error: new Error('ERROR MESSAGE'), message: 'ERROR MESSAGE' },
@@ -426,7 +465,8 @@ const createMockRequest = (
   organisationName,
   dateNow,
   nextUrl,
-  paymentPeriods
+  paymentPeriods,
+  locale = 'en'
 ) => {
   const backendMock = vi.fn()
   const getOrganisationMock = vi.fn()
@@ -434,6 +474,7 @@ const createMockRequest = (
   return {
     backendMock,
     request: {
+      locale,
       auth: {
         credentials: {
           currentOrganisationId: organisationId,
