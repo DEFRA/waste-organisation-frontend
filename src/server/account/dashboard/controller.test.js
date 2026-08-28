@@ -15,6 +15,7 @@ describe('#accountController', () => {
   let server
   let credentials
   let initialServiceChargeFeatureFlag
+  let initialWelshLanguageFlag
 
   beforeEach(() => {
     wreckGetMock.mockReturnValue({
@@ -37,6 +38,7 @@ describe('#accountController', () => {
 
   beforeAll(async () => {
     initialServiceChargeFeatureFlag = config.get('featureFlags.serviceCharge')
+    initialWelshLanguageFlag = config.get('featureFlags.welshLanguage')
     config.set('featureFlags.serviceCharge', false)
     server = await initialiseServer()
     credentials = await setupAuthedUserSession(server)
@@ -46,6 +48,7 @@ describe('#accountController', () => {
 
   afterAll(async () => {
     config.set('featureFlags.serviceCharge', initialServiceChargeFeatureFlag)
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
     wreckGetMock.mockReset()
     await server.stop({ timeout: 0 })
   })
@@ -101,6 +104,8 @@ describe('#accountController', () => {
   })
 
   test('displays Welsh heading when lang=cy', async () => {
+    config.set('featureFlags.welshLanguage', true)
+
     const pageContent = content.account({ locale: 'cy' }, organisationName)
     const { payload } = await server.inject({
       method: 'GET',

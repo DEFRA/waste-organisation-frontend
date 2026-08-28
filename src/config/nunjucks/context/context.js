@@ -34,6 +34,7 @@ export function context(request) {
     serviceUrl: config.get('links.account'),
     feedbackUrl: config.get('links.feedback'),
     layout: content.layout(request),
+    welshLanguage: config.get('featureFlags.welshLanguage'),
     languageToggle: {
       locale: request.locale === 'cy' ? 'cy' : 'en',
       englishHref: languageToggleHref(request, 'en'),

@@ -1,17 +1,20 @@
 import { config } from '../../../../config/config.js'
 import {
+  DEFAULT_LOCALE,
   firstSupportedLocale,
   LANGUAGE_COOKIE_NAME,
   resolveLocale,
   supportedLocale
 } from './resolve-locale.js'
 
+const LANGUAGE_COOKIE_TTL_MS = 400 * 24 * 60 * 60 * 1000
+
 export const translation = {
   plugin: {
     name: 'translation',
     register: async (server) => {
       server.state(LANGUAGE_COOKIE_NAME, {
-        ttl: 400 * 24 * 60 * 60 * 1000,
+        ttl: LANGUAGE_COOKIE_TTL_MS,
         isSecure: config.get('session.cookie.secure'),
         isHttpOnly: true,
         isSameSite: config.get('session.cookie.sameSite'),
@@ -21,6 +24,11 @@ export const translation = {
       })
 
       server.ext('onPreHandler', (request, h) => {
+        if (!config.get('featureFlags.welshLanguage')) {
+          request.locale = DEFAULT_LOCALE
+          return h.continue
+        }
+
         request.locale = resolveLocale({
           queryLang: request.query?.lang,
           cookieLang: request.state?.[LANGUAGE_COOKIE_NAME],

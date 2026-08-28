@@ -93,18 +93,20 @@
     })
   }}
 
-  {{
-    appLanguageToggle({
-      locale: languageToggle.locale,
-      englishHref: languageToggle.englishHref,
-      welshHref: languageToggle.welshHref,
-      ariaLabel: layout.languageToggle.ariaLabel,
-      english: layout.languageToggle.english,
-      welsh: layout.languageToggle.welsh,
-      changeToEnglish: layout.languageToggle.changeToEnglish,
-      changeToWelsh: layout.languageToggle.changeToWelsh
-    })
-  }}
+  {% if welshLanguage %}
+    {{
+      appLanguageToggle({
+        locale: languageToggle.locale,
+        englishHref: languageToggle.englishHref,
+        welshHref: languageToggle.welshHref,
+        ariaLabel: layout.languageToggle.ariaLabel,
+        english: layout.languageToggle.english,
+        welsh: layout.languageToggle.welsh,
+        changeToEnglish: layout.languageToggle.changeToEnglish,
+        changeToWelsh: layout.languageToggle.changeToWelsh
+      })
+    }}
+  {% endif %}
 
   {% if breadcrumbs.length > 1 %}
     {{

@@ -471,6 +471,12 @@ export const config = convict({
       format: Boolean,
       default: true,
       env: 'FEATURE_FLAG_REBRAND'
+    },
+    welshLanguage: {
+      doc: 'Enable Welsh language switching and the language toggle',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_WELSH_LANGUAGE'
     }
   },
   encryptionKey: {

@@ -3,15 +3,23 @@ import { JSDOM } from 'jsdom'
 import { statusCodes } from '../../common/constants/status-codes.js'
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
 import { paths } from '../../../config/paths.js'
+import { config } from '../../../config/config.js'
 
 describe('#cookiesController', () => {
   let server
+  let initialWelshLanguageFlag
 
   beforeAll(async () => {
+    initialWelshLanguageFlag = config.get('featureFlags.welshLanguage')
     server = await initialiseServer()
   })
 
+  afterEach(() => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
+  })
+
   afterAll(async () => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
     await server.stop({ timeout: 0 })
   })
 
@@ -56,15 +64,38 @@ describe('#cookiesController', () => {
     const tableRows = document.querySelectorAll(
       '.govuk-table__body .govuk-table__row'
     )
-    expect(tableRows).toHaveLength(4)
+    expect(tableRows).toHaveLength(3)
 
-    const cookieNames = ['userSession', 'session', 'bell-defraId', 'lang']
+    const cookieNames = ['userSession', 'session', 'bell-defraId']
     cookieNames.forEach((cookieName) => {
       expect(payload).toEqual(expect.stringContaining(cookieName))
     })
+    expect(payload).not.toEqual(
+      expect.stringContaining('Remembers your language choice')
+    )
+  })
+
+  test('Should include the lang cookie when welsh language is enabled', async () => {
+    config.set('featureFlags.welshLanguage', true)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.cookies
+    })
+
+    const { document } = new JSDOM(payload).window
+    const tableRows = document.querySelectorAll(
+      '.govuk-table__body .govuk-table__row'
+    )
+
+    expect(tableRows).toHaveLength(4)
+    expect(payload).toEqual(
+      expect.stringContaining('Remembers your language choice')
+    )
   })
 
   test('Should render the Welsh cookies page when lang=cy', async () => {
+    config.set('featureFlags.welshLanguage', true)
     const { payload } = await server.inject({
       method: 'GET',
       url: `${paths.cookies}?lang=cy`

@@ -3,6 +3,7 @@ import { JSDOM } from 'jsdom'
 import { statusCodes } from '../../common/constants/status-codes.js'
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
 import { paths } from '../../../config/paths.js'
+import { config } from '../../../config/config.js'
 
 const englishConditions = [
   'you are authorised to act on behalf of your organisation',
@@ -13,12 +14,19 @@ const englishConditions = [
 
 describe('#termsController', () => {
   let server
+  let initialWelshLanguageFlag
 
   beforeAll(async () => {
+    initialWelshLanguageFlag = config.get('featureFlags.welshLanguage')
     server = await initialiseServer()
   })
 
+  afterEach(() => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
+  })
+
   afterAll(async () => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
     await server.stop({ timeout: 0 })
   })
 
@@ -67,6 +75,8 @@ describe('#termsController', () => {
   })
 
   test('Should render the Welsh terms page when lang=cy', async () => {
+    config.set('featureFlags.welshLanguage', true)
+
     const { payload } = await server.inject({
       method: 'GET',
       url: `${paths.terms}?lang=cy`

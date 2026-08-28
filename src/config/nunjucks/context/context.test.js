@@ -50,6 +50,7 @@ describe('context and cache', () => {
           assetPath: '/public/assets',
           breadcrumbs: [],
           layout: content.layout(mockRequest),
+          welshLanguage: false,
           languageToggle: {
             locale: 'en',
             englishHref: '/?lang=en',
@@ -135,6 +136,7 @@ describe('context and cache', () => {
           assetPath: '/public/assets',
           breadcrumbs: [],
           layout: content.layout(mockRequest),
+          welshLanguage: false,
           languageToggle: {
             locale: 'en',
             englishHref: '/?lang=en',

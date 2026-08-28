@@ -5,16 +5,24 @@ import { paths } from '../../../config/paths'
 import { statusCodes } from '../../common/constants/status-codes'
 import { JSDOM } from 'jsdom'
 import { content } from '../../../config/content'
+import { config } from '../../../config/config.js'
 
 describe('ukPermit', () => {
   let server
+  let initialWelshLanguageFlag
   const pageContent = content.ukPermit({})
 
   beforeAll(async () => {
+    initialWelshLanguageFlag = config.get('featureFlags.welshLanguage')
     server = await initialiseServer()
   })
 
+  afterEach(() => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
+  })
+
   afterAll(async () => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
     await server.stop({ timeout: 0 })
   })
 
@@ -52,6 +60,8 @@ describe('ukPermit', () => {
     })
 
     test('should render Welsh content when lang=cy', async () => {
+      config.set('featureFlags.welshLanguage', true)
+
       const welshContent = content.ukPermit({ locale: 'cy' })
       const { payload } = await server.inject({
         method: 'GET',

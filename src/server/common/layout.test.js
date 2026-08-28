@@ -3,17 +3,22 @@ import { JSDOM } from 'jsdom'
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 import { paths } from '../../config/paths.js'
 import { content } from '../../config/content.js'
+import { config } from '../../config/config.js'
 
 describe('layout content', () => {
   let server
+  let initialWelshLanguageFlag
   const englishLayout = content.layout({ locale: 'en' })
   const welshLayout = content.layout({ locale: 'cy' })
 
   beforeAll(async () => {
+    initialWelshLanguageFlag = config.get('featureFlags.welshLanguage')
+    config.set('featureFlags.welshLanguage', true)
     server = await initialiseServer()
   })
 
   afterAll(async () => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
     await server?.stop({ timeout: 0 })
   })
 
@@ -139,6 +144,21 @@ describe('layout content', () => {
 
     expect(welsh.getAttribute('href')).toContain('foo=bar')
     expect(welsh.getAttribute('href')).toContain('lang=cy')
+  })
+
+  test('hides the language toggle when welsh language is disabled', async () => {
+    config.set('featureFlags.welshLanguage', false)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.cookies
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    expect(document.querySelector('[data-testid="language-toggle"]')).toBeNull()
+
+    config.set('featureFlags.welshLanguage', true)
   })
 })
 
