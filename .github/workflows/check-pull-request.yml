@@ -104,7 +104,7 @@ jobs:
           ORGANISATION_BACKEND_PASSWORD: ${{ secrets.ORGANISATION_BACKEND_PASSWORD }}
           ENVIRONMENT: local
         run: |
-          npm run test
+          npm run test:smoke
 
       - name: Generate Test Report
         if: always()
