@@ -50,6 +50,8 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+    env:
+      COMPOSE_FILE_ARGS: -f compose.yml -f compose-github.override.yml -f compose-github.override-zap.yml
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -68,7 +70,7 @@ jobs:
         id: start-docker-compose-services
         env:
           COMPOSE_PROJECT_NAME: waste-organisation-frontend
-        run: docker compose -f compose.yml -f compose-github.override-zap.yml up -d
+        run: docker compose ${COMPOSE_FILE_ARGS} up -d
 
       - name: Checkout UAT Repository as Integration Test Suite
         uses: actions/checkout@v6
@@ -93,8 +95,8 @@ jobs:
         env:
           COMPOSE_PROJECT_NAME: waste-organisation-frontend
         run: |
-          docker compose -f compose.yml -f compose-github.override-zap.yml up -d --no-build --wait --wait-timeout 300
-          docker compose -f compose.yml -f compose-github.override-zap.yml ps
+          docker compose ${COMPOSE_FILE_ARGS} up -d --no-build --wait --wait-timeout 300
+          docker compose ${COMPOSE_FILE_ARGS} ps
 
       - name: Prepare ZAP for integration tests
         if: steps.wait-for-docker-compose-services.outcome == 'success'
@@ -159,4 +161,4 @@ jobs:
         if: always() && steps.start-docker-compose-services.outcome == 'success'
         env:
           COMPOSE_PROJECT_NAME: waste-organisation-frontend
-        run: docker compose -f compose.yml -f compose-github.override-zap.yml down
+        run: docker compose ${COMPOSE_FILE_ARGS} down
