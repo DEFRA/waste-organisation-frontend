@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom'
 
 import { config } from '../../../config/config.js'
-import { content } from '../../../config/content.js'
+import { serviceCharge } from '../content.js'
 import { paths } from '../../../config/paths.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
 import {
@@ -46,7 +46,7 @@ describe('#serviceChargeController', () => {
       payload: { organisation: expectedOrganisation }
     })
 
-    const pageContent = content.serviceCharge({}, 4000)
+    const pageContent = serviceCharge.serviceCharge({}, 4000)
 
     const { statusCode, payload } = await server.inject({
       method: 'GET',
@@ -149,7 +149,7 @@ describe('#serviceChargeController', () => {
       expect(statusCode).toBe(statusCodes.found)
       expect(headers.location).toBe(paths.account)
 
-      const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
+      const alreadyPaidNotice = serviceCharge.alreadyPaidNotice(
         {},
         'Organisation Name'
       )

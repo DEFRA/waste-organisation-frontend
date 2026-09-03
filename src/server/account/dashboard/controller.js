@@ -1,7 +1,8 @@
 import { config } from '../../../config/config.js'
-import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 import { getPaymentStatus } from '../../common/helpers/govpay/paymentStatus.js'
+import { account } from '../content.js'
+import { serviceCharge } from '../../serviceCharge/content.js'
 
 export const accountController = {
   async handler(request, h) {
@@ -15,7 +16,7 @@ export const accountController = {
       currentOrganisationId
     )
 
-    const pageContent = content.account(request, currentOrganisationName)
+    const pageContent = account.account(request, currentOrganisationName)
 
     const paymentStatus = getPaymentStatus(
       organisation,
@@ -24,11 +25,10 @@ export const accountController = {
     )
     let importantNotice
     if (paymentStatus.disabled) {
-      const { notPaidNotice } = content.sharedServiceChargeInfo(
+      importantNotice = serviceCharge.notPaidNotice(
         request,
         currentOrganisationName
       )
-      importantNotice = notPaidNotice
     }
 
     const [flashMessage] = request.yar.flash('infoMessage')

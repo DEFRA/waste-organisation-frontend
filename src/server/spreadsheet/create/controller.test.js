@@ -7,7 +7,7 @@ import {
 import { paths, pathTo } from '../../../config/paths.js'
 import { JSDOM } from 'jsdom'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
-import { content } from '../../../config/content.js'
+import { spreadsheet } from '../content.js'
 import { config } from '../../../config/config.js'
 
 const { preSharedKey } = config.get('fileUpload')
@@ -119,7 +119,7 @@ describe('spreadsheet upload controller', () => {
     const credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationId = 'abc-123'
 
-    const pageContent = content.spreadsheetUploaded({}, 'Joe Bloggs Ltd')
+    const pageContent = spreadsheet.spreadsheetUploaded({}, 'Joe Bloggs Ltd')
 
     const { statusCode, payload } = await server.inject({
       method: 'GET',

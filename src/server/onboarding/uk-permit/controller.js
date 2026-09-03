@@ -1,6 +1,6 @@
 import joi from 'joi'
 import { paths } from '../../../config/paths.js'
-import { content } from '../../../config/content.js'
+import { onboarding } from '../content.js'
 import { config } from '../../../config/config.js'
 
 const flashMessage = 'isPermitError'
@@ -12,7 +12,7 @@ export const ukPermitController = {
         return h.redirect(paths.account)
       }
 
-      const pageContent = content.ukPermit(request)
+      const pageContent = onboarding.ukPermit(request)
 
       request.contentSecurityPolicy = {
         extraAuthOrigins: request.authProviderEndpoints

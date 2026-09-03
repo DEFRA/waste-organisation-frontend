@@ -1,9 +1,9 @@
-import { content } from '../../../config/content.js'
+import { authentication } from '../content.js'
 import { paths } from '../../../config/paths.js'
 
 export const signedOutController = {
   handler(request, h) {
-    const pageContent = content.signedOut(request)
+    const pageContent = authentication.signedOut(request)
 
     return h.view('authentication/signedOut/index', {
       pageTitle: pageContent.title,

@@ -9,41 +9,43 @@ const formatPounds = (amountInPence) =>
 
 /* v8 ignore next */
 export const serviceCharge = {
-  sharedServiceChargeInfo: (request, organisationName) =>
+  notPaidNotice: (request, organisationName) =>
     getContentForLanguage(request, {
       en: {
-        notPaidNotice: {
-          title: 'Important',
-          heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
-          body: 'If you need help or have a question about service charge, call 03000 203 781'
-        },
-        alreadyPaidNotice: {
-          title: 'Important',
-          heading: 'A payment has already been submitted',
-          body: 'A service charge payment for this account has already been processed. Do not try again.'
-        },
-        duplicatePaymentNotice: {
-          title: 'Important',
-          heading: 'A payment is already in progress',
-          body: 'A service charge payment for this account is already in progress. Do not try again.'
-        }
+        title: 'Important',
+        heading: `You need to pay your annual service charge for ${organisationName || '[Waste receiving organisation or business name]'} before you can report your waste movements.`,
+        body: 'If you need help or have a question about service charge, call 03000 203 781'
       },
       cy: {
-        notPaidNotice: {
-          title: 'Pwysig',
-          heading: `Mae angen ichi dalu'ch tâl gwasanaeth blynyddol ar gyfer ${organisationName || '[Waste receiving organisation or business name]'} cyn y gallwch roi gwybod am eich symudiadau.`,
-          body: 'Os oes arnoch angen help neu os oes gennych gwestiwn am y tâl gwasanaeth, ffoniwch 03000 203 781.'
-        },
-        alreadyPaidNotice: {
-          title: 'Pwysig',
-          heading: 'zzzzz',
-          body: 'zzzzz'
-        },
-        duplicatePaymentNotice: {
-          title: 'Pwysig',
-          heading: 'Mae taliad ar y gweill yn barod',
-          body: "Mae taliad tâl gwasanaeth ar gyfer y cyfrif hwn yn mynd rhagddo'n barod. Peidiwch â rhoi cynnig arall arni."
-        }
+        title: 'Pwysig',
+        heading: `Mae angen ichi dalu'ch tâl gwasanaeth blynyddol ar gyfer ${organisationName || '[Waste receiving organisation or business name]'} cyn y gallwch roi gwybod am eich symudiadau.`,
+        body: 'Os oes arnoch angen help neu os oes gennych gwestiwn am y tâl gwasanaeth, ffoniwch 03000 203 781.'
+      }
+    }),
+  alreadyPaidNotice: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Important',
+        heading: 'A payment has already been submitted',
+        body: 'A service charge payment for this account has already been processed. Do not try again.'
+      },
+      cy: {
+        title: 'Pwysig',
+        heading: 'zzzzz',
+        body: 'zzzzz'
+      }
+    }),
+  duplicatePaymentNotice: (request, organisationName) =>
+    getContentForLanguage(request, {
+      en: {
+        title: 'Important',
+        heading: 'A payment is already in progress',
+        body: 'A service charge payment for this account is already in progress. Do not try again.'
+      },
+      cy: {
+        title: 'Pwysig',
+        heading: 'Mae taliad ar y gweill yn barod',
+        body: "Mae taliad tâl gwasanaeth ar gyfer y cyfrif hwn yn mynd rhagddo'n barod. Peidiwch â rhoi cynnig arall arni."
       }
     }),
   serviceCharge: (request, priceInPence, organisationName) =>

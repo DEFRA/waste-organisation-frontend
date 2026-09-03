@@ -1,5 +1,5 @@
 import { paths, pathTo } from '../../../config/paths.js'
-import { content } from '../../../config/content.js'
+import { apiManagement } from '../content.js'
 import crypto from 'node:crypto'
 
 const flashDisabledMessage = 'disabledSuccessful'
@@ -16,7 +16,7 @@ export const apiManagementController = {
       const organisationName =
         request?.auth?.credentials?.currentOrganisationName
 
-      const pageContent = content.apiList(request, organisationName)
+      const pageContent = apiManagement.apiList(request, organisationName)
 
       const [code] = request.yar.flash(flashDisabledMessage)
       let disabledSuccessMessage

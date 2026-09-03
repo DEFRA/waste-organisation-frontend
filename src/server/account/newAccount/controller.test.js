@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom'
 
 import { config } from '../../../config/config.js'
-import { content } from '../../../config/content.js'
+import { account } from '../content.js'
 import { paths, pathTo } from '../../../config/paths.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
@@ -34,7 +34,7 @@ describe('#newAccountController', () => {
     })
 
     test('returns 200 with correct page title and heading', async () => {
-      const pageContent = content.newAccount({}, organisationName)
+      const pageContent = account.newAccount({}, organisationName)
 
       const { payload, statusCode } = await server.inject({
         method: 'GET',
@@ -81,7 +81,7 @@ describe('#newAccountController', () => {
     })
 
     test('displays the switch or add an organisation section', async () => {
-      const pageContent = content.newAccount({}, organisationName)
+      const pageContent = account.newAccount({}, organisationName)
 
       const { payload } = await server.inject({
         method: 'GET',
@@ -235,7 +235,7 @@ describe('#newAccountController', () => {
         '[data-testid="service-charge-next-payment-due"]'
       )
 
-      const pageContent = content.newAccount({}, organisationName)
+      const pageContent = account.newAccount({}, organisationName)
 
       expect(serviceChargeLink).not.toBeNull()
       expect(serviceChargeLink.getAttribute('href')).toBe(paths.serviceCharge)
@@ -290,7 +290,7 @@ describe('#newAccountController', () => {
         }
       })
 
-      const pageContent = content.newAccount({}, organisationName)
+      const pageContent = account.newAccount({}, organisationName)
       const { document } = new JSDOM(payload).window
 
       const paymentDueTag = document.querySelector(

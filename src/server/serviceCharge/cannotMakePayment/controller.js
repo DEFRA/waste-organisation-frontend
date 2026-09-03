@@ -1,8 +1,8 @@
-import { content } from '../../../config/content.js'
+import { serviceCharge } from '../content.js'
 
 export const cannotMakePaymentController = {
   async handler(request, h) {
-    const pageContent = content.cannotMakePayment(request)
+    const pageContent = serviceCharge.cannotMakePayment(request)
     return h.view('serviceCharge/cannotMakePayment/index', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,

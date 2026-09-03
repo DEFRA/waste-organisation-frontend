@@ -1,4 +1,4 @@
-import { content } from '../../../config/content.js'
+import { serviceCharge } from '../content.js'
 import { paths } from '../../../config/paths.js'
 
 export const paymentConfirmationController = {
@@ -11,7 +11,7 @@ export const paymentConfirmationController = {
         paymentId
       )
 
-      const pageContent = content.paymentDetails(
+      const pageContent = serviceCharge.paymentDetails(
         request,
         payment.amount,
         request.auth.credentials.currentOrganisationName

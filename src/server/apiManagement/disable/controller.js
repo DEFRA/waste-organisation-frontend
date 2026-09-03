@@ -1,7 +1,7 @@
 import boom from '@hapi/boom'
 import joi from 'joi'
 import { paths, pathTo } from '../../../config/paths.js'
-import { content } from '../../../config/content.js'
+import { apiManagement } from '../content.js'
 
 const flashMessage = 'disableError'
 const flashDisabledMessage = 'disabledSuccessful'
@@ -15,7 +15,7 @@ export const apiDisableController = {
 
       const organisationName =
         request?.auth?.credentials?.currentOrganisationName
-      const pageContent = content.apiDisable(request, organisationName)
+      const pageContent = apiManagement.apiDisable(request, organisationName)
 
       const { apiCode } = request.params
       if (!existingApiCodes.map((a) => a.code).includes(apiCode)) {

@@ -1,5 +1,5 @@
 import { config } from '../../../config/config.js'
-import { content } from '../../../config/content.js'
+import { authentication } from '../content.js'
 import { paths } from '../../../config/paths.js'
 import { removeUserSession } from '../../common/helpers/auth/user-session.js'
 import { metricsCounter } from '../../common/helpers/metrics.js'
@@ -26,7 +26,7 @@ export const signOutController = {
 
     await metricsCounter('signOut.success')
 
-    const pageContent = content.signOut(request)
+    const pageContent = authentication.signOut(request)
 
     return h.view('authentication/signOut/index', {
       pageTitle: pageContent.title,

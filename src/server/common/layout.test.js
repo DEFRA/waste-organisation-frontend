@@ -2,14 +2,14 @@ import { JSDOM } from 'jsdom'
 
 import { initialiseServer } from '../../test-utils/initialise-server.js'
 import { paths } from '../../config/paths.js'
-import { content } from '../../config/content.js'
+import { common } from './content.js'
 import { config } from '../../config/config.js'
 
 describe('layout content', () => {
   let server
   let initialWelshLanguageFlag
-  const englishLayout = content.layout({ locale: 'en' })
-  const welshLayout = content.layout({ locale: 'cy' })
+  const englishLayout = common.layout({ locale: 'en' })
+  const welshLayout = common.layout({ locale: 'cy' })
 
   beforeAll(async () => {
     initialWelshLanguageFlag = config.get('featureFlags.welshLanguage')

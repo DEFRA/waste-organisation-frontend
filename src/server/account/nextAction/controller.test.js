@@ -1,5 +1,6 @@
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
-import { content } from '../../../config/content.js'
+import { account } from '../content.js'
+import { serviceCharge } from '../../serviceCharge/content.js'
 
 import { paths, pathTo } from '../../../config/paths.js'
 
@@ -11,7 +12,7 @@ import { faker } from '@faker-js/faker'
 
 const organisationName = 'ORG NAME'
 
-const pageContent = content.nextAction({})
+const pageContent = account.nextAction({})
 
 describe('#nextActionController', () => {
   let server
@@ -32,7 +33,7 @@ describe('#nextActionController', () => {
 
   test('Should provide expected response', async () => {
     config.set('featureFlags.serviceCharge', false)
-    const pageContent = content.nextAction()
+    const pageContent = account.nextAction()
     const { payload } = await server.inject({
       method: 'GET',
       url: paths.nextAction,
@@ -225,7 +226,7 @@ describe('#nextActionController', () => {
 
     const { document } = new JSDOM(payload).window
 
-    const sharedServiceChargeContent = content.sharedServiceChargeInfo(
+    const notPaidNotice = serviceCharge.notPaidNotice(
       {},
       credentials.currentOrganisationName
     )
@@ -237,10 +238,10 @@ describe('#nextActionController', () => {
     expect(
       infoBanner.querySelector('.govuk-notification-banner__heading')
         .textContent
-    ).toBe(sharedServiceChargeContent.notPaidNotice.heading)
+    ).toBe(notPaidNotice.heading)
 
     expect(infoBanner.querySelector('.govuk-body').textContent).toEqual(
-      expect.stringContaining(sharedServiceChargeContent.notPaidNotice.body)
+      expect.stringContaining(notPaidNotice.body)
     )
   })
 

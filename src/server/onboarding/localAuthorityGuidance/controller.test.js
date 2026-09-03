@@ -1,5 +1,5 @@
 import { expect } from 'vitest'
-import { content } from '../../../config/content.js'
+import { onboarding } from '../content.js'
 import { paths } from '../../../config/paths.js'
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
 
@@ -17,7 +17,7 @@ describe('#cannotUseServiceController', () => {
   })
 
   test('Should provide expected response', async () => {
-    const pageContent = content.localAuthorityGuidance()
+    const pageContent = onboarding.localAuthorityGuidance()
     const { payload } = await server.inject({
       method: 'GET',
       url: paths.localAuthorityGuidance

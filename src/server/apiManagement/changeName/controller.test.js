@@ -6,7 +6,7 @@ import {
 } from '../../../test-utils/initialise-server'
 import { paths, pathTo } from '../../../config/paths'
 import { JSDOM } from 'jsdom'
-import { content } from '../../../config/content'
+import { apiManagement } from '../content'
 import { faker } from '@faker-js/faker'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper'
 import { apiChangeNameController } from './controller'
@@ -17,7 +17,7 @@ const organisationId = 'ORG ID'
 describe('apiChangeName', () => {
   let server
   let credentials
-  const pageContent = content.apiChangeName({}, 'OrgName')
+  const pageContent = apiManagement.apiChangeName({}, 'OrgName')
 
   beforeAll(async () => {
     server = await initialiseServer()

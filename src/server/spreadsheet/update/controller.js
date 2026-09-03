@@ -1,7 +1,7 @@
 import { config } from '../../../config/config.js'
 import { paths } from '../../../config/paths.js'
 import { createLogger } from '../../common/helpers/logging/logger.js'
-import { content } from '../../../config/content.js'
+import { spreadsheet } from '../content.js'
 import {
   initiateUpload,
   createCallbackHandler
@@ -13,7 +13,7 @@ export const beginUpload = {
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
 
-    const pageContent = content.updateSpreadsheetUpload(
+    const pageContent = spreadsheet.updateSpreadsheetUpload(
       request,
       organisationName
     )
@@ -61,7 +61,7 @@ export const fileUploaded = {
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
     const uploadData = request.yar.get(uploadSessionName)
-    const pageContent = content.spreadsheetUploaded(request, organisationName)
+    const pageContent = spreadsheet.spreadsheetUploaded(request, organisationName)
 
     return h.view('spreadsheet/update/file-uploaded', {
       pageTitle: pageContent.heading.text,

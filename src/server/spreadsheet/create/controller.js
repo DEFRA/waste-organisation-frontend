@@ -1,7 +1,7 @@
 import { config } from '../../../config/config.js'
 import { paths } from '../../../config/paths.js'
 import { createLogger } from '../../common/helpers/logging/logger.js'
-import { content } from '../../../config/content.js'
+import { spreadsheet } from '../content.js'
 import {
   initiateUpload,
   createCallbackHandler
@@ -13,7 +13,7 @@ export const beginUpload = {
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
 
-    const pageContent = content.spreadsheetUpload(request, organisationName)
+    const pageContent = spreadsheet.spreadsheetUpload(request, organisationName)
 
     /* v8 ignore start - covered by integration tests but v8 coverage merge across test files misattributes */
     const { uploadUrl, referenceNumber } = await initiateUpload(
@@ -58,7 +58,7 @@ export const fileUploaded = {
   /* v8 ignore stop */
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
-    const pageContent = content.spreadsheetUploaded(request, organisationName)
+    const pageContent = spreadsheet.spreadsheetUploaded(request, organisationName)
     const uploadData = request.yar.get(uploadSessionName)
     return h.view('spreadsheet/create/file-uploaded', {
       pageTitle: pageContent.heading.text,

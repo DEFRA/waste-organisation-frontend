@@ -1,4 +1,4 @@
-import { content } from '../../../config/content.js'
+import { serviceCharge } from '../content.js'
 import { paths } from '../../../config/paths.js'
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
 
@@ -20,7 +20,7 @@ describe('#cannotMakePaymentController', () => {
   })
 
   test('Should provide expected response', async () => {
-    const pageContent = content.cannotMakePayment()
+    const pageContent = serviceCharge.cannotMakePayment()
     const { payload } = await server.inject({
       method: 'GET',
       url: paths.cannotMakePayment,

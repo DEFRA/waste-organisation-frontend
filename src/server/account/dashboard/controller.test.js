@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom'
 
 import { config } from '../../../config/config.js'
-import { content } from '../../../config/content.js'
+import { account } from '../content.js'
 import { paths } from '../../../config/paths.js'
 import {
   initialiseServer,
@@ -106,7 +106,7 @@ describe('#accountController', () => {
   test('displays Welsh heading when lang=cy', async () => {
     config.set('featureFlags.welshLanguage', true)
 
-    const pageContent = content.account({ locale: 'cy' }, organisationName)
+    const pageContent = account.account({ locale: 'cy' }, organisationName)
     const { payload } = await server.inject({
       method: 'GET',
       url: `${paths.account}?lang=cy`,

@@ -1,9 +1,9 @@
-import { content } from '../../../config/content.js'
+import { onboarding } from '../content.js'
 import { paths } from '../../../config/paths.js'
 
 export const localAuthorityGuidanceController = {
   async handler(request, h) {
-    const pageContent = content.localAuthorityGuidance(request)
+    const pageContent = onboarding.localAuthorityGuidance(request)
 
     return h.view('onboarding/localAuthorityGuidance/view', {
       pageTitle: pageContent.title,

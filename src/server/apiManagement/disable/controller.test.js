@@ -6,7 +6,7 @@ import {
 } from '../../../test-utils/initialise-server'
 import { paths, pathTo } from '../../../config/paths'
 import { JSDOM } from 'jsdom'
-import { content } from '../../../config/content'
+import { apiManagement } from '../content'
 import { faker } from '@faker-js/faker'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper'
 const organisationName = 'ORG NAME'
@@ -15,7 +15,7 @@ const organisationId = 'ORG ID'
 describe('apiDisable', () => {
   let server
   let credentials
-  const pageContent = content.apiDisable({}, 'OrgName')
+  const pageContent = apiManagement.apiDisable({}, 'OrgName')
 
   beforeAll(async () => {
     server = await initialiseServer()

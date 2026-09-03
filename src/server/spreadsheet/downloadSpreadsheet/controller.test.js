@@ -1,5 +1,6 @@
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
-import { content } from '../../../config/content.js'
+import { spreadsheet } from '../content.js'
+import { serviceCharge } from '../../serviceCharge/content.js'
 import { paths } from '../../../config/paths.js'
 import { JSDOM } from 'jsdom'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
@@ -35,7 +36,7 @@ describe('#downloadSpreadsheetController', () => {
   })
 
   test('should render page with correct heading', async () => {
-    const pageContent = content.downloadSpreadsheet({}, organisationName)
+    const pageContent = spreadsheet.downloadSpreadsheet({}, organisationName)
 
     const { statusCode, payload } = await server.inject({
       method: 'GET',
@@ -208,7 +209,7 @@ describe('#downloadSpreadsheetController', () => {
 
     const { document } = new JSDOM(payload).window
 
-    const sharedServiceChargeContent = content.sharedServiceChargeInfo(
+    const notPaidNotice = serviceCharge.notPaidNotice(
       {},
       credentials.currentOrganisationName
     )
@@ -220,10 +221,10 @@ describe('#downloadSpreadsheetController', () => {
     expect(
       infoBanner.querySelector('.govuk-notification-banner__heading')
         .textContent
-    ).toBe(sharedServiceChargeContent.notPaidNotice.heading)
+    ).toBe(notPaidNotice.heading)
 
     expect(infoBanner.querySelector('.govuk-body').textContent).toEqual(
-      expect.stringContaining(sharedServiceChargeContent.notPaidNotice.body)
+      expect.stringContaining(notPaidNotice.body)
     )
   })
 })

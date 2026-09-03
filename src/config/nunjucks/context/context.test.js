@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 import { config } from '../../config.js'
-import { content } from '../../content.js'
+import { common } from '../../../server/common/content.js'
 
 const mockReadFileSync = vi.fn()
 const mockLoggerError = vi.fn()
@@ -49,7 +49,7 @@ describe('context and cache', () => {
         expect(contextResult).toEqual({
           assetPath: '/public/assets',
           breadcrumbs: [],
-          layout: content.layout(mockRequest),
+          layout: common.layout(mockRequest),
           welshLanguage: false,
           languageToggle: {
             locale: 'en',
@@ -135,7 +135,7 @@ describe('context and cache', () => {
         expect(contextResult).toEqual({
           assetPath: '/public/assets',
           breadcrumbs: [],
-          layout: content.layout(mockRequest),
+          layout: common.layout(mockRequest),
           welshLanguage: false,
           languageToggle: {
             locale: 'en',

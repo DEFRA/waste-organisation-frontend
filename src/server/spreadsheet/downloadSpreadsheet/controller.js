@@ -1,7 +1,8 @@
 import { config } from '../../../config/config.js'
-import { content } from '../../../config/content.js'
 import { paths } from '../../../config/paths.js'
 import { getPaymentStatus } from '../../common/helpers/govpay/paymentStatus.js'
+import { spreadsheet } from '../content.js'
+import { serviceCharge } from '../../serviceCharge/content.js'
 
 const templateFileUrl = `${config.get('assetPath')}/receipt-of-waste-template.xlsx`
 
@@ -10,7 +11,7 @@ export const downloadSpreadsheetController = {
     const { id, currentOrganisationId, currentOrganisationName } =
       request.auth.credentials
 
-    const pageContent = content.downloadSpreadsheet(
+    const pageContent = spreadsheet.downloadSpreadsheet(
       request,
       currentOrganisationName
     )
@@ -28,10 +29,10 @@ export const downloadSpreadsheetController = {
       const paymentStatus = getPaymentStatus(organisation)
 
       if (paymentStatus.disabled) {
-        notPaidNotice = content.sharedServiceChargeInfo(
+        notPaidNotice = serviceCharge.notPaidNotice(
           request,
           currentOrganisationName
-        ).notPaidNotice
+        )
       }
     }
 

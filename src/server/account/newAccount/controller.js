@@ -1,7 +1,7 @@
 import boom from '@hapi/boom'
 
 import { config } from '../../../config/config.js'
-import { content } from '../../../config/content.js'
+import { account } from '../content.js'
 import { paths, pathTo } from '../../../config/paths.js'
 
 const paymentStatusFlash = 'paymentStatus'
@@ -18,7 +18,7 @@ export const newAccountController = {
     const isServiceChargeEnabled = config.get('featureFlags.serviceCharge')
     const organisationName = request?.auth?.credentials?.currentOrganisationName
     const organisationId = request?.auth?.credentials?.currentOrganisationId
-    const pageContent = content.newAccount(request, organisationName)
+    const pageContent = account.newAccount(request, organisationName)
     const [paymentStatus] = request.yar.flash(paymentStatusFlash)
 
     if (

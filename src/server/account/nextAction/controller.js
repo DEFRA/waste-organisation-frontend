@@ -2,7 +2,8 @@ import { config } from '../../../config/config.js'
 import { paths, pathTo } from '../../../config/paths.js'
 import joi from 'joi'
 import { getPaymentStatus } from '../../common/helpers/govpay/paymentStatus.js'
-import { content } from '../../../config/content.js'
+import { account } from '../content.js'
+import { serviceCharge } from '../../serviceCharge/content.js'
 const flashMessage = 'isNextActionError'
 
 export const nextActionController = {
@@ -15,7 +16,7 @@ export const nextActionController = {
       const { id, currentOrganisationId, currentOrganisationName } =
         request.auth.credentials
 
-      const pageContent = content.nextAction(request, currentOrganisationName)
+      const pageContent = account.nextAction(request, currentOrganisationName)
 
       const [error] = request.yar.flash(flashMessage)
       let errorContent
@@ -41,10 +42,10 @@ export const nextActionController = {
         console.log('pageQuestions 1', pageQuestions)
         if (paymentStatus.disabled) {
           pageQuestions = pageContent.questionsNotPaid
-          notPaidNotice = content.sharedServiceChargeInfo(
+          notPaidNotice = serviceCharge.notPaidNotice(
             request,
             currentOrganisationName
-          ).notPaidNotice
+          )
         }
       }
 

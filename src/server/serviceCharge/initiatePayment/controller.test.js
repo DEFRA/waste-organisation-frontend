@@ -11,7 +11,7 @@ import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 import { initiatePaymentController } from './controller.js'
 
 import { faker } from '@faker-js/faker'
-import { content } from '../../../config/content.js'
+import { serviceCharge } from '../content.js'
 
 const ORGANISATION_ID = 456
 const ORGANISATION_NAME = 'Joe Bloggs Ltd'
@@ -190,7 +190,7 @@ describe('#initiatePaymentController', () => {
     expect(statusCode).toBe(statusCodes.found)
     expect(headers.location).toBe(paths.account)
 
-    const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
+    const duplicatePaymentNotice = serviceCharge.duplicatePaymentNotice(
       {},
       'Organisation Name'
     )
@@ -245,7 +245,7 @@ describe('#initiatePaymentController', () => {
     expect(statusCode).toBe(statusCodes.found)
     expect(headers.location).toBe(paths.account)
 
-    const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
+    const duplicatePaymentNotice = serviceCharge.duplicatePaymentNotice(
       {},
       'Organisation Name'
     )
@@ -441,7 +441,7 @@ describe('#initiatePaymentController', () => {
       expect(statusCode).toBe(statusCodes.found)
       expect(headers.location).toBe(paths.account)
 
-      const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
+      const alreadyPaidNotice = serviceCharge.alreadyPaidNotice(
         {},
         'Organisation Name'
       )

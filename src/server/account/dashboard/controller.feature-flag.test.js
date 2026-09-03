@@ -1,7 +1,8 @@
 import { JSDOM } from 'jsdom'
 
 import { config } from '../../../config/config.js'
-import { content } from '../../../config/content.js'
+import { account } from '../content.js'
+import { serviceCharge } from '../../serviceCharge/content.js'
 import { paths } from '../../../config/paths.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
 import {
@@ -51,7 +52,7 @@ describe('#accountController', () => {
   })
 
   test('returns 200 with correct page title and heading', async () => {
-    const pageContent = content.account({}, organisationName)
+    const pageContent = account.account({}, organisationName)
 
     const { payload, statusCode } = await server.inject({
       method: 'GET',
@@ -197,7 +198,7 @@ describe('#accountController', () => {
 
     const { document } = new JSDOM(payload).window
 
-    const sharedServiceChargeContent = content.sharedServiceChargeInfo(
+    const notPaidNotice = serviceCharge.notPaidNotice(
       {},
       credentials.currentOrganisationName
     )
@@ -209,10 +210,10 @@ describe('#accountController', () => {
     expect(
       infoBanner.querySelector('.govuk-notification-banner__heading')
         .textContent
-    ).toBe(sharedServiceChargeContent.notPaidNotice.heading)
+    ).toBe(notPaidNotice.heading)
 
     expect(infoBanner.querySelector('.govuk-body').textContent).toEqual(
-      expect.stringContaining(sharedServiceChargeContent.notPaidNotice.body)
+      expect.stringContaining(notPaidNotice.body)
     )
   })
 
@@ -245,7 +246,7 @@ describe('#accountController', () => {
       '[data-testid="service-charge-next-payment-due"]'
     )
 
-    const pageContent = content.account({}, organisationName)
+    const pageContent = account.account({}, organisationName)
 
     expect(serviceChargeLink).not.toBeNull()
     expect(serviceChargeLink.getAttribute('href')).toBe(paths.serviceCharge)
@@ -342,7 +343,7 @@ describe('#accountController', () => {
       '[data-testid="service-charge-next-payment-due"]'
     )
 
-    const pageContent = content.account({}, organisationName)
+    const pageContent = account.account({}, organisationName)
 
     expect(serviceChargeLink).toBeNull()
 
@@ -400,7 +401,7 @@ describe('#accountController', () => {
       '[data-testid="service-charge-next-payment-due"]'
     )
 
-    const pageContent = content.account({}, organisationName)
+    const pageContent = account.account({}, organisationName)
 
     expect(serviceChargeLink).not.toBeNull()
     expect(serviceChargeLink.getAttribute('href')).toBe(paths.serviceCharge)
