@@ -58,7 +58,10 @@ export const fileUploaded = {
   /* v8 ignore stop */
   async handler(request, h) {
     const organisationName = request?.auth?.credentials?.currentOrganisationName
-    const pageContent = spreadsheet.spreadsheetUploaded(request, organisationName)
+    const pageContent = spreadsheet.spreadsheetUploaded(
+      request,
+      organisationName
+    )
     const uploadData = request.yar.get(uploadSessionName)
     return h.view('spreadsheet/create/file-uploaded', {
       pageTitle: pageContent.heading.text,
