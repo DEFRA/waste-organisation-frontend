@@ -1,15 +1,12 @@
-import { content } from '../../../config/content.js'
-
 export const termsController = {
   handler(request, h) {
-    const pageContent = content.terms(request)
-
+    if (request.locale === 'cy') {
+      return h.view('compliance/terms/index-cy', {
+        pageTitle: 'Telerau'
+      })
+    }
     return h.view('compliance/terms/index', {
-      pageTitle: pageContent.title,
-      heading: pageContent.heading,
-      leadParagraph: pageContent.leadParagraph,
-      conditions: pageContent.conditions,
-      relatedContent: pageContent.relatedContent
+      pageTitle: 'Terms'
     })
   }
 }

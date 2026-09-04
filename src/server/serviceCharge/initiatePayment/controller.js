@@ -1,7 +1,7 @@
 import boom from '@hapi/boom'
 import { config } from '../../../config/config.js'
 import { paths } from '../../../config/paths.js'
-import { content } from '../../../config/content.js'
+import { serviceCharge } from '../content.js'
 const SERVICE_CHARGE_DESCRIPTION =
   'Annual report receipt of waste service charge'
 
@@ -18,11 +18,13 @@ export const initiatePaymentController = {
       const paymentPeriods = organisation.paymentPeriods
 
       if (!paymentPeriods || paymentPeriods < 1) {
-        const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
-          request,
-          request.auth.credentials.currentOrganisationName
+        request.yar.flash(
+          'infoMessage',
+          serviceCharge.alreadyPaidNotice(
+            request,
+            request.auth.credentials.currentOrganisationName
+          )
         )
-        request.yar.flash('infoMessage', alreadyPaidNotice)
         return h.redirect(paths.account)
       }
       const paymentPeriod = paymentPeriods[0]
@@ -35,6 +37,7 @@ export const initiatePaymentController = {
           amount: paymentPeriod.priceInPence,
           description: SERVICE_CHARGE_DESCRIPTION,
           returnUrl: `${appBaseUrl}${paths.paymentDetails}`,
+          language: request.locale === 'cy' ? 'cy' : 'en',
           metadata: {
             organisationId: request.auth.credentials.currentOrganisationId,
             organisationName: request.auth.credentials.currentOrganisationName,
@@ -48,11 +51,13 @@ export const initiatePaymentController = {
         const previousRequest = request.yar.get('govPayPaymentId')
 
         if (previousRequest !== result.payment.paymentId) {
-          const { duplicatePaymentNotice } = content.sharedServiceChargeInfo(
-            request,
-            request.auth.credentials.currentOrganisationName
+          request.yar.flash(
+            'infoMessage',
+            serviceCharge.duplicatePaymentNotice(
+              request,
+              request.auth.credentials.currentOrganisationName
+            )
           )
-          request.yar.flash('infoMessage', duplicatePaymentNotice)
           return h.redirect(paths.account)
         }
         const paymentStatus = await request.backendApi.paymentStatus(

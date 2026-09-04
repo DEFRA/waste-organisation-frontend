@@ -8,7 +8,7 @@ import {
 import { setupAuthedUserSession } from '../../../test-utils/session-helper.js'
 import { statusCodes } from '../../common/constants/status-codes.js'
 import { expect } from 'vitest'
-import { content } from '../../../config/content.js'
+import { serviceCharge } from '../content.js'
 
 describe('#paymentDetailsController', () => {
   let server
@@ -28,7 +28,7 @@ describe('#paymentDetailsController', () => {
   })
 
   test('renders payment confirmation page whern a payment is successful', async () => {
-    const pageContent = content.paymentDetails(
+    const pageContent = serviceCharge.paymentDetails(
       {},
       2500,
       credentials.currentOrganisationName
@@ -70,7 +70,7 @@ describe('#paymentDetailsController', () => {
   })
 
   test('renders payment confirmation page whern a payment is pending', async () => {
-    const pageContent = content.paymentDetails(
+    const pageContent = serviceCharge.paymentDetails(
       {},
       2500,
       credentials.currentOrganisationName
@@ -104,7 +104,7 @@ describe('#paymentDetailsController', () => {
   })
 
   test('renders payment confirmation page whern a payment is Declined', async () => {
-    const pageContent = content.paymentDetails(
+    const pageContent = serviceCharge.paymentDetails(
       {},
       3500,
       credentials.currentOrganisationName

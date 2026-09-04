@@ -1,4 +1,4 @@
-import { content } from '../../../config/content.js'
+import { serviceCharge } from '../content.js'
 import { paths } from '../../../config/paths.js'
 
 const formatPounds = (amountInPence) =>
@@ -18,17 +18,19 @@ export const reviewPaymentController = {
 
     const paymentPeriods = organisation.paymentPeriods
     if (!paymentPeriods || paymentPeriods < 1) {
-      const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
-        request,
-        request.auth.credentials.currentOrganisationName
+      request.yar.flash(
+        'infoMessage',
+        serviceCharge.alreadyPaidNotice(
+          request,
+          request.auth.credentials.currentOrganisationName
+        )
       )
-      request.yar.flash('infoMessage', alreadyPaidNotice)
       return h.redirect(paths.account)
     }
     const paymentPeriod = paymentPeriods[0]
 
     const organisationName = currentOrganisationName?.trim()
-    const pageContent = content.reviewPayment(request, organisationName)
+    const pageContent = serviceCharge.reviewPayment(request, organisationName)
     return h.view('serviceCharge/reviewPayment/index', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,

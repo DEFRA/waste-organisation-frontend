@@ -1,7 +1,7 @@
 import { JSDOM } from 'jsdom'
 
 import { paths } from '../../../../config/paths.js'
-import { content } from '../../../../config/content.js'
+import { authentication } from '../../../authentication/content.js'
 import { statusCodes } from '../../constants/status-codes.js'
 import { initialiseServer } from '../../../../test-utils/initialise-server.js'
 import { setupAuthedUserSession } from '../../../../test-utils/session-helper.js'
@@ -30,7 +30,7 @@ describe('#organisationCheck', () => {
       }
     })
 
-    const organisationRequiredContent = content.organisationRequired({})
+    const organisationRequiredContent = authentication.organisationRequired({})
     const { document } = new JSDOM(payload).window
 
     expect(statusCode).toBe(statusCodes.forbidden)

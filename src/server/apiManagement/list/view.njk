@@ -17,6 +17,7 @@
         </p>
         {% endset %}
         {{ govukNotificationBanner({
+          titleText: disabledSuccessMessage.successTitle,
           html: html,
           type: "success"
         }) }}
@@ -69,7 +70,7 @@
                   <dd class="govuk-summary-list__value">{{apiCode.code}}</dd>
                   <dd class="govuk-summary-list__actions">
                     {{ govukTag({
-                    text: "Disabled",
+                    text: words.disabled,
                     classes: "govuk-tag--orange"
                   }) }}
                   </dd>
@@ -85,15 +86,15 @@
 {% block bodyEnd %}
   <script nonce="{{ scriptNonce }}">
     const codeName = document.querySelectorAll('[data-codeName]')
-    const copyText = "Copy";
-    const copiedText = "Copied";
+    const copyText = "{{words.copy}}";
+    const copiedText = "{{words.copied}}";
     const actionButtons = document.querySelectorAll('[data-copyText]')
 
     for (const actionButton of actionButtons) {
       const code = actionButton.getAttribute('data-copyText');
       const codeName = actionButton.getAttribute('data-codeName')
-      const copyAriaLabel = `Copy ${codeName} code`;
-      const copiedAriaLabel = `Copied ${codeName} code`;
+      const copyAriaLabel = `{{words.copy}} ${codeName} {{words.code}}`;
+      const copiedAriaLabel = `{{words.copied}} ${codeName} {{words.code}}`;
 
       const buttonHTML = `{{govukButton({
                             text: "${copyText}",

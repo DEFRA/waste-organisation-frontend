@@ -1,4 +1,4 @@
-import { content } from '../../../config/content.js'
+import { authentication } from '../../authentication/content.js'
 import { statusCodes } from '../constants/status-codes.js'
 import { paths } from '../../../config/paths.js'
 
@@ -31,7 +31,7 @@ export function catchAll(request, h) {
   }
 
   if (statusCode === statusCodes.unauthorized) {
-    const unauthorizedContent = content.unauthorized(request)
+    const unauthorizedContent = authentication.unauthorized(request)
     return h
       .view('error/unauthorized', {
         pageTitle: unauthorizedContent.title,

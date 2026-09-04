@@ -1,0 +1,81 @@
+import { config } from '../../../config/config.js'
+import { paths } from '../../../config/paths.js'
+import { createLogger } from '../../common/helpers/logging/logger.js'
+import { spreadsheet } from '../content.js'
+import {
+  initiateUpload,
+  createCallbackHandler
+} from '../../common/helpers/cdp-upload.js'
+const uploadSessionName = 'upload'
+const logger = createLogger()
+
+export const beginUpload = {
+  async handler(request, h) {
+    const organisationName = request?.auth?.credentials?.currentOrganisationName
+
+    const pageContent = spreadsheet.updateSpreadsheetUpload(
+      request,
+      organisationName
+    )
+
+    /* v8 ignore start - covered by integration tests but v8 coverage merge across test files misattributes */
+    const { uploadUrl, referenceNumber } = await initiateUpload(
+      request.auth.credentials.currentOrganisationId,
+      request.auth.credentials.email,
+      {
+        firstName: request.auth.credentials.firstName,
+        lastName: request.auth.credentials.lastName,
+        displayName: request.auth.credentials.displayName
+      },
+      {
+        callbackPath: paths.updateSpreadsheetUploadCallback,
+        redirectPath: paths.updateSpreadsheetUploaded,
+        uploadType: 'update'
+      }
+    )
+    request.yar.set(uploadSessionName, { referenceNumber })
+    await request.yar.commit(h)
+    logger.info(`uploaded requested - ${referenceNumber} ${uploadUrl}`)
+    const { origin } = new URL(
+      uploadUrl?.startsWith('h') ? uploadUrl : config.get('fileUpload.url')
+    )
+    request.contentSecurityPolicy = {
+      extraAuthOrigins: origin
+    }
+
+    return h.view('spreadsheet/update/begin-upload', {
+      pageTitle: pageContent.title,
+      heading: pageContent.heading,
+      description: pageContent.description,
+      action: {
+        text: pageContent.continueAction,
+        link: uploadUrl
+      },
+      backLink: paths.nextAction
+    })
+  }
+}
+
+export const fileUploaded = {
+  /* v8 ignore stop */
+  async handler(request, h) {
+    const organisationName = request?.auth?.credentials?.currentOrganisationName
+    const uploadData = request.yar.get(uploadSessionName)
+    const pageContent = spreadsheet.spreadsheetUploaded(
+      request,
+      organisationName
+    )
+
+    return h.view('spreadsheet/update/file-uploaded', {
+      pageTitle: pageContent.heading.text,
+      content: pageContent.content,
+      uploadData,
+      returnAction: {
+        text: pageContent.returnLink,
+        link: paths.nextAction
+      }
+    })
+  }
+}
+
+export const callback = createCallbackHandler()

@@ -161,6 +161,11 @@ export const config = convict({
     format: String,
     default: 'Report receipt of waste'
   },
+  serviceNameCY: {
+    doc: 'Applications Service Name Welsh',
+    format: String,
+    default: 'Rhoi gwybod am dderbyn gwastraff'
+  },
   root: {
     doc: 'Project root',
     format: String,
@@ -466,6 +471,12 @@ export const config = convict({
       format: Boolean,
       default: true,
       env: 'FEATURE_FLAG_REBRAND'
+    },
+    welshLanguage: {
+      doc: 'Enable Welsh language switching and the language toggle',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_WELSH_LANGUAGE'
     }
   },
   encryptionKey: {

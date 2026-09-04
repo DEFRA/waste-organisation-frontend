@@ -1,8 +1,8 @@
-import { content } from '../../../../config/content.js'
+import { authentication } from '../../../authentication/content.js'
 import { statusCodes } from '../../constants/status-codes.js'
 
 export function renderOrganisationRequired(request, h) {
-  const pageContent = content.organisationRequired(request)
+  const pageContent = authentication.organisationRequired(request)
 
   return h
     .view('error/organisation-required', {

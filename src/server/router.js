@@ -1,7 +1,6 @@
 import inert from '@hapi/inert'
 
 import { cacheControlNoStore } from '../config/config.js'
-import { about } from './about/index.js'
 import { cookies } from './compliance/cookies/index.js'
 import { terms } from './compliance/terms/index.js'
 import { privacy } from './compliance/privacy/index.js'
@@ -9,21 +8,15 @@ import { accessibilityStatement } from './compliance/accessibilityStatement/inde
 import { health } from './health/index.js'
 import { serveStaticFiles } from './common/helpers/serve-static-files.js'
 import { search } from './search/index.js'
-import { signIn } from './signIn/index.js'
 import { onboarding } from './onboarding/index.js'
-import { dashboard } from './dashboard/index.js'
-import { nextAction } from './nextAction/index.js'
 import { spreadsheet } from './spreadsheet/index.js'
 import { apiManagement } from './apiManagement/index.js'
-import { downloadSpreadsheet } from './downloadSpreadsheet/index.js'
-import { updateSpreadsheet } from './updateSpreadsheet/index.js'
-import { account } from './account/index.js'
-import { newAccount } from './newAccount/index.js'
 import { serviceCharge } from './serviceCharge/index.js'
-import { signOut } from './signOut/index.js'
-import { signedOut } from './signedOut/index.js'
+
 import { organisationCheck } from './common/helpers/auth/organisation-check.js'
 import { paymentCheck } from './common/helpers/auth/payment-check.js'
+import { account } from './account/index.js'
+import { authentication } from './authentication/index.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -81,28 +74,20 @@ export const router = {
       // prettier-ignore
       const plugins = Object.entries({
         // Open routes
-        about:                   about.openRoutes,
         cookies:                 cookies.openRoutes,
         terms:                   terms.openRoutes,
         privacy:                 privacy.openRoutes,
         accessibilityStatement:  accessibilityStatement.openRoutes,
-        signIn:                  signIn.routes,
         health:                  health.openRoutes, // Used by platform to check if service is running, do not remove!
         onboarding:              onboarding.openRoutes,
-        signedOut:               signedOut.openRoutes,
-        signOut:                 signOut.openRoutes,
+        authentication:          authentication.openRoutes,
         serviceChargeCallback:   serviceCharge.openRoutes,
         search:                  search.openRoutes,
         // Routes that require auth
-        spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(spreadsheet.openRoutes),
-        updateSpreadsheet:       updateSpreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(updateSpreadsheet.openRoutes),
-        dashboard:               dashboard.authedRoutes.map((a) => addAuthWithOrg(a)),
-        nextAction:              nextAction.authedRoutes.map((a) => addAuthWithOrg(a)),
+        spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(spreadsheet.downloadRoutes.map((a) => addAuthWithOrg(a))).concat(spreadsheet.openRoutes),
         apiManagement:           apiManagement.authedRoutes.map((a) => addAuthWithOrgPayment(a)),
         account:                 account.authedRoutes.map((a) => addAuthWithOrg(a)),
-        newAccount:              newAccount.authedRoutes.map((a) => addAuthWithOrg(a)),
-        serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a)),
-        downloadSpreadsheet:     downloadSpreadsheet.authedRoutes.map((a) => addAuthWithOrg(a))
+        serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a))
       }).reduce((p, entry) => createPlugin(p, entry), [])
 
       // Application specific routes, add your own routes here

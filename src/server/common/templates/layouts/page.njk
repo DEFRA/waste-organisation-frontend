@@ -7,25 +7,31 @@
 {# Import custom components globally #}
 {% from "heading/macro.njk" import appHeading %}
 {% from "importantBanner/macro.njk" import appImportantBanner %}
-
+{% from "languageToggle/macro.njk" import appLanguageToggle %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block head %}
   {% if govukRebrand == false %}
     <link
-    href="{{ getAssetPath('stylesheets/application-black.scss')}}"
-    rel="stylesheet"
-/>
-    <link rel="icon" href="{{ getAssetPath('assets/images/favicon.png') }}" type="image/png">
-    <link rel="apple-touch-icon" href="{{ getAssetPath('assets/images/favicon.png') }}">
+      href="{{ getAssetPath('stylesheets/application-black.scss') }}"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="{{ getAssetPath('assets/images/favicon.png') }}"
+      type="image/png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="{{ getAssetPath('assets/images/favicon.png') }}"
+    />
   {% else %}
     <link
-    href="{{ getAssetPath('stylesheets/application.scss')}}"
-    rel="stylesheet"
-/>
+      href="{{ getAssetPath('stylesheets/application.scss') }}"
+      rel="stylesheet"
+    />
   {% endif %}
-
 {% endblock %}
 
 {% block header %}
@@ -35,7 +41,7 @@
     <div class="govuk-header">
       <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__logo">
-          <a href="{{serviceUrl}}" class="govuk-header__homepage-link">
+          <a href="{{ serviceUrl }}" class="govuk-header__homepage-link">
             Department for Environment, Food and Rural Affairs
           </a>
         </div>
@@ -43,13 +49,13 @@
     </div>
   {% else %}
     {{
-    govukHeader({
-      homepageUrl: "https://www.gov.uk/",
-      classes: "app-header",
-      containerClasses: "govuk-width-container",
-      useTudorCrown: true
-    })
-  }}
+      govukHeader({
+        homepageUrl: "https://www.gov.uk/",
+        classes: "app-header",
+        containerClasses: "govuk-width-container",
+        useTudorCrown: true
+      })
+    }}
   {% endif %}
 
   {{
@@ -63,23 +69,44 @@
 {% endblock %}
 
 {% block pageTitle %}
-  {{ pageTitle }} | {{ serviceName }}
+  {{ pageTitle ~ ' | ' ~ serviceName }}
 {% endblock %}
 
 {% block beforeContent %}
-
   {% set phaseHtml %}
-    This is a new service. Help us improve it and <a class="govuk-link" href="{{feedbackUrl}}" target="_blank" rel="noopener noreferrer" data-testid="feedback-link">give your feedback (opens in new tab)</a>.
+    {{ layout.phaseBanner.beforeLink }}<a
+      class="govuk-link"
+      href="{{ feedbackUrl }}"
+      target="_blank"
+      rel="noopener noreferrer"
+      data-testid="feedback-link"
+      >{{ layout.phaseBanner.linkText }}</a
+    >{{ layout.phaseBanner.afterLink }}
   {% endset -%}
 
   {{
     govukPhaseBanner({
     tag: {
-      text: "Beta"
+      text: layout.phaseBanner.tag
     },
     html: phaseHtml
     })
   }}
+
+  {% if welshLanguage %}
+    {{
+      appLanguageToggle({
+        locale: languageToggle.locale,
+        englishHref: languageToggle.englishHref,
+        welshHref: languageToggle.welshHref,
+        ariaLabel: layout.languageToggle.ariaLabel,
+        english: layout.languageToggle.english,
+        welsh: layout.languageToggle.welsh,
+        changeToEnglish: layout.languageToggle.changeToEnglish,
+        changeToWelsh: layout.languageToggle.changeToWelsh
+      })
+    }}
+  {% endif %}
 
   {% if breadcrumbs.length > 1 %}
     {{
@@ -90,40 +117,58 @@
   {% endif %}
 
   {% if backLink %}
-    {{ govukBackLink({
-      text: "Back",
-      href: backLink,
-      attributes: {
-        "data-testid": "back-link"
-      }
-    }) }}
+    {{
+      govukBackLink({
+        text: layout.back,
+        href: backLink,
+        attributes: {
+          "data-testid": "back-link"
+        }
+      })
+    }}
   {% endif %}
 {% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+{% endblock %}
 
 {% block footer %}
+  {% set contentLicenceHtml %}
+    {{ layout.licence.beforeLink }}<a
+      class="govuk-footer__link"
+      href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      rel="license"
+      >{{ layout.licence.linkText }}</a
+    >{{ layout.licence.afterLink }}
+  {% endset -%}
+
   {{
     govukFooter({
       meta: {
         items: [
           {
             href: "/privacy-notice",
-            text: "Privacy"
+            text: layout.footer.privacy
           },
           {
             href: "/cookies",
-            text: "Cookies"
+            text: layout.footer.cookies
           },
           {
             href: "/accessibility-statement",
-            text: "Accessibility statement"
+            text: layout.footer.accessibility
           },
           {
             href: "/terms",
-            text: "Terms"
+            text: layout.footer.terms
           }
         ]
+      },
+      contentLicence: {
+        html: contentLicenceHtml
+      },
+      copyright: {
+        text: layout.copyright
       }
     })
   }}

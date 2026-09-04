@@ -1,5 +1,5 @@
 import { paths, pathTo } from '../../../config/paths.js'
-import { content } from '../../../config/content.js'
+import { apiManagement } from '../content.js'
 import crypto from 'node:crypto'
 
 const flashDisabledMessage = 'disabledSuccessful'
@@ -16,7 +16,7 @@ export const apiManagementController = {
       const organisationName =
         request?.auth?.credentials?.currentOrganisationName
 
-      const pageContent = content.apiList(request, organisationName)
+      const pageContent = apiManagement.apiList(request, organisationName)
 
       const [code] = request.yar.flash(flashDisabledMessage)
       let disabledSuccessMessage
@@ -47,11 +47,16 @@ export const apiManagementController = {
         heading: pageContent.heading,
         backLink: paths.nextAction,
         noEnabledApiCodes: pageContent.noEnabledApiCodes,
-        apiCodeRows: convertToListRows(enabledApiCodes, pageContent.changeName),
+        apiCodeRows: convertToListRows(
+          enabledApiCodes,
+          pageContent.changeName,
+          pageContent.words
+        ),
         disabledApiCodeRows: disabledApiCodes,
         additionalCode: pageContent.additionalCode,
         returnAction: pageContent.returnAction,
         createAction: paths.apiCreate,
+        words: pageContent.words,
         scriptNonce,
         disabledSuccessMessage
       })
@@ -68,13 +73,13 @@ export const apiManagementController = {
   }
 }
 
-const convertToListRows = (apiCodes, changeNameContent) => {
+const convertToListRows = (apiCodes, changeNameContent, words) => {
   const rows = []
 
   for (const [index, apiCode] of apiCodes.entries()) {
     const code = {
       key: {
-        text: `API code ${index + 1}`,
+        text: `${words.apiCode} ${index + 1}`,
         classes: `${index !== 0 ? 'govuk-!-padding-top-6' : ''}`
       },
       value: {
@@ -84,12 +89,12 @@ const convertToListRows = (apiCodes, changeNameContent) => {
         items: [
           {
             href: pathTo(paths.apiDisable, { apiCode: apiCode.code }),
-            text: 'Disable',
+            text: words.disable,
             classes: 'govuk-button govuk-button--secondary',
             attributes: {
               'data-copyText': apiCode.code,
               'data-codeName': apiCode.name,
-              'aria-label': `Disable ${apiCode.name} code`
+              'aria-label': `${words.disable} ${apiCode.name} ${words.code}`
             }
           }
         ]
@@ -98,7 +103,7 @@ const convertToListRows = (apiCodes, changeNameContent) => {
 
     const name = {
       key: {
-        text: 'Name',
+        text: words.name,
         classes: `${index !== apiCodes.length - 1 ? 'govuk-!-padding-bottom-6' : ''} govuk-!-padding-top-6`
       },
       value: {
@@ -111,7 +116,7 @@ const convertToListRows = (apiCodes, changeNameContent) => {
             text: changeNameContent.action,
             visuallyHiddenText: `${changeNameContent.hiddenText} ${apiCode.name}`,
             attributes: {
-              'aria-label': `Change ${apiCode.name} code name`
+              'aria-label': `${words.change} ${apiCode.name} ${words.codeName}`
             }
           }
         ]

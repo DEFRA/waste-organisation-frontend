@@ -4,17 +4,25 @@ import { setupAuthedUserSession } from '../../../test-utils/session-helper'
 import { paths } from '../../../config/paths'
 import { statusCodes } from '../../common/constants/status-codes'
 import { JSDOM } from 'jsdom'
-import { content } from '../../../config/content'
+import { onboarding } from '../content'
+import { config } from '../../../config/config.js'
 
 describe('ukPermit', () => {
   let server
-  const pageContent = content.ukPermit({})
+  let initialWelshLanguageFlag
+  const pageContent = onboarding.ukPermit({})
 
   beforeAll(async () => {
+    initialWelshLanguageFlag = config.get('featureFlags.welshLanguage')
     server = await initialiseServer()
   })
 
+  afterEach(() => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
+  })
+
   afterAll(async () => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
     await server.stop({ timeout: 0 })
   })
 
@@ -49,6 +57,25 @@ describe('ukPermit', () => {
       expect(pageHeading).toEqual(
         expect.stringContaining(pageContent.heading.text)
       )
+    })
+
+    test('should render Welsh content when lang=cy', async () => {
+      config.set('featureFlags.welshLanguage', true)
+
+      const welshContent = onboarding.ukPermit({ locale: 'cy' })
+      const { payload } = await server.inject({
+        method: 'GET',
+        url: `${paths.ukPermit}?lang=cy`
+      })
+
+      const { document } = new JSDOM(payload).window
+
+      expect(document.title).toEqual(
+        expect.stringContaining(`${welshContent.title} |`)
+      )
+      expect(
+        document.querySelector('[data-testid="app-heading-title"]').textContent
+      ).toEqual(expect.stringContaining(welshContent.heading.text))
     })
 
     test('should show error message if there is an error', async () => {

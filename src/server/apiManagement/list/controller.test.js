@@ -5,13 +5,13 @@ import {
 } from '../../../test-utils/initialise-server'
 import { paths } from '../../../config/paths'
 import { JSDOM } from 'jsdom'
-import { content } from '../../../config/content'
+import { apiManagement } from '../content'
 import { apiManagementController } from './controller'
 import { setupAuthedUserSession } from '../../../test-utils/session-helper'
 
 describe('apiList', () => {
   let server
-  const pageContent = content.apiList(null, 'Joe Bloggs Ltd')
+  const pageContent = apiManagement.apiList(null, 'Joe Bloggs Ltd')
 
   const organisationName = 'ORG NAME'
   const organisationId = 'ORG Id'

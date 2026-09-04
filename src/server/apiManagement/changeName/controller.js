@@ -1,7 +1,7 @@
 import boom from '@hapi/boom'
 import joi from 'joi'
 import { paths, pathTo } from '../../../config/paths.js'
-import { content } from '../../../config/content.js'
+import { apiManagement } from '../content.js'
 
 const flashKey = 'changeNameError'
 const validationErrorType = 'validation'
@@ -16,7 +16,7 @@ export const apiChangeNameController = {
 
       const organisationName =
         request?.auth?.credentials?.currentOrganisationName
-      const pageContent = content.apiChangeName(request, organisationName)
+      const pageContent = apiManagement.apiChangeName(request, organisationName)
 
       if (!existingApiCodes) {
         throw boom.badImplementation()

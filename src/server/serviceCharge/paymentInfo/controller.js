@@ -1,4 +1,4 @@
-import { content } from '../../../config/content.js'
+import { serviceCharge } from '../content.js'
 import { paths } from '../../../config/paths.js'
 
 export const serviceChargeController = {
@@ -14,17 +14,19 @@ export const serviceChargeController = {
       !organisation.paymentPeriods ||
       organisation.paymentPeriods.length < 1
     ) {
-      const { alreadyPaidNotice } = content.sharedServiceChargeInfo(
-        request,
-        request.auth.credentials.currentOrganisationName
+      request.yar.flash(
+        'infoMessage',
+        serviceCharge.alreadyPaidNotice(
+          request,
+          request.auth.credentials.currentOrganisationName
+        )
       )
-      request.yar.flash('infoMessage', alreadyPaidNotice)
       return h.redirect(paths.account)
     }
 
     const paymentPeriod = organisation.paymentPeriods[0]
 
-    const pageContent = content.serviceCharge(
+    const pageContent = serviceCharge.serviceCharge(
       request,
       paymentPeriod.priceInPence,
       request.auth.credentials.currentOrganisationName

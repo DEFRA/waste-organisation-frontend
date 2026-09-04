@@ -2,6 +2,8 @@ import path from 'node:path'
 import { readFileSync } from 'node:fs'
 
 import { config } from '../../config.js'
+import { common } from '../../../server/common/content.js'
+import { languageToggleHref } from '../../../server/common/plugins/translations/language-toggle-href.js'
 import { buildNavigation } from './build-navigation.js'
 import { createLogger } from '../../../server/common/helpers/logging/logger.js'
 
@@ -25,9 +27,19 @@ export function context(request) {
 
   return {
     assetPath: `${assetPath}/assets`,
-    serviceName: config.get('serviceName'),
+    serviceName:
+      request.locale === 'cy'
+        ? config.get('serviceNameCY')
+        : config.get('serviceName'),
     serviceUrl: config.get('links.account'),
     feedbackUrl: config.get('links.feedback'),
+    layout: common.layout(request),
+    welshLanguage: config.get('featureFlags.welshLanguage'),
+    languageToggle: {
+      locale: request.locale === 'cy' ? 'cy' : 'en',
+      englishHref: languageToggleHref(request, 'en'),
+      welshHref: languageToggleHref(request, 'cy')
+    },
     breadcrumbs: [],
     navigation: buildNavigation(request),
     getAssetPath(asset) {
