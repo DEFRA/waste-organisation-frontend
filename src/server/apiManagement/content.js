@@ -45,15 +45,15 @@ export const apiManagement = {
       cy: {
         title: 'Eich cod API',
         heading: heading('Eich cod API', null, organisationName),
-        noEnabledApiCodes: 'zzzzz',
+        noEnabledApiCodes: 'Does dim codau API gennych',
         words: {
           copy: 'Copi',
-          copied: 'zzzzz',
+          copied: "Wedi'i gopïo",
           code: 'cod',
           disable: 'Analluogi',
           disabled: "Wedi'i analluogi",
           change: 'Newid',
-          codeName: 'zzzzz',
+          codeName: "enw'r cod",
           name: 'Enw',
           apiCode: 'Cod API'
         },
@@ -63,7 +63,7 @@ export const apiManagement = {
             "Os ydych chi'n gweithio gyda mwy nag un darparwr meddalwedd, dylech roi cod API i bob un.",
           action: {
             additional: 'Creu cod ychwanegol',
-            new: 'zzzzz'
+            new: 'Creu cod newydd'
           }
         },
         disabledSuccessMessage: () => ({
@@ -77,7 +77,7 @@ export const apiManagement = {
         returnAction: `Dychwelyd i ${organisationName}`,
         changeName: {
           action: 'Newid',
-          hiddenText: 'zzzzz'
+          hiddenText: 'enw ar gyfer'
         }
       }
     }),
@@ -107,11 +107,12 @@ export const apiManagement = {
         error: {
           pageTitle: 'Gwall: Newid enw cod API',
           title: 'Mae yna broblem',
-          message: 'zzzzz'
+          message: 'Rhowch enw ar gyfer eich cod API'
         },
         updateError: {
           title: 'Mae yna broblem',
-          message: 'zzzzz'
+          message:
+            "Doedd dim modd diweddaru'r enw cod API. Rhowch gynnig arall arni."
         },
         saveAction: 'Cadw a bwrw ymlaen'
       }
@@ -162,7 +163,7 @@ export const apiManagement = {
         error: {
           pageTitle: "Gwall: Ydych chi am analluogi'r cod API hwn?",
           title: 'Mae yna broblem',
-          message: 'zzzzz'
+          message: "Dewiswch Ydw os ydych chi am analluogi'r cod API yma."
         },
         continueAction: 'Parhau'
       }

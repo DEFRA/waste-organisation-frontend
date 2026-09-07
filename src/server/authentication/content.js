@@ -1,8 +1,6 @@
 import { getContentForLanguage } from '../../config/content.js'
 import { paths } from '../../config/paths.js'
 
-// zzzzz marks strings that are not in the Welsh translation pack
-
 export const authentication = {
   signOut: (request) =>
     getContentForLanguage(request, {
@@ -13,9 +11,9 @@ export const authentication = {
         navigationLink: 'Sign out'
       },
       cy: {
-        title: 'zzzzz',
-        heading: 'zzzzz',
-        fallbackLink: 'zzzzz',
+        title: "Rydych chi wrthi'n cael eich allgofnodi",
+        heading: "Rydych chi wrthi'n cael eich allgofnodi",
+        fallbackLink: 'Parhau i fewngofnodi',
         navigationLink: 'Allgofnodi'
       }
     }),
@@ -27,9 +25,9 @@ export const authentication = {
         signInButton: 'Sign in'
       },
       cy: {
-        title: 'zzzzz',
-        heading: 'zzzzz',
-        signInButton: 'zzzzz'
+        title: 'Rydych chi wedi cael eich allgofnodi',
+        heading: 'Rydych chi wedi cael eich allgofnodi',
+        signInButton: 'Mewngofnodi'
       }
     }),
   unauthorized: (request) =>
@@ -44,12 +42,16 @@ export const authentication = {
         signInButton: 'Sign in'
       },
       cy: {
-        title: 'zzzzz',
-        heading: 'zzzzz',
-        reasons: ['zzzzz', 'zzzzz'],
-        reasonsIntro: 'zzzzz',
-        action: 'zzzzz',
-        signInButton: 'zzzzz'
+        title: 'Does dim caniatâd gennych i weld y tudalen yma',
+        heading: 'Does dim caniatâd gennych i weld y tudalen yma',
+        reasons: [
+          'dydych chi ddim wedi mewngofnodi',
+          'daeth eich sesiwn i ben'
+        ],
+        reasonsIntro: 'Rhesymau posibl am hyn yw:',
+        action:
+          "Ceisiwch fewngofnodi eto neu cysylltwch â'r tîm cymorth i gael rhagor o help.",
+        signInButton: 'Mewngofnodi'
       }
     }),
   organisationRequired: (request) =>
@@ -66,11 +68,13 @@ export const authentication = {
         signOutUrl: paths.signOut
       },
       cy: {
-        title: 'zzzzz',
-        heading: 'zzzzz',
-        body: 'zzzzz',
-        signOutInstruction: 'zzzzz',
-        registerInstruction: 'zzzzz',
+        title: 'Chewch chi ddim parhau ar y gwasanaeth yma',
+        heading: 'Chewch chi ddim parhau ar y gwasanaeth yma',
+        body: "Fyddwch chi ddim yn gallu defnyddio'r gwasanaeth yma am eich bod chi wedi cofrestru fel unigolyn at ddibenion personol.",
+        signOutInstruction:
+          'Os hoffech chi barhau, bydd angen ichi allgofnodi, dewis y gwasanaeth Derbyn gwastraff ac yna cofrestru fel defnyddiwr newydd gyda chyfeiriad ebost gwahanol.',
+        registerInstruction:
+          'Ar ôl ichi greu cyfrif newydd, cewch gofrestru wedyn fel busnes neu sefydliad.',
         signOutLinkText: 'Allgofnodi',
         signOutUrl: paths.signOut
       }
