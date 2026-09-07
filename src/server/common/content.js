@@ -17,7 +17,7 @@ export const common = {
           english: 'English',
           welsh: 'Cymraeg',
           changeToEnglish: 'Change to English',
-          changeToWelsh: 'zzzzz'
+          changeToWelsh: 'Newid i Gymraeg'
         },
         footer: {
           privacy: 'Privacy',
@@ -41,11 +41,11 @@ export const common = {
         },
         back: 'Yn ôl',
         languageToggle: {
-          ariaLabel: 'zzzzz',
+          ariaLabel: 'Newid iaith',
           english: 'English',
           welsh: 'Cymraeg',
           changeToEnglish: 'Change to English',
-          changeToWelsh: 'zzzzz'
+          changeToWelsh: 'Newid i Gymraeg'
         },
         footer: {
           privacy: 'Preifatrwydd',

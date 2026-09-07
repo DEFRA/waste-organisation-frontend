@@ -34,7 +34,7 @@ export const account = {
             paymentDueTag: 'Taliad yn ddyledus',
             paidTag: 'Wedi talu',
             nextPaymentDue: 'Taliad nesaf yn ddyledus ym mis',
-            payNow: 'zzzzz'
+            payNow: 'Talu nawr'
           }
         }
       }
@@ -178,7 +178,7 @@ export const account = {
         navigationLink: 'Manage Defra account'
       },
       cy: {
-        navigationLink: 'zzzzz'
+        navigationLink: 'Rheoli cyfrif Defra'
       }
     })
 }
