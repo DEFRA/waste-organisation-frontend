@@ -31,8 +31,8 @@ export const serviceCharge = {
       },
       cy: {
         title: 'Pwysig',
-        heading: 'zzzzz',
-        body: 'zzzzz'
+        heading: "Mae taliad wedi'i gyflwyno'n barod",
+        body: "Mae taliad am dâl gwasanaeth ar gyfer y cyfrif yma wedi'i brosesu'n barod. Peidiwch â rhoi cynnig arall arni."
       }
     }),
   duplicatePaymentNotice: (request, organisationName) =>
@@ -150,11 +150,16 @@ export const serviceCharge = {
         }
       },
       cy: {
-        title: 'zzzzz',
-        heading: heading('zzzzz', 'zzzzz', null),
+        title:
+          'Ymddiheuriadau, chewch chi ddim gwneud taliad ar ran y sefydliad yma',
+        heading: heading(
+          'Ymddiheuriadau, chewch chi ddim gwneud taliad ar ran y sefydliad yma',
+          "Ar sail eich ateb, chewch chi ddim parhau gan fod awdurdodau lleol yn methu defnyddio'r gwasanaeth yma ar hyn o bryd.",
+          null
+        ),
         link: {
           href: config.get('links.startPage'),
-          text: 'zzzzz'
+          text: 'Rhagor o wybodaeth am Dracio gwastraff digidol'
         }
       }
     }),
@@ -225,11 +230,13 @@ export const serviceCharge = {
           returnToAccountLabel: `Dychwelyd i gyfrif derbyn gwastraff ${organisationName}`
         },
         pending: {
-          pageTitle: 'zzzzz',
-          heading: heading('zzzzz', null, organisationName),
-          summaryContent: 'zzzzz',
-          whatHappensNextHeading: 'zzzzz',
-          whatHappensNext: ['zzzzz'],
+          pageTitle: 'Taliad ar y gweill',
+          heading: heading('Taliad ar y gweill', null, organisationName),
+          summaryContent: "Mae'ch taliad wrthi'n cael ei brosesu.",
+          whatHappensNextHeading: "Beth sy'n digwydd nesaf",
+          whatHappensNext: [
+            "Ar ôl i'ch taliad gael ei gwblhau, fe gewch chi neges ebost yn cadarnhau hynny. Yna gallwch defnyddio'r gwasanaeth i roi gwybod am eich symudiadau gwastraff."
+          ],
           returnToAccountLabel: `Dychwelyd i gyfrif derbyn gwastraff ${organisationName}`
         },
         unsuccessful: {
