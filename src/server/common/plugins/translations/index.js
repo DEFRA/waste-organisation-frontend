@@ -24,7 +24,7 @@ export const translation = {
         clearInvalid: true
       })
 
-      server.ext('onPreHandler', (request, h) => {
+      server.ext('onPreAuth', (request, h) => {
         if (!config.get('featureFlags.welshLanguage')) {
           request.locale = DEFAULT_LOCALE
           return h.continue

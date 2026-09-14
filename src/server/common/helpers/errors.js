@@ -1,19 +1,18 @@
 import { authentication } from '../../authentication/content.js'
+import { errors } from '../../error/content.js'
 import { statusCodes } from '../constants/status-codes.js'
 import { paths } from '../../../config/paths.js'
 
-function statusCodeMessage(statusCode) {
+function errorPageContent(request, statusCode) {
   switch (statusCode) {
     case statusCodes.notFound:
-      return 'Page not found'
+      return errors.notFound(request)
     case statusCodes.forbidden:
-      return 'Forbidden'
-    case statusCodes.unauthorized:
-      return 'Unauthorized'
+      return errors.forbidden(request)
     case statusCodes.badRequest:
-      return 'Bad Request'
+      return errors.badRequest(request)
     default:
-      return 'Something went wrong'
+      return errors.unexpected(request)
   }
 }
 
@@ -46,22 +45,23 @@ export function catchAll(request, h) {
   }
 
   if (statusCode === statusCodes.internalServerError) {
-    const heading = 'Sorry, there is a problem with the service'
+    const content = errors.internalServerError(request)
     return h
       .view('error/500', {
-        pageTitle: heading,
-        heading
+        pageTitle: content.title,
+        heading: content.heading,
+        body: content.body
       })
       .code(statusCode)
   }
 
-  const errorMessage = statusCodeMessage(statusCode)
+  const content = errorPageContent(request, statusCode)
 
   return h
     .view('error/index', {
-      pageTitle: errorMessage,
+      pageTitle: content.pageTitle,
       heading: statusCode,
-      message: errorMessage
+      message: content.message
     })
     .code(statusCode)
 }

@@ -51,6 +51,7 @@ describe('context and cache', () => {
           breadcrumbs: [],
           layout: common.layout(mockRequest),
           welshLanguage: false,
+          htmlLang: 'en',
           languageToggle: {
             locale: 'en',
             englishHref: '/?lang=en',
@@ -137,6 +138,7 @@ describe('context and cache', () => {
           breadcrumbs: [],
           layout: common.layout(mockRequest),
           welshLanguage: false,
+          htmlLang: 'en',
           languageToggle: {
             locale: 'en',
             englishHref: '/?lang=en',
