@@ -48,6 +48,11 @@ export const serviceCharge = {
         body: "Mae taliad tâl gwasanaeth ar gyfer y cyfrif hwn yn mynd rhagddo'n barod. Peidiwch â rhoi cynnig arall arni."
       }
     }),
+  paymentDescription: (request) =>
+    getContentForLanguage(request, {
+      en: 'Annual report receipt of waste service charge',
+      cy: 'Tâl blynyddol ar gyfer y gwasanaeth rhoi gwybod am dderbyn gwastraff'
+    }),
   serviceCharge: (request, priceInPence, organisationName) =>
     getContentForLanguage(request, {
       en: {
