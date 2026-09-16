@@ -78,6 +78,12 @@ services:
       SESSION_CACHE_ENGINE: redis
       USE_SINGLE_INSTANCE_CACHE: true
       APP_BASE_URL: http://cdp-defra-id-stub:3200
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://cdp-defra-id-stub:3200/health']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
     networks:
       - cdp-tenant
 
@@ -207,7 +213,7 @@ services:
       redis:
         condition: service_started
       cdp-defra-id-stub:
-        condition: service_started
+        condition: service_healthy
       waste-organisation-backend:
         condition: service_started
       cdp-uploader:
