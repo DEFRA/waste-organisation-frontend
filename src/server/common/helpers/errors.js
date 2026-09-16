@@ -53,15 +53,14 @@ export function catchAll(request, h) {
         body: content.body
       })
       .code(statusCode)
+  } else {
+    const content = errorPageContent(request, statusCode)
+    return h
+      .view('error/index', {
+        pageTitle: content.pageTitle,
+        heading: statusCode,
+        message: content.message
+      })
+      .code(statusCode)
   }
-
-  const content = errorPageContent(request, statusCode)
-
-  return h
-    .view('error/index', {
-      pageTitle: content.pageTitle,
-      heading: statusCode,
-      message: content.message
-    })
-    .code(statusCode)
 }
