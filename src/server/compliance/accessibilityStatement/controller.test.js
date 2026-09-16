@@ -3,15 +3,23 @@ import { JSDOM } from 'jsdom'
 import { statusCodes } from '../../common/constants/status-codes.js'
 import { initialiseServer } from '../../../test-utils/initialise-server.js'
 import { paths } from '../../../config/paths.js'
+import { config } from '../../../config/config.js'
 
-describe('#privacyNoticeController', () => {
+describe('#accessibilityStatementController', () => {
   let server
+  let initialWelshLanguageFlag
 
   beforeAll(async () => {
+    initialWelshLanguageFlag = config.get('featureFlags.welshLanguage')
     server = await initialiseServer()
   })
 
+  afterEach(() => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
+  })
+
   afterAll(async () => {
+    config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
     await server.stop({ timeout: 0 })
   })
 
@@ -49,5 +57,40 @@ describe('#privacyNoticeController', () => {
     expect(sectionHeadings[0].textContent).toContain(
       'How accessible this website is'
     )
+
+    expect(
+      document.querySelector(
+        'a[href="https://www.equalityadvisoryservice.com/"]'
+      )
+    ).not.toBeNull()
+    expect(
+      document.querySelector('a[href="https://www.gov.uk/call-charges"]')
+    ).not.toBeNull()
+  })
+
+  test('Should open enforcement and call charges links in Welsh when lang=cy', async () => {
+    config.set('featureFlags.welshLanguage', true)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: `${paths.accessibility}?lang=cy`
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    expect(
+      document.querySelector('a[href="https://eass-ws.custhelp.com/"]')
+    ).not.toBeNull()
+    expect(
+      document.querySelector('a[href="https://www.gov.uk/costau-galwadau"]')
+    ).not.toBeNull()
+    expect(
+      document.querySelector(
+        'a[href="https://www.equalityadvisoryservice.com/"]'
+      )
+    ).toBeNull()
+    expect(
+      document.querySelector('a[href="https://www.gov.uk/call-charges"]')
+    ).toBeNull()
   })
 })
