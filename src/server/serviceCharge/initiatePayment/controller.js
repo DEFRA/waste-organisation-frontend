@@ -33,7 +33,7 @@ export const initiatePaymentController = {
         request.auth.credentials.currentOrganisationId,
         {
           amount: paymentPeriod.priceInPence,
-          description: serviceCharge.paymentDescription(request),
+          description: serviceCharge.paymentDescription(request).description,
           returnUrl: `${appBaseUrl}${paths.paymentDetails}`,
           language: request.locale === 'cy' ? 'cy' : 'en',
           metadata: {

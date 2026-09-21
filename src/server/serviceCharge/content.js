@@ -50,8 +50,13 @@ export const serviceCharge = {
     }),
   paymentDescription: (request) =>
     getContentForLanguage(request, {
-      en: 'Annual report receipt of waste service charge',
-      cy: 'Tâl blynyddol ar gyfer y gwasanaeth rhoi gwybod am dderbyn gwastraff'
+      en: {
+        description: 'Annual report receipt of waste service charge'
+      },
+      cy: {
+        description:
+          'Tâl blynyddol ar gyfer y gwasanaeth rhoi gwybod am dderbyn gwastraff'
+      }
     }),
   serviceCharge: (request, priceInPence, organisationName) =>
     getContentForLanguage(request, {
