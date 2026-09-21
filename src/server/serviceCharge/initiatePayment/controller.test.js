@@ -15,8 +15,10 @@ import { serviceCharge } from '../content.js'
 
 const ORGANISATION_ID = 456
 const ORGANISATION_NAME = 'Joe Bloggs Ltd'
-const SERVICE_CHARGE_DESCRIPTION =
+const ENGLISH_PAYMENT_DESCRIPTION =
   'Annual report receipt of waste service charge'
+const WELSH_PAYMENT_DESCRIPTION =
+  'Tâl blynyddol ar gyfer y gwasanaeth rhoi gwybod am dderbyn gwastraff'
 
 describe('#initiatePaymentController', () => {
   let server
@@ -59,7 +61,7 @@ describe('#initiatePaymentController', () => {
 
     expect(backendMock).toBeCalledWith(ORGANISATION_ID, {
       amount: serviceChargeAmountPence,
-      description: SERVICE_CHARGE_DESCRIPTION,
+      description: ENGLISH_PAYMENT_DESCRIPTION,
       returnUrl: `${appBaseUrl}${paths.paymentDetails}`,
       language: 'en',
       metadata: {
@@ -74,12 +76,24 @@ describe('#initiatePaymentController', () => {
   })
 
   test.each([
-    { locale: 'cy', language: 'cy' },
-    { locale: 'en', language: 'en' },
-    { locale: undefined, language: 'en' }
+    {
+      locale: 'cy',
+      language: 'cy',
+      description: WELSH_PAYMENT_DESCRIPTION
+    },
+    {
+      locale: 'en',
+      language: 'en',
+      description: ENGLISH_PAYMENT_DESCRIPTION
+    },
+    {
+      locale: undefined,
+      language: 'en',
+      description: ENGLISH_PAYMENT_DESCRIPTION
+    }
   ])(
-    'sends language $language when request.locale is $locale',
-    async ({ locale, language }) => {
+    'sends language $language and description when request.locale is $locale',
+    async ({ locale, language, description }) => {
       const serviceChargeAmountPence = 4000
       const dateNow = new Date('2026-05-05T10:00:00.000Z')
       const mockNextUrl = faker.internet.url
@@ -106,7 +120,7 @@ describe('#initiatePaymentController', () => {
 
       expect(backendMock).toBeCalledWith(
         ORGANISATION_ID,
-        expect.objectContaining({ language })
+        expect.objectContaining({ language, description })
       )
     }
   )

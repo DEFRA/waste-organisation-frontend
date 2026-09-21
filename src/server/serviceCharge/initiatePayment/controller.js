@@ -2,8 +2,6 @@ import boom from '@hapi/boom'
 import { config } from '../../../config/config.js'
 import { paths } from '../../../config/paths.js'
 import { serviceCharge } from '../content.js'
-const SERVICE_CHARGE_DESCRIPTION =
-  'Annual report receipt of waste service charge'
 
 export const initiatePaymentController = {
   async handler(request, h) {
@@ -35,7 +33,7 @@ export const initiatePaymentController = {
         request.auth.credentials.currentOrganisationId,
         {
           amount: paymentPeriod.priceInPence,
-          description: SERVICE_CHARGE_DESCRIPTION,
+          description: serviceCharge.paymentDescription(request).description,
           returnUrl: `${appBaseUrl}${paths.paymentDetails}`,
           language: request.locale === 'cy' ? 'cy' : 'en',
           metadata: {
