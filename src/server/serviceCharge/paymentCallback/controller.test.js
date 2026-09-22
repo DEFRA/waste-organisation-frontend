@@ -129,6 +129,112 @@ describe('#paymentWebhookController', () => {
     expect(wreckPutMock).not.toHaveBeenCalled()
   })
 
+  test('logs payment id and status without the webhook body', async () => {
+    const payloadString = JSON.stringify(payload)
+    const signature = crypto
+      .createHmac('sha256', webhookSigningSecret)
+      .update(payloadString)
+      .digest('hex')
+    const request = {
+      payload: payloadString,
+      headers: { 'pay-signature': signature },
+      logger: {
+        info: vi.fn(),
+        error: vi.fn()
+      },
+      backendApi: {
+        savePayment: vi.fn()
+      }
+    }
+    const mockCode = vi.fn()
+    const h = {
+      response: vi.fn().mockImplementation(() => ({
+        code: mockCode
+      }))
+    }
+
+    await paymentWebhookController.handler(request, h)
+
+    expect(request.logger.info).toHaveBeenCalledWith(
+      'GovPay webhook for organisation orgid-123 payment hu20sqlact5260q2nanm0q8u93: success'
+    )
+    expect(JSON.stringify(request.logger.info.mock.calls)).not.toContain(
+      'sherlock.holmes@example.com'
+    )
+    expect(request.backendApi.savePayment).toHaveBeenCalled()
+  })
+
+  test('logs save errors without the webhook body', async () => {
+    const payloadString = JSON.stringify(payload)
+    const signature = crypto
+      .createHmac('sha256', webhookSigningSecret)
+      .update(payloadString)
+      .digest('hex')
+    const error = new Error('backend unavailable')
+    const request = {
+      payload: payloadString,
+      headers: { 'pay-signature': signature },
+      logger: {
+        info: vi.fn(),
+        error: vi.fn()
+      },
+      backendApi: {
+        savePayment() {
+          throw error
+        }
+      }
+    }
+    const h = {
+      response: vi.fn().mockImplementation(() => ({
+        code: vi.fn()
+      }))
+    }
+
+    await paymentWebhookController.handler(request, h)
+
+    expect(request.logger.error).toHaveBeenCalledWith(
+      { err: error },
+      'Error saving payment: backend unavailable'
+    )
+    expect(JSON.stringify(request.logger.error.mock.calls)).not.toContain(
+      'sherlock.holmes@example.com'
+    )
+  })
+
+  test('logs unknown error when the thrown value has no message', async () => {
+    const payloadString = JSON.stringify(payload)
+    const signature = crypto
+      .createHmac('sha256', webhookSigningSecret)
+      .update(payloadString)
+      .digest('hex')
+    const error = {}
+    const request = {
+      payload: payloadString,
+      headers: { 'pay-signature': signature },
+      logger: {
+        info: vi.fn(),
+        error: vi.fn()
+      },
+      backendApi: {
+        savePayment() {
+          throw error
+        }
+      }
+    }
+    const h = {
+      response: vi.fn().mockImplementation(() => ({
+        code: vi.fn()
+      }))
+    }
+
+    await paymentWebhookController.handler(request, h)
+
+    expect(request.logger.error).toHaveBeenCalledWith(
+      { err: error },
+      'Error saving payment: unknown error'
+    )
+  })
+
   test('returns ok if no message body', async () => {
     const request = {
       payload: null,
