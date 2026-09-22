@@ -17,8 +17,11 @@ export const paymentWebhookController = {
       if (hmac === request.headers['pay-signature']) {
         try {
           const parsedMessage = JSON.parse(webhookMessageBody)
+          const paymentId = parsedMessage.resource?.payment_id
+          const status = parsedMessage.resource?.state?.status
+
           request.logger.info(
-            `webhookMessageBody: ${JSON.stringify(parsedMessage, null, 4)}`
+            `GovPay webhook for payment ${paymentId}: ${status}`
           )
           request.backendApi.savePayment(
             parsedMessage.resource.metadata.organisationId,
@@ -26,7 +29,8 @@ export const paymentWebhookController = {
           )
         } catch (e) {
           request.logger.error(
-            `Error saving payment: ${e} message: ${webhookMessageBody} stacktrace: ${e.stack}`
+            { err: e },
+            `Error saving payment: ${e?.message ?? 'unknown error'}`
           )
         }
       } else {
