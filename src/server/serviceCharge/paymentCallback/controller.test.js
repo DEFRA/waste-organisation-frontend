@@ -201,6 +201,40 @@ describe('#paymentWebhookController', () => {
     )
   })
 
+  test('logs unknown error when the thrown value has no message', async () => {
+    const payloadString = JSON.stringify(payload)
+    const signature = crypto
+      .createHmac('sha256', webhookSigningSecret)
+      .update(payloadString)
+      .digest('hex')
+    const error = {}
+    const request = {
+      payload: payloadString,
+      headers: { 'pay-signature': signature },
+      logger: {
+        info: vi.fn(),
+        error: vi.fn()
+      },
+      backendApi: {
+        savePayment() {
+          throw error
+        }
+      }
+    }
+    const h = {
+      response: vi.fn().mockImplementation(() => ({
+        code: vi.fn()
+      }))
+    }
+
+    await paymentWebhookController.handler(request, h)
+
+    expect(request.logger.error).toHaveBeenCalledWith(
+      { err: error },
+      'Error saving payment: unknown error'
+    )
+  })
+
   test('returns ok if no message body', async () => {
     const request = {
       payload: null,
