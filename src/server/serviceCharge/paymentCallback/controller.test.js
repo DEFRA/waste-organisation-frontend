@@ -156,7 +156,7 @@ describe('#paymentWebhookController', () => {
     await paymentWebhookController.handler(request, h)
 
     expect(request.logger.info).toHaveBeenCalledWith(
-      'GovPay webhook for payment hu20sqlact5260q2nanm0q8u93: success'
+      'GovPay webhook for organisation orgid-123 payment hu20sqlact5260q2nanm0q8u93: success'
     )
     expect(JSON.stringify(request.logger.info.mock.calls)).not.toContain(
       'sherlock.holmes@example.com'

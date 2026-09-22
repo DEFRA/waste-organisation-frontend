@@ -19,9 +19,11 @@ export const paymentWebhookController = {
           const parsedMessage = JSON.parse(webhookMessageBody)
           const paymentId = parsedMessage.resource?.payment_id
           const status = parsedMessage.resource?.state?.status
+          const organisationId =
+            parsedMessage.resource?.metadata?.organisationId
 
           request.logger.info(
-            `GovPay webhook for payment ${paymentId}: ${status}`
+            `GovPay webhook for organisation ${organisationId} payment ${paymentId}: ${status}`
           )
           request.backendApi.savePayment(
             parsedMessage.resource.metadata.organisationId,
