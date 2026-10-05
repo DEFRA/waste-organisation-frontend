@@ -1,0 +1,187 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ appHeading(heading) }}
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-margin-top-4 govuk-!-padding-bottom-4">
+
+        <h2 class="govuk-heading-m">Operator details</h2>
+        {{ govukSummaryList({
+          classes: "govuk-!-margin-bottom-9",
+          rows: [
+            {
+              key: {
+                text: "Name"
+              },
+              value: {
+                text: "Not Provided"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "name"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "Identifier Type"
+              },
+              value: {
+                text: "Not Provided"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "date of birth"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "Identifier Name"
+              },
+              value: {
+                text: "Not Provided"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "customer reference"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "Identifier Main"
+              },
+              value: {
+                text: "Not Provided"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "address"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "Identifier"
+              },
+              value: {
+                text: "Not Provided"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "contact details"
+                  }
+                ]
+              }
+            }
+          ]
+        }) 
+      }}
+
+        <h2 class="govuk-heading-m">Operator Address</h2>
+        {{ govukSummaryList({
+          classes: "govuk-!-margin-bottom-9",
+          rows: [
+            {
+              key: {
+                text: "Street"
+              },
+              value: {
+                text: "Not Provided"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "name"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "City"
+              },
+              value: {
+                text: "Not Provided"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "date of birth"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "Postal code"
+              },
+              value: {
+                text: "Not Provided"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "customer reference"
+                  }
+                ]
+              }
+            },
+            {
+              key: {
+                text: "Country"
+              },
+              value: {
+                text: "Not Provided"
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "address"
+                  }
+                ]
+              }
+            }
+          ]
+        }) 
+      }}
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

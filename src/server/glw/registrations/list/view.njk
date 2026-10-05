@@ -1,0 +1,68 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ appHeading(heading) }}
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-margin-top-4 govuk-!-padding-bottom-4">
+        {{ govukTaskList({
+          idPrefix: "before-you-start",
+          items: [
+            {
+              title: {
+                text: "England"
+              },
+              href: "/glw/registration/questions",
+              status: {
+                text: "Completed"
+                
+              }
+            },
+            {
+              title: {
+                text: "Scotland"
+              },
+              href: "/glw/registration/questions",
+              status: {
+                tag: {
+                  text: "Incomplete",
+                  classes: "govuk-tag--blue"
+                }
+              }
+            },
+            {
+              title: {
+                text: "Wales"
+              },
+              href: "/glw/registration/questions",
+              status: {
+                tag: {
+                  text: "Incomplete",
+                  classes: "govuk-tag--blue"
+                }
+              }
+            },
+            {
+              title: {
+                text: "Northern Ireland"
+              },
+              href: "/glw/registration/questions",
+              status: {
+                tag: {
+                  text: "Incomplete",
+                  classes: "govuk-tag--blue"
+                }
+              }
+            }
+          ]}) 
+        }}
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

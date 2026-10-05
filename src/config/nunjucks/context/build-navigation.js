@@ -9,7 +9,11 @@ export function buildNavigation(request) {
     const navigation = []
 
     const isAccountPage = request.path === paths.account
-    if (config.get('featureFlags.newAccountPage') && !isAccountPage) {
+    if (
+      (config.get('featureFlags.newAccountPage') ||
+        config.get('featureFlags.glw')) &&
+      !isAccountPage
+    ) {
       const manageAccountContent = account.manageAccount(request)
       navigation.push({
         text: manageAccountContent.navigationLink,

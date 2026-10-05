@@ -17,6 +17,7 @@ import { organisationCheck } from './common/helpers/auth/organisation-check.js'
 import { paymentCheck } from './common/helpers/auth/payment-check.js'
 import { account } from './account/index.js'
 import { authentication } from './authentication/index.js'
+import { glw } from './glw/index.js'
 
 const createPlugin = (plugins, [item, routes]) => {
   plugins.push({
@@ -87,7 +88,8 @@ export const router = {
         spreadsheet:             spreadsheet.authedRoutes.map((a) => addAuthWithOrgPayment(a)).concat(spreadsheet.downloadRoutes.map((a) => addAuthWithOrg(a))).concat(spreadsheet.openRoutes),
         apiManagement:           apiManagement.authedRoutes.map((a) => addAuthWithOrgPayment(a)),
         account:                 account.authedRoutes.map((a) => addAuthWithOrg(a)),
-        serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a))
+        serviceCharge:           serviceCharge.authedRoutes.map((a) => addAuthWithOrg(a)),
+        glw:                     glw.authedRoutes.map((a) => addAuthWithOrg(a))
       }).reduce((p, entry) => createPlugin(p, entry), [])
 
       // Application specific routes, add your own routes here

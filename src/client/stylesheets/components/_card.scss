@@ -12,6 +12,15 @@
   padding: govuk-spacing(3);
 }
 
+.glw .govuk-card--contained {
+  background-color: unset;
+  padding: 0;
+  margin-bottom: govuk-spacing(4);
+  padding-bottom: 0;
+  border-bottom: 3px solid govuk-colour('blue');
+  box-sizing: border-box;
+}
+
 .govuk-card-row {
   display: flex;
   flex-wrap: wrap;

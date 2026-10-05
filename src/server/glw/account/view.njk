@@ -1,0 +1,225 @@
+{% extends 'layouts/page.njk' %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% block content %}
+  <div class="govuk-!-margin-bottom-6 glw">
+    {% if isServiceChargeEnabled %}
+
+      {% if importantNotice %}
+
+        {% set importantNoticeHtml %}
+        {{ importantNotice.bodyPrefix }}
+        <a href="{{ apiListHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="important-notice-api-link">
+          {{ importantNotice.manageApiCode }}
+        </a>{{ importantNotice.bodySuffix }}
+        {% endset %}
+
+        {{ appImportantBanner({
+          title: importantNotice.title,
+          heading: importantNotice.heading,
+          content: importantNotice.body
+        }) }}
+      {% endif %}
+    {% endif %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {{ govukButton({
+          text: switchOrganisation,
+          classes: "govuk-button--secondary",
+          href: switchOrganisationHref,
+          attributes: {
+            "data-testid": "switch-organisation-button"
+          }
+        }) }}
+
+        {{ appHeading(heading) }}
+      </div>
+    </div>
+
+    <div class="govuk-grid-row govuk-card-row govuk-!-margin-top-8" data-testid="account-cards">
+      <div class="govuk-grid-column-one-half">
+
+        <div class="govuk-summary-card govuk-card--contained">
+          <div class="govuk-summary-card__title-wrapper">
+            <div>
+              <h2 class="govuk-summary-card__title" data-testid="report-waste-heading">
+                Manage Connections
+              </h2>
+              <p class="govuk-body-s govuk-!-margin-bottom-0" data-testid="report-waste-description">
+                {{ cards.reportWaste.description }}
+              </p>
+            </div>
+          </div>
+          <div class="govuk-summary-card__content">
+            <ul class="govuk-list govuk-list--spaced" data-testid="report-waste-links">
+              <li>
+                <a href="/api" class="govuk-link" data-testid="fg">
+                  Manage my API code
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {% if isServiceChargeEnabled %}
+        <div class="govuk-grid-column-one-half">
+
+          <div class="govuk-summary-card govuk-!-margin-bottom-4 govuk-card--contained">
+            <div class="govuk-summary-card__title-wrapper">
+              <div>
+                <h2 class="govuk-summary-card__title">
+                  {% if paymentStatus.canPay %}
+                    <a href="{{ serviceChargeHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="service-charge-link">
+                      {{ cards.serviceCharge.text }}
+                    </a>
+                  {% else %}
+                    {{ cards.serviceCharge.text }}
+                  {% endif %}
+                </h2>
+              </div>
+            </div>
+            <div class="govuk-summary-card__content">
+              <div class="govuk-card__actions" data-testid="service-charge-next-payment-due">
+
+                {{ govukTag({
+                  text: paymentStatus.label,
+                  classes: paymentStatus.tagClass
+                }) 
+              }}
+
+                {% if paymentStatus.nextDue %}
+                  <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-0" >
+                    {{ cards.serviceCharge.nextPaymentDue + ' ' + paymentStatus.nextDue }}.
+                  {% if paymentStatus.canPay %}
+                      <a href="{{ serviceChargeHref }}" class="govuk-link govuk-link--no-visited-state" data-testid="service-charge-pay-now-link">{{cards.serviceCharge.payNow}}</a>.
+                  {% endif %}
+                  </p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    {% else %}
+
+      <div class="govuk-grid-column-one-third">
+        <div class="govuk-card govuk-card--contained">
+          <div class="govuk-card__content">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-3">
+              <span data-testid="service-charge-text">{{ cards.serviceCharge.text }}</span>
+            </h2>
+          </div>
+          <div class="govuk-card__actions">
+            {{ govukTag({
+                text: cards.serviceCharge.tag,
+                classes: "govuk-tag--yellow",
+                attributes: {
+                  "data-testid": "service-charge-due-date"
+                }
+            }) }}
+          </div>
+        </div>
+      </div>
+
+    {% endif %}
+
+    <div class="govuk-grid-row govuk-card-row govuk-!-margin-top-8" data-testid="account-cards">
+      <div class="govuk-grid-column-one-third">
+        <div class="govuk-summary-card govuk-card--contained">
+          <div class="govuk-summary-card__title-wrapper">
+            <div>
+              <h2 class="govuk-summary-card__title" data-testid="report-waste-heading">
+                Collections
+              </h2>
+              <p class="govuk-body-s govuk-!-margin-bottom-0" data-testid="report-waste-description">
+                {{ cards.reportWaste.description }}
+              </p>
+            </div>
+          </div>
+          <div class="govuk-summary-card__content">
+            <ul class="govuk-list govuk-list--spaced" data-testid="report-waste-links">
+              <li>
+                <a href="/" class="govuk-link" data-testid="fg">
+                  Transfer Waste
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <div class="govuk-summary-card govuk-!-margin-bottom-4 govuk-card--contained">
+          <div class="govuk-summary-card__title-wrapper">
+            <div>
+              <h2 class="govuk-summary-card__title" data-testid="report-waste-heading">
+                {{ cards.reportWaste.text }}
+              </h2>
+              <p class="govuk-body-s govuk-!-margin-bottom-0" data-testid="report-waste-description">
+                {{ cards.reportWaste.description }}
+              </p>
+            </div>
+          </div>
+          <div class="govuk-summary-card__content">
+            <ul class="govuk-list govuk-list--spaced" data-testid="report-waste-links">
+              <li>
+                <a href="/download-spreadsheet" class="govuk-link" data-testid="fg">
+                  Download Spreadsheet
+                </a>
+              </li>
+              <li>
+                <a href="/organisation/{{currentOrganisationId}}/spreadsheet/begin-upload" class="govuk-link" data-testid="fg">
+                  Upload Spreadsheet
+                </a>
+              </li>
+              <li>
+                <a href="/organisation/{{currentOrganisationId}}/update-spreadsheet/begin-upload" class="govuk-link" data-testid="fg">
+                  Upload a spreadsheet that has Waste tracking IDs
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <div class="govuk-summary-card govuk-card--contained">
+          <div class="govuk-summary-card__title-wrapper">
+            <div>
+              <h2 class="govuk-summary-card__title" data-testid="report-waste-heading">
+                Import / Export
+              </h2>
+              <p class="govuk-body-s govuk-!-margin-bottom-0" data-testid="report-waste-description">
+                {{ cards.reportWaste.description }}
+              </p>
+            </div>
+          </div>
+          <div class="govuk-summary-card__content">
+            <ul class="govuk-list govuk-list--spaced" data-testid="report-waste-links">
+              <li>
+                <a href="/glw/registration" class="govuk-link" data-testid="fg">
+                  Manage Registrations
+                </a>
+              </li>
+              <li>
+                <a href="/" class="govuk-link" data-testid="fg">
+                  Import Waste
+                </a>
+              </li>
+              <li>
+                <a href="/" class="govuk-link" data-testid="fg">
+                  Export Waste
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -159,12 +159,14 @@ export const config = convict({
   serviceName: {
     doc: 'Applications Service Name',
     format: String,
-    default: 'Report receipt of waste'
+    default: 'Report receipt of waste',
+    env: 'SERVICE_NAME'
   },
   serviceNameCY: {
     doc: 'Applications Service Name Welsh',
     format: String,
-    default: 'Rhoi gwybod am dderbyn gwastraff'
+    default: 'Rhoi gwybod am dderbyn gwastraff',
+    env: 'SERVICE_NAME_WELSH'
   },
   root: {
     doc: 'Project root',
@@ -477,6 +479,12 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_WELSH_LANGUAGE'
+    },
+    glw: {
+      doc: 'Enable GLW POC updates',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_GLW'
     }
   },
   encryptionKey: {
