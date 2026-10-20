@@ -3,6 +3,10 @@ import { Buffer } from 'node:buffer'
 import { paths } from '../../../../config/paths.js'
 import { config } from '../../../../config/config.js'
 
+const obscureKey = 'c2472e5962be41f4a3afe1abd20b449b'
+const LOGIN_COOKIE_NAME = `env-login-${obscureKey}`
+const LOGIN_COOKIE_TTL_MS = 400 * 24 * 60 * 60 * 1000
+
 function safeEqual(a, b) {
   const bufferA = Buffer.from(a)
   const bufferB = Buffer.from(b)
@@ -14,7 +18,15 @@ function safeEqual(a, b) {
   return timingSafeEqual(bufferA, bufferB)
 }
 
-function isValidCredentials(authorizationHeader, username, password) {
+function isValidCredentials(request, username, password) {
+  const authorizationHeader =
+    request?.headers?.authorization ||
+    request?.raw?.req?.rawHeaders
+      ?.flatMap((h) => h?.split(';'))
+      ?.map((h) => h?.trim())
+      ?.find((h) => h.startsWith(LOGIN_COOKIE_NAME))
+      ?.replace(`${LOGIN_COOKIE_NAME}=`, '')
+
   if (!authorizationHeader?.startsWith('Basic ')) {
     return false
   }
@@ -46,27 +58,65 @@ export const basicAuth = {
       if (!password) {
         return
       }
+      server.state(LOGIN_COOKIE_NAME, {
+        ttl: LOGIN_COOKIE_TTL_MS,
+        isSecure: config.get('session.cookie.secure'),
+        isHttpOnly: true,
+        isSameSite: config.get('session.cookie.sameSite'),
+        path: '/',
+        encoding: 'none',
+        clearInvalid: true
+      })
+
+      const loginPath = `/secret/${obscureKey}/login-url`
 
       const callbackRe = new RegExp(
-        `${paths.updateSpreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.spreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.paymentCallback}` // nosonar
+        `/public/.*|` + // nosonar
+          `/.well-known/.*|` + // nosonar
+          `${paths.updateSpreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|` + // nosonar
+          `${paths.spreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.paymentCallback}` // nosonar
       )
 
       server.ext('onRequest', (request, h) => {
-        if (
-          isValidCredentials(
-            request.headers.authorization,
-            username,
-            password
-          ) ||
-          request?.path?.match(callbackRe)
-        ) {
+        if (request?.path?.match(callbackRe)) {
+          return h.continue
+        }
+        if (isValidCredentials(request, username, password)) {
           return h.continue
         }
 
+        if (
+          request.raw.req.url ===
+            `${loginPath}?username=${username}&password=${password}` ||
+          request.raw.req.url ===
+            `${loginPath}?password=${password}&username=${username}`
+        ) {
+          const token = Buffer.from(username + ':' + password).toString(
+            'base64'
+          )
+          return h
+            .redirect('/')
+            .state(LOGIN_COOKIE_NAME, `Basic ${token}`)
+            .takeover()
+        }
+
+        if (request.path === loginPath) {
+          return h.redirect('/').takeover()
+        }
+
         return h
-          .response('Unauthorized')
+          .view('common/plugins/auth/login-view', {
+            heading: 'Login form',
+            action: {
+              loginPath,
+              text: 'Login',
+              usernameLabel: 'Username',
+              passwordLabel: 'Password',
+              usernameHint: 'Environment access username',
+              passwordHint: 'Environment access password'
+            }
+          })
           .code(401)
-          .header('WWW-Authenticate', 'Basic realm="Access restricted"')
           .takeover()
       })
     }
