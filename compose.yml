@@ -185,7 +185,7 @@ services:
       GOV_NOTIFY_KEY: ${GOV_NOTIFY_KEY}
       GOVPAY_API_KEY: ${GOVPAY_API_KEY}
       LOG_LEVEL: trace
-      LOG_FORMAT: pino-pretty
+      LOG_FORMAT: ecs
       BULK_UPLOAD_COPY_SPREADSHEET_TO_DISK: true
       GOVPAY_SERVICE_FREE_PERIOD_END: '2026-10-20T12:23:00.000Z'
       NODE_USE_ENV_PROXY: 1
@@ -245,6 +245,8 @@ services:
       HTTP_PROXY: http://squid:3128
       HTTPS_PROXY: http://squid:3128
       NO_PROXY: .cdp-int.defra.cloud,.s3.eu-west-2.amazonaws.com,sqs.eu-west-2.amazonaws.com,sns.eu-west-2.amazonaws.com,dynamodb.eu-west-2.amazonaws.com
+      BASIC_AUTH_USERNAME: user
+      BASIC_AUTH_PASSWORD: password
     networks:
       - cdp-tenant
 
