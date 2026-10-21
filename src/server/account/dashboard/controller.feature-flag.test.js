@@ -382,7 +382,7 @@ describe('#accountController', () => {
       payload: { organisation: expectedOrganisation }
     })
 
-    const { payload } = await server.inject({
+    const { payload, headers } = await server.inject({
       method: 'GET',
       url: paths.account,
       auth: {

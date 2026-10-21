@@ -3,6 +3,8 @@ import { statusCodes } from '../../constants/status-codes.js'
 import { config } from '../../../../config/config.js'
 import { initialiseServer } from '../../../../test-utils/initialise-server.js'
 import { paths } from '../../../../config/paths.js'
+import { JSDOM } from 'jsdom'
+import { obscureKey } from './basic.js'
 
 const encodeCredentials = (username, password) =>
   Buffer.from(`${username}:${password}`).toString('base64')
@@ -60,15 +62,29 @@ describe('#basicAuth', () => {
         await server?.stop({ timeout: 0 })
       })
 
-      test('requests without Authorization header get 401', async () => {
-        const { statusCode, headers } = await server.inject({
+      test('requests without Authorization header get 401 and a login form', async () => {
+        const { statusCode, payload } = await server.inject({
           method: 'GET',
           url: '/health'
         })
 
         expect(statusCode).toBe(statusCodes.unauthorized)
-        expect(headers['www-authenticate']).toBe(
-          'Basic realm="Access restricted"'
+        const { document } = new JSDOM(payload).window
+        const user = document.querySelector('input#username')
+        expect(user).not.toBeNull()
+        const password = document.querySelector('input#password')
+        expect(password).not.toBeNull()
+      })
+
+      test('posting the login form sets a cookie', async () => {
+        const loginPath = `/secret/${obscureKey}/login-url`
+        const { statusCode, headers } = await server.inject({
+          method: 'GET',
+          url: `${loginPath}?username=${username}&password=${password}`
+        })
+        expect(statusCode).toBe(statusCodes.found)
+        expect(headers['set-cookie'][0]).toContain(
+          `env-login-c2472e5962be41f4a3afe1abd20b449b=${encodeCredentials(username, password)};`
         )
       })
 

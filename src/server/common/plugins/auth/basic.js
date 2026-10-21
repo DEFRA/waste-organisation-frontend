@@ -3,7 +3,7 @@ import { Buffer } from 'node:buffer'
 import { paths } from '../../../../config/paths.js'
 import { config } from '../../../../config/config.js'
 
-const obscureKey = 'c2472e5962be41f4a3afe1abd20b449b'
+export const obscureKey = 'c2472e5962be41f4a3afe1abd20b449b'
 const LOGIN_COOKIE_NAME = `env-login-${obscureKey}`
 const LOGIN_COOKIE_TTL_MS = 400 * 24 * 60 * 60 * 1000
 
