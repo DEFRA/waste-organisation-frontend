@@ -111,6 +111,7 @@
     "webpack-cli": "7.2.3"
   },
   "overrides": {
+    "braces": "npm:empty-npm-package@1.0.0",
     "@hapi/joi": "npm:joi@^18.3.0",
     "sass-embedded": {
       "validator": "13.15.22",
