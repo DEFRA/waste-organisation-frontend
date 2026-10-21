@@ -111,6 +111,7 @@
     "webpack-cli": "7.2.3"
   },
   "overrides": {
+    "@hapi/joi": "npm:joi@^18.3.0",
     "sass-embedded": {
       "validator": "13.15.22",
       "immutable": "5.1.9"
