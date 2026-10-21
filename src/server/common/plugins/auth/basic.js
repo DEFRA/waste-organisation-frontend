@@ -25,7 +25,7 @@ function isValidCredentials(request, username, password) {
       ?.flatMap((h) => h?.split(';'))
       ?.map((h) => h?.trim())
       ?.find((h) => h.startsWith(LOGIN_COOKIE_NAME))
-      ?.replace(`${LOGIN_COOKIE_NAME}=`, '')
+      ?.replace(`${LOGIN_COOKIE_NAME}=`, 'Basic ')
 
   if (!authorizationHeader?.startsWith('Basic ')) {
     return false
@@ -94,10 +94,7 @@ export const basicAuth = {
           const token = Buffer.from(username + ':' + password).toString(
             'base64'
           )
-          return h
-            .redirect('/')
-            .state(LOGIN_COOKIE_NAME, `Basic ${token}`)
-            .takeover()
+          return h.redirect('/').state(LOGIN_COOKIE_NAME, token).takeover()
         }
 
         if (request.path === loginPath) {
