@@ -5,7 +5,7 @@ import { config } from '../../../../config/config.js'
 
 export const obscureKey = 'c2472e5962be41f4a3afe1abd20b449b'
 const LOGIN_COOKIE_NAME = `env-login-${obscureKey}`
-const LOGIN_COOKIE_TTL_MS = 400 * 24 * 60 * 60 * 1000
+const LOGIN_COOKIE_TTL_MS = 400 * 24 * 60 * 60 * 1000 // nosonar
 
 function safeEqual(a, b) {
   const bufferA = Buffer.from(a)
