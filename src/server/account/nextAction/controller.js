@@ -36,10 +36,10 @@ export const nextActionController = {
           id,
           currentOrganisationId
         )
-
-        const paymentStatus = getPaymentStatus(organisation)
-        console.log('pageContent', pageContent)
-        console.log('pageQuestions 1', pageQuestions)
+        const now = request?.info?.received
+          ? new Date(request?.info?.received)
+          : new Date()
+        const paymentStatus = getPaymentStatus(organisation, now)
         if (paymentStatus.disabled) {
           pageQuestions = pageContent.questionsNotPaid
           notPaidNotice = serviceCharge.notPaidNotice(

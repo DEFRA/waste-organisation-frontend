@@ -20,6 +20,7 @@ export const accountController = {
 
     const paymentStatus = getPaymentStatus(
       organisation,
+      request?.info?.received ? new Date(request?.info?.received) : new Date(),
       pageContent.cards.serviceCharge,
       request.locale
     )
@@ -36,6 +37,11 @@ export const accountController = {
     if (flashMessage) {
       importantNotice = flashMessage
     }
+
+    console.log('>>>', {
+      ...paymentStatus,
+      tagClass: paymentStatus.disabled ? 'govuk-tag--red' : 'govuk-tag--green'
+    })
 
     return h.view('account/dashboard/view', {
       pageTitle: pageContent.title,

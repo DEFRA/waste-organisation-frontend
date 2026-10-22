@@ -15,8 +15,10 @@ export async function paymentCheck(request, h) {
     id,
     currentOrganisationId
   )
-
-  const paymentStatus = getPaymentStatus(organisation)
+  const now = request?.info?.received
+    ? new Date(request?.info?.received)
+    : new Date()
+  const paymentStatus = getPaymentStatus(organisation, now)
 
   if (paymentStatus.disabled) {
     return h.redirect(paths.account).takeover()

@@ -18,6 +18,7 @@ describe('#accountController', () => {
   let server
   let credentials
   let initialServiceChargeFeatureFlag
+
   beforeEach(() => {
     wreckGetMock.mockReturnValue({
       payload: {
@@ -37,6 +38,8 @@ describe('#accountController', () => {
     })
   })
   beforeAll(async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-08-15T12:00:00Z'))
     initialServiceChargeFeatureFlag = config.get('featureFlags.serviceCharge')
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
@@ -48,6 +51,7 @@ describe('#accountController', () => {
   afterAll(async () => {
     config.set('featureFlags.serviceCharge', initialServiceChargeFeatureFlag)
     wreckGetMock.mockReset()
+    vi.useRealTimers()
     await server.stop({ timeout: 0 })
   })
 
@@ -382,7 +386,7 @@ describe('#accountController', () => {
       payload: { organisation: expectedOrganisation }
     })
 
-    const { payload, headers } = await server.inject({
+    const { statusCode, payload, headers } = await server.inject({
       method: 'GET',
       url: paths.account,
       auth: {
@@ -391,7 +395,10 @@ describe('#accountController', () => {
       }
     })
 
+    console.log(statusCode, headers)
+
     const { document } = new JSDOM(payload).window
+    console.log(document)
 
     const serviceChargeLink = document.querySelector(
       '[data-testid="service-charge-link"]'
