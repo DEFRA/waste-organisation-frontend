@@ -38,11 +38,6 @@ export const accountController = {
       importantNotice = flashMessage
     }
 
-    console.log('>>>', {
-      ...paymentStatus,
-      tagClass: paymentStatus.disabled ? 'govuk-tag--red' : 'govuk-tag--green'
-    })
-
     return h.view('account/dashboard/view', {
       pageTitle: pageContent.title,
       heading: pageContent.heading,

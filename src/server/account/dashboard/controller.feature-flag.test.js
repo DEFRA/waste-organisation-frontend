@@ -386,7 +386,7 @@ describe('#accountController', () => {
       payload: { organisation: expectedOrganisation }
     })
 
-    const { statusCode, payload, headers } = await server.inject({
+    const { payload } = await server.inject({
       method: 'GET',
       url: paths.account,
       auth: {
@@ -395,10 +395,7 @@ describe('#accountController', () => {
       }
     })
 
-    console.log(statusCode, headers)
-
     const { document } = new JSDOM(payload).window
-    console.log(document)
 
     const serviceChargeLink = document.querySelector(
       '[data-testid="service-charge-link"]'

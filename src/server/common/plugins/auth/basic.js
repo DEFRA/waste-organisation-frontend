@@ -21,8 +21,8 @@ function safeEqual(a, b) {
 function isValidCredentials(request, username, password) {
   const authorizationHeader =
     request?.headers?.authorization ||
-    request?.raw?.req?.rawHeaders
-      ?.flatMap((h) => h?.split(';'))
+    request?.headers.cookie
+      ?.split(';')
       ?.map((h) => h?.trim())
       ?.find((h) => h.startsWith(LOGIN_COOKIE_NAME))
       ?.replace(`${LOGIN_COOKIE_NAME}=`, 'Basic ')

@@ -47,8 +47,6 @@ export const nextActionController = {
         }
       }
 
-      console.log('pageQuestions 2', pageQuestions)
-
       const questions = Object.entries(pageQuestions).map((question) => {
         const [key, value] = question
         return {

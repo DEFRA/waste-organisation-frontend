@@ -84,7 +84,7 @@ describe('#basicAuth', () => {
         })
         expect(statusCode).toBe(statusCodes.found)
         expect(headers['set-cookie'][0]).toContain(
-          `env-login-c2472e5962be41f4a3afe1abd20b449b=${encodeCredentials(username, password)};`
+          `env-login-${obscureKey}=${encodeCredentials(username, password)};`
         )
       })
 
@@ -112,12 +112,25 @@ describe('#basicAuth', () => {
         expect(statusCode).toBe(statusCodes.unauthorized)
       })
 
-      test('requests with correct credentials get 200', async () => {
+      test('requests with correct credentials get 200 with auth header', async () => {
         const { statusCode, result } = await server.inject({
           method: 'GET',
           url: '/health',
           headers: {
             authorization: `Basic ${encodeCredentials(username, password)}`
+          }
+        })
+
+        expect(statusCode).toBe(statusCodes.ok)
+        expect(result).toEqual({ message: 'success' })
+      })
+
+      test('requests with correct credentials get 200 with cookie', async () => {
+        const { statusCode, result } = await server.inject({
+          method: 'GET',
+          url: '/health',
+          headers: {
+            cookie: `env-login-${obscureKey}=${encodeCredentials(username, password)};`
           }
         })
 
