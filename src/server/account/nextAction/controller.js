@@ -36,9 +36,7 @@ export const nextActionController = {
           id,
           currentOrganisationId
         )
-        const now = request?.info?.received
-          ? new Date(request?.info?.received)
-          : new Date()
+        const now = new Date(request?.info?.received)
         const paymentStatus = getPaymentStatus(organisation, now)
         if (paymentStatus.disabled) {
           pageQuestions = pageContent.questionsNotPaid

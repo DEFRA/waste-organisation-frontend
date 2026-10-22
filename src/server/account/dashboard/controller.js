@@ -20,7 +20,7 @@ export const accountController = {
 
     const paymentStatus = getPaymentStatus(
       organisation,
-      request?.info?.received ? new Date(request?.info?.received) : new Date(),
+      new Date(request?.info?.received),
       pageContent.cards.serviceCharge,
       request.locale
     )
