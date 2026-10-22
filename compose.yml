@@ -245,8 +245,6 @@ services:
       HTTP_PROXY: http://squid:3128
       HTTPS_PROXY: http://squid:3128
       NO_PROXY: .cdp-int.defra.cloud,.s3.eu-west-2.amazonaws.com,sqs.eu-west-2.amazonaws.com,sns.eu-west-2.amazonaws.com,dynamodb.eu-west-2.amazonaws.com
-      BASIC_AUTH_USERNAME: user
-      BASIC_AUTH_PASSWORD: password
     networks:
       - cdp-tenant
 
