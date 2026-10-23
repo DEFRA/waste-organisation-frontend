@@ -4,7 +4,7 @@ import { paths } from '../../../../config/paths.js'
 import { config } from '../../../../config/config.js'
 import { login } from './content.js'
 import subtext from '@hapi/subtext'
-import { unauthorized } from '../../constants/status-codes.js'
+import { statusCodes } from '../../constants/status-codes.js'
 
 export const obscureKey = 'c2472e5962be41f4a3afe1abd20b449b'
 const LOGIN_COOKIE_NAME = `env-login-${obscureKey}`
@@ -98,7 +98,7 @@ const onPreAuthHook = (loginPath, username, password) => {
     const l = login.login(request, loginPath)
     return h
       .view('common/plugins/auth/login-view', l)
-      .code(unauthorized)
+      .code(statusCodes.unauthorized)
       .takeover()
   }
 }
