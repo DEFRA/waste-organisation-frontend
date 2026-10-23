@@ -2,6 +2,13 @@ import { timingSafeEqual } from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import { paths } from '../../../../config/paths.js'
 import { config } from '../../../../config/config.js'
+import { login } from './content.js'
+import subtext from '@hapi/subtext'
+import { statusCodes } from '../../constants/status-codes.js'
+
+export const obscureKey = 'c2472e5962be41f4a3afe1abd20b449b'
+const LOGIN_COOKIE_NAME = `env-login-${obscureKey}`
+const LOGIN_COOKIE_TTL_MS = 400 * 24 * 60 * 60 * 1000 // nosonar
 
 function safeEqual(a, b) {
   const bufferA = Buffer.from(a)
@@ -14,7 +21,15 @@ function safeEqual(a, b) {
   return timingSafeEqual(bufferA, bufferB)
 }
 
-function isValidCredentials(authorizationHeader, username, password) {
+function isValidCredentials(request, username, password) {
+  const authorizationHeader =
+    request?.headers?.authorization ||
+    request?.headers.cookie
+      ?.split(';')
+      ?.map((h) => h?.trim())
+      ?.find((h) => h.startsWith(LOGIN_COOKIE_NAME))
+      ?.replace(`${LOGIN_COOKIE_NAME}=`, 'Basic ')
+
   if (!authorizationHeader?.startsWith('Basic ')) {
     return false
   }
@@ -36,6 +51,62 @@ function isValidCredentials(authorizationHeader, username, password) {
   )
 }
 
+const onRequestHook = (loginPath) => {
+  return async (request, h) => {
+    if (request.method === 'post' && request.path === loginPath) {
+      const { payload } = await subtext.parse(request.raw.req, null, {
+        parse: true,
+        output: 'data',
+        maxBytes: 1048576,
+        defaultContentType: 'application/x-www-form-urlencoded',
+        compression: {}
+      })
+      request.plugins.basicAuthPayload = payload
+    }
+    return h.continue
+  }
+}
+
+const onPreAuthHook = (loginPath, username, password) => {
+  const callbackRe = new RegExp(
+    `/public/.*|` + // nosonar
+      `/.well-known/.*|` + // nosonar
+      `${paths.updateSpreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|` + // nosonar
+      `${paths.spreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.paymentCallback}` // nosonar
+  )
+  return (request, h) => {
+    if (request?.path?.match(callbackRe)) {
+      return h.continue
+    }
+    if (isValidCredentials(request, username, password)) {
+      return h.continue
+    }
+    const l = login.login(request, loginPath)
+    return h
+      .view('common/plugins/auth/login-view', l)
+      .code(statusCodes.unauthorized)
+      .takeover()
+  }
+}
+
+const onPreResponseHook = (loginPath, username, password) => {
+  return async (request, h) => {
+    if (request.path === loginPath) {
+      if (request.method === 'post') {
+        const payload = request.plugins.basicAuthPayload
+        if (username === payload.username && password === payload.password) {
+          const token = Buffer.from(username + ':' + password).toString(
+            'base64'
+          )
+          return h.redirect('/').state(LOGIN_COOKIE_NAME, token).takeover()
+        }
+      }
+      return h.redirect('/').takeover()
+    }
+    return h.continue
+  }
+}
+
 export const basicAuth = {
   plugin: {
     name: 'basic-auth',
@@ -46,29 +117,26 @@ export const basicAuth = {
       if (!password) {
         return
       }
-
-      const callbackRe = new RegExp(
-        `${paths.updateSpreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.spreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.paymentCallback}` // nosonar
-      )
-
-      server.ext('onRequest', (request, h) => {
-        if (
-          isValidCredentials(
-            request.headers.authorization,
-            username,
-            password
-          ) ||
-          request?.path?.match(callbackRe)
-        ) {
-          return h.continue
-        }
-
-        return h
-          .response('Unauthorized')
-          .code(401)
-          .header('WWW-Authenticate', 'Basic realm="Access restricted"')
-          .takeover()
+      server.state(LOGIN_COOKIE_NAME, {
+        ttl: LOGIN_COOKIE_TTL_MS,
+        isSecure: config.get('session.cookie.secure'),
+        isHttpOnly: true,
+        isSameSite: config.get('session.cookie.sameSite'),
+        path: '/',
+        encoding: 'none',
+        clearInvalid: true
       })
+
+      const loginPath = `/secret/${obscureKey}/login-url`
+
+      server.ext('onPreAuth', onPreAuthHook(loginPath, username, password))
+
+      server.ext('onRequest', onRequestHook(loginPath))
+
+      server.ext(
+        'onPreResponse',
+        onPreResponseHook(loginPath, username, password)
+      )
     }
   }
 }
