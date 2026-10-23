@@ -1,11 +1,12 @@
 {% extends 'layouts/page.njk' %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/password-input/macro.njk" import govukPasswordInput %}
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {{ appHeading(heading) }}
-      <form id="login-form" method="GET" action="{{ action.loginPath }}">
+      <form id="login-form" method="POST" action="{{ action.loginPath }}">
         {{
           govukInput({
             id: "username",
@@ -21,7 +22,7 @@
           })
         }}
         {{
-          govukInput({
+          govukPasswordInput({
             id: "password",
             name: "password",
             label: {

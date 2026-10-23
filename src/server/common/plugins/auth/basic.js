@@ -2,6 +2,8 @@ import { timingSafeEqual } from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import { paths } from '../../../../config/paths.js'
 import { config } from '../../../../config/config.js'
+import { login } from './content.js'
+import subtext from '@hapi/subtext'
 
 export const obscureKey = 'c2472e5962be41f4a3afe1abd20b449b'
 const LOGIN_COOKIE_NAME = `env-login-${obscureKey}`
@@ -77,7 +79,7 @@ export const basicAuth = {
           `${paths.spreadsheetUploadCallback.replace(/{[^}]*}/, '[^/]*')}|${paths.paymentCallback}` // nosonar
       )
 
-      server.ext('onRequest', (request, h) => {
+      server.ext('onPreAuth', (request, h) => {
         if (request?.path?.match(callbackRe)) {
           return h.continue
         }
@@ -100,21 +102,55 @@ export const basicAuth = {
         if (request.path === loginPath) {
           return h.redirect('/').takeover()
         }
+        const l = login.login(request, loginPath)
+        return h.view('common/plugins/auth/login-view', l).code(200).takeover()
+      })
 
-        return h
-          .view('common/plugins/auth/login-view', {
-            heading: 'Login form',
-            action: {
-              loginPath,
-              text: 'Login',
-              usernameLabel: 'Username',
-              passwordLabel: 'Password',
-              usernameHint: 'Environment access username',
-              passwordHint: 'Environment access password'
-            }
+      server.ext('onRequest', async (request, h) => {
+        if (request.method === 'post' && request.path === loginPath) {
+          const { payload } = await subtext.parse(request.raw.req, null, {
+            parse: true,
+            output: 'data',
+            maxBytes: 1048576,
+            allow: undefined,
+            override: undefined,
+            defaultContentType: 'application/x-www-form-urlencoded',
+            compression: {}
           })
-          .code(401)
-          .takeover()
+          request.plugins.basicAuthPayload = payload
+        }
+        return h.continue
+      })
+
+      server.ext('onPreResponse', async (request, h) => {
+        if (request.path === loginPath) {
+          if (request.method === 'post') {
+            try {
+              const payload = request.plugins.basicAuthPayload
+              if (
+                username === payload.username &&
+                password === payload.password
+              ) {
+                const token = Buffer.from(username + ':' + password).toString(
+                  'base64'
+                )
+                return h
+                  .redirect('/')
+                  .state(LOGIN_COOKIE_NAME, token)
+                  .takeover()
+              }
+            } catch (err) {
+              request.logger.error(
+                `Error processing post data for basic auth: ${err}`
+              )
+            }
+            return h.redirect('/').takeover()
+          } else {
+            return h.redirect('/').takeover()
+          }
+        }
+
+        return h.continue
       })
     }
   }
