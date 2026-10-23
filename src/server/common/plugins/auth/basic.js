@@ -81,20 +81,6 @@ const onPreAuthHook = (loginPath, username, password) => {
     if (isValidCredentials(request, username, password)) {
       return h.continue
     }
-
-    if (
-      request.raw.req.url ===
-        `${loginPath}?username=${username}&password=${password}` ||
-      request.raw.req.url ===
-        `${loginPath}?password=${password}&username=${username}`
-    ) {
-      const token = Buffer.from(username + ':' + password).toString('base64')
-      return h.redirect('/').state(LOGIN_COOKIE_NAME, token).takeover()
-    }
-
-    if (request.path === loginPath) {
-      return h.redirect('/').takeover()
-    }
     const l = login.login(request, loginPath)
     return h
       .view('common/plugins/auth/login-view', l)
