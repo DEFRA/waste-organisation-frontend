@@ -79,8 +79,9 @@ describe('#basicAuth', () => {
       test('posting the login form sets a cookie', async () => {
         const loginPath = `/secret/${obscureKey}/login-url`
         const { statusCode, headers } = await server.inject({
-          method: 'GET',
-          url: `${loginPath}?username=${username}&password=${password}`
+          method: 'POST',
+          url: loginPath, // `${loginPath}?username=${username}&password=${password}`
+          payload: { username, password }
         })
         expect(statusCode).toBe(statusCodes.found)
         expect(headers['set-cookie'][0]).toContain(

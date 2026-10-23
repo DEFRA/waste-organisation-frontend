@@ -103,7 +103,7 @@ export const basicAuth = {
           return h.redirect('/').takeover()
         }
         const l = login.login(request, loginPath)
-        return h.view('common/plugins/auth/login-view', l).code(200).takeover()
+        return h.view('common/plugins/auth/login-view', l).code(401).takeover()
       })
 
       server.ext('onRequest', async (request, h) => {
