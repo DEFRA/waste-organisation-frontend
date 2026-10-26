@@ -1,0 +1,50 @@
+{% extends 'layouts/page.njk' %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/password-input/macro.njk" import govukPasswordInput %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ appHeading(heading) }}
+      <form id="login-form" method="POST" action="{{ action.loginPath }}">
+        {{
+          govukInput({
+            id: "username",
+            name: "username",
+            label: {
+              text: action.usernameLabel,
+              classes: "govuk-label--s"
+            },
+            hint: {
+              text: action.usernameHint
+            },
+            errorMessage: { text: error.message } if error
+          })
+        }}
+        {{
+          govukPasswordInput({
+            id: "password",
+            name: "password",
+            label: {
+              text: action.passwordLabel,
+              classes: "govuk-label--s"
+            },
+            hint: {
+              text: action.passwordHint
+            },
+            errorMessage: { text: error.message } if error
+          })
+        }}
+        {{
+          govukButton({
+            text: action.text,
+            type: "submit",
+            attributes: {
+              "data-testid": "next-action-submit-button"
+            }
+          })
+        }}
+      </form>
+    </div>
+  </div>
+{% endblock %}
