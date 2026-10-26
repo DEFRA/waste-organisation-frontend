@@ -1,12 +1,13 @@
 export const getPaymentStatus = (
   { disableAfter, paymentPeriods },
+  now,
   tagContent,
   locale = 'en-GB'
 ) => {
   const paid = tagContent?.paidTag ?? 'zzzzz'
   const due = tagContent?.paymentDueTag ?? 'zzzzz'
 
-  if (new Date(disableAfter) < new Date()) {
+  if (new Date(disableAfter) < now) {
     return { disabled: true, label: due, canPay: true }
   }
 

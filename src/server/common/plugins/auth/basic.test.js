@@ -3,6 +3,8 @@ import { statusCodes } from '../../constants/status-codes.js'
 import { config } from '../../../../config/config.js'
 import { initialiseServer } from '../../../../test-utils/initialise-server.js'
 import { paths } from '../../../../config/paths.js'
+import { JSDOM } from 'jsdom'
+import { obscureKey } from './basic.js'
 
 const encodeCredentials = (username, password) =>
   Buffer.from(`${username}:${password}`).toString('base64')
@@ -60,15 +62,30 @@ describe('#basicAuth', () => {
         await server?.stop({ timeout: 0 })
       })
 
-      test('requests without Authorization header get 401', async () => {
-        const { statusCode, headers } = await server.inject({
+      test('requests without Authorization header get 401 and a login form', async () => {
+        const { statusCode, payload } = await server.inject({
           method: 'GET',
           url: '/health'
         })
 
         expect(statusCode).toBe(statusCodes.unauthorized)
-        expect(headers['www-authenticate']).toBe(
-          'Basic realm="Access restricted"'
+        const { document } = new JSDOM(payload).window
+        const user = document.querySelector('input#username')
+        expect(user).not.toBeNull()
+        const password = document.querySelector('input#password')
+        expect(password).not.toBeNull()
+      })
+
+      test('posting the login form sets a cookie', async () => {
+        const loginPath = `/secret/${obscureKey}/login-url`
+        const { statusCode, headers } = await server.inject({
+          method: 'POST',
+          url: loginPath, // `${loginPath}?username=${username}&password=${password}`
+          payload: { username, password }
+        })
+        expect(statusCode).toBe(statusCodes.found)
+        expect(headers['set-cookie'][0]).toContain(
+          `env-login-${obscureKey}=${encodeCredentials(username, password)};`
         )
       })
 
@@ -96,12 +113,25 @@ describe('#basicAuth', () => {
         expect(statusCode).toBe(statusCodes.unauthorized)
       })
 
-      test('requests with correct credentials get 200', async () => {
+      test('requests with correct credentials get 200 with auth header', async () => {
         const { statusCode, result } = await server.inject({
           method: 'GET',
           url: '/health',
           headers: {
             authorization: `Basic ${encodeCredentials(username, password)}`
+          }
+        })
+
+        expect(statusCode).toBe(statusCodes.ok)
+        expect(result).toEqual({ message: 'success' })
+      })
+
+      test('requests with correct credentials get 200 with cookie', async () => {
+        const { statusCode, result } = await server.inject({
+          method: 'GET',
+          url: '/health',
+          headers: {
+            cookie: `env-login-${obscureKey}=${encodeCredentials(username, password)};`
           }
         })
 
