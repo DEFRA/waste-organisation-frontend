@@ -69,7 +69,8 @@ describe('signIn', () => {
       `http://localhost/TODO/user/${credentials.profile.id}/organisation/${credentials.profile.currentOrganisationId}`,
       {
         headers: {
-          'x-auth-token': 'abc123'
+          'x-auth-token': 'abc123',
+          'x-cdp-request-id': 'dummy'
         },
         json: 'strict',
         payload: {
@@ -117,7 +118,8 @@ describe('signIn', () => {
       `http://localhost/TODO/user/${credentials.profile.id}/organisation/${credentials.profile.currentOrganisationId}`,
       {
         headers: {
-          'x-auth-token': 'abc123'
+          'x-auth-token': 'abc123',
+          'x-cdp-request-id': 'dummy'
         },
         json: 'strict',
         payload: {
@@ -169,7 +171,8 @@ describe('signIn', () => {
         `http://localhost/TODO/user/${credentials.profile.id}/organisation/${credentials.profile.currentOrganisationId}`,
         {
           headers: {
-            'x-auth-token': 'abc123'
+            'x-auth-token': 'abc123',
+            'x-cdp-request-id': 'dummy'
           },
           json: 'strict',
           payload: {
