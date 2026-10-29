@@ -8,6 +8,6 @@ export default {
   openId,
   userSession,
   backendApi,
-  basicAuth,
-  translation
+  translation,
+  basicAuth
 }

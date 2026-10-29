@@ -18,6 +18,7 @@ describe('#accountController', () => {
   let server
   let credentials
   let initialServiceChargeFeatureFlag
+
   beforeEach(() => {
     wreckGetMock.mockReturnValue({
       payload: {
@@ -53,6 +54,7 @@ describe('#accountController', () => {
   afterAll(async () => {
     config.set('featureFlags.serviceCharge', initialServiceChargeFeatureFlag)
     wreckGetMock.mockReset()
+    vi.useRealTimers()
     await server.stop({ timeout: 0 })
     vi.useRealTimers()
   })

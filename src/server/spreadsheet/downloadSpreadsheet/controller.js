@@ -25,8 +25,8 @@ export const downloadSpreadsheetController = {
         id,
         currentOrganisationId
       )
-
-      const paymentStatus = getPaymentStatus(organisation)
+      const now = new Date(request?.info?.received)
+      const paymentStatus = getPaymentStatus(organisation, now)
 
       if (paymentStatus.disabled) {
         notPaidNotice = serviceCharge.notPaidNotice(

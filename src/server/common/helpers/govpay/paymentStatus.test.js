@@ -12,7 +12,11 @@ describe('getPaymentStatus', () => {
       paymentPeriods: []
     }
 
-    const actualStatus = getPaymentStatus(mockOrganisation, tagContent)
+    const actualStatus = getPaymentStatus(
+      mockOrganisation,
+      new Date(),
+      tagContent
+    )
     expect(actualStatus.label).toEqual(due)
     expect(actualStatus.disabled).toEqual(true)
     expect(actualStatus.canPay).toEqual(true)
@@ -30,7 +34,11 @@ describe('getPaymentStatus', () => {
       ]
     }
 
-    const actualStatus = getPaymentStatus(mockOrganisation, tagContent)
+    const actualStatus = getPaymentStatus(
+      mockOrganisation,
+      new Date(),
+      tagContent
+    )
     expect(actualStatus.label).toEqual(paid)
     expect(actualStatus.disabled).toEqual(false)
     expect(actualStatus.nextDue).toEqual('October 2028')
@@ -49,7 +57,12 @@ describe('getPaymentStatus', () => {
       ]
     }
 
-    const actualStatus = getPaymentStatus(mockOrganisation, tagContent, 'cy-gb')
+    const actualStatus = getPaymentStatus(
+      mockOrganisation,
+      new Date(),
+      tagContent,
+      'cy-gb'
+    )
 
     expect(actualStatus.nextDue).toEqual('Hydref 2028')
   })
@@ -59,7 +72,11 @@ describe('getPaymentStatus', () => {
       disableAfter: '2028-10-20T12:23:00.000Z',
       paymentPeriods: []
     }
-    const actualStatus = getPaymentStatus(mockOrganisation, tagContent)
+    const actualStatus = getPaymentStatus(
+      mockOrganisation,
+      new Date(),
+      tagContent
+    )
     expect(actualStatus.label).toEqual(paid)
     expect(actualStatus.disabled).toEqual(false)
     expect(actualStatus.nextDue).toEqual('October 2028')

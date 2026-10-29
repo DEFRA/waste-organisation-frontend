@@ -36,10 +36,8 @@ export const nextActionController = {
           id,
           currentOrganisationId
         )
-
-        const paymentStatus = getPaymentStatus(organisation)
-        console.log('pageContent', pageContent)
-        console.log('pageQuestions 1', pageQuestions)
+        const now = new Date(request?.info?.received)
+        const paymentStatus = getPaymentStatus(organisation, now)
         if (paymentStatus.disabled) {
           pageQuestions = pageContent.questionsNotPaid
           notPaidNotice = serviceCharge.notPaidNotice(
@@ -48,8 +46,6 @@ export const nextActionController = {
           )
         }
       }
-
-      console.log('pageQuestions 2', pageQuestions)
 
       const questions = Object.entries(pageQuestions).map((question) => {
         const [key, value] = question
