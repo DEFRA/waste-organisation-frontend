@@ -15,6 +15,10 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
         'x-auth-token': preSharedKey
       })
     }
+    if (!r.headers[tracingHeader]) {
+      logger.debug(`Header ${tracingHeader} not found, setting it to 'dummy'`)
+      r.headers[tracingHeader] = 'dummy'
+    }
     if (payload) {
       r.payload = payload
     }

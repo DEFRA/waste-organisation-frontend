@@ -148,7 +148,8 @@ describe('backendApi', () => {
       `${backendApiUrl}/organisation/organisationId/initiatePayment/`,
       {
         headers: {
-          'x-auth-token': backendApiAuthCode
+          'x-auth-token': backendApiAuthCode,
+          'x-cdp-request-id': 'dummy'
         },
         json: 'strict',
         payload: {
