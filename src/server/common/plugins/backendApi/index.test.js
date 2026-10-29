@@ -218,7 +218,9 @@ describe('backendApi', () => {
     expect(getSpy).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
-        headers: expect.objectContaining({ 'x-cdp-request-id': 'real-trace-id' })
+        headers: expect.objectContaining({
+          'x-cdp-request-id': 'real-trace-id'
+        })
       })
     )
   })
