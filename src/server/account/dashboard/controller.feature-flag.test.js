@@ -56,7 +56,6 @@ describe('#accountController', () => {
     wreckGetMock.mockReset()
     vi.useRealTimers()
     await server.stop({ timeout: 0 })
-    vi.useRealTimers()
   })
 
   test('returns 200 with correct page title and heading', async () => {
