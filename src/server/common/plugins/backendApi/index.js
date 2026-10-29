@@ -25,12 +25,7 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
     const response = await asyncFunc(url, r)
 
     logger.debug(`request data: ${Object.keys(r.headers)}`)
-
-    if (r.headers[tracingHeader]) {
-      logger.debug(`request data - header: ${r.headers[tracingHeader]}`)
-    } else {
-      logger.debug(`request data - header: No tracingHeader set`)
-    }
+    logger.debug(`request data - header: ${r.headers[tracingHeader]}`)
 
     return response.payload
   } catch (e) {
