@@ -3,7 +3,15 @@ import hapi from '@hapi/hapi'
 import { backendApi } from './index.js'
 import wreck from '@hapi/wreck'
 import { config } from '../../../../config/config.js'
+import { withTraceId } from '@defra/hapi-tracing'
 const backendConfig = config.get('backendApi')
+
+/* Stub withTraceId. Default: return the headers untouched (as it does when there is
+no active trace), so the other tests still fall back to the 'dummy' header. Individual
+tests override it to simulate an incoming trace id. */
+vi.mock('@defra/hapi-tracing', () => ({
+  withTraceId: vi.fn((headerName, headers = {}) => headers)
+}))
 
 describe('backendApi', () => {
   let backendApiService
@@ -148,7 +156,8 @@ describe('backendApi', () => {
       `${backendApiUrl}/organisation/organisationId/initiatePayment/`,
       {
         headers: {
-          'x-auth-token': backendApiAuthCode
+          'x-auth-token': backendApiAuthCode,
+          'x-cdp-request-id': 'dummy'
         },
         json: 'strict',
         payload: {
@@ -192,6 +201,28 @@ describe('backendApi', () => {
     )
 
     expect(actualResponse).toEqual(expectedResponse)
+  })
+
+  test('trace id header should be used and not overwritten with dummy', async () => {
+    withTraceId.mockImplementationOnce((headerName, headers = {}) => ({
+      ...headers,
+      [headerName]: 'real-trace-id'
+    }))
+
+    const getSpy = vi.spyOn(wreck, 'get').mockResolvedValue({
+      payload: { organisation: {} }
+    })
+
+    await backendApiService.getOrganisation('userId', 'organisationId')
+
+    expect(getSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'x-cdp-request-id': 'real-trace-id'
+        })
+      })
+    )
   })
 
   describe('Handle Exceptions', () => {

@@ -15,18 +15,17 @@ const apiCall = async (asyncFunc, preSharedKey, url, payload) => {
         'x-auth-token': preSharedKey
       })
     }
+    if (!r.headers[tracingHeader]) {
+      logger.debug(`Header ${tracingHeader} not found, setting it to 'dummy'`)
+      r.headers[tracingHeader] = 'dummy'
+    }
     if (payload) {
       r.payload = payload
     }
     const response = await asyncFunc(url, r)
 
     logger.debug(`request data: ${Object.keys(r.headers)}`)
-
-    if (r.headers[tracingHeader]) {
-      logger.debug(`request data - header: ${r.headers[tracingHeader]}`)
-    } else {
-      logger.debug(`request data - header: No tracingHeader set`)
-    }
+    logger.debug(`request data - header: ${r.headers[tracingHeader]}`)
 
     return response.payload
   } catch (e) {

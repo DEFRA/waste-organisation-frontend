@@ -38,8 +38,11 @@ describe('#accountController', () => {
     })
   })
   beforeAll(async () => {
+    /* Pin "now" to before the mocks' disableAfter (2026-10-01) so the paid/green
+    path is exercised deterministically. Fake only Date — leaving timers real so the
+    hapi server and server.inject keep working. */
     vi.useFakeTimers({ toFake: ['Date'] })
-    vi.setSystemTime(new Date('2026-08-15T12:00:00Z'))
+    vi.setSystemTime(new Date('2026-09-01T00:00:00.000Z'))
     initialServiceChargeFeatureFlag = config.get('featureFlags.serviceCharge')
     config.set('featureFlags.serviceCharge', true)
     server = await initialiseServer()
@@ -67,7 +70,7 @@ describe('#accountController', () => {
       }
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload, { url: 'http://localhost' }).window
 
     expect(statusCode).toBe(statusCodes.ok)
     expect(document.title).toEqual(
@@ -106,7 +109,7 @@ describe('#accountController', () => {
       }
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload, { url: 'http://localhost' }).window
 
     const reportWasteLink = document.querySelector(
       '[data-testid="report-waste-link"]'
@@ -129,7 +132,7 @@ describe('#accountController', () => {
       }
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload, { url: 'http://localhost' }).window
 
     const manageAccountLink = document.querySelector(
       '[data-testid="manage-account-link"]'
@@ -165,7 +168,7 @@ describe('#accountController', () => {
       }
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload, { url: 'http://localhost' }).window
 
     const infoBanner = document.querySelector(
       '[data-testid="app-important-banner"]'
@@ -200,7 +203,7 @@ describe('#accountController', () => {
       }
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload, { url: 'http://localhost' }).window
 
     const notPaidNotice = serviceCharge.notPaidNotice(
       {},
@@ -240,7 +243,7 @@ describe('#accountController', () => {
       }
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload, { url: 'http://localhost' }).window
 
     const serviceChargeLink = document.querySelector(
       '[data-testid="service-charge-link"]'
@@ -302,7 +305,7 @@ describe('#accountController', () => {
       }
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload, { url: 'http://localhost' }).window
 
     const infoBanner = document.querySelector(
       '[data-testid="app-important-banner"]'
@@ -337,7 +340,7 @@ describe('#accountController', () => {
       }
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload, { url: 'http://localhost' }).window
 
     const serviceChargeLink = document.querySelector(
       '[data-testid="service-charge-link"]'
@@ -395,7 +398,7 @@ describe('#accountController', () => {
       }
     })
 
-    const { document } = new JSDOM(payload).window
+    const { document } = new JSDOM(payload, { url: 'http://localhost' }).window
 
     const serviceChargeLink = document.querySelector(
       '[data-testid="service-charge-link"]'
