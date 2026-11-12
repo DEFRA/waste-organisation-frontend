@@ -477,6 +477,20 @@ export const config = convict({
       format: Boolean,
       default: false,
       env: 'FEATURE_FLAG_WELSH_LANGUAGE'
+    },
+    googleAnalytics: {
+      doc: 'Enable Google Tag Manager analytics tags',
+      format: Boolean,
+      default: false,
+      env: 'FEATURE_FLAG_GOOGLE_ANALYTICS'
+    }
+  },
+  googleTagManager: {
+    id: {
+      doc: 'Google Tag Manager container id',
+      format: String,
+      default: 'GTM-TRR663ST',
+      env: 'GOOGLE_TAG_MANAGER_ID'
     }
   },
   encryptionKey: {
