@@ -1,6 +1,10 @@
 import { vi } from 'vitest'
 import { config } from '../../config.js'
 import { common } from '../../../server/common/content.js'
+import {
+  googleTagManagerId,
+  googleTagManagerHeadScript
+} from '../../../server/common/helpers/google-tag-manager.js'
 
 const mockReadFileSync = vi.fn()
 const mockLoggerError = vi.fn()
@@ -51,6 +55,9 @@ describe('context and cache', () => {
           breadcrumbs: [],
           layout: common.layout(mockRequest),
           welshLanguage: false,
+          googleAnalytics: false,
+          googleTagManagerId,
+          googleTagManagerHeadScript,
           htmlLang: 'en',
           languageToggle: {
             locale: 'en',
@@ -138,6 +145,9 @@ describe('context and cache', () => {
           breadcrumbs: [],
           layout: common.layout(mockRequest),
           welshLanguage: false,
+          googleAnalytics: false,
+          googleTagManagerId,
+          googleTagManagerHeadScript,
           htmlLang: 'en',
           languageToggle: {
             locale: 'en',

@@ -12,6 +12,12 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block head %}
+  {% if googleAnalytics %}
+    {# Google Tag Manager, as high in the head as possible #}
+    <script>{{ googleTagManagerHeadScript | safe }}</script>
+    {# End Google Tag Manager #}
+  {% endif %}
+
   {% if govukRebrand == false %}
     <link
       href="{{ getAssetPath('stylesheets/application-black.scss') }}"
@@ -31,6 +37,14 @@
       href="{{ getAssetPath('stylesheets/application.scss') }}"
       rel="stylesheet"
     />
+  {% endif %}
+{% endblock %}
+
+{% block bodyStart %}
+  {% if googleAnalytics %}
+    {# Google Tag Manager (noscript) - must be immediately after the opening body tag #}
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ googleTagManagerId }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    {# End Google Tag Manager (noscript) #}
   {% endif %}
 {% endblock %}
 
