@@ -113,6 +113,7 @@ jobs:
         env:
           ORGANISATION_BACKEND_PASSWORD: ${{ secrets.ORGANISATION_BACKEND_PASSWORD }}
           ENVIRONMENT: local
+          PROXY_MODE: zap
           ZAP_PROXY_URL: http://zap:8080
           ZAP_PROXY_API_URL: http://127.0.0.1:8080
         run: |
