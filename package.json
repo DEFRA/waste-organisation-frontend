@@ -60,6 +60,7 @@
     "@hapi/yar": "11.0.3",
     "aws-embedded-metrics": "4.2.1",
     "blankie": "5.0.0",
+    "chokidar": "4.0.3",
     "convict": "6.2.5",
     "convict-format-with-validator": "6.2.0",
     "cssnano": "9.0.2",
@@ -159,6 +160,9 @@
       "minimatch": {
         "brace-expansion": "5.0.9"
       }
+    },
+    "nunjucks": {
+      "chokidar": "4.0.3"
     }
   }
 }

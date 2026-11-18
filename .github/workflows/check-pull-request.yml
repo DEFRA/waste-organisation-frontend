@@ -113,11 +113,16 @@ jobs:
         env:
           ORGANISATION_BACKEND_PASSWORD: ${{ secrets.ORGANISATION_BACKEND_PASSWORD }}
           ENVIRONMENT: local
-          ZAP_PROXY_URL: http://zap:8080
-          ZAP_PROXY_API_URL: http://127.0.0.1:8080
+          # Node reaches published ZAP on the runner; Chrome/ZapApi use zapBaseUrl
+          # (http://zap:8080) from local.zap.config.json. WDIO hubs through HTTP_PROXY,
+          # so GRID_HOST must be a compose name ZAP can resolve.
+          HTTP_PROXY: http://127.0.0.1:8080
+          PROXY_MODE: zap
+          GRID_HOST: selenium-chrome
+          GRID_PORT: 4444
         run: |
-          npm run test:smoke
-          npm run test:zap
+          npm run test:grid:ci:waste-organisation-frontend
+          PROXY_MODE=off npm run test:zap
 
       - name: Generate Test Report
         if: always()
