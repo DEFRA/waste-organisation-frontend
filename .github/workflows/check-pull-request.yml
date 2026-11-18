@@ -74,12 +74,6 @@ jobs:
           COMPOSE_PROJECT_NAME: waste-organisation-frontend
         run: docker compose ${COMPOSE_FILE_ARGS} up -d
 
-      # TEMP: remove once frontend compose start/wait failures are diagnosed
-      - name: Log waste-organisation-frontend after compose up
-        env:
-          COMPOSE_PROJECT_NAME: waste-organisation-frontend
-        run: docker compose ${COMPOSE_FILE_ARGS} logs --no-color waste-organisation-frontend
-
       - name: Checkout UAT Repository as Integration Test Suite
         uses: actions/checkout@v7
         with:
@@ -105,13 +99,6 @@ jobs:
         run: |
           docker compose ${COMPOSE_FILE_ARGS} up -d --no-build --wait --wait-timeout 300
           docker compose ${COMPOSE_FILE_ARGS} ps
-
-      # TEMP: remove once frontend compose start/wait failures are diagnosed
-      - name: Log waste-organisation-frontend after compose wait
-        if: always()
-        env:
-          COMPOSE_PROJECT_NAME: waste-organisation-frontend
-        run: docker compose ${COMPOSE_FILE_ARGS} logs --no-color waste-organisation-frontend
 
       - name: Prepare ZAP for integration tests
         if: steps.wait-for-docker-compose-services.outcome == 'success'
