@@ -159,6 +159,12 @@
       "minimatch": {
         "brace-expansion": "5.0.9"
       }
+    },
+    "anymatch": {
+      "picomatch": "npm:empty-npm-package@1.0.0"
+    },
+    "readdirp": {
+      "picomatch": "npm:empty-npm-package@1.0.0"
     }
   }
 }
