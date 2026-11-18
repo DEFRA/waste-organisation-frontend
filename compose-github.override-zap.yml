@@ -35,6 +35,12 @@ services:
     #   - 'host.docker.internal:host-gateway'
     networks:
       - cdp-tenant
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -sf http://127.0.0.1:8080/JSON/core/view/version/ || exit 1']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
 
   # LocalStack: enable DynamoDB and return container-resolvable URLs for inter-service traffic.
   localstack:
