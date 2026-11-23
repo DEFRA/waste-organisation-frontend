@@ -1,5 +1,6 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {#
   Accept/reject analytics section for the cookies page. Shared by the English and
@@ -7,23 +8,47 @@
   on. Copy comes from layout.cookieSettings so it is translated via
   src/server/common/content.js.
 
-  The section starts hidden and cookie-settings.js reveals it, so users without
-  JavaScript don't get a form that does nothing. That script also pre-selects the
-  saved choice and saves changes. Its confirmation lives in
+  The list of analytics cookies is always shown, as users must be told about them
+  either way. The form starts hidden and cookie-settings.js reveals it, so users
+  without JavaScript don't get a form that does nothing. That script also
+  pre-selects the saved choice and saves changes. Its confirmation lives in
   partials/cookie-settings-confirmation.njk, at the top of the page.
 #}
 {% set cookieSettings = layout.cookieSettings %}
 
 {% if googleAnalytics %}
+  <h2 class="govuk-heading-m">{{ cookieSettings.heading }}</h2>
+
+  <p class="govuk-body">{{ cookieSettings.intro }}</p>
+
+  {% set analyticsCookieRows = [] %}
+  {% for cookie in cookieSettings.analyticsCookies %}
+    {%
+      set _ = analyticsCookieRows.push([
+        { text: cookie.name },
+        { text: cookie.purpose },
+        { text: cookie.expires }
+      ])
+    %}
+  {% endfor %}
+
+  {{
+    govukTable({
+      attributes: { "data-cookie-table": "analytics" },
+      head: [
+        { text: cookieSettings.tableHead.name },
+        { text: cookieSettings.tableHead.purpose },
+        { text: cookieSettings.tableHead.expires }
+      ],
+      rows: analyticsCookieRows
+    })
+  }}
+
   <div
     data-module="app-cookie-settings"
     data-gtm-id="{{ googleTagManagerId }}"
     hidden
   >
-    <h2 class="govuk-heading-m">{{ cookieSettings.heading }}</h2>
-
-    <p class="govuk-body">{{ cookieSettings.intro }}</p>
-
     <form novalidate>
       {{
         govukRadios({

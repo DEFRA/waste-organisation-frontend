@@ -49,11 +49,23 @@
           { text: '400 days' }
         ]]
       %}
+      {# Only set once the banner or settings form records a choice. #}
+      {% set consentCookie = layout.cookieSettings.consentCookie %}
+      {%
+        set consentCookieRow = [[
+          { text: consentCookie.name },
+          { text: consentCookie.purpose },
+          { text: consentCookie.expires }
+        ]]
+      %}
 
       {{
         govukTable({
+          attributes: { "data-cookie-table": "essential" },
           head: [{ text: 'Name' }, { text: 'Purpose' }, { text: 'Expires' }],
-          rows: cookieRows.concat(welshLanguage and langCookieRow or [])
+          rows: cookieRows
+            .concat(welshLanguage and langCookieRow or [])
+            .concat(googleAnalytics and consentCookieRow or [])
         })
       }}
     </div>

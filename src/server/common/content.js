@@ -36,7 +36,33 @@ const cookieConsentEn = {
     accept: 'Use cookies that measure my website use',
     reject: 'Do not use cookies that measure my website use',
     save: 'Save cookie settings',
-    confirmation: 'You’ve set your cookie preferences.'
+    confirmation: 'You’ve set your cookie preferences.',
+    /*
+     * The cookies Google Analytics 4 sets once analytics are accepted, listed so
+     * users know what's stored (PECR). GA4 only sets _ga and _ga_<container-id>:
+     * _gid and _gat are Universal Analytics cookies, which we don't use.
+     */
+    tableHead: { name: 'Name', purpose: 'Purpose', expires: 'Expires' },
+    analyticsCookies: [
+      {
+        name: '_ga',
+        purpose:
+          'Checks if you’ve visited this service before. This helps us count how many people visit the service',
+        expires: '2 years'
+      },
+      {
+        name: '_ga_<container-id>',
+        purpose:
+          'Used by Google Analytics to find and track an individual session with your device',
+        expires: '2 years'
+      }
+    ],
+    // Essential, so listed with the other essential cookies on the cookies page.
+    consentCookie: {
+      name: 'cookie_preferences_set',
+      purpose: 'Saves your cookie consent settings',
+      expires: '1 year'
+    }
   }
 }
 
