@@ -40,10 +40,13 @@ export function getCookie(name, doc = document) {
   return match ? decodeURIComponent(match.slice(prefix.length)) : null
 }
 
+// Secure on HTTPS, omitted on localhost so cookies still set in dev.
+function getSecureAttribute(doc) {
+  return doc.location?.protocol === 'https:' ? '; Secure' : ''
+}
+
 export function setCookie(name, value, doc = document) {
-  // Secure on HTTPS, omitted on localhost so the cookie still sets in dev.
-  const secure = doc.location?.protocol === 'https:' ? '; Secure' : ''
-  doc.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${CONSENT_COOKIE_MAX_AGE_SECONDS}; SameSite=Lax${secure}`
+  doc.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${CONSENT_COOKIE_MAX_AGE_SECONDS}; SameSite=Lax${getSecureAttribute(doc)}`
 }
 
 /*
@@ -66,12 +69,16 @@ export function setAnalyticsConsent(value, doc = document) {
  * deleted with the domain it was set on, so expire each one on the bare host and
  * on every parent domain, the browser will ignore the attempts for domains that
  * don't apply.
+ *
+ * On HTTPS the deletion has to be Secure too, GA sets _ga and _ga_* as Secure
+ *
  */
 export function deleteAnalyticsCookies(doc = document) {
   const hostParts = (doc.location?.hostname ?? '').split('.')
   const domains = hostParts.map(
     (_, i) => `; domain=.${hostParts.slice(i).join('.')}`
   )
+  const secure = getSecureAttribute(doc)
 
   doc.cookie
     .split(';')
@@ -79,7 +86,7 @@ export function deleteAnalyticsCookies(doc = document) {
     .filter((name) => ANALYTICS_COOKIE_PATTERN.test(name))
     .forEach((name) => {
       ;['', ...domains].forEach((domain) => {
-        doc.cookie = `${name}=; path=/; max-age=0${domain}`
+        doc.cookie = `${name}=; path=/; max-age=0${domain}${secure}`
       })
     })
 }

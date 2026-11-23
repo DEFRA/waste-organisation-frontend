@@ -93,10 +93,14 @@ describe('cookie-functions', () => {
       expect(document.cookie).toBe('session=keep')
     })
 
-    test('also expires them on every parent domain, where GA usually sets them', () => {
+    /*
+     * jsdom doesn't enforce the rule that a non-Secure write can't overwrite a
+     * Secure cookie, so these check the exact strings written instead.
+     */
+    const deletionsFor = (protocol) => {
       const written = []
       deleteAnalyticsCookies({
-        location: { hostname: 'service.defra.gov.uk' },
+        location: { protocol, hostname: 'service.defra.gov.uk' },
         get cookie() {
           return '_ga=GA1.1.123'
         },
@@ -104,14 +108,26 @@ describe('cookie-functions', () => {
           written.push(value)
         }
       })
+      return written
+    }
 
-      expect(written).toEqual([
-        '_ga=; path=/; max-age=0',
-        '_ga=; path=/; max-age=0; domain=.service.defra.gov.uk',
-        '_ga=; path=/; max-age=0; domain=.defra.gov.uk',
-        '_ga=; path=/; max-age=0; domain=.gov.uk',
-        '_ga=; path=/; max-age=0; domain=.uk'
+    test('also expires them on every parent domain, where GA usually sets them', () => {
+      expect(deletionsFor('https:')).toEqual([
+        '_ga=; path=/; max-age=0; Secure',
+        '_ga=; path=/; max-age=0; domain=.service.defra.gov.uk; Secure',
+        '_ga=; path=/; max-age=0; domain=.defra.gov.uk; Secure',
+        '_ga=; path=/; max-age=0; domain=.gov.uk; Secure',
+        '_ga=; path=/; max-age=0; domain=.uk; Secure'
       ])
+    })
+
+    test('marks the deletions Secure on https but not on http', () => {
+      expect(deletionsFor('https:').every((w) => w.endsWith('; Secure'))).toBe(
+        true
+      )
+      expect(deletionsFor('http:').some((w) => w.includes('Secure'))).toBe(
+        false
+      )
     })
   })
 
