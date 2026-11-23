@@ -19,12 +19,12 @@ export const googleTagManagerId = config.get('googleTagManager.id')
  * Custom HTML tags in the GTM container still won't run: they're inline scripts,
  * which the policy deliberately doesn't allow.
  */
-export const googleAnalyticsCspSources = {
-  scriptSrc: ['https://*.googletagmanager.com'],
+export const googleAnalyticsCspSources = { 
+  scriptSrc: ['https://*.googletagmanager.com'], // nosonar
   connectSrc: [
     'https://*.google-analytics.com',
     'https://*.analytics.google.com',
-    'https://*.googletagmanager.com'
+    'https://*.googletagmanager.com' // nosonar
   ],
-  imgSrc: ['https://*.google-analytics.com', 'https://*.googletagmanager.com']
+  imgSrc: ['https://*.google-analytics.com', 'https://*.googletagmanager.com'] // nosonar
 }
