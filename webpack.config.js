@@ -29,6 +29,9 @@ export default {
     },
     'sign-out': {
       import: ['./javascripts/sign-out.js']
+    },
+    'cookie-settings': {
+      import: ['./javascripts/cookie-settings.js']
     }
   },
   experiments: {

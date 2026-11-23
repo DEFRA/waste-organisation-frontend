@@ -1,0 +1,26 @@
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{#
+  "You've set your cookie preferences" banner for the cookies page. It goes at
+  the top of the main content, above the h1, where GOV.UK puts notification
+  banners; cookie-settings.js reveals it and moves focus to it after the user saves
+  a choice. disableAutoFocus stops GOV.UK Frontend focusing it on page load while
+  it is still hidden: our script does that once it is shown.
+#}
+{% if googleAnalytics %}
+  {% set confirmationHtml %}
+    <h3 class="govuk-notification-banner__heading">
+      {{ layout.cookieSettings.confirmation }}
+    </h3>
+  {% endset %}
+
+  <div data-cookie-settings-confirmation hidden tabindex="-1">
+    {{
+      govukNotificationBanner({
+        type: "success",
+        html: confirmationHtml,
+        disableAutoFocus: true
+      })
+    }}
+  </div>
+{% endif %}

@@ -1,0 +1,88 @@
+{% from "govuk/components/cookie-banner/macro.njk" import govukCookieBanner %}
+
+{#
+  Cookie consent banner. Only rendered when the googleAnalytics feature flag is on.
+
+  The banner starts hidden and is only shown by the client-side script
+  cookie-banner.js when the user has not yet accepted or rejected analytics
+  cookies, so returning visitors who have already chosen don't see it flash up.
+  data-gtm-id hands the google tag manager container id to that script, which
+  loads GTM only after consent is given. Copy comes from layout.cookieBanner so
+  it is translated via src/server/common/content.js.
+#}
+{% set cookieBanner = layout.cookieBanner %}
+
+
+{% set questionHtml %}
+  <p class="govuk-body">{{ cookieBanner.essential }}</p>
+  <p class="govuk-body">{{ cookieBanner.analytics }}</p>
+{% endset %}
+
+{# The accepted and rejected confirmations differ only in their first sentence. #}
+{% macro confirmationHtml(outcome, changeSettings, href) %}
+  <p class="govuk-body">
+    {{ outcome }} {{ changeSettings.beforeLink }}<a
+      class="govuk-link"
+      href="{{ href }}"
+      >{{ changeSettings.linkText }}</a
+    >{{ changeSettings.afterLink }}
+  </p>
+{% endmacro %}
+
+{%
+  set hideActions = [
+    {
+      text: cookieBanner.hide,
+      type: "button",
+      attributes: { "data-cookie-banner-action": "hide" }
+    }
+  ]
+%}
+
+{{
+  govukCookieBanner({
+    ariaLabel: cookieBanner.heading + " " + serviceName,
+    hidden: true,
+    attributes: {
+      "data-module": "app-cookie-banner",
+      "data-gtm-id": googleTagManagerId
+    },
+    messages: [
+      {
+        headingText: cookieBanner.heading + " " + serviceName,
+        html: questionHtml,
+        attributes: { "data-cookie-message": "question" },
+        actions: [
+          {
+            text: cookieBanner.accept,
+            type: "button",
+            attributes: { "data-cookie-banner-action": "accept" }
+          },
+          {
+            text: cookieBanner.reject,
+            type: "button",
+            attributes: { "data-cookie-banner-action": "reject" }
+          },
+          {
+            text: cookieBanner.viewCookies,
+            href: cookiesPath
+          }
+        ]
+      },
+      {
+        html: confirmationHtml(cookieBanner.accepted, cookieBanner.changeSettings, cookiesPath),
+        role: "alert",
+        hidden: true,
+        attributes: { "data-cookie-message": "accepted", "tabindex": "-1" },
+        actions: hideActions
+      },
+      {
+        html: confirmationHtml(cookieBanner.rejected, cookieBanner.changeSettings, cookiesPath),
+        role: "alert",
+        hidden: true,
+        attributes: { "data-cookie-message": "rejected", "tabindex": "-1" },
+        actions: hideActions
+      }
+    ]
+  })
+}}
