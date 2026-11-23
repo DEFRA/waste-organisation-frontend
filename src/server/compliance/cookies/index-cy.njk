@@ -4,6 +4,8 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {% include "partials/cookie-settings-confirmation.njk" %}
+
       <h1 class="govuk-heading-l">Cwcis</h1>
 
       <p class="govuk-body">
@@ -11,6 +13,9 @@
         cyfrifiadur. Mae'r cwcis hyn yn cael eu defnyddio i wneud i'r gwasanaeth
         weithio ac ni ellir eu diffodd.
       </p>
+
+      {# Analytics accept/reject form (English copy for now), shared with the English page. #}
+      {% include "partials/cookie-settings.njk" %}
 
       <h2 class="govuk-heading-m">Cwcis hanfodol</h2>
 

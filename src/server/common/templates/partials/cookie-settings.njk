@@ -1,0 +1,50 @@
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{#
+  Accept/reject analytics section for the cookies page. Shared by the English and
+  Welsh cookies pages, and only rendered when the googleAnalytics feature flag is
+  on. Copy comes from layout.cookieSettings so it is translated via
+  src/server/common/content.js.
+
+  The section starts hidden and cookie-settings.js reveals it, so users without
+  JavaScript don't get a form that does nothing. That script also pre-selects the
+  saved choice and saves changes. Its confirmation lives in
+  partials/cookie-settings-confirmation.njk, at the top of the page.
+#}
+{% set cookieSettings = layout.cookieSettings %}
+
+{% if googleAnalytics %}
+  <div
+    data-module="app-cookie-settings"
+    data-gtm-id="{{ googleTagManagerId }}"
+    hidden
+  >
+    <h2 class="govuk-heading-m">{{ cookieSettings.heading }}</h2>
+
+    <p class="govuk-body">{{ cookieSettings.intro }}</p>
+
+    <form novalidate>
+      {{
+        govukRadios({
+          name: "cookies[analytics]",
+          fieldset: {
+            legend: {
+              text: cookieSettings.legend,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            { value: "accepted", text: cookieSettings.accept },
+            { value: "rejected", text: cookieSettings.reject }
+          ]
+        })
+      }}
+
+      {{ govukButton({ text: cookieSettings.save }) }}
+    </form>
+  </div>
+
+  {# Loaded here so the settings code ships only with the page that has the form. #}
+  <script type="module" src="{{ getAssetPath('cookie-settings.js') }}"></script>
+{% endif %}

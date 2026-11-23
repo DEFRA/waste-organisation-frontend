@@ -4,6 +4,8 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      {% include "partials/cookie-settings-confirmation.njk" %}
+
       <h1 class="govuk-heading-l">Cookies</h1>
 
       <p class="govuk-body">
@@ -11,6 +13,8 @@
         These cookies are used to make the service work and cannot be turned
         off.
       </p>
+
+      {% include "partials/cookie-settings.njk" %}
 
       <h2 class="govuk-heading-m">Essential cookies</h2>
 

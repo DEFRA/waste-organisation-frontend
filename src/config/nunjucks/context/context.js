@@ -2,14 +2,12 @@ import path from 'node:path'
 import { readFileSync } from 'node:fs'
 
 import { config } from '../../config.js'
+import { paths } from '../../paths.js'
 import { common } from '../../../server/common/content.js'
 import { languageToggleHref } from '../../../server/common/plugins/translations/language-toggle-href.js'
 import { buildNavigation } from './build-navigation.js'
 import { createLogger } from '../../../server/common/helpers/logging/logger.js'
-import {
-  googleTagManagerHeadScript,
-  googleTagManagerId
-} from '../../../server/common/helpers/google-tag-manager.js'
+import { googleTagManagerId } from '../../../server/common/helpers/google-tag-manager.js'
 
 const logger = createLogger()
 const assetPath = config.get('assetPath')
@@ -41,7 +39,7 @@ export function context(request) {
     welshLanguage: config.get('featureFlags.welshLanguage'),
     googleAnalytics: config.get('featureFlags.googleAnalytics'),
     googleTagManagerId,
-    googleTagManagerHeadScript,
+    cookiesPath: paths.cookies,
     htmlLang: request.locale === 'cy' ? 'cy' : 'en',
     languageToggle: {
       locale: request.locale === 'cy' ? 'cy' : 'en',

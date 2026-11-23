@@ -8,18 +8,22 @@ import { config } from '../../../config/config.js'
 describe('#cookiesController', () => {
   let server
   let initialWelshLanguageFlag
+  let initialGoogleAnalyticsFlag
 
   beforeAll(async () => {
     initialWelshLanguageFlag = config.get('featureFlags.welshLanguage')
+    initialGoogleAnalyticsFlag = config.get('featureFlags.googleAnalytics')
     server = await initialiseServer()
   })
 
   afterEach(() => {
     config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
+    config.set('featureFlags.googleAnalytics', initialGoogleAnalyticsFlag)
   })
 
   afterAll(async () => {
     config.set('featureFlags.welshLanguage', initialWelshLanguageFlag)
+    config.set('featureFlags.googleAnalytics', initialGoogleAnalyticsFlag)
     await server.stop({ timeout: 0 })
   })
 
@@ -45,6 +49,9 @@ describe('#cookiesController', () => {
   })
 
   test('Should render the English cookies page', async () => {
+    // Essential-cookies content only; the analytics banner/form have their own tests.
+    config.set('featureFlags.googleAnalytics', false)
+
     const { payload } = await server.inject({
       method: 'GET',
       url: paths.cookies
@@ -54,10 +61,13 @@ describe('#cookiesController', () => {
 
     expect(document.title).toEqual(expect.stringContaining('Cookies |'))
     expect(document.querySelector('h1').textContent).toContain('Cookies')
-    expect(document.querySelector('.govuk-body').textContent).toContain(
+    // Scope to main content: the cookie banner (in bodyStart) also has .govuk-body/h2.
+    expect(
+      document.querySelector('#main-content .govuk-body').textContent
+    ).toContain(
       'This service puts small files (known as cookies) onto your computer.'
     )
-    expect(document.querySelector('h2').textContent).toContain(
+    expect(document.querySelector('#main-content h2').textContent).toContain(
       'Essential cookies'
     )
 
@@ -94,8 +104,81 @@ describe('#cookiesController', () => {
     )
   })
 
+  test('Should render the analytics accept/reject form when GA is enabled', async () => {
+    config.set('featureFlags.googleAnalytics', true)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.cookies
+    })
+
+    const { document } = new JSDOM(payload).window
+    const form = document.querySelector('[data-module="app-cookie-settings"]')
+
+    expect(form).not.toBeNull()
+    expect(form.getAttribute('data-gtm-id')).toBeTruthy()
+
+    const radios = form.querySelectorAll('input[name="cookies[analytics]"]')
+    expect(Array.from(radios).map((radio) => radio.value)).toEqual([
+      'accepted',
+      'rejected'
+    ])
+
+    // Hidden until cookie-settings.js reveals it, so users without JavaScript never see it.
+    expect(form.hidden).toBe(true)
+
+    // The confirmation sits at the top of the main content, above the h1.
+    const confirmation = document.querySelector(
+      '[data-cookie-settings-confirmation]'
+    )
+    expect(confirmation.hidden).toBe(true)
+    expect(
+      confirmation.compareDocumentPosition(document.querySelector('h1')) &
+        document.defaultView.Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+    expect(payload).toEqual(expect.stringContaining('Save cookie settings'))
+  })
+
+  test('Should render the analytics form on the Welsh page when GA is enabled', async () => {
+    config.set('featureFlags.googleAnalytics', true)
+    config.set('featureFlags.welshLanguage', true)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: `${paths.cookies}?lang=cy`
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    expect(document.title).toEqual(expect.stringContaining('Cwcis |'))
+
+    const form = document.querySelector('[data-module="app-cookie-settings"]')
+    expect(form).not.toBeNull()
+    expect(form.getAttribute('data-gtm-id')).toBeTruthy()
+
+    const radios = form.querySelectorAll('input[name="cookies[analytics]"]')
+    expect(Array.from(radios).map((radio) => radio.value)).toEqual([
+      'accepted',
+      'rejected'
+    ])
+  })
+
+  test('Should not render the analytics form when GA is disabled', async () => {
+    config.set('featureFlags.googleAnalytics', false)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.cookies
+    })
+
+    expect(payload).not.toEqual(expect.stringContaining('app-cookie-settings'))
+  })
+
   test('Should render the Welsh cookies page when lang=cy', async () => {
     config.set('featureFlags.welshLanguage', true)
+    // Essential-cookies content only; the analytics banner/form have their own tests.
+    config.set('featureFlags.googleAnalytics', false)
+
     const { payload } = await server.inject({
       method: 'GET',
       url: `${paths.cookies}?lang=cy`
@@ -105,6 +188,9 @@ describe('#cookiesController', () => {
 
     expect(document.title).toEqual(expect.stringContaining('Cwcis |'))
     expect(document.querySelector('h1').textContent).toContain('Cwcis')
-    expect(document.querySelector('h2').textContent).toContain('Cwcis hanfodol')
+    // Scope to main content: the cookie banner (in bodyStart) also has an h2.
+    expect(document.querySelector('#main-content h2').textContent).toContain(
+      'Cwcis hanfodol'
+    )
   })
 })

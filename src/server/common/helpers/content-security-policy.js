@@ -1,11 +1,7 @@
 import Blankie from 'blankie'
 import { config } from '../../../config/config.js'
 import { createLogger } from './logging/logger.js'
-import {
-  googleTagManagerHost,
-  googleAnalyticsHost,
-  googleTagManagerScriptHash
-} from './google-tag-manager.js'
+import { googleAnalyticsCspSources } from './google-tag-manager.js'
 
 /**
  * Manage content security policies.
@@ -35,23 +31,19 @@ const contentSecurityPolicy = {
 
     /*
      * Google Tag Manager is allowed only while the googleAnalytics flag is on, so environments
-     * where it's disabled keep the strict policy.
+     * where it's disabled keep the strict policy. The gtm.js script is fetched from the GTM host
+     * (no inline snippet), so the host alone is enough in scriptSrc - no script hash is needed.
+     * No frameSrc entry: GTM's only frame was the noscript iframe, which consent-gating removed.
      */
     const googleAnalyticsEnabled = config.get('featureFlags.googleAnalytics')
-    /* Map the GTM/GA hosts and script hash onto the directives each one belongs in. */
-    const gtmScriptSrc = googleAnalyticsEnabled
-      ? [googleTagManagerHost, `'${googleTagManagerScriptHash}'`]
-      : []
-    const gtmConnectAndImgSrc = googleAnalyticsEnabled
-      ? [googleTagManagerHost, googleAnalyticsHost]
-      : []
-    const gtmFrameSrc = googleAnalyticsEnabled ? [googleTagManagerHost] : []
+    const gaSources = (directive) =>
+      googleAnalyticsEnabled ? googleAnalyticsCspSources[directive] : []
 
     const scriptSrc = [
       'self',
       "'sha256-GUQ5ad8JK5KmEWmROf3LZd9ge94daqNvd8xy9YS1iDw='"
     ]
-      .concat(gtmScriptSrc)
+      .concat(gaSources('scriptSrc'))
       .concat([`'nonce-${request?.contentSecurityPolicy?.scriptNonce}'`])
 
     if (request?.contentSecurityPolicy?.scriptNonce) {
@@ -65,12 +57,12 @@ const contentSecurityPolicy = {
       // https://frontend.design-system.service.gov.uk/import-javascript/#if-our-inline-javascript-snippet-is-blocked-by-a-content-security-policy
       defaultSrc: ['self'],
       fontSrc: ['self', 'data:'],
-      connectSrc: ['self', 'wss', 'data:'].concat(gtmConnectAndImgSrc),
+      connectSrc: ['self', 'wss', 'data:'].concat(gaSources('connectSrc')),
       mediaSrc: ['self'],
       styleSrc: ['self'],
       scriptSrc,
-      imgSrc: ['self', 'data:'].concat(gtmConnectAndImgSrc),
-      frameSrc: ['self', 'data:'].concat(gtmFrameSrc),
+      imgSrc: ['self', 'data:'].concat(gaSources('imgSrc')),
+      frameSrc: ['self', 'data:'],
       objectSrc: ['none'],
       frameAncestors: ['none'],
       formAction,
