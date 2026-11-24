@@ -71,6 +71,30 @@ describe('apiList', () => {
     expect(pageOrgName).toEqual(expect.stringContaining(organisationName))
   })
 
+  test('should keep the layout scripts alongside its own copy script', async () => {
+    // application.js loads the cookie banner and, once accepted, Google Analytics.
+    const credentials = await setupAuthedUserSession(server)
+    credentials.currentOrganisationName = organisationName
+    credentials.currentOrganisationId = organisationId
+
+    wreckGetMock.mockReturnValue({
+      payload: {
+        apiCodes: [{ code: 'abc', name: 'API Code 1', isDisabled: false }]
+      }
+    })
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.apiList,
+      auth: { strategy: 'session', credentials }
+    })
+
+    const { document } = new JSDOM(payload).window
+
+    expect(document.querySelector('script[src*="application"]')).not.toBeNull()
+    expect(document.querySelector('script[nonce]')).not.toBeNull()
+  })
+
   test('should render all enabled api codes', async () => {
     const credentials = await setupAuthedUserSession(server)
     credentials.currentOrganisationName = organisationName

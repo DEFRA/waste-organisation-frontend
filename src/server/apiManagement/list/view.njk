@@ -84,6 +84,9 @@
   </div>
 {% endblock %}
 {% block bodyEnd %}
+  {# Keep the layout's scripts (application.js: GOV.UK Frontend, cookie banner, analytics). #}
+  {{ super() }}
+
   <script nonce="{{ scriptNonce }}">
     const codeName = document.querySelectorAll('[data-codeName]')
     const copyText = "{{words.copy}}";
