@@ -38,9 +38,11 @@ const cookieConsentEn = {
     save: 'Save cookie settings',
     confirmation: 'You’ve set your cookie preferences.',
     /*
-     * The cookies Google Analytics 4 sets once analytics are accepted, listed so
-     * users know what's stored (PECR). GA4 only sets _ga and _ga_<container-id>:
-     * _gid and _gat are Universal Analytics cookies, which we don't use.
+     * Google Analytics 4 cookies. GA4 only sets _ga and _ga_<container-id>,
+     * we don't use the Universal Analytics _gid and _gat cookies.
+     *
+     * 2 years is the default time in Google Tag Manager, although in practice
+     * browsers limit to 400 days like with the lang cookie.
      */
     tableHead: { name: 'Name', purpose: 'Purpose', expires: 'Expires' },
     analyticsCookies: [
@@ -57,7 +59,6 @@ const cookieConsentEn = {
         expires: '2 years'
       }
     ],
-    // Essential, so listed with the other essential cookies on the cookies page.
     consentCookie: {
       name: 'cookie_preferences_set',
       purpose: 'Saves your cookie consent settings',
