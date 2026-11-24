@@ -220,6 +220,8 @@ services:
         condition: service_started
     env_file:
       - 'compose/aws.env'
+      - path: 'compose/personal-settings.env'
+        required: false
     environment:
       PORT: 3000
       NODE_ENV: development
