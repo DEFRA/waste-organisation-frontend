@@ -15,7 +15,7 @@ import {
  * "preferences saved" confirmation at the top of the page without a page submit -
  * or, when the page has to reload first, after the reload.
  *
- * This file is its own webpack entry, loaded only by partials/cookie-settings.njk,
+ * This file is its own webpack entry, loaded only by partials/cookie-settings-form.njk,
  * and runs initCookieSettings() on load (see the call at the end). For safety it
  * does nothing on any page without the section, so loading it elsewhere would be
  * harmless.

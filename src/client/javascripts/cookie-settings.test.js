@@ -12,7 +12,7 @@ function clearCookies() {
 }
 
 /*
- * Minimal stand-in for the markup partials/cookie-settings.njk and
+ * Minimal stand-in for the markup partials/cookie-settings-form.njk and
  * partials/cookie-settings-confirmation.njk render. The server-side controller
  * test asserts the real templates carry these same data attributes.
  */
