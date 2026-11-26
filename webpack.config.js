@@ -188,9 +188,9 @@ export default {
         {
           from: path.join(
             dirname,
-            'src/server/spreadsheet/downloadSpreadsheet/templates/receipt-of-waste-template.xlsx'
+            'src/server/spreadsheet/downloadSpreadsheet/templates/receipt-of-waste-template-v1.1.xlsx'
           ),
-          to: 'receipt-of-waste-template.xlsx'
+          to: 'receipt-of-waste-template-v1.1.xlsx'
         }
       ]
     })
