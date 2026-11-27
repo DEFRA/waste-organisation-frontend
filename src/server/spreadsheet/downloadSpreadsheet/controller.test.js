@@ -99,7 +99,7 @@ describe('#downloadSpreadsheetController', () => {
 
     expect(downloadButton).not.toBeNull()
     expect(downloadButton.getAttribute('href')).toBe(
-      '/public/receipt-of-waste-template.xlsx'
+      '/public/receipt-of-waste-template-v1.1.xlsx'
     )
     expect(downloadButton.hasAttribute('download')).toBe(true)
     expect(downloadButton.getAttribute('aria-describedby')).toBe(

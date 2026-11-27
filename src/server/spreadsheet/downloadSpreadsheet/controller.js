@@ -4,7 +4,7 @@ import { getPaymentStatus } from '../../common/helpers/govpay/paymentStatus.js'
 import { spreadsheet } from '../content.js'
 import { serviceCharge } from '../../serviceCharge/content.js'
 
-const templateFileUrl = `${config.get('assetPath')}/receipt-of-waste-template.xlsx`
+const templateFileUrl = `${config.get('assetPath')}/receipt-of-waste-template-v1.1.xlsx`
 
 export const downloadSpreadsheetController = {
   async handler(request, h) {
