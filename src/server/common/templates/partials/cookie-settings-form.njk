@@ -2,12 +2,13 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {#
-  Accept/reject analytics section for the cookies page. Shared by the English and
+  Accept/reject analytics form for the cookies page. Shared by the English and
   Welsh cookies pages, and only rendered when the googleAnalytics feature flag is
   on. Copy comes from layout.cookieSettings so it is translated via
-  src/server/common/content.js.
+  src/server/common/content.js. The analytics cookies themselves are listed by the
+  pages, so users without JavaScript still see them.
 
-  The section starts hidden and cookie-settings.js reveals it, so users without
+  The form starts hidden and cookie-settings.js reveals it, so users without
   JavaScript don't get a form that does nothing. That script also pre-selects the
   saved choice and saves changes. Its confirmation lives in
   partials/cookie-settings-confirmation.njk, at the top of the page.
@@ -20,10 +21,6 @@
     data-gtm-id="{{ googleTagManagerId }}"
     hidden
   >
-    <h2 class="govuk-heading-m">{{ cookieSettings.heading }}</h2>
-
-    <p class="govuk-body">{{ cookieSettings.intro }}</p>
-
     <form novalidate>
       {{
         govukRadios({

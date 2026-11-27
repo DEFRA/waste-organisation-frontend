@@ -1,6 +1,63 @@
 {% extends 'layouts/page.njk' %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
+{%
+  set cookieRows = [
+    [
+      { text: 'userSession' },
+      { text: 'Keeps you signed in' },
+      { text: '4 hours' }
+    ],
+    [
+      { text: 'session' },
+      { text: 'Stores session data' },
+      { text: '4 hours' }
+    ],
+    [
+      { text: 'bell-defraId' },
+      { text: 'Used to sign in with Defra ID' },
+      { text: 'When you close your browser' }
+    ]
+  ]
+%}
+{%
+  set langCookieRow = [[
+    { text: 'lang' },
+    { text: 'Remembers your language choice' },
+    { text: '400 days' }
+  ]]
+%}
+{# Only set once the banner or settings form records a choice. #}
+{%
+  set consentCookieRow = [[
+    { text: 'cookie_preferences_set' },
+    { text: 'Saves your cookie consent settings' },
+    { text: '1 year' }
+  ]]
+%}
+
+{% if googleAnalytics %}
+  {#
+    Google Analytics 4 cookies. GA4 only sets _ga and _ga_<container-id>; we don't
+    use the Universal Analytics _gid and _gat cookies. 2 years is GA's default
+    lifetime, although in practice browsers limit it to 400 days, as with lang.
+  #}
+  {%
+    set analyticsCookieRows = [
+      [
+        { text: '_ga' },
+        { text: 'Checks if you’ve visited this service before. This helps us count how many people visit the service.' },
+        { text: '2 years' }
+      ],
+      [
+        { text: '_ga_<container-id>' },
+        { text: 'Used by Google Analytics to find and track an individual session with your device.' },
+        { text: '2 years' }
+      ]
+    ]
+  %}
+{% endif %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -10,11 +67,9 @@
 
       <p class="govuk-body">
         This service puts small files (known as cookies) onto your computer.
-        These cookies are used to make the service work and cannot be turned
-        off.
+        These cookies are used to make the service work, and to collect and
+        store information about how you use the service.
       </p>
-
-      {% include "partials/cookie-settings.njk" %}
 
       <h2 class="govuk-heading-m">Essential cookies</h2>
 
@@ -23,39 +78,40 @@
         service. We do not need to ask permission to use them.
       </p>
 
-      {%
-        set cookieRows = [
-          [
-            { text: 'userSession' },
-            { text: 'Keeps you signed in' },
-            { text: '4 hours' }
-          ],
-          [
-            { text: 'session' },
-            { text: 'Stores session data' },
-            { text: '4 hours' }
-          ],
-          [
-            { text: 'bell-defraId' },
-            { text: 'Used to sign in with Defra ID' },
-            { text: 'When you close your browser' }
-          ]
-        ]
-      %}
-      {%
-        set langCookieRow = [[
-          { text: 'lang' },
-          { text: 'Remembers your language choice' },
-          { text: '400 days' }
-        ]]
-      %}
-
       {{
         govukTable({
+          attributes: { "data-cookie-table": "essential" },
           head: [{ text: 'Name' }, { text: 'Purpose' }, { text: 'Expires' }],
-          rows: cookieRows.concat(welshLanguage and langCookieRow or [])
+          rows: cookieRows
+            .concat(welshLanguage and langCookieRow or [])
+            .concat(googleAnalytics and consentCookieRow or [])
         })
       }}
+
+      {% if googleAnalytics %}
+        <h2 class="govuk-heading-m">
+          Cookies that measure how you use this service
+        </h2>
+
+        <p class="govuk-body">
+          We use Google Analytics, loaded via Google Tag Manager, to collect
+          anonymised information about how you use this service, for example
+          what pages you visit and what you click on.</p>
+          
+        <p class="govuk-body"> 
+          This helps us understand how we can improve this service.
+        </p>
+
+        {{
+          govukTable({
+            attributes: { "data-cookie-table": "analytics" },
+            head: [{ text: 'Name' }, { text: 'Purpose' }, { text: 'Expires' }],
+            rows: analyticsCookieRows
+          })
+        }}
+
+        {% include "partials/cookie-settings-form.njk" %}
+      {% endif %}
     </div>
   </div>
 {% endblock %}

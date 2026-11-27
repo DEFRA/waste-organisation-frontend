@@ -1,45 +1,5 @@
 import { getContentForLanguage } from '../../config/content.js'
 
-const cookieConsentEn = {
-  /*
-   * Cookie consent banner copy (partials/cookie-banner.njk). "heading" is
-   * followed by the service name in the template. The accepted/rejected
-   * confirmation is "accepted" or "rejected" followed by "changeSettings", which
-   * wraps a link to the cookies page, hence its beforeLink/linkText/afterLink split.
-   */
-  cookieBanner: {
-    heading: 'Cookies on',
-    essential: 'We use some essential cookies to make this service work.',
-    analytics:
-      'We’d also like to use analytics cookies so we can understand how you use the service and make improvements.',
-    accept: 'Accept analytics cookies',
-    reject: 'Reject analytics cookies',
-    viewCookies: 'View cookies',
-    accepted: 'You’ve accepted analytics cookies.',
-    rejected: 'You’ve rejected analytics cookies.',
-    changeSettings: {
-      beforeLink: 'You can ',
-      linkText: 'change your cookie settings',
-      afterLink: ' at any time.'
-    },
-    hide: 'Hide cookie message'
-  },
-  /*
-   * Accept/reject analytics section on the cookies page (partials/cookie-settings.njk)
-   * and its confirmation (partials/cookie-settings-confirmation.njk).
-   */
-  cookieSettings: {
-    heading: 'Analytics cookies (optional)',
-    intro:
-      'We use analytics cookies so we can understand how you use the service and make improvements.',
-    legend: 'Do you want to accept analytics cookies?',
-    accept: 'Use cookies that measure my website use',
-    reject: 'Do not use cookies that measure my website use',
-    save: 'Save cookie settings',
-    confirmation: 'You’ve set your cookie preferences.'
-  }
-}
-
 /* v8 ignore next */
 export const common = {
   layout: (request) =>
@@ -71,7 +31,41 @@ export const common = {
           afterLink: ', except where otherwise stated'
         },
         copyright: '© Crown copyright',
-        ...cookieConsentEn
+        /*
+         * Cookie consent banner copy (partials/cookie-banner.njk). "heading" is
+         * followed by the service name in the template. The accepted/rejected
+         * confirmation is "accepted" or "rejected" followed by "changeSettings", which
+         * wraps a link to the cookies page, hence its beforeLink/linkText/afterLink split.
+         */
+        cookieBanner: {
+          heading: 'Cookies on',
+          essential: 'We use some essential cookies to make this service work.',
+          analytics:
+            'We’d also like to use analytics cookies so we can understand how you use the service and make improvements.',
+          accept: 'Accept analytics cookies',
+          reject: 'Reject analytics cookies',
+          viewCookies: 'View cookies',
+          accepted: 'You’ve accepted analytics cookies.',
+          rejected: 'You’ve rejected analytics cookies.',
+          changeSettings: {
+            beforeLink: 'You can ',
+            linkText: 'change your cookie settings',
+            afterLink: ' at any time.'
+          },
+          hide: 'Hide cookie message'
+        },
+        /*
+         * Accept/reject analytics form on the cookies pages
+         * (partials/cookie-settings-form.njk) and its confirmation
+         * (partials/cookie-settings-confirmation.njk).
+         */
+        cookieSettings: {
+          legend: 'Do you want to accept analytics cookies?',
+          accept: 'Use cookies that measure my website use',
+          reject: 'Do not use cookies that measure my website use',
+          save: 'Save cookie settings',
+          confirmation: 'You’ve set your cookie preferences.'
+        }
       },
       cy: {
         phaseBanner: {
@@ -100,12 +94,31 @@ export const common = {
           afterLink: ' ac eithrio pan nodir fel arall'
         },
         copyright: '© Hawlfraint y Goron',
-        /*
-         * TODO: Welsh translation needed. Until then this reuses the English cookie
-         * copy, so it can't drift from it; replace it with a Welsh copy of
-         * cookieConsentEn's shape.
-         */
-        ...cookieConsentEn
+        // TODO: Welsh translation needed for cookieBanner and cookieSettings, English for now.
+        cookieBanner: {
+          heading: 'Cookies on',
+          essential: 'We use some essential cookies to make this service work.',
+          analytics:
+            'We’d also like to use analytics cookies so we can understand how you use the service and make improvements.',
+          accept: 'Accept analytics cookies',
+          reject: 'Reject analytics cookies',
+          viewCookies: 'View cookies',
+          accepted: 'You’ve accepted analytics cookies.',
+          rejected: 'You’ve rejected analytics cookies.',
+          changeSettings: {
+            beforeLink: 'You can ',
+            linkText: 'change your cookie settings',
+            afterLink: ' at any time.'
+          },
+          hide: 'Hide cookie message'
+        },
+        cookieSettings: {
+          legend: 'Do you want to accept analytics cookies?',
+          accept: 'Use cookies that measure my website use',
+          reject: 'Do not use cookies that measure my website use',
+          save: 'Save cookie settings',
+          confirmation: 'You’ve set your cookie preferences.'
+        }
       }
     })
 }

@@ -72,7 +72,7 @@ describe('#cookiesController', () => {
     )
 
     const tableRows = document.querySelectorAll(
-      '.govuk-table__body .govuk-table__row'
+      '[data-cookie-table="essential"] .govuk-table__body .govuk-table__row'
     )
     expect(tableRows).toHaveLength(3)
 
@@ -87,6 +87,7 @@ describe('#cookiesController', () => {
 
   test('Should include the lang cookie when welsh language is enabled', async () => {
     config.set('featureFlags.welshLanguage', true)
+    config.set('featureFlags.googleAnalytics', false)
 
     const { payload } = await server.inject({
       method: 'GET',
@@ -95,7 +96,7 @@ describe('#cookiesController', () => {
 
     const { document } = new JSDOM(payload).window
     const tableRows = document.querySelectorAll(
-      '.govuk-table__body .govuk-table__row'
+      '[data-cookie-table="essential"] .govuk-table__body .govuk-table__row'
     )
 
     expect(tableRows).toHaveLength(4)
@@ -137,6 +138,52 @@ describe('#cookiesController', () => {
         document.defaultView.Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy()
     expect(payload).toEqual(expect.stringContaining('Save cookie settings'))
+  })
+
+  test('Should list the analytics and consent cookies when GA is enabled', async () => {
+    config.set('featureFlags.googleAnalytics', true)
+    config.set('featureFlags.welshLanguage', false)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.cookies
+    })
+
+    const { document } = new JSDOM(payload).window
+    const firstCells = (table) =>
+      Array.from(
+        document.querySelectorAll(
+          `[data-cookie-table="${table}"] .govuk-table__body .govuk-table__row`
+        )
+      ).map((row) => row.querySelector('.govuk-table__cell').textContent.trim())
+
+    expect(firstCells('analytics')).toEqual(['_ga', '_ga_<container-id>'])
+    expect(firstCells('essential')).toEqual([
+      'userSession',
+      'session',
+      'bell-defraId',
+      'cookie_preferences_set'
+    ])
+
+    // Shown even without JavaScript, unlike the form.
+    const analyticsTable = document.querySelector(
+      '[data-cookie-table="analytics"]'
+    )
+    expect(analyticsTable.closest('[hidden]')).toBeNull()
+  })
+
+  test('Should not list the analytics or consent cookies when GA is disabled', async () => {
+    config.set('featureFlags.googleAnalytics', false)
+
+    const { payload } = await server.inject({
+      method: 'GET',
+      url: paths.cookies
+    })
+
+    expect(payload).not.toEqual(expect.stringContaining('_ga'))
+    expect(payload).not.toEqual(
+      expect.stringContaining('cookie_preferences_set')
+    )
   })
 
   test('Should render the analytics form on the Welsh page when GA is enabled', async () => {
